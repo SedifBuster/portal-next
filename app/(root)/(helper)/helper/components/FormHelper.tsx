@@ -1,5 +1,5 @@
 "use client"
- 
+
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { Button } from "@/components/ui/button"
@@ -15,29 +15,30 @@ import {
 import { Input } from "@/components/ui/input"
 import { useForm } from "react-hook-form"
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-  } from "@/components/ui/select"
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
- 
+import axios from "axios"
+
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "Имя пользователя должно состоять как минимум из 2 символов.",
   }),
-  cabinet: z.string().min(1,{
+  cabinet: z.string().min(1, {
     message: "Номер кабинета должен состоять как минимум из 1 символа"
   }),
-  number: z.string().min(9,{
+  number: z.string().min(9, {
     message: "Номер телефона должен состоять как минимум из 9 символов"
   }),
   category: z.string({
     required_error: "Пожалуйста выберите категорию",
-    })
-    ,
-  problem: z.string().min(5,{
+  })
+  ,
+  problem: z.string().min(5, {
     message: " должен состоять как минимум из 9 символов"
   }),
 
@@ -45,33 +46,31 @@ const formSchema = z.object({
 
 export function FormHelper() {
 
-        const form = useForm<z.infer<typeof formSchema>>({
-            resolver: zodResolver(formSchema),
-            defaultValues: {
-              name: "",
-              cabinet: "",
-              number: "",
-            }, 
-          })
-         
-          function onSubmit(values: z.infer<typeof formSchema>) {
-            // ✅ This will be type-safe and validated.
-            const postData = {
-                name: values.name,
-                cabinet: values.cabinet,
-                number: values.number,
-                category: values.category,
-                problem: values.problem,
-                priority: "высокий",
-                date: new Date().toString(),
-                condition: "открыта"
-                //add file upload
-            }
-            console.log(values)
-            console.log(postData)
-            //send task
-          }
-  
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      cabinet: "",
+      number: "",
+    },
+  })
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    // ✅ This will be type-safe and validated.
+    const postData = {
+      name: values.name,
+      cabinet: values.cabinet,
+      number: values.number,
+      category: values.category,
+      problem: values.problem,
+      //add file upload
+    }
+    console.log(values)
+    console.log(postData)
+    axios.post('/api/task', postData)
+    //send task
+  }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -85,7 +84,7 @@ export function FormHelper() {
                 <Input placeholder="Иванов И.И." {...field} />
               </FormControl>
               <FormDescription>
-                Ваша Фамилия и инициалы.
+                Ваши Фамилия и инициалы.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -130,24 +129,27 @@ export function FormHelper() {
             <FormItem>
               <FormLabel>Категория проблемы</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
-              <FormControl>
+                <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="проблема не выбрана" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="Проблема с персональным компьютером">
-                  Проблема с персональным компьютером
+                  <SelectItem value="problemWithPC">
+                    Проблема с персональным компьютером
                   </SelectItem>
-                  <SelectItem value="Проблема с принтером">
+                  <SelectItem value="problemWithOrgTechnics">
                     Проблема с принтером
                   </SelectItem>
-                  <SelectItem value="Проблема с МИС БАРС">
+                  <SelectItem value="problemWithMIS">
                     Проблема с МИС БАРС
-                    </SelectItem>
-                    <SelectItem value="Установка новых программ, обновление программного обеспечения">
+                  </SelectItem>
+                  <SelectItem value="newMISAccount">
+                    Создание учетной записи
+                  </SelectItem>
+                  <SelectItem value="uploadNewProgramm">
                     Установка новых программ, обновление программного обеспечения
-                    </SelectItem>
+                  </SelectItem>
                 </SelectContent>
               </Select>
               <FormDescription>
@@ -164,7 +166,7 @@ export function FormHelper() {
             <FormItem>
               <FormLabel>Возникшая проблема</FormLabel>
               <FormControl>
-              <Textarea
+                <Textarea
                   placeholder="Мышка перестала подавать признаки жизни..."
                   {...field}
                 />
