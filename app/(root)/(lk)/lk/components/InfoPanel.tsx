@@ -11,10 +11,10 @@ export function InfoPanel() {
                 sm:mx-auto
                 sm:w-full
                 basis-1/6
-                bg-white
+
             "
         >
-            sdasda
+            info panel
         </div>
     )
 }

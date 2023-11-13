@@ -15,7 +15,7 @@ export default function Lk() {
             flex-row
             flex-wrap
             justify-center
-            bg-emerald-50
+            bg-emerald-100
         "
       >
         <Indicators />

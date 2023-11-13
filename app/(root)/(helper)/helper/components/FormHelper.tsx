@@ -1,8 +1,5 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -12,8 +9,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { useForm } from "react-hook-form"
 import {
   Select,
   SelectContent,
@@ -21,27 +16,42 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+
+import { useForm } from "react-hook-form"
+import { useState } from "react"
+import { useLocalStorage } from "@/app/hooks/useLocalStorage"
+import { UploadFiles } from "./UploadFiles"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
 import axios from "axios"
+
+
 
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "Имя пользователя должно состоять как минимум из 2 символов.",
-  }),
+  })
+  ,
   cabinet: z.string().min(1, {
     message: "Номер кабинета должен состоять как минимум из 1 символа"
-  }),
+  })
+  ,
   number: z.string().min(9, {
     message: "Номер телефона должен состоять как минимум из 9 символов"
-  }),
+  })
+  ,
   category: z.string({
     required_error: "Пожалуйста выберите категорию",
   })
   ,
   problem: z.string().min(5, {
-    message: " должен состоять как минимум из 9 символов"
-  }),
-
+    message: "Должен состоять как минимум из 9 символов"
+  })
+  ,
+  fileNameszod: z.string().array()
 })
 
 export function FormHelper() {
@@ -52,24 +62,48 @@ export function FormHelper() {
       name: "",
       cabinet: "",
       number: "",
+      fileNameszod: [],
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // ✅ This will be type-safe and validated.
+  const [ fileNames, setFileNames ] = useState<string[]>([])
+  const [files, setFiles] = useState<File[]>([])
+  //console.log(files)
+
+  const [isIdArray, setIsIdArray] = useLocalStorage("id" , [])
+  console.log(isIdArray)
+
+  const formData = new FormData()
+
+  const postFiles = (files: File[]) => {
+    for(let i = 0; i < files.length; i++) {
+      formData.append('file[]', files[i], `${files[i].name}`)
+    }
+    console.log(formData.getAll("file[]"))
+  }
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    
     const postData = {
       name: values.name,
       cabinet: values.cabinet,
       number: values.number,
       category: values.category,
       problem: values.problem,
-      //add file upload
+      files: JSON.stringify(values.fileNameszod)
     }
-    console.log(values)
-    console.log(postData)
-    axios.post('/api/task', postData)
-    //send task
+    if(files.length > 0) {
+      //prepare filenames to postData
+      postFiles(files)
+    }
+    //const result = await axios.post('/api/task', postData)
+    //if(result.statusText === "OK") {
+
+    //}
+    //console.log(result.data)
   }
+
+ 
 
   return (
     <Form {...form}>
@@ -178,6 +212,7 @@ export function FormHelper() {
             </FormItem>
           )}
         />
+        <UploadFiles files={files} setFiles={setFiles}/>
         <Button type="submit">отправить</Button>
       </form>
     </Form>

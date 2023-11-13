@@ -12,7 +12,6 @@ export function Indicators() {
                 sm:w-full
                 sm:h-60
                 basis-5/6
-                bg-white
             "
         >
             indicators

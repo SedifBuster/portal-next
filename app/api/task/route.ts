@@ -29,7 +29,7 @@ export async function POST(
             }
         })
 
-        return NextResponse.json(task)
+        return NextResponse.json(task.id)
     } catch (error) {
         console.log(error, 'TASK_CREATE_ERROR')
         return new NextResponse('Internal Error', { status: 500 })
@@ -43,7 +43,7 @@ export async function GET(
 
         return NextResponse.json(tasks)
     } catch (error) {
-        console.log(error, 'TASK_CREATE_ERROR')
+        console.log(error, 'TASK_GET_ERROR')
         return new NextResponse('Internal Error', { status: 500 })
     }
 }
