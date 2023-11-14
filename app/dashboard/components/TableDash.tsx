@@ -38,110 +38,115 @@ import { Charts } from "./Charts"
 import { DatePicker } from "./DatePicker"
 
 export type Department = {
-    department: string
-    planHuman: number
-    planRub: number
-    begAcc: number
-    admRec: number
-    totalStays: number
-    disCome: number
-    disTax: number
-    patOver: number
-    storColed: number
-    transHuman: number
-    transRub: number
-    medPrice: number
-    dolgDead: number
-    freeBeds: number
+  department: string
+  planHuman: number
+  planRub: number
+  begAcc: number
+  admRec: number
+  totalStays: number
+  disCome: number
+  disTax: number
+  patOver: number
+  storColed: number
+  transHuman: number
+  transRub: number
+  medPrice: number
+  dolgDead: number
+  freeBeds: number
+}
+
+export type dash = {
+  date: Date;
+  table: Department[];
 }
 
 const data: Department[] = [
-    {
-      department: "TO",
-      planHuman: 392,
-      planRub: 32327489,
-      begAcc: 104,
-      admRec: 671,
-      totalStays: 113,
-      disCome: 613,
-      disTax: 24182815,
-      patOver: 17,
-      storColed: 9,
-      transHuman: 179,
-      transRub: 10414661,
-      medPrice: 0,
-      dolgDead: 73,
-      freeBeds: 24
-    },
-    {
-        department: "XO",
-        planHuman: 392,
-        planRub: 32327489,
-        begAcc: 104,
-        admRec: 671,
-        totalStays: 113,
-        disCome: 613,
-        disTax: 24182815,
-        patOver: 17,
-        storColed: 9,
-        transHuman: 580,
-        transRub: 14541486,
-        medPrice: 0,
-        dolgDead: 73,
-        freeBeds: 24
-      },
-      {
-        department: "HO",
-        planHuman: 392,
-        planRub: 32327489,
-        begAcc: 104,
-        admRec: 671,
-        totalStays: 113,
-        disCome: 613,
-        disTax: 24182815,
-        patOver: 17,
-        storColed: 9,
-        transHuman: 108,
-        transRub: 10924027,
-        medPrice: 0,
-        dolgDead: 73,
-        freeBeds: 24
-      },
-      {
-        department: "Reab",
-        planHuman: 392,
-        planRub: 32327489,
-        begAcc: 104,
-        admRec: 671,
-        totalStays: 113,
-        disCome: 613,
-        disTax: 24182815,
-        patOver: 17,
-        storColed: 9,
-        transHuman: 580,
-        transRub: 10414661,
-        medPrice: 0,
-        dolgDead: 73,
-        freeBeds: 24
-      },
-      {
-        department: "Palliativ",
-        planHuman: 392,
-        planRub: 32327489,
-        begAcc: 104,
-        admRec: 671,
-        totalStays: 113,
-        disCome: 613,
-        disTax: 24182815,
-        patOver: 17,
-        storColed: 9,
-        transHuman: 1057,
-        transRub: 74711040,
-        medPrice: 0,
-        dolgDead: 73,
-        freeBeds: 24
-      },
-  ]
+  {
+    department: "TO",
+    planHuman: 392,
+    planRub: 32327489,
+    begAcc: 104,
+    admRec: 671,
+    totalStays: 113,
+    disCome: 613,
+    disTax: 24182815,
+    patOver: 17,
+    storColed: 9,
+    transHuman: 179,
+    transRub: 10414661,
+    medPrice: 0,
+    dolgDead: 73,
+    freeBeds: 24
+  },
+  {
+    department: "XO",
+    planHuman: 392,
+    planRub: 32327489,
+    begAcc: 104,
+    admRec: 671,
+    totalStays: 113,
+    disCome: 613,
+    disTax: 24182815,
+    patOver: 17,
+    storColed: 9,
+    transHuman: 580,
+    transRub: 14541486,
+    medPrice: 0,
+    dolgDead: 73,
+    freeBeds: 24
+  },
+  {
+    department: "HO",
+    planHuman: 392,
+    planRub: 32327489,
+    begAcc: 104,
+    admRec: 671,
+    totalStays: 113,
+    disCome: 613,
+    disTax: 24182815,
+    patOver: 17,
+    storColed: 9,
+    transHuman: 108,
+    transRub: 10924027,
+    medPrice: 0,
+    dolgDead: 73,
+    freeBeds: 24
+  },
+  {
+    department: "Reab",
+    planHuman: 392,
+    planRub: 32327489,
+    begAcc: 104,
+    admRec: 671,
+    totalStays: 113,
+    disCome: 613,
+    disTax: 24182815,
+    patOver: 17,
+    storColed: 9,
+    transHuman: 580,
+    transRub: 10414661,
+    medPrice: 0,
+    dolgDead: 73,
+    freeBeds: 24
+  },
+  {
+    department: "Palliativ",
+    planHuman: 392,
+    planRub: 32327489,
+    begAcc: 104,
+    admRec: 671,
+    totalStays: 113,
+    disCome: 613,
+    disTax: 24182815,
+    patOver: 17,
+    storColed: 9,
+    transHuman: 1057,
+    transRub: 74711040,
+    medPrice: 0,
+    dolgDead: 73,
+    freeBeds: 24
+  },
+]
 
 export const columns: ColumnDef<Department>[] = [
   /*{
@@ -329,7 +334,40 @@ export const columns: ColumnDef<Department>[] = [
   },*/
 ]
 
+const tableDashData: dash[] = [
+  {
+    date: new Date(2023, 10, 1),
+    table: data
+  },
+  {
+    date: new Date(2023, 10, 5),
+    table: data
+  },
+  {
+    date: new Date(2023, 10, 8),
+    table: data
+  },
+  {
+    date: new Date(2023, 10, 12),
+    table: data
+  },
+  {
+    date: new Date(2023, 10, 16),
+    table: data
+  },
+  {
+    date: new Date(2023, 10, 20),
+    table: data
+  },
+  {
+    date: new Date(2023, 10, 21),
+    table: data
+  }
+]
+
 export function DataTableDemo() {
+  const [isDash, setDash] = React.useState<dash>()
+
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -337,11 +375,6 @@ export function DataTableDemo() {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
-
-  
-
-
-
 
 
   const table = useReactTable({
@@ -363,14 +396,20 @@ export function DataTableDemo() {
     },
   })
 
+  React.useEffect(() => {
+    if(tableDashData)
+    setDash(tableDashData[tableDashData.length - 1])
+  }, [])
+
+  console.log(isDash)
   return (
     <div className="w-full ml-4 mr-4">
-        <div className="flex justify-center pb-6 pt-2">
+      <div className="flex justify-center pb-6 pt-2">
         <DatePicker />
-        </div>
-        <div className="flex p-2">
-            <Charts data={data}/>
-        </div>
+      </div>
+      <div className="flex p-2">
+        <Charts data={data} />
+      </div>
       <div className="flex items-center py-4">
 
         <Input
@@ -419,9 +458,9 @@ export function DataTableDemo() {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   )
                 })}
@@ -459,7 +498,7 @@ export function DataTableDemo() {
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
- 
+
         <div className="space-x-2">
           <Button
             variant="outline"
