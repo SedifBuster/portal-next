@@ -45,11 +45,57 @@ model Task {
   comment String?
 }
 
+model Ward {
+  id Int @id @default(autoincrement())
+  department Department @relation(fields: [depId], references: [id])
+  depId Int
+  number Int @unique
+  numberOfSeats Int
+  engaged Int
+  free Int
+  gender Gender
+  reserve String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Department {
+  id Int @id @default(autoincrement())
+  name String
+  wards Ward[]
+  numberOfSeats Int
+  engaged Int
+  free Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  //to table
+      planHuman: 392,
+    planRub: 32327489,
+    begAcc: 104,
+    admRec: 671,
+    totalStays: 113,
+    disCome: 613,
+    disTax: 24182815,
+    patOver: 17,
+    storColed: 9,
+    transHuman: 179,
+    transRub: 10414661,
+    medPrice: 0,
+    dolgDead: 73,
+    freeBeds: 24
+}
+
 enum Role {
   ADMIN
   TECHNICICAN
   SYSADMIN
   USER
+}
+
+enum Gender {
+  man
+  woman
+  mutual
 }
 
 enum Priority {
