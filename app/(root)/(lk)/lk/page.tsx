@@ -1,3 +1,4 @@
+import { Department } from "./components/Department";
 import { Indicators } from "./components/Indicators";
 import { InfoPanel } from "./components/InfoPanel";
 import { TaskTable } from "./components/TaskTable";
@@ -9,19 +10,21 @@ export default function Lk() {
         className="
             px-4
             py-2
-            sm:px-6
-            lg:px-8
+            sm:px-2
+            lg:px-2
             flex
             flex-row
             flex-wrap
             justify-center
             bg-emerald-100
+            h-full
         "
       >
-        <Indicators />
+        <Department />
+       {/** <Indicators />
         <UserInfo />
         <TaskTable />
-        <InfoPanel />
+        <InfoPanel />*/} 
       </div>
     )
   }

@@ -1,0 +1,55 @@
+
+import prisma from "@/lib/prismadb"
+import { NextResponse } from "next/server"
+
+export async function GET(
+) {
+    try {
+        const users = await prisma.user.findMany()
+
+        return NextResponse.json(users)
+    } catch (error) {
+        console.log(error, 'USER_GET_ERROR')
+        return new NextResponse('Internal Error', { status: 500 })
+    }
+}
+
+export async function DELETE(
+    request: Request
+) {
+    try {
+        
+        const body = await request.json()
+
+        console.log(body)
+        const {
+            id
+        } = body
+
+        const user = await prisma.user.delete({
+            where: {
+                id: id
+            }
+        })
+
+        if (!id || !user) {
+            return new NextResponse('Missing info', { status: 400 })
+        }
+
+        return NextResponse.json(user.id)
+    } catch (error) {
+        console.log(error, 'USER_DELETE_ERROR')
+        return new NextResponse('Internal Error', { status: 500 })
+    }
+}
+
+export async function UPDATE(
+    request: Request
+) {
+    try {
+
+    } catch (error) {
+        console.log(error, 'USER_UPDATE_ERROR')
+        return new NextResponse('Internal Error', { status: 500 })
+    }
+}

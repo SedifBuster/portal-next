@@ -26,6 +26,8 @@ model Profile {
   id Int @id @default(autoincrement())
   user User @relation(fields: [userId], references: [id])
   userId Int @unique
+  department Department @relation(fields: [depId], references: [id])
+  depId Int
 }
 
 model Task {
@@ -63,26 +65,27 @@ model Department {
   id Int @id @default(autoincrement())
   name String
   wards Ward[]
-  numberOfSeats Int
-  engaged Int
-  free Int
+  numberOfSeats Int? @default(0)
+  engaged Int? @default(0)
+  free Int? @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   //to table
-      planHuman: 392,
-    planRub: 32327489,
-    begAcc: 104,
-    admRec: 671,
-    totalStays: 113,
-    disCome: 613,
-    disTax: 24182815,
-    patOver: 17,
-    storColed: 9,
-    transHuman: 179,
-    transRub: 10414661,
-    medPrice: 0,
-    dolgDead: 73,
-    freeBeds: 24
+  planHuman Int? @default(0)
+  planRub Int? @default(0)
+  begAcc Int? @default(0)
+  admRec Int?  @default(0)
+  //totalStays Int Всего находиться в стационаре, накопительным (чел.) 
+  disCome Int? @default(0) 
+  disTax Int? @default(0)
+  patOver Int? @default(0)
+  storColed Int? @default(0)
+  transHuman Int? @default(0)
+  transRub Int? @default(0)
+  medPrice Int? @default(0)
+  dolgDead Int? @default(0)
+  //freeBeds Int Свободных коек
+  profile Profile[]
 }
 
 enum Role {
