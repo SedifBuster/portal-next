@@ -1,0 +1,118 @@
+import prisma from "@/lib/prismadb"
+import { NextResponse } from "next/server"
+
+export async function GET(
+) {
+    try {
+        const wards = await prisma.ward.findMany()
+
+        return NextResponse.json(wards)
+    } catch (error) {
+        console.log(error, 'WARDS_GET_ERROR')
+        return new NextResponse('Internal Error', { status: 500 })
+    }
+}
+export async function GETONE(
+    request: Request
+) {
+    try {
+        const body = await request.json()
+
+        const {
+            id
+        } = body
+
+        const ward = await prisma.ward.findUnique({
+            where: {
+                id: id
+            }
+        })
+
+        if(!id || !ward) {
+            return new NextResponse('Missing info', { status: 400 })
+        }
+    
+        return NextResponse.json(ward)
+    } catch (error) {
+        console.log(error, 'WARD_GETONE_ERROR')
+        return new NextResponse('Internal Error', { status: 500 })
+    }
+}
+
+export async function POST(
+    request: Request
+) {
+    try {
+        const body = await request.json()
+
+        const {
+            depId,
+            number,
+            numberOfSeats,
+            engaged,
+            free,
+            gender,
+            reserve,
+        } = body
+
+        if (!number || !depId || !numberOfSeats || !engaged || !free || !gender || !reserve) {
+            return new NextResponse('Missing info', { status: 400 })
+        }
+
+        const ward = await prisma.ward.create({
+            data: {
+                depId,
+                number,
+                numberOfSeats,
+                engaged,
+                free,
+                gender,
+                reserve,
+            }
+        })
+
+        return NextResponse.json(ward.id)
+    } catch (error) {
+        console.log(error, 'WARD_CREATE_ERROR')
+        return new NextResponse('Internal Error', { status: 500 })
+    }
+}
+
+
+export async function DELETE(
+    request: Request
+) {
+    try {
+        const body = await request.json()
+
+        const {
+            id
+        } = body
+
+        const ward = await prisma.ward.delete({
+            where: {
+                id: id
+            }
+        })
+
+        if (!id || !ward) {
+            return new NextResponse('Missing info', { status: 400 })
+        }
+
+        return NextResponse.json(ward.id)
+    } catch (error) {
+        console.log(error, 'WARD_DELETE_ERROR')
+        return new NextResponse('Internal Error', { status: 500 })
+    }
+}
+
+export async function UPDATE(
+    request: Request
+) {
+    try {
+
+    } catch (error) {
+        console.log(error, 'WARD_UPDATE_ERROR')
+        return new NextResponse('Internal Error', { status: 500 })
+    }
+}

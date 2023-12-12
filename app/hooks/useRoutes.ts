@@ -11,7 +11,7 @@ const useRoutes = () => {
     const pathname = usePathname()
 
     const routes = useMemo(() => [
-        {
+        /*{
             label: "главная",
             href: '/',
             icon: HiUserGroup,
@@ -28,7 +28,7 @@ const useRoutes = () => {
             href: '/journals',
             icon: HiTableCells,
             active: pathname === '/journals'
-        },
+        },*/
         {
             label: "войти",
             href: '/auth',

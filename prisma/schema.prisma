@@ -28,6 +28,7 @@ model Profile {
   userId Int @unique
   department Department @relation(fields: [depId], references: [id])
   depId Int
+  grade Grade @default(NURSE)
 }
 
 model Task {
@@ -93,6 +94,21 @@ enum Role {
   TECHNICICAN
   SYSADMIN
   USER
+}
+
+//NURSE//медсестры - менять значения,
+//HEAD NURSE //старшая медсестра - назначать, проверять
+//DEPNURSTAFF //зам по среднему мед персоналу - менеджит койки/ создание
+//CHIEFNURSE //главная медсестра - менеджит койки/ создание
+//TECHNICICAN  //технический специалист
+//CMO  //начмед - просто смотреть
+enum Grade {
+  NURSE
+  HEADNURSE
+  DEPNURSTAFF
+  CHIEFNURSE
+  TECHNICICAN
+  CMO
 }
 
 enum Gender {

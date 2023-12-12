@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt"
-import NextAuth, { AuthOptions } from "next-auth"
+import NextAuth, { AuthOptions, DefaultSession } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 
@@ -49,9 +49,27 @@ export const authOptions: AuthOptions = {
   ],
   debug: process.env.NODE_ENV === 'development',
   session: {
-    strategy: "jwt",
+    strategy: "jwt"
   },
   secret: process.env.NEXTAUTH_SECRET,
+  callbacks: {
+    session: async ({ session, token,  user }) => {
+      if (session.user) {
+
+        session.user.id = token.id;
+        session.user.name = token.name
+        session.user.role = token.role
+      }
+      return session;
+    },
+   jwt: async ({ user, token }) => {
+      if (user) {
+        token.id = user.id;
+        token.role = user.role
+      }
+      return token;
+    },
+  },
 }
 
 const handler = NextAuth(authOptions)

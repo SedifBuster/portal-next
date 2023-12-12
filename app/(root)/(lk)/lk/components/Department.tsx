@@ -1,6 +1,6 @@
 "use client"
 
-import { useSession } from "next-auth/react"
+import { getSession, useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 import { User } from "./roles/User"
 import { Admin } from "./roles/Admin"
@@ -14,26 +14,37 @@ export function Department() {
     const [isRole, setIsRole] = useState<string | null | undefined>('')
     const [isPanel, setIsPanel] = useState<React.ReactElement>()
 
+
     useEffect(() => {
         if(session.status === "authenticated" && typeof session.data.user !== 'undefined') {
-            setIsRole(localStorage.getItem('role'))
+            console.log(session.data)
+            setIsRole(session.data.user.role)
+            console.log(isRole)   
+        }
+            
+    }, [session])
+
+    useEffect(() => {
+        if(isRole) {
             setDash(isRole)
         }
-    }, [session, isRole])
+    }, [isRole])
 
-    let setDash = (role: string | null | undefined) => {
+    console.log(isRole) 
+
+    let setDash = (role: string) => {
         if(typeof role === 'string')
         switch(role) {
-            case 'admin':
+            case 'ADMIN':
                 setIsPanel(<Admin />)
                 break
-            case 'technicican':
+            case 'TECHNICIAN':
                 setIsPanel(<Technicican />)
                 break
-            case 'sysadmin':
+            case 'SYSADMIN':
                 setIsPanel(<Sysadmin />)
                 break
-            case 'user':
+            case 'USER':
                 setIsPanel(<User />)
                 break
             default:
@@ -47,7 +58,7 @@ export function Department() {
             className="
                 w-full
                 h-full
-                bg-slate-200
+
             "
         >
             {isPanel}

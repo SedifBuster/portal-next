@@ -1,114 +1,296 @@
 "use client"
 
+import axios from "axios"
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
+import * as React from "react"
+
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableFooter,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
+import { Department, Profile, Ward } from "@prisma/client"
+import { UserCard } from "../Card"
+import { CreateWardSheet } from "../CreateWardSheet"
 
 export function User() {
-
     const session = useSession()
 
-    const [isName, setIsName] = useState<string | null | undefined>('')
-    const [isRole, setIsRole] = useState<string | null | undefined>('')
-    const [isPanel, setIsPanel] = useState<string>()//<React.Component>
+    const [department, setDepartment] = useState<Department>()
+    const [profile, setProfile] = useState<Profile>()
+    const [wards, setWards] = useState<Ward[]>([])
 
-    useEffect(() => {
-        if(session.status === "authenticated" && typeof session.data.user !== 'undefined') {
-            setIsName(session.data?.user.name)
-            setIsRole(localStorage.getItem('role'))
-            setMiniInstruction(isRole)
-        }
-    }, [session, isRole])
-
-
-
-    let setMiniInstruction = (role: string | null | undefined) => {
-        if(typeof role === 'string')
-        switch(role) {
-            case 'admin':
-                setIsPanel(
-                    'Вы имеете возможность польностью контролировать приложение. Пользуйтесь этим.'
-                )
-                break
-            case 'technicican':
-                setIsPanel(
-                    'Принимайте и выполняйте заявки. Еще можете их искать.'
-                )
-                break
-            case 'sysadmin':
-                setIsPanel(
-                    'Направляйте техников волевой рукой. Организация процессов на ваших плечах.'
-                )
-                break
-            case 'user':
-                setIsPanel(
-                    'Вы самый обычный юзер. Живите с этим.'
-                )
-                break
-            default:
-                setIsPanel(
-                    'Счастливчик. Вас не определила система.'
-                )
-                break
-        }
+    let getProfile = async (id: number) => {
+        let result = await axios.get(`/api/users/profile/${id}`)
+        setProfile(result.data)
+    }
+    let getDepartment = async (id: number) => {
+        let result = await axios.get(`/api/department/${id}`)
+        setDepartment(result.data)
     }
 
-    return (
-        <div 
-            className="
+    let getWards = async (id: number) => {
+        let result = await axios.get('/api/ward')
+            if(result.data && department) {
+               let filteredWards =  result.data.filter((ward: Ward) => {
+                    return ward.depId === id})
+                setWards(filteredWards) 
+            }
+    }
+    console.log(wards)
 
+    useEffect(() => {
+        if (session.status === "authenticated" && typeof session.data.user !== 'undefined') {
+            getProfile(Number(session.data.user.id))
+        }
+    }, [])
+
+    useEffect(() => {
+        if (profile) {
+            getDepartment(profile.depId)
+        }
+        if(department) {
+            getWards(department.id)
+        }
+    }, [profile])
+
+
+    return (
+        <div
+            className="
+            bg-white
+            p-4
+            flex
+            gap-4
             "
         >
-            <section
-                className="
-                    p-3
-                    sm:mx-auto
-                    sm:h-full
-                    sm:w-full
-                    bg-white
-                    border-2
-                    border-transparent
-                    rounded-2xl
-                    shadow-xl
-                    flex
-                    flex-col
-                    gap-x-3
-                    content-center
-                "
-            >
-                <h4
-                    className="
-                        text-lg
-                        leading-6
-                        font-semibold
-                        text-emerald-700
-                    "
-                >
-                    Информация пользователя</h4>
-                    <h5
-                        className="
-                            text-md
-                            leading-6
-                            font-semibold
-                            text-gray-900
-                        "   
-                    >{isName}</h5>
-                    <h6
-                        className="
-                            text-md
-                            leading-6
-                            font-semibold
-                            text-gray-500
-                        "
-                    >{isRole}</h6>
-                    <p
-                        className="
-                            text-sm
-                            leading-6
-                            font-semibold
-                          text-gray-400  
-                        "
-                    >{isPanel}</p>
-            </section>
+            <div className="rounded-md border basis-4/5">
+                <div className="">
+                    <h1 className="text-center mt-4 mb-2 text-lg font-bold">Сводка по местам</h1>
+                    <h4 className="ml-2 font-medium">{new Date().toDateString()}</h4>
+                    {profile?.grade == 'CHIEFNURSE' || profile?.grade == 'DEPNURSTAFF' ? 
+                       department? <CreateWardSheet depId={department.id}/> : ''
+                        : 
+                        ""
+                    }
+
+                </div>
+                <Table>
+                    <TableCaption>Лист палат.</TableCaption>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead className="w-[100px]">палата №</TableHead>
+                            <TableHead>кол-во мест</TableHead>
+                            <TableHead>занято</TableHead>
+                            <TableHead>свободно</TableHead>
+                            <TableHead>пол</TableHead>
+                            <TableHead>резерв по распоряжению</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {wards.map((invoice) => (
+                            <TableRow key={invoice.id}>
+                                <TableCell className="font-medium">{invoice.number}</TableCell>
+                                <TableCell>{invoice.numberOfSeats}</TableCell>
+                                <TableCell>{invoice.engaged}</TableCell>
+                                <TableCell>{invoice.free}</TableCell>
+                                <TableCell >{invoice.gender}</TableCell>
+                                <TableCell>{invoice.reserve}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                    <TableFooter>
+                                    <TableRow>
+                                        <TableCell colSpan={1}>Кол-во мест:</TableCell>
+                                        <TableCell className="text-left">
+                                            {
+                                             wards.reduce((sum, current) => {
+                                                    return sum + current.numberOfSeats
+                                                }, 0)
+                                            }
+                                                </TableCell>
+                                        <TableCell className="text-right">Занято:</TableCell>
+                                        <TableCell className="text-left">{
+                                             wards.reduce((sum, current) => {
+                                                    return sum + current.engaged
+                                                }, 0)
+                                            }</TableCell>
+                                        <TableCell className="text-right">Свободно:</TableCell>
+                                        <TableCell className="text-left">{
+                                             wards.reduce((sum, current) => {
+                                                    return sum + current.free
+                                                }, 0)
+                                            }</TableCell>
+                                    </TableRow>
+                                </TableFooter>
+                </Table>
+            </div>
+
+            <div className="flex justify-end mr-2 mb-2 h-64">
+                {department && profile ?<UserCard department={department} profile={profile} name={session.data?.user.name} /> : ''}
+            </div>
         </div>
     )
+
 }
+
+/*                <Input
+                    placeholder="фильтр палат..."
+                    value={(table.getColumn("number")?.getFilterValue() as string) ?? ""}
+                    onChange={(event) =>
+                        table.getColumn("number")?.setFilterValue(event.target.value)
+                    }
+                    className="max-w-sm"
+                />
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" className="ml-auto">
+                            Колонки <ChevronDown className="ml-2 h-4 w-4" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        {table
+                            .getAllColumns()
+                            .filter((column) => column.getCanHide())
+                            .map((column) => {
+                                return (
+                                    <DropdownMenuCheckboxItem
+                                        key={column.id}
+                                        className="capitalize"
+                                        checked={column.getIsVisible()}
+                                        onCheckedChange={(value) =>
+                                            column.toggleVisibility(!!value)
+                                        }
+                                    >
+                                        {column.columnDef.header?.toString()}
+                                    </DropdownMenuCheckboxItem>
+                                )
+                            })}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+                                <Table>
+                    <TableHeader>
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <TableRow key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => {
+                                    return (
+                                        <TableHead key={header.id}>
+                                            {header.isPlaceholder
+                                                ? null
+                                                : flexRender(
+                                                    header.column.columnDef.header,
+                                                    header.getContext()
+                                                )}
+                                        </TableHead>
+                                    )
+                                })}
+                            </TableRow>
+                        ))}
+                    </TableHeader>
+                    <TableBody>
+                        {table.getRowModel().rows?.length ? (
+                            table.getRowModel().rows.map((row) => (
+                                <TableRow
+                                    key={row.id}
+                                    data-state={row.getIsSelected() && "selected"}
+                                >
+                                    {row.getVisibleCells().map((cell) => (
+                                        <TableCell key={cell.id}>
+                                            {flexRender(
+                                                cell.column.columnDef.cell,
+                                                cell.getContext()
+                                            )}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={columns.length}
+                                    className="h-24 text-center"
+                                >
+                                    No results.
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+
+
+
+                
+    const columns: ColumnDef<Ward>[] = [
+        {
+            accessorKey: "number",
+            header: "Палата №",
+            cell: ({ row }) => (
+                <div className="capitalize">{row.getValue("number")}</div>
+            ),
+        },
+        {
+            accessorKey: "numberOfSeats",
+            header: "кол-во мест",
+            cell: ({ row }) => (
+                <div className="capitalize">{row.getValue("numberOfSeats")}</div>
+            ),
+        },
+        {
+            accessorKey: "engaged",
+            header: "занято",
+            cell: ({ row }) => (
+                <div className="capitalize">{row.getValue("engaged")}</div>
+            ),
+        },
+        {
+            accessorKey: "free",
+            header: "свободно",
+            cell: ({ row }) => (
+                <div className="capitalize">{row.getValue("free")}</div>
+            ),
+        },
+        {
+            accessorKey: "gender",
+            header: "пол",
+            cell: ({ row }) => (
+                <div className="capitalize">{row.getValue("gender")}</div>
+            ),
+        },
+        {
+            accessorKey: "reserve",
+            header: "резерв по распоряжению",
+            cell: ({ row }) => (
+                <div className="capitalize">{row.getValue("reserve")}</div>
+            ),
+        },
+    ]
+
+    const [sorting, setSorting] = React.useState<SortingState>([])
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+    const [rowSelection, setRowSelection] = React.useState({})
+    const table = useReactTable({
+        data,
+        columns,
+        onSortingChange: setSorting,
+        onColumnFiltersChange: setColumnFilters,
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        onColumnVisibilityChange: setColumnVisibility,
+        onRowSelectionChange: setRowSelection,
+        state: {
+            sorting,
+            columnFilters,
+            columnVisibility,
+            rowSelection,
+        },
+    })
+                */

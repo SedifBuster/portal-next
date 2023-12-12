@@ -1,33 +1,56 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage, Form } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableFooter,
+    TableHead,
+    TableHeader,
+    TableRow,
+  } from "@/components/ui/table"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Department, User } from "@prisma/client"
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@radix-ui/react-select"
-import axios from "axios"
-import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import toast from "react-hot-toast"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+
+import axios from "axios"
+import { Department, Profile, User, Ward } from "@prisma/client"
+
+import toast from "react-hot-toast"
 import {
     HiTrash,
     HiPencil
 } from "react-icons/hi2"
-import { z } from "zod"
+
+import { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
+import { Label } from "@/components/ui/label"
+import { signOut } from "next-auth/react"
 
 export function Admin() {
 
-
-    //DEPARMENT
+    //DEPARTMENT
     const [isDepartments, setIsDepartmens] = useState<Department[]>([])
     const [isDepartmentName, setIsDepartmentName] = useState<string>('')
-    async function createDepartment() {
+    let getDepartments = async () => {
+        try {
+            let result = await axios.get('/api/department')
+            if (result.status === 200) {
+                setIsDepartmens(result.data)
+            }
+        } catch {
+            console.log('error')
+        }
+    }
+    const createDepartment = async () => {
         const postData = {
             name: isDepartmentName
         }
@@ -40,21 +63,10 @@ export function Admin() {
             toast.error('Ошибка при создании')
         }
     }
-    let getDepartments = async () => {
-        try {
-            let result = await axios.get('/api/department')
-            if (result.status === 200) {
-                setIsDepartmens(result.data)
-            }
-        } catch {
-            console.log('error')
-        }
-    }
     let deleteDepartment = async (depId: number) => {
         const postData = {
             id: depId
         }
-
         const result = await axios.delete('/api/department', { data: postData })
         if (result.statusText === "OK") {
             toast.success('Отделение удалено')
@@ -69,21 +81,7 @@ export function Admin() {
 
     //USERS
     const [users, setUsers] = useState<User[]>([])
-    //dodelat
-    async function createUser() {
-        const postData = {
-            //name: isDepartmentName
-        }
-        const result = await axios.post('/api/department', postData)
-        if (result.statusText === "OK") {
-            toast.success('Отделение создано')
-            getDepartments()
-            setIsDepartmentName('')
-        } else {
-            toast.error('Ошибка при создании')
-        }
-    }
-
+    const [profiles, setProfiles] = useState<Profile[]>([])
     let getUsers = async () => {
         try {
             let result = await axios.get('/api/users')
@@ -94,7 +92,16 @@ export function Admin() {
             console.log('error')
         }
     }
-
+    let getProfiles = async() => {
+        try {
+            let result = await axios.get('/api/users/profile')
+            if (result.status === 200) {
+                setProfiles(result.data)
+            }
+        } catch {
+            console.log('error')
+        } 
+    }
     let deleteUser = async (userId: number) => {
         const postData = {
             id: userId
@@ -108,11 +115,22 @@ export function Admin() {
             toast.error('Ошибка при удалении пользователя')
         }
     }
-
     let changeUser = async () => {
         toast.error('еще не реализовано')
     }
 
+    //WARDS
+    const [wards, setWards] = useState<Ward[]>([])
+    let getWards = async () => {
+        try {
+            let result = await axios.get('/api/ward')
+            if (result.status === 200) {
+                setWards(result.data)
+            }
+        } catch {
+            console.log('error')
+        }
+    }
 
     const formSchema = z.object({
         name: z.string().min(5, {
@@ -129,27 +147,78 @@ export function Admin() {
         ,
         role: z.string({
             required_error: "Пожалуйста выберите роль",
-        })
+        }).optional()
         ,
-        sibling: z.boolean()
+        department: z.string({
+            required_error: "Пожалуйста выберите отделение",
+        }).optional()
+        ,
+        grade: z.string({
+            required_error: "Пожалуйста выберите должность",
+        })
     })
-
-
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: "",
             login: "",
             password: "",
-            role: "",
-            sibling: false
         },
     })
 
     useEffect(() => {
         getDepartments()
         getUsers()
+        getProfiles()
+        getWards()
     }, [])
+    
+    console.log(users)
+    console.log(profiles)
+    //console.log(isDepartments)
+
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        try {
+            const userData = {
+                name: values.name,
+                login: values.login,
+                password: values.password,
+                role: values.role,
+              }
+            const userResult = await axios.post('/api/register', userData)
+            if(userResult.statusText !== "OK") return toast.error("Ошибка при создании пользователя")
+            else if(userResult.statusText === "OK") {
+                const userId: number = userResult.data.id
+                toast.success(`пользователь создан с id: ${userId}`)
+                if(!userId) return toast.error("Id не найден")
+                const profileData = {
+                    userId,
+                    depId: Number(values.department),
+                    grade: values.grade
+                }
+                const profileResult = await axios.post('/api/users/profile', profileData)
+                if(profileResult.statusText !== "OK") {
+                    const deletedUser = {
+                        id: userId
+                    }
+                    const deletedUserResult = await axios.delete('/api/users', { data: deletedUser})
+                    if(deletedUserResult.statusText === "OK") return toast.error("Пользователь удален")
+                    else {
+                        toast.error("Ошибка при удалении профиля")
+                    }
+                    return toast.error("Ошибка при создании профиля")
+                } 
+                else if(profileResult.statusText === "OK") {
+                    toast.success(`профиль создан с id: ${profileResult.data}`)
+                    form.reset()
+                    getUsers()
+                }
+            }
+        } catch (error) {
+            toast.error("Ошибка при создании пользователя")
+            console.log("Ошибка при создании пользователя ", error)
+        }
+      }
 
     return (
         <section
@@ -177,6 +246,13 @@ export function Admin() {
                     создать
                 </Button>
             </section>
+                <Button onClick={() => {
+                    signOut()
+                    localStorage.clear()
+                }}>
+                    выйти
+                </Button>
+            {/*Контейнер отделений */} 
             <section className="
                     mt-4
                 "
@@ -191,8 +267,9 @@ export function Admin() {
                     {isDepartments ? isDepartments.map((dep) => {
                         return <li key={dep.id}
                             className="
-                                        flex
-                                        justify-between
+                                        grid
+                                        grid-cols-3
+                                        gap-4
                                         p-2
                                         border
                                     "
@@ -207,6 +284,7 @@ export function Admin() {
                             <div className="
                                         flex
                                         gap-4
+                                        flex-align
                                     ">
                                 <div>создана: {dep.createdAt.toString()}</div>
                                 <div>изменена: {dep.updatedAt.toString()}</div>
@@ -214,8 +292,12 @@ export function Admin() {
                             <div className="
                                         flex
                                         gap-4
+                                        flex-align
+                                        justify-self-end
+                                        items-center
                                     ">
-                                <Button variant={'outline'} onClick={changeDepartment}><HiPencil /></Button>
+                                        <Button variant={'outline'}><HiPencil /></Button>
+
                                 <Popover>
                                     <PopoverTrigger>
                                         <Button variant={'destructive'}><HiTrash /></Button>
@@ -236,14 +318,153 @@ export function Admin() {
                                 </Popover>
 
                             </div>
+                            <div className="col-span-3">
+                                <Table className="w-full">
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>План(чел)</TableHead>
+                                            <TableHead>План (руб.)</TableHead>
+                                            <TableHead className="text-right">Состояло на начало месяца (чел.)</TableHead>
+                                            <TableHead className="text-right">Поступили в приёмное, накопительным (чел.)</TableHead>
+                                            <TableHead className="text-right">Всего находится в стационаре (чел.) ot ward</TableHead>
+                                            <TableHead className="text-right">Выбыло, накопительным (чел.)</TableHead>
+                                            <TableHead className="text-right">Выбывшие к оплате</TableHead>
+                                            <TableHead className="text-right">Пациенты свыше 10 дней (чел.)</TableHead>
+                                            <TableHead className="text-right">Не закрыто историй в Барсе (шт.)</TableHead>
+                                            <TableHead className="text-right">Передано оплату в ФОМС (шт.)</TableHead>
+                                            <TableHead className="text-right">Передано оплату в ФОМС  (руб.) по КСГ</TableHead>
+                                            <TableHead className="text-right">Средняя стоимость лечения</TableHead>
+                                            <TableHead className="text-right">Долг по умершим</TableHead>
+                                            <TableHead className="text-right">Свободных коек ot ward</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                            <TableRow>
+                                                <TableCell>{dep.planHuman}</TableCell>
+                                                <TableCell>{dep.planRub}</TableCell>
+                                                <TableCell className="text-right">{dep.begAcc}</TableCell>
+                                                <TableCell className="text-right">{dep.admRec}</TableCell>
+                                                <TableCell className="text-right">{/*dep.totalStays*/"ot ward"}</TableCell>
+                                                <TableCell className="text-right">{dep.disCome}</TableCell>
+                                                <TableCell className="text-right">{dep.disTax}</TableCell>
+                                                <TableCell className="text-right">{dep.patOver}</TableCell>
+                                                <TableCell className="text-right">{dep.storColed}</TableCell>
+                                                <TableCell className="text-right">{dep.transHuman}</TableCell>
+                                                <TableCell className="text-right">{dep.transRub}</TableCell>
+                                                <TableCell className="text-right">{dep.medPrice}</TableCell>
+                                                <TableCell className="text-right">{dep.dolgDead}</TableCell>
+                                                <TableCell className="text-right">{/*dep.freeBeds*/"ot ward"}</TableCell>
+                                            </TableRow>
+                                    </TableBody>
+                                </Table>
+                            </div>
+
+                            <div className="col-span-2">
+                                <Label className="
+                                                flex
+                                                justify-center
+                                                items-center
+                                                font-bold
+                                                "
+                                >
+                                        Сводка по местам
+                                </Label>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="w-[100px]">Палата №</TableHead>
+                                        <TableHead className="text-right">Кол-во мест</TableHead>
+                                        <TableHead className="text-right">Занято</TableHead>
+                                        <TableHead className="text-right">Свободно</TableHead>
+                                        <TableHead className="text-right">Пол</TableHead>
+                                        <TableHead className="text-right">Резерв по распоряжению</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {wards.filter((ward) => {
+                                        return ward.depId === dep.id}).map((ward) => (
+                                        <TableRow key={ward.id}>
+                                            <TableCell className="font-medium">{ward.number}</TableCell>
+                                            <TableCell>{ward.numberOfSeats}</TableCell>
+                                            <TableCell>{ward.engaged}</TableCell>
+                                            <TableCell>{ward.free}</TableCell>
+                                            <TableCell>{ward.gender}</TableCell>
+                                            <TableCell className="text-right">{ward.reserve}</TableCell>
+                                        </TableRow>
+                                        ))}
+                                </TableBody>
+                                <TableFooter>
+                                    <TableRow>
+                                        <TableCell colSpan={1}>Кол-во мест:</TableCell>
+                                        <TableCell className="text-left">
+                                            {
+                                             wards.filter((ward) => {
+                                                return ward.depId === dep.id}).reduce((sum, current) => {
+                                                    return sum + current.numberOfSeats
+                                                }, 0)
+                                            }
+                                                </TableCell>
+                                        <TableCell className="text-right">Занято:</TableCell>
+                                        <TableCell className="text-left">{
+                                             wards.filter((ward) => {
+                                                return ward.depId === dep.id}).reduce((sum, current) => {
+                                                    return sum + current.engaged
+                                                }, 0)
+                                            }</TableCell>
+                                        <TableCell className="text-right">Свободно:</TableCell>
+                                        <TableCell className="text-left">{
+                                             wards.filter((ward) => {
+                                                return ward.depId === dep.id}).reduce((sum, current) => {
+                                                    return sum + current.free
+                                                }, 0)
+                                            }</TableCell>
+                                    </TableRow>
+                                </TableFooter>
+                            </Table>
+
+                            </div>
+
+                            <div className="col-span-1">
+                                <Label className="
+                                                flex
+                                                justify-center
+                                                items-center
+                                                font-bold
+                                                "
+                                >
+                                        Аккаунты
+                                </Label>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="w-[100px]">имя</TableHead>
+                                        <TableHead className="text-center">должность</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {profiles? profiles.filter((profile) => {
+                                        return profile.depId === dep.id}).map((profile) => (
+                                        <TableRow key={profile.id}>
+                                            <TableCell className="font-medium text-center" >
+                                                {
+                                                    users?users.filter((user) => {
+                                                        return user.id === profile.userId
+                                                    })[0].name : ''
+                                                }
+                                            </TableCell>
+                                            <TableCell className="text-center">{profile.grade}</TableCell>
+                                        </TableRow>
+                                        )) : ''}
+                                </TableBody>
+                            </Table>
+
+                            </div>
                         </li>
                     }) : ''}
                 </ul>
             </section>
 
-
-
-
+            {/*Создание пользователя */}
             <section
                 className="
                         flex
@@ -251,9 +472,8 @@ export function Admin() {
                         mt-8
                     "
             >
-
                 <Sheet>
-                    <SheetTrigger asChild>
+                    <SheetTrigger>
                         <Button>
                             создать пользователя
                         </Button>
@@ -265,44 +485,20 @@ export function Admin() {
                                 Помните, у каждого должна быть должность и профиль. Кликните по "создать" когда заполните все поля.
                             </SheetDescription>
                         </SheetHeader>
-                        <div className="grid gap-4 py-4">
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="name" className="text-right">
-                                    Имя
-                                </Label>
-                                <Input id="name" value="Pedro Duarte" className="col-span-3" />
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="username" className="text-right">
-                                    Логин
-                                </Label>
-                                <Input id="username" value="@peduarte" className="col-span-3" />
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="username" className="text-right">
-                                    Пароль
-                                </Label>
-                                <Input id="username" value="@peduarte" className="col-span-3" />
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="username" className="text-right">
-                                    Роль
-                                </Label>
-                                <Input id="username" value="@peduarte" className="col-span-3" />
-                            </div>
+                        <div>
                             <Form {...form}>
-                                <form  className="space-y-8"> {/*onSubmit=form.handleSubmit(/*onSubmit*/}
+                                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                                     <FormField
                                         control={form.control}
                                         name="name"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Ф.И.О.</FormLabel>
+                                                <FormLabel>Имя*</FormLabel>
                                                 <FormControl>
                                                     <Input placeholder="Иванов И.И." {...field} />
                                                 </FormControl>
                                                 <FormDescription>
-                                                    Ваши Фамилия и инициалы.
+                                                    Фамилия и инициалы.
                                                 </FormDescription>
                                                 <FormMessage />
                                             </FormItem>
@@ -313,12 +509,12 @@ export function Admin() {
                                         name="login"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Номер кабинета</FormLabel>
+                                                <FormLabel>Логин*</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="017" {...field} />
+                                                    <Input placeholder="Ivanov7" {...field} />
                                                 </FormControl>
                                                 <FormDescription>
-                                                    Заполните без знака №.
+                                                    Для авторизации.
                                                 </FormDescription>
                                                 <FormMessage />
                                             </FormItem>
@@ -329,12 +525,12 @@ export function Admin() {
                                         name="password"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Номер телефона</FormLabel>
+                                                <FormLabel>Пароль*</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="+79996667788" {...field} />
+                                                    <Input placeholder="*********" type="password" {...field} />
                                                 </FormControl>
                                                 <FormDescription>
-                                                    Чтобы мы смогли до вас дозвониться.
+                                                    Для авторизации.
                                                 </FormDescription>
                                                 <FormMessage />
                                             </FormItem>
@@ -345,33 +541,30 @@ export function Admin() {
                                         name="role"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Категория проблемы</FormLabel>
+                                                <FormLabel>Роль*</FormLabel>
                                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                     <FormControl>
                                                         <SelectTrigger>
-                                                            <SelectValue placeholder="проблема не выбрана" />
+                                                            <SelectValue placeholder="..." />
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent>
-                                                        <SelectItem value="problemWithPC">
-                                                            Проблема с персональным компьютером
+                                                        <SelectItem value="USER">
+                                                            Юзер
                                                         </SelectItem>
-                                                        <SelectItem value="problemWithOrgTechnics">
-                                                            Проблема с принтером
+                                                        <SelectItem value="TECHNICICAN">
+                                                            Техник
                                                         </SelectItem>
-                                                        <SelectItem value="problemWithMIS">
-                                                            Проблема с МИС БАРС
+                                                        <SelectItem value="SYSADMIN">
+                                                            Сисадмин
                                                         </SelectItem>
-                                                        <SelectItem value="newMISAccount">
-                                                            Создание учетной записи
-                                                        </SelectItem>
-                                                        <SelectItem value="uploadNewProgramm">
-                                                            Установка новых программ, обновление программного обеспечения
+                                                        <SelectItem value="ADMIN">
+                                                            Админ
                                                         </SelectItem>
                                                     </SelectContent>
                                                 </Select>
                                                 <FormDescription>
-                                                    Выберите наиболее подходящую категорию.
+                                                    Стандартная: Юзер.
                                                 </FormDescription>
                                                 <FormMessage />
                                             </FormItem>
@@ -379,37 +572,80 @@ export function Admin() {
                                     />
                                     <FormField
                                         control={form.control}
-                                        name="sibling"
-                                        render={({ field }) => (
+                                        name="grade"
+                                        render={({ field }) => (                                            
                                             <FormItem>
-                                                <FormLabel>Возникшая проблема</FormLabel>
-                                                <FormControl>
-                                                    {/*<Checkbox
-                                                        placeholder="Мышка перестала подавать признаки жизни..."
-                                                        {...field}
-                                        />*/}
-                                                </FormControl>
+                                                <FormLabel>Должность*</FormLabel>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="..." />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="NURSE">
+                                                            медсестра - изменение значений
+                                                        </SelectItem>
+                                                        <SelectItem value="HEADNURSE">
+                                                            старшая медсестра - назначение, проверка
+                                                        </SelectItem>
+                                                        <SelectItem value="DEPNURSTAFF">
+                                                            зам по сред. мед. персоналу - менеджмент коек
+                                                        </SelectItem>
+                                                        <SelectItem value="CHIEFNURSE">
+                                                            главная медсестра - менеджмент коек
+                                                        </SelectItem>
+                                                        <SelectItem value="CMO">
+                                                            нач.мед. - просмотр
+                                                        </SelectItem>
+                                                        <SelectItem value="TECHNICICAN">
+                                                            технический специалист
+                                                        </SelectItem>
+                                                    </SelectContent>
+                                                </Select>
                                                 <FormDescription>
-                                                    Подробно опишите возникшую проблему.
+                                                    Если айти - технический специалист
                                                 </FormDescription>
                                                 <FormMessage />
                                             </FormItem>
                                         )}
                                     />
-                                    <Button type="submit">отправить</Button>
+                                     <FormField
+                                        control={form.control}
+                                        name="department"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Отделение</FormLabel>
+                                                <Select onValueChange={field.onChange}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="..." />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {isDepartments?isDepartments.map((dep) => {
+                                                            return <SelectItem value={dep.id.toString()} key={dep.id}>
+                                                                       {dep.name}
+                                                                    </SelectItem>
+                                                        }): ''}
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormDescription>
+                                                    Если не технический специалист.
+                                                </FormDescription>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                        <Button type="submit">отправить</Button>
                                 </form>
                             </Form>
                         </div>
-                        <SheetFooter>
-                            <SheetClose asChild>
-                                <Button type="submit">создать</Button>
-                            </SheetClose>
-                        </SheetFooter>
                     </SheetContent>
                 </Sheet>
-
-
             </section>
+
+            {/*Контейнер юзеров */}                                            
             <section className="
                     mt-4
                 "
@@ -436,6 +672,13 @@ export function Admin() {
                                     ">
                                 <div>{user.id}</div>
                                 <div>{user.name}</div>
+                            </div>
+                            <div className="
+                                        flex
+                                        gap-4
+                                    ">
+                                <div>{user.role}</div>
+                                <div>{user.login}</div>
                             </div>
                             <div className="
                                         flex
@@ -472,6 +715,7 @@ export function Admin() {
                     }) : ''}
                 </ul>
             </section>
+
         </section>
     )
 }
