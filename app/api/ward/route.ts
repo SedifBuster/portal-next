@@ -49,13 +49,14 @@ export async function POST(
             depId,
             number,
             numberOfSeats,
-            engaged,
-            free,
-            gender,
-            reserve,
+            engaged,//
+            free,//
+            gender,//
+            reserve,//
         } = body
+        console.log(body)
 
-        if (!number || !depId || !numberOfSeats || !engaged || !free || !gender || !reserve) {
+        if (!number || !depId || !numberOfSeats) {
             return new NextResponse('Missing info', { status: 400 })
         }
 

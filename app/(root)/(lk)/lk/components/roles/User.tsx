@@ -18,6 +18,7 @@ import {
 import { Department, Profile, Ward } from "@prisma/client"
 import { UserCard } from "../Card"
 import { CreateWardSheet } from "../CreateWardSheet"
+import { UserWard } from "../Ward"
 
 export function User() {
     const session = useSession()
@@ -55,10 +56,14 @@ export function User() {
         if (profile) {
             getDepartment(profile.depId)
         }
+
+    }, [profile])
+
+    useEffect(() => {
         if(department) {
             getWards(department.id)
         }
-    }, [profile])
+    }, [department])
 
 
     return (
@@ -75,7 +80,7 @@ export function User() {
                     <h1 className="text-center mt-4 mb-2 text-lg font-bold">Сводка по местам</h1>
                     <h4 className="ml-2 font-medium">{new Date().toDateString()}</h4>
                     {profile?.grade == 'CHIEFNURSE' || profile?.grade == 'DEPNURSTAFF' ? 
-                       department? <CreateWardSheet depId={department.id}/> : ''
+                       department? <CreateWardSheet depId={department.id} getWards={getWards}/> : ''
                         : 
                         ""
                     }
@@ -91,19 +96,13 @@ export function User() {
                             <TableHead>свободно</TableHead>
                             <TableHead>пол</TableHead>
                             <TableHead>резерв по распоряжению</TableHead>
+                            <TableHead></TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {wards.map((invoice) => (
-                            <TableRow key={invoice.id}>
-                                <TableCell className="font-medium">{invoice.number}</TableCell>
-                                <TableCell>{invoice.numberOfSeats}</TableCell>
-                                <TableCell>{invoice.engaged}</TableCell>
-                                <TableCell>{invoice.free}</TableCell>
-                                <TableCell >{invoice.gender}</TableCell>
-                                <TableCell>{invoice.reserve}</TableCell>
-                            </TableRow>
-                        ))}
+                        {department?wards.map((invoice) => (
+                            <UserWard ward={invoice}  key={invoice.id} getWards={getWards} depId={department.id}/>
+                        )):''}
                     </TableBody>
                     <TableFooter>
                                     <TableRow>

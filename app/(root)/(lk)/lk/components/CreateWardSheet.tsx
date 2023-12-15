@@ -1,6 +1,6 @@
 "use client"
 
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage, Form } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
@@ -10,19 +10,20 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import axios from "axios"
 import toast from "react-hot-toast"
 import { useForm } from "react-hook-form"
+import React from "react"
 
-export function CreateWardSheet({depId}: {depId: number}) {
+export function CreateWardSheet({depId, getWards}: {depId: number, getWards: (id: number) => void}) {
 
     const formSchema = z.object({
-        number: z.number().min(1, {
+        number: z.string().min(1, {
             message: "Обязательное поле",
         })
         ,
-        numberOfSeats: z.number().optional()
+        numberOfSeats: z.string().optional()
         ,
-        engaged: z.number().optional()
+        engaged: z.string().optional()
         ,
-        free: z.number().optional()
+        free: z.string().optional()
         ,
         gender: z.string().optional()
         ,
@@ -31,54 +32,41 @@ export function CreateWardSheet({depId}: {depId: number}) {
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
+        defaultValues: {
+            reserve: "",
+            gender: "mutual"
+        },
     })
 
-
+    const [isVisible, setVisible] = React.useState<boolean>(false)
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            const userData = {
-                depID: depId,
-                number: values.number,
-                numberOfSeats: values.numberOfSeats,
-                engaged: values.engaged,
-                free: values.free,
+            const wardData = {
+                depId: depId,
+                number: Number(values.number),
+                numberOfSeats: Number(values.numberOfSeats),
+                engaged: Number(values.engaged),
+                free: Number(values.free),
                 gender: values.gender,
                 reserve: values.reserve,
               }
-
-            const userResult = await axios.post('/api/register', userData)
-            if(userResult.statusText !== "OK") return toast.error("Ошибка при создании пользователя")
-            else if(userResult.statusText === "OK") {
-                const userId: number = userResult.data.id
-                toast.success(`пользователь создан с id: ${userId}`)
-                if(!userId) return toast.error("Id не найден")
-                const profileData = {
-                    userId,
-                    //depId: Number(values.department),
-                    //grade: values.grade
-                }
-                const profileResult = await axios.post('/api/users/profile', profileData)
-                if(profileResult.statusText !== "OK") {
-                    const deletedUser = {
-                        id: userId
-                    }
-                    const deletedUserResult = await axios.delete('/api/users', { data: deletedUser})
-                    if(deletedUserResult.statusText === "OK") return toast.error("Пользователь удален")
-                    else {
-                        toast.error("Ошибка при удалении профиля")
-                    }
-                    return toast.error("Ошибка при создании профиля")
-                } 
-                else if(profileResult.statusText === "OK") {
-                    toast.success(`профиль создан с id: ${profileResult.data}`)
-                    form.reset()
-                }
+              console.log(wardData)
+              if( isNaN(wardData.engaged) || isNaN(wardData.free) || isNaN(wardData.number) || isNaN(wardData.numberOfSeats)) return toast.error('уберите лишние символы с числовых значений')
+            const wardResult = await axios.post('/api/ward', wardData)
+            if(wardResult.statusText !== "OK") return toast.error("Ошибка при создании палаты")
+            else if(wardResult.statusText === "OK") {
+                const wardNumber: number = wardResult.data.number
+                toast.success(`палата создана с номером: ${wardNumber}`)
+                getWards(depId)
+                form.reset()
+                setVisible(false)
             }
         } catch (error) {
-            toast.error("Ошибка при создании пользователя")
-            console.log("Ошибка при создании пользователя ", error)
+            toast.error("Ошибка при создании палаты")
+            console.log("Ошибка при создании палаты ", error)
         }
       }
+
     return (
         <section
             className="
@@ -86,11 +74,11 @@ export function CreateWardSheet({depId}: {depId: number}) {
             gap-4
         "
         >
-            <Sheet>
-                <SheetTrigger>
-                <Button className="mt-2 mr-2 mb-2 ml-1">создать палату</Button>
+            <Sheet open={isVisible}  onOpenChange={() => setVisible(!isVisible)}>
+                <SheetTrigger >
+                <Button className="mt-2 mr-2 mb-2 ml-1" onClick={() => setVisible(true)}>создать палату</Button>
                 </SheetTrigger>
-                <SheetContent>
+                <SheetContent side={'bottom'}>
                     <SheetHeader>
                         <SheetTitle>Создать палату</SheetTitle>
                         <SheetDescription>
@@ -109,6 +97,7 @@ export function CreateWardSheet({depId}: {depId: number}) {
                                             <FormControl>
                                                 <Input placeholder="1" {...field} />
                                             </FormControl>
+                                            <FormDescription>число</FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
@@ -122,6 +111,7 @@ export function CreateWardSheet({depId}: {depId: number}) {
                                             <FormControl>
                                                 <Input placeholder="34" {...field} />
                                             </FormControl>
+                                            <FormDescription>число</FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
@@ -135,9 +125,7 @@ export function CreateWardSheet({depId}: {depId: number}) {
                                             <FormControl>
                                                 <Input placeholder="22" {...field} />
                                             </FormControl>
-                                            <FormDescription>
-                                                Для авторизации.
-                                            </FormDescription>
+                                            <FormDescription>число</FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
@@ -151,9 +139,7 @@ export function CreateWardSheet({depId}: {depId: number}) {
                                             <FormControl>
                                                 <Input placeholder="12" {...field} />
                                             </FormControl>
-                                            <FormDescription>
-                                                Для авторизации.
-                                            </FormDescription>
+                                            <FormDescription>число</FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
@@ -199,11 +185,12 @@ export function CreateWardSheet({depId}: {depId: number}) {
                                         </FormItem>
                                     )}
                                 />
-                                <Button type="submit">отправить</Button>
+                               <Button type="submit">создать</Button>
                             </form>
                         </Form>
                     </div>
                 </SheetContent>
+                
             </Sheet>
         </section>
     )
