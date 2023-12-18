@@ -107,11 +107,44 @@ export async function DELETE(
     }
 }
 
-export async function UPDATE(
+export async function PATCH(
     request: Request
 ) {
-    try {
 
+    try {
+        const body = await request.json()
+
+        const {
+            id,
+            depId,
+            number,
+            numberOfSeats,
+            engaged,//
+            free,//
+            gender,//
+            reserve,//
+        } = body
+        console.log(body)
+
+        if (!id || !number || !depId || !numberOfSeats) {
+            return new NextResponse('Missing info', { status: 400 })
+        }
+
+        const ward = await prisma.ward.update({
+            where: {
+                id
+            },
+            data: {
+                number,
+                numberOfSeats,
+                engaged,
+                free,
+                gender,
+                reserve,
+            }
+        })
+
+        return NextResponse.json(ward.number)
     } catch (error) {
         console.log(error, 'WARD_UPDATE_ERROR')
         return new NextResponse('Internal Error', { status: 500 })

@@ -1,7 +1,7 @@
 import * as React from "react"
 
 import { Button } from "@/components/ui/button"
-import { Ward } from "@prisma/client"
+import { Gender, Ward } from "@prisma/client"
 import { TableCell, TableRow } from "@/components/ui/table"
 import { HiPencil, HiTrash } from "react-icons/hi2"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import axios from "axios"
 import toast from "react-hot-toast"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { FormControl } from "@/components/ui/form"
 
 export function UserWard(
     {
@@ -25,7 +27,6 @@ export function UserWard(
     const [isVisibleChange, setVisibleChange] = React.useState<boolean>(false)
 
     let onDeleteWard = async (id: number) => {
-
         const postData = { id: id}
 
         const result = await axios.delete('/api/ward', { data: postData })
@@ -38,6 +39,46 @@ export function UserWard(
         }
     }
 
+    //Изменение палаты 
+    const [isNumber, setNumber] = React.useState<number>(ward.number)
+    const [isNumberOfSeats, setNumberOfSeats] = React.useState<number>(ward.numberOfSeats)
+    const [isEngaged, setEngaged] = React.useState<number>(ward.engaged)
+    const [isFree, setFree] = React.useState<number>(ward.free)
+    const [isGender, setGender] = React.useState<Gender>(ward.gender)
+    const [isReserve, setReserve] = React.useState<string | null>(ward.reserve)
+
+
+    let onChangeWard = async (id: number) => {
+
+        const postData = {
+            id: id,
+            depId: ward.depId,
+            number: Number(isNumber),
+            numberOfSeats: Number(isNumberOfSeats),
+            engaged: Number(isEngaged),
+            free: Number(isFree),
+            gender: isGender,
+            reserve: isReserve
+        }
+        let checkupArray = Object.values(postData)
+        for(let i = 0; i < 6; i++) {
+            if(Number(checkupArray[i]) < 0) {
+              return toast.error('Числа не должны быть отрицательными')
+            }
+        }
+        const result = await axios.patch('/api/ward', postData)
+
+        if (result.statusText === "OK") {
+            toast.success(`палата с номером ${result.data}  изменена`)
+            setVisibleChange(false)
+            getWards(depId)
+        } else {
+            toast.error('Ошибка при изменении палаты')
+        }
+        console.log(postData)
+    }
+
+
 return (
     <TableRow key={ward.id}>
         <TableCell className="font-medium">{ward.number}</TableCell>
@@ -48,9 +89,15 @@ return (
         <TableCell>{ward.reserve}</TableCell>
         <TableCell className="flex gap-1">
 
-            <Dialog>
+
+
+
+
+
+
+            <Dialog open={isVisibleChange} onOpenChange={() => setVisibleChange(!isVisibleChange)}>
                 <DialogTrigger asChild>
-                    <Button variant={'outline'}><HiPencil /></Button>
+                    <Button variant={'outline'} onClick={() => setVisibleChange(true)}><HiPencil /></Button>
                 </DialogTrigger>
 
                 <DialogContent className="sm:max-w-[425px]">
@@ -62,71 +109,104 @@ return (
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                         <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="name" className="text-right">
+                            <Label htmlFor="number" className="text-right">
                                 номер палаты
                             </Label>
                             <Input
-                                id="name"
-                                defaultValue="Pedro Duarte"
+                                value={isNumber}
+                                type="number"
+                                //@ts-ignore
+                                onChange={(e) => setNumber(e.target.value)}
                                 className="col-span-3"
                             />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="username" className="text-right">
+                            <Label htmlFor="numberOfSeats" className="text-right">
                                 кол-во мест
                             </Label>
                             <Input
-                                id="username"
-                                defaultValue="@peduarte"
+                                value={isNumberOfSeats}
+                                type="number"
+                                //@ts-ignore
+                                onChange={(e) => setNumberOfSeats(e.target.value)}
                                 className="col-span-3"
                             />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="username" className="text-right">
+                            <Label htmlFor="engaged" className="text-right">
                                 занято
                             </Label>
                             <Input
-                                id="username"
-                                defaultValue="@peduarte"
+                                value={isEngaged}
+                                type="number"
+                                //@ts-ignore
+                                onChange={(e) => setEngaged(e.target.value)}
                                 className="col-span-3"
                             />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="username" className="text-right">
+                            <Label htmlFor="free" className="text-right">
                                 свободно
                             </Label>
                             <Input
-                                id="username"
-                                defaultValue="@peduarte"
+                                value={isFree}
+                                type="number"
+                                //@ts-ignore
+                                onChange={(e) => setFree(e.target.value)}
                                 className="col-span-3"
                             />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="username" className="text-right">
+                            <Label htmlFor="gender" className="text-right">
                                 пол
                             </Label>
-                            <Input
-                                id="username"
-                                defaultValue="@peduarte"
-                                className="col-span-3"
-                            />
+                            {/*
+                            //@ts-ignore*/}
+                            <Select value={isGender} onValueChange={(e)=> setGender(e)}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="..."   className="col-span-3"/> 
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="man">
+                                        М
+                                    </SelectItem>
+                                    <SelectItem value="woman">
+                                        Ж
+                                    </SelectItem>
+                                    <SelectItem value="mutual">
+                                        М/Ж
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="username" className="text-right">
+                            <Label htmlFor="reserve" className="text-right">
                                 резерв
                             </Label>
                             <Input
-                                id="username"
-                                defaultValue="@peduarte"
+                                value={isReserve?isReserve: ''}
+                                onChange={(e) => setReserve(e.target.value)}
                                 className="col-span-3"
                             />
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button type="submit">Save changes</Button>
+                        <Button type="submit" onClick={() => onChangeWard(ward.id)}>Сохранить изменения</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -148,13 +228,13 @@ return (
                     </DialogHeader>
                     <div className="flex gap-4 py-4">
                         <div className="flex items-center gap-4">
-                            <Label htmlFor="name" className="text-right">
+                            <Label htmlFor="number" className="text-right">
                                 Номер палаты №
                             </Label>
                             {ward.number}
                         </div>
                         <div className="flex items-center gap-4">
-                            <Label htmlFor="username" className="text-right">
+                            <Label htmlFor="numberOfSeats" className="text-right">
                                 Кол-во мест
                             </Label>
                             {ward.numberOfSeats}

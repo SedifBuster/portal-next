@@ -65,7 +65,7 @@ export function User() {
         }
     }, [department])
 
-
+//toDateString
     return (
         <div
             className="
@@ -78,7 +78,12 @@ export function User() {
             <div className="rounded-md border basis-4/5">
                 <div className="">
                     <h1 className="text-center mt-4 mb-2 text-lg font-bold">Сводка по местам</h1>
-                    <h4 className="ml-2 font-medium">{new Date().toDateString()}</h4>
+                    <h4 className="ml-2 font-medium">{new Date().toLocaleString('ru', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric' 
+                    })}</h4>
+                    <h4 className="ml-2 font-medium">Отделение: {department?.name}</h4>
                     {profile?.grade == 'CHIEFNURSE' || profile?.grade == 'DEPNURSTAFF' ? 
                        department? <CreateWardSheet depId={department.id} getWards={getWards}/> : ''
                         : 

@@ -449,7 +449,7 @@ export function Admin() {
                                                 {
                                                     users?users.filter((user) => {
                                                         return user.id === profile.userId
-                                                    })[0].name : ''
+                                                    })[0]?.name : ''
                                                 }
                                             </TableCell>
                                             <TableCell className="text-center">{profile.grade}</TableCell>
