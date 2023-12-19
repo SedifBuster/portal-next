@@ -1,7 +1,7 @@
 import * as React from "react"
 
 import { Button } from "@/components/ui/button"
-import { Gender, Ward } from "@prisma/client"
+import { Department, Gender, Ward } from "@prisma/client"
 import { TableCell, TableRow } from "@/components/ui/table"
 import { HiPencil, HiTrash } from "react-icons/hi2"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -10,7 +10,15 @@ import { Label } from "@/components/ui/label"
 import axios from "axios"
 import toast from "react-hot-toast"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { FormControl } from "@/components/ui/form"
+import { HiSquaresPlus } from "react-icons/hi2";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
+
+
+export type DepId = {
+    man: 'man',
+    woman: 'woman',
+    mutual: 'mutual'
+  };
 
 export function UserWard(
     {
@@ -25,6 +33,23 @@ export function UserWard(
 ) {
     const [isVisibleDelete, setVisibleDelete] = React.useState<boolean>(false)
     const [isVisibleChange, setVisibleChange] = React.useState<boolean>(false)
+
+    const [isDepartments, setIsDepartmens] = React.useState<Department[]>([])
+
+    let getDepartments = async () => {
+        try {
+            let result = await axios.get('/api/department')
+            if (result.status === 200) {
+                setIsDepartmens(result.data)
+            }
+        } catch {
+            console.log('error')
+        }
+    }
+
+    React.useEffect(() => {
+        getDepartments()
+    }, [])
 
     let onDeleteWard = async (id: number) => {
         const postData = { id: id}
@@ -48,6 +73,7 @@ export function UserWard(
     const [isReserve, setReserve] = React.useState<string | null>(ward.reserve)
 
 
+    const [isVisibleReserve, setVisibleReserve] = React.useState<boolean>(false)
     let onChangeWard = async (id: number) => {
 
         const postData = {
@@ -79,6 +105,21 @@ export function UserWard(
     }
 
 
+
+    let isReserveDep = (reserveString: string | null) => {
+        if(reserveString === null) return null
+        if(/*typeof Number(reserveString) === 'number' && */ Number.isNaN(reserveString) === false) {
+          let result =  isDepartments.filter((dep) => {
+                return dep.id === Number(reserveString)
+            }).map((dep) => {
+                console.log(dep)
+                return dep.name
+            })[0]
+            return result
+
+        } else return reserveString
+    }
+
 return (
     <TableRow key={ward.id}>
         <TableCell className="font-medium">{ward.number}</TableCell>
@@ -86,7 +127,7 @@ return (
         <TableCell>{ward.engaged}</TableCell>
         <TableCell>{ward.free}</TableCell>
         <TableCell >{ward.gender}</TableCell>
-        <TableCell>{ward.reserve}</TableCell>
+        <TableCell>{isReserveDep(ward.reserve)}</TableCell>
         <TableCell className="flex gap-1">
 
 
@@ -183,11 +224,54 @@ return (
                             <Label htmlFor="reserve" className="text-right">
                                 резерв
                             </Label>
+                            {
+                            !isVisibleReserve
+                            ?
+                            //@ts-ignore
+                            <Select  value={isReserve} onValueChange={(e) => setReserve(e)}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="..." />
+                                </SelectTrigger>
+                                <SelectContent className="col-span-3">
+                                    {isDepartments?isDepartments.map((dep) => {
+                                        return <SelectItem value={dep.id.toString()} key={dep.id}>
+                                                    {dep.name}
+                                                </SelectItem>
+                                    }): ''}
+                                </SelectContent>
+                            </Select>
+                            :
                             <Input
-                                value={isReserve?isReserve: ''}
-                                onChange={(e) => setReserve(e.target.value)}
-                                className="col-span-3"
+                            value={isReserve?isReserve: ''}
+                            onChange={(e) => setReserve(e.target.value)}
+                            className="col-span-2"
                             />
+                            }
+                            
+                            <HoverCard>
+                                <HoverCardTrigger asChild>
+                                <Button variant={'outline'} onClick={(e) => setVisibleReserve(!isVisibleReserve)}><HiSquaresPlus /></Button>
+                                </HoverCardTrigger>
+                            <HoverCardContent className="w-80">
+                            <div className="flex justify-between space-x-4">
+                
+                            <div className="space-y-1">
+                                <h4 className="text-sm font-semibold">Резерв имеет два режима</h4>
+                                <p className="text-sm">
+                                 1. Резерв за отделением. Вам надо будет выбрать отделение за которым будет закреплена палата.
+                                 </p>
+                                 <p className="text-sm">
+                                 2. Резерв по другим причинам.
+                                 </p>
+                            <div className="flex items-center pt-2">
+                                <span className="text-xs text-muted-foreground">
+                                     Нажмите на кнопку чтобы поменять режим
+                                </span>
+                                </div>
+                                    </div>
+                                    </div>
+                            </HoverCardContent>
+                        </HoverCard>
                         </div>
                     </div>
                     <DialogFooter>
