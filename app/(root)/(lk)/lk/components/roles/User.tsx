@@ -65,6 +65,11 @@ export function User() {
         }
     }, [department])
 
+    //указатель на то что палата отдана другим или взята из другого отделения
+    //приемник своя даш панель- потом
+
+
+
 //toDateString
     return (
         <div
@@ -106,7 +111,7 @@ export function User() {
                     </TableHeader>
                     <TableBody>
                         {department?wards.map((invoice) => (
-                            <UserWard ward={invoice}  key={invoice.id} getWards={getWards} depId={department.id}/>
+                            <UserWard ward={invoice}  key={invoice.id} getWards={getWards} depId={department.id} />
                         )):''}
                     </TableBody>
                     <TableFooter>

@@ -20,6 +20,8 @@ export type DepId = {
     mutual: 'mutual'
   };
 
+export type Indicator = 'given' | 'taken' | ''
+
 export function UserWard(
     {
         ward,
@@ -64,7 +66,7 @@ export function UserWard(
         }
     }
 
-    //Изменение палаты 
+    //Изменение палаты
     const [isNumber, setNumber] = React.useState<number>(ward.number)
     const [isNumberOfSeats, setNumberOfSeats] = React.useState<number>(ward.numberOfSeats)
     const [isEngaged, setEngaged] = React.useState<number>(ward.engaged)
@@ -101,38 +103,84 @@ export function UserWard(
         } else {
             toast.error('Ошибка при изменении палаты')
         }
-        console.log(postData)
     }
-
-
-
+    let isTranslaredGender = (gender: string) => {
+        switch (gender) {
+            case "man": 
+                return "М"
+            case "woman":
+                return "Ж"
+            case "mutual": 
+                return "М/Ж"
+            default:
+                return gender
+        }
+    }
     let isReserveDep = (reserveString: string | null) => {
         if(reserveString === null) return null
-        if(/*typeof Number(reserveString) === 'number' && */ Number.isNaN(reserveString) === false) {
+        if(Number.isNaN(Number(reserveString)) === false) {
           let result =  isDepartments.filter((dep) => {
                 return dep.id === Number(reserveString)
             }).map((dep) => {
-                console.log(dep)
                 return dep.name
             })[0]
             return result
-
         } else return reserveString
     }
 
+    const [isIndicator, setIndicator] = React.useState<Indicator>('')
+    //указатель на то что палата отдана другим или взята из другого отделения
+    //приемник своя даш панель- потом
+    //взята зеленая отдана желтая
+    //кнопка убрать быстро резерв с модальным
+    let givenIndicator = (reserveString: string | null) => {
+
+        //если число в резерве, проверка на департмент и ставим гивен
+        if(Number.isNaN(Number(reserveString)) === false) {
+          let result =  isDepartments.filter((dep) => {
+                return dep.id === Number(reserveString)
+            }).map((dep) => {
+                return dep.name
+            })
+            if(result[0])  {
+                setIndicator('given')
+                return
+            } else {
+                setIndicator('')
+                return
+            }
+        } //else {//если строка или пусто
+            //else if(reserveString === null) {
+
+               // let isTaken = isDepartments.filter((dep) => {
+               //     return dep.id === ward.depId
+                //})
+                //setIndicator('taken')
+/*              
+                if(isTaken.length === 0) {
+
+                } else return setIndicator('taken')
+            }*/
+            //если нет резервной строки ничего не делать////////////////////////////////////
+            //if(reserveString === null) return setIndicator('')
+        //}
+    }
+
+    React.useEffect(() => {
+        givenIndicator(ward.reserve)
+    },[])//[ward, setIndicator, isIndicator
+   
+    console.log('indicator ')
+
 return (
-    <TableRow key={ward.id}>
+    <TableRow key={ward.id} className={isIndicator? isIndicator === 'given'? 'bg-orange-100' : 'bg-lime-100' : "" }>
         <TableCell className="font-medium">{ward.number}</TableCell>
         <TableCell>{ward.numberOfSeats}</TableCell>
         <TableCell>{ward.engaged}</TableCell>
         <TableCell>{ward.free}</TableCell>
-        <TableCell >{ward.gender}</TableCell>
+        <TableCell >{isTranslaredGender(ward.gender)}</TableCell>
         <TableCell>{isReserveDep(ward.reserve)}</TableCell>
         <TableCell className="flex gap-1">
-
-
-
-
 
 
 
@@ -234,17 +282,19 @@ return (
                                 </SelectTrigger>
                                 <SelectContent className="col-span-3">
                                     {isDepartments?isDepartments.map((dep) => {
+                                        //filter
                                         return <SelectItem value={dep.id.toString()} key={dep.id}>
                                                     {dep.name}
                                                 </SelectItem>
                                     }): ''}
                                 </SelectContent>
                             </Select>
+
                             :
                             <Input
-                            value={isReserve?isReserve: ''}
-                            onChange={(e) => setReserve(e.target.value)}
-                            className="col-span-2"
+                                value={isReserve?isReserve: ''}
+                                onChange={(e) => setReserve(e.target.value)}
+                                className="col-span-2"
                             />
                             }
                             
@@ -252,6 +302,7 @@ return (
                                 <HoverCardTrigger asChild>
                                 <Button variant={'outline'} onClick={(e) => setVisibleReserve(!isVisibleReserve)}><HiSquaresPlus /></Button>
                                 </HoverCardTrigger>
+                                <Button variant={'outline'} onClick={(e) => setVisibleReserve(!isVisibleReserve)}><HiSquaresPlus /></Button>
                             <HoverCardContent className="w-80">
                             <div className="flex justify-between space-x-4">
                 
