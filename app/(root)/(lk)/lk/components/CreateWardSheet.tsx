@@ -55,8 +55,8 @@ export function CreateWardSheet({depId, getWards}: {depId: number, getWards: (id
             const wardResult = await axios.post('/api/ward', wardData)
             if(wardResult.statusText !== "OK") return toast.error("Ошибка при создании палаты")
             else if(wardResult.statusText === "OK") {
-                const wardNumber: number = wardResult.data.number
-                toast.success(`палата создана с номером: ${wardNumber}`)
+                const wardNumber: number = await wardResult.data
+                toast.success(`палата создана с айди: ${wardNumber}`)
                 getWards(depId)
                 form.reset()
                 setVisible(false)

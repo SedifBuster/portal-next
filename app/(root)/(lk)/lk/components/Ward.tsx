@@ -3,7 +3,7 @@ import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Department, Gender, Ward } from "@prisma/client"
 import { TableCell, TableRow } from "@/components/ui/table"
-import { HiPencil, HiTrash } from "react-icons/hi2"
+import { HiMiniArrowDownOnSquareStack, HiMiniArrowSmallUp, HiPencil, HiTrash } from "react-icons/hi2"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -12,7 +12,7 @@ import toast from "react-hot-toast"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { HiSquaresPlus } from "react-icons/hi2";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
-
+import clsx from "clsx"
 
 export type DepId = {
     man: 'man',
@@ -26,15 +26,18 @@ export function UserWard(
     {
         ward,
         getWards,
-        depId
+        depId,
+        taken,
     }: {
         ward: Ward
         getWards: (id: number) => void
         depId: number
+        taken?: boolean
     }
 ) {
     const [isVisibleDelete, setVisibleDelete] = React.useState<boolean>(false)
     const [isVisibleChange, setVisibleChange] = React.useState<boolean>(false)
+    const [isVisibleReturn, setVisibleReturn] = React.useState<boolean>(false)
 
     const [isDepartments, setIsDepartmens] = React.useState<Department[]>([])
 
@@ -73,7 +76,7 @@ export function UserWard(
     const [isFree, setFree] = React.useState<number>(ward.free)
     const [isGender, setGender] = React.useState<Gender>(ward.gender)
     const [isReserve, setReserve] = React.useState<string | null>(ward.reserve)
-
+    const [isDepReserved, setDepReserved] = React.useState<boolean>(false)
 
     const [isVisibleReserve, setVisibleReserve] = React.useState<boolean>(false)
     let onChangeWard = async (id: number) => {
@@ -100,6 +103,8 @@ export function UserWard(
             toast.success(`палата с номером ${result.data}  изменена`)
             setVisibleChange(false)
             getWards(depId)
+            setVisibleReturn(false)
+
         } else {
             toast.error('Ошибка при изменении палаты')
         }
@@ -129,7 +134,6 @@ export function UserWard(
     }
 
     const [isIndicator, setIndicator] = React.useState<Indicator>('')
-    //указатель на то что палата отдана другим или взята из другого отделения
     //приемник своя даш панель- потом
     //взята зеленая отдана желтая
     //кнопка убрать быстро резерв с модальным
@@ -144,9 +148,11 @@ export function UserWard(
             })
             if(result[0])  {
                 setIndicator('given')
+                setDepReserved(true)
                 return
             } else {
                 setIndicator('')
+                setDepReserved(false)
                 return
             }
         } //else {//если строка или пусто
@@ -166,24 +172,59 @@ export function UserWard(
         //}
     }
 
-    React.useEffect(() => {
-        givenIndicator(ward.reserve)
-    },[])//[ward, setIndicator, isIndicator
+    let onReturnWard = async (id: number) => {
+
+        const postData = {
+            id: id,
+            depId: ward.depId,
+            number: Number(isNumber),
+            numberOfSeats: Number(isNumberOfSeats),
+            engaged: Number(isEngaged),
+            free: Number(isFree),
+            gender: isGender,
+            reserve: ''
+        }
+        const result = await axios.patch('/api/ward', postData)
+
+        if (result.statusText === "OK") {
+            toast.success(`палата с номером ${result.data}  возвращена`)
+            setVisibleChange(false)
+            getWards(depId)
+            setReserve('')
+            setVisibleReturn(false)
+        } else {
+            toast.error('Ошибка при возвращении палаты')
+        }
+    }
+
+
    
-    console.log('indicator ')
+    React.useEffect(() => {
+        if(ward)
+        givenIndicator(ward.reserve)
+    },[isReserveDep])
+
+
+   
 
 return (
-    <TableRow key={ward.id} className={isIndicator? isIndicator === 'given'? 'bg-orange-100' : 'bg-lime-100' : "" }>
+    <TableRow key={ward.id} className={clsx(`
+        `,
+        isIndicator === 'given' && 'bg-yellow-100',
+        taken && 'bg-lime-100'
+    )
+}>
         <TableCell className="font-medium">{ward.number}</TableCell>
         <TableCell>{ward.numberOfSeats}</TableCell>
         <TableCell>{ward.engaged}</TableCell>
         <TableCell>{ward.free}</TableCell>
         <TableCell >{isTranslaredGender(ward.gender)}</TableCell>
-        <TableCell>{isReserveDep(ward.reserve)}</TableCell>
+        {/**
+         * 
+         @ts-ignore*/}
+        <TableCell>{taken? " палата от " + isDepartments.filter((dep) => {return dep.id === ward.depId})[0].name :isReserveDep(ward.reserve)}</TableCell>
+    {!isDepReserved || taken?
         <TableCell className="flex gap-1">
-
-
-
             <Dialog open={isVisibleChange} onOpenChange={() => setVisibleChange(!isVisibleChange)}>
                 <DialogTrigger asChild>
                     <Button variant={'outline'} onClick={() => setVisibleChange(true)}><HiPencil /></Button>
@@ -274,6 +315,7 @@ return (
                             </Label>
                             {
                             !isVisibleReserve
+
                             ?
                             //@ts-ignore
                             <Select  value={isReserve} onValueChange={(e) => setReserve(e)}>
@@ -281,7 +323,7 @@ return (
                                     <SelectValue placeholder="..." />
                                 </SelectTrigger>
                                 <SelectContent className="col-span-3">
-                                    {isDepartments?isDepartments.map((dep) => {
+                                    {isDepartments?isDepartments.filter((dep) => {return dep.id !== depId}).map((dep) => {
                                         //filter
                                         return <SelectItem value={dep.id.toString()} key={dep.id}>
                                                     {dep.name}
@@ -302,7 +344,7 @@ return (
                                 <HoverCardTrigger asChild>
                                 <Button variant={'outline'} onClick={(e) => setVisibleReserve(!isVisibleReserve)}><HiSquaresPlus /></Button>
                                 </HoverCardTrigger>
-                                <Button variant={'outline'} onClick={(e) => setVisibleReserve(!isVisibleReserve)}><HiSquaresPlus /></Button>
+                               
                             <HoverCardContent className="w-80">
                             <div className="flex justify-between space-x-4">
                 
@@ -323,6 +365,36 @@ return (
                                     </div>
                             </HoverCardContent>
                         </HoverCard>
+
+
+
+
+          {/**ховер кнопки резета на пустую строку в резерве */}
+                        <HoverCard>
+                                <HoverCardTrigger asChild>
+                               {!isVisibleReserve?
+                                <Button className="bg-blue-200" variant={'outline'} onClick={(e) => {
+                                    setReserve('')
+                                }}><HiMiniArrowSmallUp /></Button>
+                                :
+                                 ''
+                                 } 
+                                </HoverCardTrigger>
+                               
+                            <HoverCardContent className="w-80">
+                            <div className="flex justify-between space-x-4">
+                
+                            <div className="space-y-1">
+                                <h4 className="text-sm font-semibold">Очистить поле резерва</h4>
+                            <div className="flex items-center pt-2">
+                                <span className="text-xs text-muted-foreground">
+                                     Убирает привязку к отделению, очищает строку "резерв"
+                                </span>
+                                </div>
+                                    </div>
+                                    </div>
+                            </HoverCardContent>
+                        </HoverCard>
                         </div>
                     </div>
                     <DialogFooter>
@@ -330,23 +402,7 @@ return (
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+          {/*удаление палаты */}
             <Dialog open={isVisibleDelete} onOpenChange={() => setVisibleDelete(!isVisibleDelete)}>
                 <DialogTrigger asChild>
 
@@ -382,6 +438,46 @@ return (
                 </DialogContent>
             </Dialog>
         </TableCell>
+        : //возвращение палаты себе
+        <TableCell className="flex gap-1">
+            <Dialog open={isVisibleReturn} onOpenChange={() => setVisibleReturn(!isVisibleReturn)}>
+                <DialogTrigger asChild>
+
+                    <HoverCard>
+                                <HoverCardTrigger asChild>
+                                <Button className="bg-blue-400" onClick={() => setVisibleReturn(true)}><HiMiniArrowDownOnSquareStack /></Button>
+                                </HoverCardTrigger>
+                               
+                            <HoverCardContent className="w-80">
+                            <div className="flex justify-between space-x-4">
+                
+                            <div className="space-y-1">
+                                <h4 className="text-sm font-semibold">Забрать палату</h4>
+                                <p className="text-sm">
+                                 Вернуть палату обратно в свое отделение
+                                 </p>
+                                    </div>
+                                    </div>
+                            </HoverCardContent>
+                        </HoverCard>
+
+                </DialogTrigger>
+
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle>Вернуть палату в свое отделение?</DialogTitle>
+                        <DialogDescription>
+                            Палата вернется в отделение и будет доступна для редактирования.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button className="bg-blue-400" onClick={() => onReturnWard(ward.id)} >Вернуть</Button>
+                        <Button variant={'outline'} onClick={() => setVisibleReturn(false)}>Отменить</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </TableCell>
+    }
     </TableRow>
 )
 }

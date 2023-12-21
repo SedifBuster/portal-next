@@ -26,6 +26,7 @@ export function User() {
     const [department, setDepartment] = useState<Department>()
     const [profile, setProfile] = useState<Profile>()
     const [wards, setWards] = useState<Ward[]>([])
+    const [takenWards, setTakenWards] = useState<Ward[]>([])
 
     let getProfile = async (id: number) => {
         let result = await axios.get(`/api/users/profile/${id}`)
@@ -41,10 +42,16 @@ export function User() {
             if(result.data && department) {
                let filteredWards =  result.data.filter((ward: Ward) => {
                     return ward.depId === id})
-                setWards(filteredWards) 
+                setWards(filteredWards)
+               let takenWards = result.data.filter((ward: Ward) => {
+                    return Number(ward.reserve) === id
+               })
+               setTakenWards(takenWards)
+
             }
     }
     console.log(wards)
+
 
     useEffect(() => {
         if (session.status === "authenticated" && typeof session.data.user !== 'undefined') {
@@ -113,13 +120,21 @@ export function User() {
                         {department?wards.map((invoice) => (
                             <UserWard ward={invoice}  key={invoice.id} getWards={getWards} depId={department.id} />
                         )):''}
+                        {department?takenWards.map((invoice) => (
+                            <UserWard ward={invoice}  key={invoice.id} getWards={getWards} depId={department.id} taken={true} />
+                        )):''}
                     </TableBody>
+                    {/**правильно посчитать, убрать отданные
+                     *  прибавить полученные - sdelano */}
                     <TableFooter>
                                     <TableRow>
                                         <TableCell colSpan={1}>Кол-во мест:</TableCell>
                                         <TableCell className="text-left">
                                             {
                                              wards.reduce((sum, current) => {
+                                                    return sum + current.numberOfSeats
+                                                }, 0) + 
+                                                takenWards.reduce((sum, current) => {
                                                     return sum + current.numberOfSeats
                                                 }, 0)
                                             }
@@ -128,13 +143,19 @@ export function User() {
                                         <TableCell className="text-left">{
                                              wards.reduce((sum, current) => {
                                                     return sum + current.engaged
+                                                }, 0) + 
+                                                takenWards.reduce((sum, current) => {
+                                                    return sum + current.engaged
                                                 }, 0)
                                             }</TableCell>
                                         <TableCell className="text-right">Свободно:</TableCell>
                                         <TableCell className="text-left">{
                                              wards.reduce((sum, current) => {
                                                     return sum + current.free
-                                                }, 0)
+                                                }, 0) + 
+                                                takenWards.reduce((sum, current) => {
+                                                    return sum + current.free
+                                                }, 0) 
                                             }</TableCell>
                                     </TableRow>
                                 </TableFooter>
