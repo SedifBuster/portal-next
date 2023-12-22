@@ -28,11 +28,13 @@ export function UserWard(
         getWards,
         depId,
         taken,
+        grade,
     }: {
         ward: Ward
         getWards: (id: number) => void
         depId: number
         taken?: boolean
+        grade: string | undefined
     }
 ) {
     const [isVisibleDelete, setVisibleDelete] = React.useState<boolean>(false)
@@ -135,8 +137,6 @@ export function UserWard(
 
     const [isIndicator, setIndicator] = React.useState<Indicator>('')
     //приемник своя даш панель- потом
-    //взята зеленая отдана желтая
-    //кнопка убрать быстро резерв с модальным
     let givenIndicator = (reserveString: string | null) => {
 
         //если число в резерве, проверка на департмент и ставим гивен
@@ -155,21 +155,7 @@ export function UserWard(
                 setDepReserved(false)
                 return
             }
-        } //else {//если строка или пусто
-            //else if(reserveString === null) {
-
-               // let isTaken = isDepartments.filter((dep) => {
-               //     return dep.id === ward.depId
-                //})
-                //setIndicator('taken')
-/*              
-                if(isTaken.length === 0) {
-
-                } else return setIndicator('taken')
-            }*/
-            //если нет резервной строки ничего не делать////////////////////////////////////
-            //if(reserveString === null) return setIndicator('')
-        //}
+        } 
     }
 
     let onReturnWard = async (id: number) => {
@@ -197,20 +183,15 @@ export function UserWard(
         }
     }
 
-
-   
     React.useEffect(() => {
         if(ward)
         givenIndicator(ward.reserve)
     },[isReserveDep])
 
-
-   
-
 return (
     <TableRow key={ward.id} className={clsx(`
         `,
-        isIndicator === 'given' && 'bg-yellow-100',
+        isIndicator === 'given' && 'bg-orange-100',
         taken && 'bg-lime-100'
     )
 }>
@@ -222,7 +203,7 @@ return (
         {/**
          * 
          @ts-ignore*/}
-        <TableCell>{taken? " палата от " + isDepartments.filter((dep) => {return dep.id === ward.depId})[0].name :isReserveDep(ward.reserve)}</TableCell>
+        <TableCell>{taken? " палата от " + isDepartments.filter((dep) => {return dep.id === ward.depId})[0]?.name :isReserveDep(ward.reserve)}</TableCell>
     {!isDepReserved || taken?
         <TableCell className="flex gap-1">
             <Dialog open={isVisibleChange} onOpenChange={() => setVisibleChange(!isVisibleChange)}>
@@ -238,6 +219,8 @@ return (
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
+                        {grade === 'HEADNURSE' || grade === 'DEPNURSTAFF' || grade === 'CHIEFNURSE' || grade === 'TECHNICICAN'?
+                        <>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="number" className="text-right">
                                 номер палаты
@@ -262,6 +245,11 @@ return (
                                 className="col-span-3"
                             />
                         </div>
+                        </>
+                        :
+                        ''
+                        }
+                        
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="engaged" className="text-right">
                                 занято
@@ -286,6 +274,9 @@ return (
                                 className="col-span-3"
                             />
                         </div>
+
+                        {grade === 'HEADNURSE' || grade === 'DEPNURSTAFF' || grade === 'CHIEFNURSE' || grade === 'TECHNICICAN'
+                        ?
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="gender" className="text-right">
                                 пол
@@ -309,6 +300,13 @@ return (
                                 </SelectContent>
                             </Select>
                         </div>
+                        :
+                            ''
+                        }
+                        {/**gender */}
+                        {grade === 'DEPNURSTAFF' || grade === 'CHIEFNURSE' || grade === 'TECHNICICAN' ?
+                        !taken
+                            ?
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="reserve" className="text-right">
                                 резерв
@@ -365,8 +363,7 @@ return (
                                     </div>
                             </HoverCardContent>
                         </HoverCard>
-
-
+                       
 
 
           {/**ховер кнопки резета на пустую строку в резерве */}
@@ -395,14 +392,22 @@ return (
                                     </div>
                             </HoverCardContent>
                         </HoverCard>
-                        </div>
+                      
+                       </div>
+                        : 
+                        '' 
+                        
+                        :  ''}
                     </div>
+                    
+               
                     <DialogFooter>
                         <Button type="submit" onClick={() => onChangeWard(ward.id)}>Сохранить изменения</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
           {/*удаление палаты */}
+          {grade === 'DEPNURSTAFF' || grade === 'CHIEFNURSE' || grade === 'TECHNICICAN' ?
             <Dialog open={isVisibleDelete} onOpenChange={() => setVisibleDelete(!isVisibleDelete)}>
                 <DialogTrigger asChild>
 
@@ -437,8 +442,10 @@ return (
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+             : ''}
         </TableCell>
         : //возвращение палаты себе
+        grade === 'DEPNURSTAFF' || grade === 'CHIEFNURSE' || grade === 'TECHNICICAN' ?
         <TableCell className="flex gap-1">
             <Dialog open={isVisibleReturn} onOpenChange={() => setVisibleReturn(!isVisibleReturn)}>
                 <DialogTrigger asChild>
@@ -477,6 +484,7 @@ return (
                 </DialogContent>
             </Dialog>
         </TableCell>
+        : ''
     }
     </TableRow>
 )

@@ -17,9 +17,9 @@ export function Department() {
 
     useEffect(() => {
         if(session.status === "authenticated" && typeof session.data.user !== 'undefined') {
-            console.log(session.data)
+            //console.log(session.data)
             setIsRole(session.data.user.role)
-            console.log(isRole)   
+           // console.log(isRole)   
         }
             
     }, [session])
@@ -30,7 +30,7 @@ export function Department() {
         }
     }, [isRole])
 
-    console.log(isRole) 
+   // console.log(isRole) 
 
     let setDash = (role: string) => {
         if(typeof role === 'string')

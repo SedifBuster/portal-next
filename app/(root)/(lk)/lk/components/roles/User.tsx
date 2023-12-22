@@ -50,8 +50,6 @@ export function User() {
 
             }
     }
-    console.log(wards)
-
 
     useEffect(() => {
         if (session.status === "authenticated" && typeof session.data.user !== 'undefined') {
@@ -75,9 +73,66 @@ export function User() {
     //указатель на то что палата отдана другим или взята из другого отделения
     //приемник своя даш панель- потом
 
+    let givenFree = (wards: Ward[]) => {
+        let result = wards.filter((ward) => {
 
+            let nonDepartment = 
+            Number(ward.reserve)/*строка реверс ищем айди*/  !== department?.id/*айди департамента*/
+            &&
+            ward.reserve
+            &&
+            !isNaN(Number(ward.reserve))
 
-//toDateString
+            return  nonDepartment//поиск по департменту если есть то нахрен Number(ward.reserve)  === department?.id
+        })
+
+        if(result) 
+        return result.reduce((sum, current) => {
+            return sum + current.free
+        }, 0)
+        else return 0 
+    }
+
+    let givenEngaged = (wards: Ward[]) => {
+        let result = wards.filter((ward) => {
+
+            let nonDepartment = 
+            Number(ward.reserve)/*строка реверс ищем айди*/  !== department?.id/*айди департамента*/
+            &&
+            ward.reserve
+            &&
+            !isNaN(Number(ward.reserve))
+
+            return  nonDepartment//поиск по департменту если есть то нахрен Number(ward.reserve)  === department?.id
+        })
+
+        if(result) 
+        return result.reduce((sum, current) => {
+            return sum + current.engaged
+        }, 0)
+        else return 0 
+    }
+
+    let givenNumberofSeats = (wards: Ward[]) => {
+        let result = wards.filter((ward) => {
+
+            let nonDepartment = 
+            Number(ward.reserve)/*строка реверс ищем айди*/  !== department?.id/*айди департамента*/
+            &&
+            ward.reserve
+            &&
+            !isNaN(Number(ward.reserve))
+
+            return  nonDepartment//поиск по департменту если есть то нахрен Number(ward.reserve)  === department?.id
+        })
+
+        if(result) 
+        return result.reduce((sum, current) => {
+            return sum + current.numberOfSeats
+        }, 0)
+        else return 0 
+    }
+
     return (
         <div
             className="
@@ -101,6 +156,11 @@ export function User() {
                         : 
                         ""
                     }
+                    
+                    <div className="flex gap-4 ml-2">
+                        <div className="w-6 h-6 bg-orange-100"></div> взяты в отделение
+                        <div className="w-6 h-6 bg-green-100"></div> отданы другим отделением
+                                    </div>
 
                 </div>
                 <Table>
@@ -118,14 +178,13 @@ export function User() {
                     </TableHeader>
                     <TableBody>
                         {department?wards.map((invoice) => (
-                            <UserWard ward={invoice}  key={invoice.id} getWards={getWards} depId={department.id} />
+                            <UserWard ward={invoice}  key={invoice.id} getWards={getWards} depId={department.id} grade={profile?.grade} />
                         )):''}
                         {department?takenWards.map((invoice) => (
-                            <UserWard ward={invoice}  key={invoice.id} getWards={getWards} depId={department.id} taken={true} />
+                            <UserWard ward={invoice}  key={invoice.id} getWards={getWards} depId={department.id} taken={true}  grade={profile?.grade}  />
                         )):''}
                     </TableBody>
-                    {/**правильно посчитать, убрать отданные
-                     *  прибавить полученные - sdelano */}
+
                     <TableFooter>
                                     <TableRow>
                                         <TableCell colSpan={1}>Кол-во мест:</TableCell>
@@ -136,7 +195,8 @@ export function User() {
                                                 }, 0) + 
                                                 takenWards.reduce((sum, current) => {
                                                     return sum + current.numberOfSeats
-                                                }, 0)
+                                                }, 0) -
+                                                givenNumberofSeats(wards)
                                             }
                                                 </TableCell>
                                         <TableCell className="text-right">Занято:</TableCell>
@@ -146,7 +206,8 @@ export function User() {
                                                 }, 0) + 
                                                 takenWards.reduce((sum, current) => {
                                                     return sum + current.engaged
-                                                }, 0)
+                                                }, 0) -
+                                                givenEngaged(wards)
                                             }</TableCell>
                                         <TableCell className="text-right">Свободно:</TableCell>
                                         <TableCell className="text-left">{
@@ -155,7 +216,8 @@ export function User() {
                                                 }, 0) + 
                                                 takenWards.reduce((sum, current) => {
                                                     return sum + current.free
-                                                }, 0) 
+                                                }, 0) -
+                                                givenFree(wards)
                                             }</TableCell>
                                     </TableRow>
                                 </TableFooter>
