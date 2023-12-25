@@ -2,11 +2,9 @@
 
 import * as React from "react"
 import {
-  ColumnDef,
   ColumnFiltersState,
   SortingState,
   VisibilityState,
-  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
@@ -113,7 +111,7 @@ const data = [
     freeBeds: 24
   },
 ]
-
+/*
 export const columns: ColumnDef[] = [
 
   {
@@ -221,8 +219,8 @@ export const columns: ColumnDef[] = [
       <div className="capitalize">{row.getValue("freeBeds")}</div>
     ),
   },
-]
-
+]*/
+/*
 const tableDashData: [] = [
   {
     date: new Date(2023, 10, 1),
@@ -253,7 +251,7 @@ const tableDashData: [] = [
     table: data
   }
 ]
-
+*/
 export function DashPriemnoe() {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -298,14 +296,14 @@ export function DashPriemnoe() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {isDepartments.map((dep) => (
+        {/*isDepartments.map((dep) => (
           <TableRow key={dep.invoice}>
             <TableCell className="font-medium">{dep.invoice}</TableCell>
             <TableCell>{dep.paymentStatus}</TableCell>
             <TableCell>{dep.paymentMethod}</TableCell>
             <TableCell className="text-right">{dep.totalAmount}</TableCell>
           </TableRow>
-        ))}
+        ))*/}
       </TableBody>
       <TableFooter>
         <TableRow>

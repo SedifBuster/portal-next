@@ -67,8 +67,8 @@ model Department {
   name String
   wards Ward[]
   numberOfSeats Int? @default(0)
-  engaged Int? @default(0)
-  free Int? @default(0)
+  engaged Int? @default(0)//Всего находиться в стационаре, накопительным (чел.) 
+  free Int? @default(0)//Свободных коек
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   //to table
@@ -76,7 +76,7 @@ model Department {
   planRub Int? @default(0)
   begAcc Int? @default(0)
   admRec Int?  @default(0)
-  //totalStays Int Всего находиться в стационаре, накопительным (чел.) 
+  //totalStays Int? //Всего находиться в стационаре, накопительным (чел.) 
   disCome Int? @default(0) 
   disTax Int? @default(0)
   patOver Int? @default(0)
@@ -85,8 +85,16 @@ model Department {
   transRub Int? @default(0)
   medPrice Int? @default(0)
   dolgDead Int? @default(0)
-  //freeBeds Int Свободных коек
+  //freeBeds Int? //Свободных коек
   profile Profile[]
+  dash   DashTable @relation(fields: [dashId], references: [id])
+  dashId Int
+}
+
+model DashTable {
+  id Int @id @default(autoincrement())
+  date DateTime @default(now())
+  table Department[]
 }
 
 enum Role {
