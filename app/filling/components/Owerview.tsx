@@ -3,26 +3,31 @@
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 import { FillingTable } from "./FillingTable"
-import { Department } from "@prisma/client"
+import { DashTable, Department } from "@prisma/client"
+import axios from "axios"
+import toast from "react-hot-toast"
 
 
 export type fillingTable = {
+    id: number
     date: Date
-    table: Department[]
+    table: Department[] | string
 }
 
 
 export function Owerview() {
 
+
     //получить данные
     //возможность выгрузить и загрузить ексель
     //создать таблицу
     //из страрой таблицы
-    const [isTables, setTables] = useState<fillingTable[]>()
+    const [isTables, setTables] = useState<DashTable[]>()
 
-    const [isTable, setTable] = useState<fillingTable>({
-        date: new Date(2023, 11, 25),
-        table: [{
+    const [isTable, setTable] = useState<DashTable>({
+        id: 1,
+        date: new Date(),
+        table: JSON.stringify([{
             name: "TO",
             planHuman: 307,
             planRub: 14024358,
@@ -43,8 +48,7 @@ export function Owerview() {
             //freeBeds: 7,//свободные койки
             //totalStays: 130,
 
-            dashId: 1,
-            id: 1,
+            id: 2,
             createdAt: new Date(),
             updatedAt : new Date(),
           },
@@ -69,33 +73,6 @@ export function Owerview() {
             //freeBeds: 7,//свободные койки
             //totalStays: 130,
 
-            dashId: 1,
-            id: 2,
-            createdAt: new Date(),
-            updatedAt : new Date(),
-          },
-          {
-            name: "НO",
-            planHuman: 132,
-            planRub: 6769332,
-            begAcc: 41,
-            admRec: 107,
-            engaged: 33,//Всего находиться в стационаре, накопительным (чел.) 
-            disCome: 107,
-            disTax: 8265158,
-            patOver: 2,
-            storColed: 3,
-            transHuman: 0,
-            transRub:0,
-            medPrice: 0,
-            dolgDead: 5,
-            
-            numberOfSeats: 19,
-            free: 19,//свободные койки
-            //freeBeds: 7,//свободные койки
-            //totalStays: 130,
-
-            dashId: 1,
             id: 3,
             createdAt: new Date(),
             updatedAt : new Date(),
@@ -121,7 +98,6 @@ export function Owerview() {
             //freeBeds: 7,//свободные койки
             //totalStays: 130,
 
-            dashId: 1,
             id: 4,
             createdAt: new Date(),
             updatedAt : new Date(),
@@ -146,7 +122,6 @@ export function Owerview() {
             //freeBeds: 7,//свободные койки
             //totalStays: 130,
 
-            dashId: 1,
             id: 5,
             createdAt: new Date(),
             updatedAt : new Date(),
@@ -172,13 +147,33 @@ export function Owerview() {
             //freeBeds: 7,//свободные койки
             //totalStays: 130,
 
-            dashId: 1,
             id: 6,
             createdAt: new Date(),
             updatedAt : new Date(),
           },
-        ]
+        ])
     })
+
+    let getTables = async () => {
+        try {
+            let result = await axios.get('/api/dash')
+            if (result.status === 200) {
+                setTables(result.data)
+            }
+        } catch {
+            console.log('error')
+        }
+    }
+    //console.log(isTables)
+    useEffect(() => {
+        getTables()
+    }, [])
+
+    let onChangeTable = (table: DashTable) => {
+        if(table)
+        setTable(table)
+        else return toast.error('таблица не найдена')
+    }
 
     return (
         <main 
@@ -190,12 +185,14 @@ export function Owerview() {
                 w-screen
             "
             >
-                tables many
-
-
-
+            {isTables? isTables.map((table) => {
+                    return <div className="p-4 bg-slate-400" key={table.id} onClick={() => onChangeTable(table)}><div></div>{table.date.toString()}</div>
+                })
+            :
+            ''
+            }
             </div>
-            <FillingTable fillingTable={isTable}/>
+            <FillingTable fillingTable={isTable} getTables={getTables}/>
         </main>
     )
 }

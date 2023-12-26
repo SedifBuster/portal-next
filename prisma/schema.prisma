@@ -87,14 +87,12 @@ model Department {
   dolgDead Int? @default(0)
   //freeBeds Int? //Свободных коек
   profile Profile[]
-  dash   DashTable @relation(fields: [dashId], references: [id])
-  dashId Int
 }
 
 model DashTable {
   id Int @id @default(autoincrement())
   date DateTime @default(now())
-  table Department[]
+  table String
 }
 
 enum Role {

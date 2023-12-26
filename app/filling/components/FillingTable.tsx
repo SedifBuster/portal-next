@@ -2,28 +2,29 @@
 
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { fillingTable } from "./Owerview"
 import { saveAs } from "file-saver"
 import { read, utils, write } from 'xlsx'
 import { File } from "buffer"
-import { Department } from "@prisma/client"
-
-
-
+import toast from "react-hot-toast"
+import axios from "axios"
+import { DashTable, Department, Ward } from "@prisma/client"
 
 export function FillingTable({
-    fillingTable
+    fillingTable,
+    getTables
 }: {
-    fillingTable: fillingTable
+    fillingTable: DashTable
+    getTables: () => void
 }) {
 
-    const [isNewDataTable, setNewDataTable] = useState<fillingTable>()
+    const [isNewDataTable, setNewDataTable] = useState<DashTable>()
 
     const GiveXMLS = () => {
         console.log(fillingTable)
         const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-        const ws = utils.json_to_sheet(fillingTable.table)
+        const ws = utils.json_to_sheet(JSON.parse(fillingTable.table))
         const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] }
         const excelBuffer = write(wb, { bookType: 'xlsx', type: 'array' })
         const dataB = new Blob([excelBuffer], { type: fileType })
@@ -31,8 +32,6 @@ export function FillingTable({
         saveAs(dataB, `${fillingTable.date}`)
         console.log(dataB)
     }
-
-
 
     const handleFile = async (e: any) => {
 
@@ -71,7 +70,203 @@ export function FillingTable({
     //подгрузить варды и просуммировать всю хуйню взяты приняты
     // финальный тест
 
+    const createTable = async () => {
+        const postData = {
+            date: isNewDataTable?.date,
+            table: JSON.stringify(isNewDataTable?.table)
+            }
+        const result = await axios.post('/api/dash', postData)
+        if (result.statusText === "OK") {
+            toast.success('Таблица создана')
+            setNewDataTable(undefined)
+        } else {
+            toast.error('Ошибка при создании таблицы')
+        }
+    }
+    console.log(isNewDataTable?.table)
+    let onChangeTable = async (id: number) => {
 
+        const postData = {
+            id: id,
+            date: isNewDataTable?.date,
+            table: JSON.stringify(isNewDataTable?.table)
+            }
+           {
+                id: 2,
+                name: isNewDataTable[0].name,
+                numberOfSeats: isNewDataTable[0].numberOfSeats,
+                engaged: 
+            }
+            numberOfSeats Int? @default(0)
+            engaged Int? @default(0)//Всего находиться в стационаре, накопительным (чел.) 
+            free Int? @default(0)//Свободных коек
+            createdAt DateTime @default(now())
+            updatedAt DateTime @updatedAt
+            //to table
+            planHuman Int? @default(0)
+            planRub Int? @default(0)
+            begAcc Int? @default(0)
+            admRec Int?  @default(0)
+            //totalStays Int? //Всего находиться в стационаре, накопительным (чел.) 
+            disCome Int? @default(0) 
+            disTax Int? @default(0)
+            patOver Int? @default(0)
+            storColed Int? @default(0)
+            transHuman Int? @default(0)
+            transRub Int? @default(0)
+            medPrice Int? @default(0)
+            dolgDead Int? @default(0)
+            //freeBeds Int? //Свободных коек
+            profile Profile[]
+
+        const result = await axios.patch('/api/dash', postData)
+
+        if (result.statusText === "OK") {
+            toast.success(`таблица с айди ${result.data}  изменена`)
+            getTables()
+            setNewDataTable(undefined)
+
+        } else {
+            toast.error('Ошибка при изменении таблицы')
+        }
+    }
+
+    //WARDS
+    const [isDepartments, setIsDepartmens] = useState<Department[]>([])
+    const [wards, setWards] = useState<Ward[]>([])
+
+    let givenFree = (wards: Ward[], depId: number) => {
+        let result = wards.filter((ward) => {
+
+            let nonDepartment = 
+            Number(ward.reserve)/*строка реверс ищем айди*/  !== depId/*айди департамента*/
+            &&
+            ward.reserve
+            &&
+            !isNaN(Number(ward.reserve))
+
+            return  nonDepartment//поиск по департменту если есть то нахрен Number(ward.reserve)  === department?.id
+        })
+
+        if(result) 
+        return result.reduce((sum, current) => {
+            return sum + current.free
+        }, 0)
+        else return 0 
+    }
+
+    let givenEngaged = (wards: Ward[], depId: number) => {
+        let result = wards.filter((ward) => {
+
+            let nonDepartment = 
+            Number(ward.reserve)/*строка реверс ищем айди*/  !== depId/*айди департамента*/
+            &&
+            ward.reserve
+            &&
+            !isNaN(Number(ward.reserve))
+
+            return  nonDepartment//поиск по департменту если есть то нахрен Number(ward.reserve)  === department?.id
+        })
+
+        if(result) 
+        return result.reduce((sum, current) => {
+            return sum + current.engaged
+        }, 0)
+        else return 0 
+    }
+
+
+    let getWards = async () => {
+        try {
+            let result = await axios.get('/api/ward')
+            if (result.status === 200) {
+                setWards(result.data)
+            }
+        } catch {
+            console.log('error')
+        }
+    }
+    let getDepartments = async () => {
+        try {
+            let result = await axios.get('/api/department')
+            if (result.status === 200) {
+                setIsDepartmens(result.data)
+            }
+        } catch {
+            console.log('error')
+        }
+    }
+
+
+        
+
+
+
+    useEffect(() => {
+        getWards()
+        getDepartments()
+    }, [])
+
+    useEffect(() => {
+        //onTakeWards()
+    }, [isDepartments])
+
+
+    //TO
+    let TOWards = wards.filter((ward) => {
+        return ward.depId === 2
+    })
+    let TOtakenWards = wards.filter((ward: Ward) => {
+        return Number(ward.reserve) === 2
+   })
+    let TOGivenFree = givenFree(TOWards, 2)
+    let ToGivenEngaged = givenEngaged(TOWards, 2)
+    console.log(ToGivenEngaged)
+    console.log(TOGivenFree)
+    console.log(TOWards)
+    //XO
+    let XOWards = wards.filter((ward) => {
+        return ward.depId === 3
+    })
+    let XOtakenWards = wards.filter((ward: Ward) => {
+        return Number(ward.reserve) === 3
+   })
+    let XOGivenFree = givenFree(XOWards, 3)
+    let XOGivenEngaged = givenEngaged(XOWards, 3)
+    console.log(XOGivenEngaged)
+    console.log(XOGivenFree)
+    console.log(XOWards)
+    console.log(XOtakenWards)
+    //HO
+    let HOWards = wards.filter((ward) => {
+        return ward.depId === 4
+    })
+    let HOtakenWards = wards.filter((ward: Ward) => {
+        return Number(ward.reserve) === 4
+   })
+    let HOGivenFree = givenFree(HOWards, 4)
+    let HOGivenEngaged = givenEngaged(HOWards, 4)
+    //REAB
+    let ReabWards = wards.filter((ward) => {
+        return ward.depId === 5
+    })
+    let ReabtakenWards = wards.filter((ward: Ward) => {
+        return Number(ward.reserve) === 5
+   })
+    let ReabGivenFree = givenFree(ReabWards, 5)
+    let ReabGivenEngaged = givenEngaged(ReabWards, 5)
+
+    //PALL
+    let PallWards = wards.filter((ward) => {
+        return ward.depId === 6
+    })
+    let PalltakenWards = wards.filter((ward: Ward) => {
+        return Number(ward.reserve) === 6
+   })
+    let PallGivenFree = givenFree(ReabWards, 6)
+    let PallGivenEngaged = givenEngaged(ReabWards, 6)
+
+                                        
     return (
         <main
             className="
@@ -108,7 +303,7 @@ export function FillingTable({
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {fillingTable.table.map((dep, index) => {
+                    {JSON.parse(fillingTable.table).map((dep: any, index: any) => {
                         return <TableRow key={dep.id}>
                             <TableCell>{dep.name ? dep.name : 0}
                                 {isNewDataTable ?
@@ -283,7 +478,7 @@ export function FillingTable({
                     <TableRow>
                         <TableCell >По ЛПУ</TableCell>
                         <TableCell>
-                            {fillingTable.table ? fillingTable.table.reduce((sum, current) => {
+                            {fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
                                 //@ts-ignore
                                 return sum + current.planHuman
                             }, 0)
@@ -302,7 +497,7 @@ export function FillingTable({
                             }
                         </TableCell>
                         <TableCell>
-                            {fillingTable.table ? fillingTable.table.reduce((sum, current) => {
+                            {fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
                                 //@ts-ignore
                                 return sum + current.planRub
                             }, 0)
@@ -321,7 +516,7 @@ export function FillingTable({
                             }
                         </TableCell>
                         <TableCell>
-                            {fillingTable.table ? fillingTable.table.reduce((sum, current) => {
+                            {fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
                                 //@ts-ignore
                                 return sum + current.begAcc
                             }, 0)
@@ -340,7 +535,7 @@ export function FillingTable({
                             }
                         </TableCell>
                         <TableCell>
-                            {fillingTable.table ? fillingTable.table.reduce((sum, current) => {
+                            {fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
                                 //@ts-ignore
                                 return sum + current.admRec
                             }, 0)
@@ -359,7 +554,7 @@ export function FillingTable({
                             }
                         </TableCell>
                         <TableCell>
-                            {fillingTable.table ? fillingTable.table.reduce((sum, current) => {
+                            {fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
                                 //@ts-ignore
                                 return sum + current.engaged
                             }, 0)
@@ -378,7 +573,7 @@ export function FillingTable({
                             }
                         </TableCell>
                         <TableCell>
-                            {fillingTable.table ? fillingTable.table.reduce((sum, current) => {
+                            {fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
                                 //@ts-ignore
                                 return sum + current.disCome
                             }, 0)
@@ -397,7 +592,7 @@ export function FillingTable({
                             }
                         </TableCell>
                         <TableCell>
-                            {fillingTable.table ? fillingTable.table.reduce((sum, current) => {
+                            {fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
                                 //@ts-ignore
                                 return sum + current.disTax
                             }, 0)
@@ -416,7 +611,7 @@ export function FillingTable({
                             }
                         </TableCell>
                         <TableCell>
-                            {fillingTable.table ? fillingTable.table.reduce((sum, current) => {
+                            {fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
                                 //@ts-ignore
                                 return sum + current.patOver
                             }, 0)
@@ -435,7 +630,7 @@ export function FillingTable({
                             }
                         </TableCell>
                         <TableCell>
-                            {fillingTable.table ? fillingTable.table.reduce((sum, current) => {
+                            {fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
                                 //@ts-ignore
                                 return sum + current.storColed
                             }, 0)
@@ -454,7 +649,7 @@ export function FillingTable({
                             }
                         </TableCell>
                         <TableCell>
-                            {fillingTable.table ? fillingTable.table.reduce((sum, current) => {
+                            {fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
                                 //@ts-ignore
                                 return sum + current.transHuman
                             }, 0)
@@ -473,7 +668,7 @@ export function FillingTable({
                             }
                         </TableCell>
                         <TableCell>
-                            {fillingTable.table ? fillingTable.table.reduce((sum, current) => {
+                            {fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
                                 //@ts-ignore
                                 return sum + current.transRub
                             }, 0)
@@ -492,7 +687,7 @@ export function FillingTable({
                             }
                         </TableCell>
                         <TableCell>
-                            {fillingTable.table ? fillingTable.table.reduce((sum, current) => {
+                            {fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
                                 //@ts-ignore
                                 return sum + current.medPrice
                             }, 0)
@@ -511,7 +706,7 @@ export function FillingTable({
                             }
                         </TableCell>
                         <TableCell>
-                            {fillingTable.table ? fillingTable.table.reduce((sum, current) => {
+                            {fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
                                 //@ts-ignore
                                 return sum + current.dolgDead
                             }, 0)
@@ -530,7 +725,7 @@ export function FillingTable({
                             }
                         </TableCell>
                         <TableCell>
-                            {fillingTable.table ? fillingTable.table.reduce((sum, current) => {
+                            {fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
                                 //@ts-ignore
                                 return sum + current.free
                             }, 0)
@@ -551,10 +746,13 @@ export function FillingTable({
                     </TableRow>
                 </TableFooter>
             </Table>
-            <div className="flex gap-4">
-                <Button className="bg-blue-400 text-white" variant={'outline'}>изменить текущую таблицу</Button>
-                <Button className="bg-blue-400 text-white" variant={'outline'}>сохранить новую таблицу</Button>
-            </div>
+            {isNewDataTable? 
+                        <div className="flex gap-4">
+                        <Button className="bg-blue-400 text-white" variant={'outline'} onClick={() => onChangeTable(fillingTable.id)}>изменить текущую таблицу</Button>
+                        <Button className="bg-blue-400 text-white" variant={'outline'} onClick={() => createTable()}>сохранить новую таблицу</Button>
+                    </div>
+            : ''}
+
         </main>
     )
 }

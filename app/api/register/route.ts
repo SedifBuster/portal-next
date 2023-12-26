@@ -11,7 +11,8 @@ export async function POST(
         const {
             login,
             name,
-            password
+            password,
+            role
         } = body
 
         if (!login || !name || !password) {
@@ -27,6 +28,7 @@ export async function POST(
                 name,
                 password: hashedPassword,
                 token: hashedToken,
+                role: role
             }
         })
 

@@ -185,6 +185,7 @@ export function Admin() {
                 password: values.password,
                 role: values.role,
               }
+              console.log(userData)
             const userResult = await axios.post('/api/register', userData)
             if(userResult.statusText !== "OK") return toast.error("Ошибка при создании пользователя")
             else if(userResult.statusText === "OK") {
