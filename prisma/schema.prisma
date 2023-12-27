@@ -47,7 +47,7 @@ model Task {
   files String?
   comment String?
 }
-
+//сделать копию для дашборда?
 model Ward {
   id Int @id @default(autoincrement())
   department Department @relation(fields: [depId], references: [id])
@@ -61,7 +61,7 @@ model Ward {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-
+//сделать копию для дашборда
 model Department {
   id Int @id @default(autoincrement())
   name String
