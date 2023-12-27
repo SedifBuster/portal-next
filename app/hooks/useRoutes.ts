@@ -1,16 +1,37 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation"
 import {
     HiClipboardDocumentList,
     HiUserGroup,
     HiTableCells,
-    HiOutlineArrowLeftOnRectangle
+    HiOutlineArrowLeftOnRectangle,
+    HiOutlineArrowRightOnRectangle
 } from "react-icons/hi2"
+import { signOut, useSession } from "next-auth/react";
+import router from "next/router";
 
 const useRoutes = () => {
     const pathname = usePathname()
 
-    const routes = useMemo(() => [
+    let session = useSession()
+
+    //переделать основные роуты на основной стек + сигнаутовские
+    const [onRoutes, setOnRoutes] = useState([
+        {
+            label: "войти",
+            href: '/auth',
+            active: pathname === '/auth',
+            icon: HiOutlineArrowRightOnRectangle,
+        }
+    ])
+
+    const routes = useMemo(() => onRoutes, [pathname])
+
+    return routes
+}
+
+export default useRoutes
+
         /*{
             label: "главная",
             href: '/',
@@ -29,15 +50,3 @@ const useRoutes = () => {
             icon: HiTableCells,
             active: pathname === '/journals'
         },*/
-        {
-            label: "войти",
-            href: '/auth',
-            active: pathname === '/auth',
-            icon: HiOutlineArrowLeftOnRectangle,
-        }
-    ], [pathname])
-
-    return routes
-}
-
-export default useRoutes

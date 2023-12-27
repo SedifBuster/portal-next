@@ -65,7 +65,9 @@ export function UserCard(
         <CardDescription><Label>Должность: </Label>{userGrade}</CardDescription>
       </CardHeader>
       <CardFooter className="flex justify-between">
-        <Button onClick={() => signOut()}>Выйти из аккаунта</Button>
+        <Button onClick={() => signOut({
+          callbackUrl: `${window.location.origin}`
+        })}>Выйти из аккаунта</Button>
       </CardFooter>
     </Card>
   )

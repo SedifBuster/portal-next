@@ -7,7 +7,6 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableFooter,
     TableHead,
@@ -248,7 +247,9 @@ export function Admin() {
                 </Button>
             </section>
                 <Button onClick={() => {
-                    signOut()
+                    signOut({
+                        callbackUrl: `${window.location.origin}`
+                    })
                     localStorage.clear()
                 }}>
                     выйти
@@ -479,7 +480,7 @@ export function Admin() {
                             создать пользователя
                         </Button>
                     </SheetTrigger>
-                    <SheetContent>
+                    <SheetContent className="w-[400px] sm:w-[540px]">
                         <SheetHeader>
                             <SheetTitle>Создать пользователя</SheetTitle>
                             <SheetDescription>
@@ -488,7 +489,7 @@ export function Admin() {
                         </SheetHeader>
                         <div>
                             <Form {...form}>
-                                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
                                     <FormField
                                         control={form.control}
                                         name="name"
@@ -496,7 +497,7 @@ export function Admin() {
                                             <FormItem>
                                                 <FormLabel>Имя*</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="Иванов И.И." {...field} />
+                                                    <Input className="h-7" placeholder="Иванов И.И." {...field} />
                                                 </FormControl>
                                                 <FormDescription>
                                                     Фамилия и инициалы.
@@ -512,7 +513,7 @@ export function Admin() {
                                             <FormItem>
                                                 <FormLabel>Логин*</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="Ivanov7" {...field} />
+                                                    <Input  className="h-7" placeholder="Ivanov7" {...field} />
                                                 </FormControl>
                                                 <FormDescription>
                                                     Для авторизации.
@@ -528,7 +529,7 @@ export function Admin() {
                                             <FormItem>
                                                 <FormLabel>Пароль*</FormLabel>
                                                 <FormControl>
-                                                    <Input placeholder="*********" type="password" {...field} />
+                                                    <Input  className="h-7" placeholder="*********" type="password" {...field} />
                                                 </FormControl>
                                                 <FormDescription>
                                                     Для авторизации.
@@ -545,7 +546,7 @@ export function Admin() {
                                                 <FormLabel>Роль*</FormLabel>
                                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                     <FormControl>
-                                                        <SelectTrigger>
+                                                        <SelectTrigger className="h-7">
                                                             <SelectValue placeholder="..." />
                                                         </SelectTrigger>
                                                     </FormControl>
@@ -579,7 +580,7 @@ export function Admin() {
                                                 <FormLabel>Должность*</FormLabel>
                                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                     <FormControl>
-                                                        <SelectTrigger>
+                                                        <SelectTrigger className="h-7">
                                                             <SelectValue placeholder="..." />
                                                         </SelectTrigger>
                                                     </FormControl>
@@ -619,7 +620,7 @@ export function Admin() {
                                                 <FormLabel>Отделение</FormLabel>
                                                 <Select onValueChange={field.onChange}>
                                                     <FormControl>
-                                                        <SelectTrigger>
+                                                        <SelectTrigger className="h-7">
                                                             <SelectValue placeholder="..." />
                                                         </SelectTrigger>
                                                     </FormControl>
