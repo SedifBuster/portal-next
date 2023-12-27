@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import {useMemo, useState } from "react";
 import { usePathname } from "next/navigation"
 import {
     HiClipboardDocumentList,
@@ -7,18 +7,16 @@ import {
     HiOutlineArrowLeftOnRectangle,
     HiOutlineArrowRightOnRectangle
 } from "react-icons/hi2"
-import { useSession } from "next-auth/react";
 
 
-const useRoutes = () => {
+const usePrivateRoutes = () => {
     const pathname = usePathname()
 
-    let session = useSession()
 
     //переделать основные роуты на основной стек + сигнаутовские
     const [onRoutes, setOnRoutes] = useState([
         {
-            label: "войти",// session.status ===  "authenticated"? "войти" : 'личный кабинет',
+            label: 'личный кабинет',// session.status ===  "authenticated"? "войти" : 'личный кабинет',
             href: '/auth',
             active: pathname === '/auth',
             icon: HiOutlineArrowRightOnRectangle,
@@ -30,7 +28,7 @@ const useRoutes = () => {
     return routes
 }
 
-export default useRoutes
+export default usePrivateRoutes
 
         /*{
             label: "главная",

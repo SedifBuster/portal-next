@@ -1,13 +1,24 @@
 'use client'
 
 import useRoutes from "@/app/hooks/useRoutes"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import DesktopItem from "./DesktopItem"
+import { useSession } from "next-auth/react"
+import usePrivateRoutes from "@/app/hooks/usePrivateRoutes"
 
 export default function DesktopSidebar() {
     const routes = useRoutes()
+    const privateRoutes = usePrivateRoutes()
     const [isOpen, setIsOpen] = useState(false)
+
+    const session = useSession()
+
+    useEffect(() => {
+        if(session && session.status ===  "authenticated") setIsOpen(true) 
+        else setIsOpen(false)
+    }, [session, session.status, session.update])
+
     return (
         <div
             className="
@@ -47,7 +58,8 @@ export default function DesktopSidebar() {
                     space-y-1
                     "
                 >
-                    {routes.map((item) => (
+                    {isOpen?
+                    privateRoutes.map((item) => (
                         <DesktopItem 
                             key={item.label}
                             href={item.href}
@@ -55,7 +67,18 @@ export default function DesktopSidebar() {
                             icon={item.icon}
                             active={item.active}
                         />
-                    ))}
+                    ))
+                    :
+                    routes.map((item) => (
+                        <DesktopItem 
+                            key={item.label}
+                            href={item.href}
+                            label={item.label}
+                            icon={item.icon}
+                            active={item.active}
+                        />
+                    ))
+                    }
                 </ul>
             </nav>
         </div>
