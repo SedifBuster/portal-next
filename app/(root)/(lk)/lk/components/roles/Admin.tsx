@@ -33,6 +33,8 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { Label } from "@/components/ui/label"
 import { signOut } from "next-auth/react"
+import { useRouter } from "next/navigation"
+
 
 export function Admin() {
 
@@ -77,7 +79,7 @@ export function Admin() {
     let changeDepartment = async () => {
         toast.error('еще не реализовано')
     }
-
+    const router = useRouter()
     //USERS
     const [users, setUsers] = useState<User[]>([])
     const [profiles, setProfiles] = useState<Profile[]>([])
@@ -246,10 +248,12 @@ export function Admin() {
                     создать
                 </Button>
             </section>
-                <Button onClick={() => {
-                    signOut({
-                        callbackUrl: `${window.location.origin}`
+                <Button onClick={async() => {
+                   await signOut({
+                        redirect: false,
+                        callbackUrl: `/`
                     })
+                    router.push('/')
                     localStorage.clear()
                 }}>
                     выйти
