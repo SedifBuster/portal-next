@@ -86,7 +86,7 @@ export function FillingTable({
     console.log(isNewDataTable?.table)
     let onChangeTable = async (id: number) => {
 
-        const postData = {
+       /* const postData = {
             id: id,
             date: isNewDataTable?.date,
             table: JSON.stringify(isNewDataTable?.table)
@@ -129,6 +129,7 @@ export function FillingTable({
         } else {
             toast.error('Ошибка при изменении таблицы')
         }
+        */
     }
 
     //WARDS
