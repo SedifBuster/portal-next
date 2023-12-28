@@ -65,11 +65,12 @@ let onFilterWards = (wards: Ward[], depId: number) => {
 
   console.log(isDepartments)
   return (
-    <div className="w-full ml-2 mr-2">
-      <div className="rounded-md border h-screen">
+    <div className="w-full ml-2 mr-2  h-screen">
+      <p className="font-medium text-lg">Панель информации</p>
+      <div className="rounded-md border">
       {isDepartments? 
         onFilterDepartments(isDepartments).map((dep) => {
-          return <PriemnoeCard dep={dep} key={dep.id} wards={onFilterWards(wards, dep.id)} />
+          return <PriemnoeCard dep={dep} key={dep.id} wards={onFilterWards(wards, dep.id)} allWards={wards} />
         })
       :
       ''}
