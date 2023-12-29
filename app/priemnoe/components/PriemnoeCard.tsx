@@ -2,7 +2,6 @@
 
 import * as React from "react"
 
-import { Progress } from "@/components/ui/progress"
 import {
   Table,
   TableBody,

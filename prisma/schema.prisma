@@ -47,7 +47,7 @@ model Task {
   files String?
   comment String?
 }
-//сделать копию для дашборда?
+//сделать копию для дашборда?с датой
 model Ward {
   id Int @id @default(autoincrement())
   department Department @relation(fields: [depId], references: [id])
