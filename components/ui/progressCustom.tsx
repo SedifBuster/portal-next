@@ -9,7 +9,7 @@ interface CustomProgressProps
   extends React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root> {
   indicatorColor: string;
 }
-const Progress = React.forwardRef<
+const ProgressCustom = React.forwardRef<
   React.ElementRef<typeof ProgressPrimitive.Root>,
   CustomProgressProps
 >(({ className, value, indicatorColor, ...props }, ref) => (
@@ -27,6 +27,6 @@ const Progress = React.forwardRef<
     />
   </ProgressPrimitive.Root>
 ));
-Progress.displayName = ProgressPrimitive.Root.displayName;
+ProgressCustom.displayName = ProgressPrimitive.Root.displayName;
 
-export { Progress };
+export { ProgressCustom };

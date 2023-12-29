@@ -5,7 +5,7 @@ import * as ProgressPrimitive from "@radix-ui/react-progress"
 
 import { cn } from "@/lib/utils"
 
-const ProgressCustom = React.forwardRef<
+const Progress = React.forwardRef<
   React.ElementRef<typeof ProgressPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root>
 >(({ className, value, ...props }, ref) => (
@@ -23,6 +23,6 @@ const ProgressCustom = React.forwardRef<
     />
   </ProgressPrimitive.Root>
 ))
-ProgressCustom.displayName = ProgressPrimitive.Root.displayName
+Progress.displayName = ProgressPrimitive.Root.displayName
 
-export { ProgressCustom }
+export { Progress }

@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { ProgressCustom } from "@/components/ui/progress"
+import { Progress } from "@/components/ui/progress"
 import {
   Table,
   TableBody,
@@ -14,9 +14,12 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Department, Ward } from "@prisma/client"
+import { ProgressCustom } from "@/components/ui/progressCustom"
+import clsx from "clsx"
 
 export function PriemnoeCard({dep, wards, allWards} : {dep: Department, wards: Ward[], allWards: Ward[]}) {
     const [progress, setProgress] = React.useState(13)
+
 
     let given = (wards: Ward[], field: 'numberOfSeats' | 'free' | 'engaged') => {
         let result = wards.filter((ward) => {
@@ -90,7 +93,7 @@ export function PriemnoeCard({dep, wards, allWards} : {dep: Department, wards: W
     }, [wards, allWards])
 
   return (  
-      <Table className="mb-6">
+      <Table className="mb-6 md:h-48">
       {/*<TableCaption>панель отделения</TableCaption>*/}
       <TableHeader>
         <TableRow>
@@ -103,7 +106,7 @@ export function PriemnoeCard({dep, wards, allWards} : {dep: Department, wards: W
       </TableHeader>
       <TableBody>
         <TableRow>
-            <TableCell className="font-medium text-lg">{dep.name}</TableCell>
+            <TableCell className="font-medium text-xl">{dep.name}</TableCell>
             <TableCell className="bold text-lg">
                 { numberOfSeats }
             </TableCell>
@@ -115,13 +118,20 @@ export function PriemnoeCard({dep, wards, allWards} : {dep: Department, wards: W
             </TableCell>
             <TableCell className="bold text-lg">
                 <p>{Math.trunc(progress)}%</p>
-                <ProgressCustom value={progress} className="w-[100%]" />
+               
+                <ProgressCustom value={progress} indicatorColor={clsx(`bg-blue-300 `,
+                    progress > 33 && progress < 66 && 'bg-orange-400',
+                    progress < 33 && 'bg-green-400',
+                    progress > 66 && 'bg-red-400'
+                    )} className="w-[100%] h-8" />
             </TableCell>
         </TableRow>
       </TableBody>
       </Table>
   )
 }
+// <Progress value={progress} className="w-[100%]" />
+//"bg-blue-300"
   /*{//numberOfSeats - колво мест
     wards.reduce((sum, current) => {
         return sum + current.numberOfSeats

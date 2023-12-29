@@ -63,6 +63,18 @@ let onFilterWards = (wards: Ward[], depId: number) => {
     getWards()
   }, [])
 
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      getDepartments()
+      getWards()
+      console.log('update')
+    }, 10000)
+
+    return () => {
+      clearInterval(timer)
+    }
+  }, [])
+
   console.log(isDepartments)
   return (
     <div className="w-full ml-2 mr-2  h-screen">
