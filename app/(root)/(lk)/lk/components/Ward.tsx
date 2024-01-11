@@ -94,6 +94,7 @@ export function UserWard(
             reserve: isReserve
         }
         let checkupArray = Object.values(postData)
+        if(postData.numberOfSeats < postData.engaged) return toast.error('кол-во мест не должно быть меньше занятых')
         for(let i = 0; i < 6; i++) {
             if(Number(checkupArray[i]) < 0) {
               return toast.error('Числа не должны быть отрицательными')
@@ -262,18 +263,7 @@ return (
                                 className="col-span-3"
                             />
                         </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="free" className="text-right">
-                                свободно
-                            </Label>
-                            <Input
-                                value={isFree}
-                                type="number"
-                                //@ts-ignore
-                                onChange={(e) => setFree(e.target.value)}
-                                className="col-span-3"
-                            />
-                        </div>
+                        
 
                         {grade === 'HEADNURSE' || grade === 'DEPNURSTAFF' || grade === 'CHIEFNURSE' || grade === 'TECHNICICAN'
                         ?
@@ -489,3 +479,17 @@ return (
     </TableRow>
 )
 }
+
+
+/**<div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="free" className="text-right">
+                                свободно
+                            </Label>
+                            <Input
+                                value={isFree}
+                                type="number"
+                                //@ts-ignore
+                                onChange={(e) => setFree(e.target.value)}
+                                className="col-span-3"
+                            />
+                        </div> */

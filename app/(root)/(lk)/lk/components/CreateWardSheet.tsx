@@ -1,6 +1,6 @@
 "use client"
 
-import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage, Form } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
@@ -23,7 +23,7 @@ export function CreateWardSheet({depId, getWards}: {depId: number, getWards: (id
         ,
         engaged: z.string().optional()
         ,
-        free: z.string().optional()
+        free: z.number().optional()
         ,
         gender: z.string().optional()
         ,
@@ -34,7 +34,8 @@ export function CreateWardSheet({depId, getWards}: {depId: number, getWards: (id
         resolver: zodResolver(formSchema),
         defaultValues: {
             reserve: "",
-            gender: "mutual"
+            gender: "mutual",
+            free: 0
         },
     })
 
@@ -52,6 +53,7 @@ export function CreateWardSheet({depId, getWards}: {depId: number, getWards: (id
               }
               console.log(wardData)
               if( isNaN(wardData.engaged) || isNaN(wardData.free) || isNaN(wardData.number) || isNaN(wardData.numberOfSeats)) return toast.error('уберите лишние символы с числовых значений')
+              if( wardData.numberOfSeats < wardData.engaged) return toast.error('кол-во мест не должно быть меньше занятых')
             const wardResult = await axios.post('/api/ward', wardData)
             if(wardResult.statusText !== "OK") return toast.error("Ошибка при создании палаты")
             else if(wardResult.statusText === "OK") {
@@ -132,20 +134,6 @@ export function CreateWardSheet({depId, getWards}: {depId: number, getWards: (id
                                 />
                                 <FormField
                                     control={form.control}
-                                    name="free"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Свободно</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="12" {...field} />
-                                            </FormControl>
-                                            <FormDescription>число</FormDescription>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
                                     name="gender"
                                     render={({ field }) => (
                                         <FormItem>
@@ -195,3 +183,18 @@ export function CreateWardSheet({depId, getWards}: {depId: number, getWards: (id
         </section>
     )
 }
+
+/** <FormField
+                                    control={form.control}
+                                    name="free"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Свободно</FormLabel>
+                                            <FormControl>
+                                                <Input placeholder="12" {...field}  disabled/>
+                                            </FormControl>
+                                            <FormDescription>число</FormDescription>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                /> */

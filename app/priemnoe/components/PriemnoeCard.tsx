@@ -78,7 +78,7 @@ export function PriemnoeCard({dep, wards, allWards} : {dep: Department, wards: W
     }
 
     let onChangeIndicator = (numberOfSeats: number, free: number) => {
-       let indicator = numberOfSeats * (free / 100)
+       let indicator = 100 - (free / numberOfSeats *  100)
        setProgress(indicator)
        return indicator
     }
@@ -118,11 +118,15 @@ export function PriemnoeCard({dep, wards, allWards} : {dep: Department, wards: W
             <TableCell className="bold text-lg">
                 <p>{Math.trunc(progress)}%</p>
                
-                <ProgressCustom value={progress} indicatorColor={clsx(`bg-blue-300 `,
-                    progress > 33 && progress < 66 && 'bg-orange-400',
-                    progress < 33 && 'bg-green-400',
-                    progress > 66 && 'bg-red-400'
-                    )} className="w-[100%] h-8" />
+                <ProgressCustom value={progress} 
+                indicatorColor={
+                    clsx(`bg-blue-300 `,
+                        progress > 33 && progress < 66 && 'bg-gradient-to-r from-red-500 from-60% to-orange-500 to-90%',
+                        progress <= 33 && 'bg-red-500',
+                        progress > 66 && 'bg-gradient-to-r from-red-500 from-10% via-orange-500 via-50% to-green-500 to-90%'
+                        )
+                } className="w-[100%] h-8" />
+               
             </TableCell>
         </TableRow>
       </TableBody>
@@ -144,3 +148,30 @@ export function PriemnoeCard({dep, wards, allWards} : {dep: Department, wards: W
     given(wards, 'numberOfSeats')
 }*/
 
+
+//clsx(`bg-blue-300 `,
+//progress > 33 && progress < 66 && 'bg-gradient-to-r from-red-500 from-33% to-orange-500 to-66%',
+//progress < 33 && 'bg-red-500',
+//progress > 66 && 'bg-gradient-to-r from-red-500 from-33% via-orange-500 via-66% to-green-500 to-100%'
+//)
+    //progreess nan gradient//shobi otnimalos 
+    //"bg-gradient-to-r from-red-500 via-orange-500 to-green-500"
+
+
+    /*<ProgressCustom value={progress} 
+    indicatorColor={
+        'bg-black'
+    } 
+    className="w-[100%] h-8 bg-gradient-to-r from-red-500 from-33% via-orange-500 via-66% to-green-500 to-100%" />*/
+
+    /*<ProgressCustom value={progress} 
+    indicatorColor={
+        clsx(`bg-blue-300 `,
+            progress > 33 && progress < 66 && 'bg-gradient-to-r from-red-500 from-10% to-orange-500 to-90%',
+            progress <= 33 && 'bg-red-500',
+            progress > 66 && 'bg-gradient-to-r from-red-500 from-33% via-orange-500 via-66% to-green-500 to-100%'
+            )
+    } className="w-[100%] h-8" />*/
+
+
+                    

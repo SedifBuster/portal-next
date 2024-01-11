@@ -12,6 +12,7 @@ import {
 import { Label } from "@/components/ui/label"
 import { Department, Profile } from "@prisma/client"
 import { signOut } from "next-auth/react"
+import { useRouter } from "next/navigation"
 
 export function UserCard(
   {
@@ -24,7 +25,7 @@ export function UserCard(
     name: string | null | undefined
   }
 ) {
-
+  const router = useRouter()
   let [userGrade, setUserGrade] = React.useState<string>('')
 
   let onChangeGrade = ( grade: string ) => {
@@ -65,9 +66,14 @@ export function UserCard(
         <CardDescription><Label>Должность: </Label>{userGrade}</CardDescription>
       </CardHeader>
       <CardFooter className="flex justify-between">
-        <Button onClick={() => signOut({
-          callbackUrl: `${window.location.origin}`
-        })}>Выйти из аккаунта</Button>
+        <Button onClick={async() => {
+                   await signOut({
+                        redirect: false,
+                        callbackUrl: `/`
+                    })
+                    router.push('/')
+                    localStorage.clear()
+                }}>Выйти из аккаунта</Button>
       </CardFooter>
     </Card>
   )

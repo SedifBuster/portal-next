@@ -88,11 +88,51 @@ model Department {
   //freeBeds Int? //Свободных коек
   profile Profile[]
 }
+//департмент для дашбоарда
+model DashDepartment {
+  id Int @id @default(autoincrement())
+  name String
+  wards DashWard[]
+  numberOfSeats Int? @default(0)
+  engaged Int? @default(0)//Всего находиться в стационаре, накопительным (чел.) 
+  free Int? @default(0)//Свободных коек
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  //to table
+  planHuman Int? @default(0)
+  planRub Int? @default(0)
+  begAcc Int? @default(0)
+  admRec Int?  @default(0)
+  disCome Int? @default(0) 
+  disTax Int? @default(0)
+  patOver Int? @default(0)
+  storColed Int? @default(0)
+  transHuman Int? @default(0)
+  transRub Int? @default(0)
+  medPrice Int? @default(0)
+  dolgDead Int? @default(0)
+  dash Dash @relation(fields: [dashId], references: [id])
+  dashId Int
+}
+//палата для дашбоарда
+model DashWard {
+  id Int @id @default(autoincrement())
+  dashDepartment DashDepartment @relation(fields: [dashDepId], references: [id])
+  dashDepId Int
+  number Int @unique
+  numberOfSeats Int
+  engaged Int
+  free Int
+  gender Gender
+  reserve String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
-model DashTable {
+model Dash {
   id Int @id @default(autoincrement())
   date DateTime @default(now())
-  table String
+  table DashDepartment[]
 }
 
 enum Role {

@@ -50,7 +50,6 @@ export async function POST(
             number,
             numberOfSeats,
             engaged,//
-            free,//
             gender,//
             reserve,//
         } = body
@@ -60,13 +59,16 @@ export async function POST(
             return new NextResponse('Missing info', { status: 400 })
         }
 
+        const isFree = numberOfSeats - engaged
+        console.log(isFree)
+
         const ward = await prisma.ward.create({
             data: {
                 depId,
                 number,
                 numberOfSeats,
                 engaged,
-                free,
+                free: isFree,
                 gender,
                 reserve,
             }
@@ -120,7 +122,7 @@ export async function PATCH(
             number,
             numberOfSeats,
             engaged,//
-            free,//
+           // free,//
             gender,//
             reserve,//
         } = body
@@ -129,6 +131,8 @@ export async function PATCH(
         if (!id || !number || !depId || !numberOfSeats) {
             return new NextResponse('Missing info', { status: 400 })
         }
+        const isFree = numberOfSeats - engaged
+        console.log(isFree)
 
         const ward = await prisma.ward.update({
             where: {
@@ -138,7 +142,7 @@ export async function PATCH(
                 number,
                 numberOfSeats,
                 engaged,
-                free,
+                free: isFree,
                 gender,
                 reserve,
             }
