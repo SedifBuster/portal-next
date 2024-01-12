@@ -248,7 +248,21 @@ return (
                         </div>
                         </>
                         :
-                        ''
+                       
+                        <>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="number" className="text-right">
+                                номер палаты
+                            </Label>
+                            <p>  {isNumber}</p> 
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="numberOfSeats" className="text-right">
+                                кол-во мест
+                            </Label>
+                           <p>{isNumberOfSeats}</p> 
+                        </div>
+                        </>
                         }
                         
                         <div className="grid grid-cols-4 items-center gap-4">

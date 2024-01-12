@@ -27,6 +27,7 @@ export function User() {
     const [profile, setProfile] = useState<Profile>()
     const [wards, setWards] = useState<Ward[]>([])
     const [takenWards, setTakenWards] = useState<Ward[]>([])
+    const [departments, setDepartments] = useState<Department[]>()
 
     let getProfile = async (id: number) => {
         let result = await axios.get(`/api/users/profile/${id}`)
@@ -37,24 +38,36 @@ export function User() {
         setDepartment(result.data)
     }
 
+    let getDepartments =async () => {
+        let result = await axios.get('/api/department')
+        setDepartments(result.data)
+    }
+
+    const [isTo, setTo] = useState<Department>()
+    const [isXo, setXo] = useState<Department>()
+    const [isHo, setHo] = useState<Department>()
+    const [isReab, setReab] = useState<Department>()
+
     let getWards = async (id: number) => {
         let result = await axios.get('/api/ward')
-            if(result.data && department) {
-               let filteredWards =  result.data.filter((ward: Ward) => {
-                    return ward.depId === id})
-                setWards(filteredWards)
-               let takenWards = result.data.filter((ward: Ward) => {
-                    return Number(ward.reserve) === id
-               })
-               setTakenWards(takenWards)
+        if (result.data && department) {
+            let filteredWards = result.data.filter((ward: Ward) => {
+                return ward.depId === id
+            })
+            setWards(filteredWards)
+            let takenWards = result.data.filter((ward: Ward) => {
+                return Number(ward.reserve) === id
+            })
+            setTakenWards(takenWards)
 
-            }
+        }
     }
 
     useEffect(() => {
         if (session.status === "authenticated" && typeof session.data.user !== 'undefined') {
             getProfile(Number(session.data.user.id))
         }
+        getDepartments()
     }, [])
 
     useEffect(() => {
@@ -65,74 +78,169 @@ export function User() {
     }, [profile])
 
     useEffect(() => {
-        if(department) {
+        if (department) {
             getWards(department.id)
         }
     }, [department])
 
+    useEffect(() => {
+        if(departments) {
+            let ToName = departments.filter((dep) => {return dep.name === "ТО"})
+            setTo(ToName[0])
+            let XoName = departments.filter((dep) => {return dep.name === "ХО"})
+            setXo(XoName[0])
+            let HoName = departments.filter((dep) => {return dep.name === "НО"})
+            setHo(HoName[0])
+            let ReabName = departments.filter((dep) => {return dep.name === "Реаб"})
+            setReab(ReabName[0])
+        }
+    }, [departments])
+
+    useEffect(() => {
+        if(department) {
+            //@ts-ignore
+            getToWards(isTo.id)
+            //@ts-ignore
+            getXoWards(isXo.id)
+            //@ts-ignore
+            getHoWards(isHo.id)
+            //@ts-ignore
+            getReabWards(isReab.id)
+        }
+       
+
+    }, [department])
+
     //указатель на то что палата отдана другим или взята из другого отделения
     //приемник своя даш панель- потом
+    const [Towards, setToWards] = useState<Ward[]>([])
+    const [Xowards, setXoWards] = useState<Ward[]>([])
+    const [Howards, setHoWards] = useState<Ward[]>([])
+    const [Reabwards, setReabWards] = useState<Ward[]>([])
+
+    const [takenToWards, setTakenToWards] = useState<Ward[]>([])
+    const [takenXoWards, setTakenXoWards] = useState<Ward[]>([])
+    const [takenHoWards, setTakenHoWards] = useState<Ward[]>([])
+    const [takenReabWards, setTakenReabWards] = useState<Ward[]>([])
+
+    let getToWards = async (id: number) => {
+        let result = await axios.get('/api/ward')
+        if (result.data && department) {
+            let filteredWards = result.data.filter((ward: Ward) => {
+                return ward.depId === id
+            })
+            setToWards(filteredWards)
+            let takenWards = result.data.filter((ward: Ward) => {
+                return Number(ward.reserve) === id
+            })
+            setTakenToWards(takenWards)
+
+        }
+    }
+    let getXoWards = async (id: number) => {
+        let result = await axios.get('/api/ward')
+        if (result.data && department) {
+            let filteredWards = result.data.filter((ward: Ward) => {
+                return ward.depId === id
+            })
+            setXoWards(filteredWards)
+            let takenWards = result.data.filter((ward: Ward) => {
+                return Number(ward.reserve) === id
+            })
+            setTakenXoWards(takenWards)
+
+        }
+    }
+    let getHoWards = async (id: number) => {
+        let result = await axios.get('/api/ward')
+        if (result.data && department) {
+            let filteredWards = result.data.filter((ward: Ward) => {
+                return ward.depId === id
+            })
+            setHoWards(filteredWards)
+            let takenWards = result.data.filter((ward: Ward) => {
+                return Number(ward.reserve) === id
+            })
+            setTakenHoWards(takenWards)
+
+        }
+    }
+    let getReabWards = async (id: number) => {
+        let result = await axios.get('/api/ward')
+        if (result.data && department) {
+            let filteredWards = result.data.filter((ward: Ward) => {
+                return ward.depId === id
+            })
+            setReabWards(filteredWards)
+            let takenWards = result.data.filter((ward: Ward) => {
+                return Number(ward.reserve) === id
+            })
+            setTakenReabWards(takenWards)
+        }
+    }
 
     let givenFree = (wards: Ward[]) => {
         let result = wards.filter((ward) => {
 
-            let nonDepartment = 
-            Number(ward.reserve)/*строка реверс ищем айди*/  !== department?.id/*айди департамента*/
-            &&
-            ward.reserve
-            &&
-            !isNaN(Number(ward.reserve))
+            let nonDepartment =
+                Number(ward.reserve)/*строка реверс ищем айди*/ !== department?.id/*айди департамента*/
+                &&
+                ward.reserve
+                &&
+                !isNaN(Number(ward.reserve))
 
-            return  nonDepartment//поиск по департменту если есть то нахрен Number(ward.reserve)  === department?.id
+            return nonDepartment//поиск по департменту если есть то нахрен Number(ward.reserve)  === department?.id
         })
 
-        if(result) 
-        return result.reduce((sum, current) => {
-            return sum + current.free
-        }, 0)
-        else return 0 
+        if (result)
+            return result.reduce((sum, current) => {
+                return sum + current.free
+            }, 0)
+        else return 0
     }
 
     let givenEngaged = (wards: Ward[]) => {
         let result = wards.filter((ward) => {
 
-            let nonDepartment = 
-            Number(ward.reserve)/*строка реверс ищем айди*/  !== department?.id/*айди департамента*/
-            &&
-            ward.reserve
-            &&
-            !isNaN(Number(ward.reserve))
+            let nonDepartment =
+                Number(ward.reserve)/*строка реверс ищем айди*/ !== department?.id/*айди департамента*/
+                &&
+                ward.reserve
+                &&
+                !isNaN(Number(ward.reserve))
 
-            return  nonDepartment//поиск по департменту если есть то нахрен Number(ward.reserve)  === department?.id
+            return nonDepartment//поиск по департменту если есть то нахрен Number(ward.reserve)  === department?.id
         })
 
-        if(result) 
-        return result.reduce((sum, current) => {
-            return sum + current.engaged
-        }, 0)
-        else return 0 
+        if (result)
+            return result.reduce((sum, current) => {
+                return sum + current.engaged
+            }, 0)
+        else return 0
     }
 
     let givenNumberofSeats = (wards: Ward[]) => {
         let result = wards.filter((ward) => {
 
-            let nonDepartment = 
-            Number(ward.reserve)/*строка реверс ищем айди*/  !== department?.id/*айди департамента*/
-            &&
-            ward.reserve
-            &&
-            !isNaN(Number(ward.reserve))
+            let nonDepartment =
+                Number(ward.reserve)/*строка реверс ищем айди*/ !== department?.id/*айди департамента*/
+                &&
+                ward.reserve
+                &&
+                !isNaN(Number(ward.reserve))
 
-            return  nonDepartment//поиск по департменту если есть то нахрен Number(ward.reserve)  === department?.id
+            return nonDepartment//поиск по департменту если есть то нахрен Number(ward.reserve)  === department?.id
         })
 
-        if(result) 
-        return result.reduce((sum, current) => {
-            return sum + current.numberOfSeats
-        }, 0)
-        else return 0 
+        if (result)
+            return result.reduce((sum, current) => {
+                return sum + current.numberOfSeats
+            }, 0)
+        else return 0
     }
 
+    //DEPNURSTAFF //зам по среднему мед персоналу - менеджит койки/ создание/резерв по распоряжению
+    //CHIEFNURSE //главная медсестра - менеджит койки/ создание/резерв по распоряжению
     return (
         <div
             className="
@@ -142,92 +250,392 @@ export function User() {
             gap-4
             "
         >
-            <div className="rounded-md border basis-4/5">
-                <div className="">
-                    <h1 className="text-center mt-4 mb-2 text-lg font-bold">Сводка по местам</h1>
-                    <h4 className="ml-2 font-medium">{new Date().toLocaleString('ru', {
+{department?.name === 'CHIEF' ?
+                <div className="rounded-md border basis-4/5">
+                    <div className="">
+                        <h1 className="text-center mt-4 mb-2 text-lg font-bold">Сводка по местам</h1>
+                        <h4 className="ml-2 font-medium">{new Date().toLocaleString('ru', {
                             year: 'numeric',
                             month: 'long',
-                            day: 'numeric' 
-                    })}</h4>
-                    <h4 className="ml-2 font-medium">Отделение: {department?.name}</h4>
-                    {profile?.grade == 'CHIEFNURSE' || profile?.grade == 'DEPNURSTAFF' ? 
-                       department? <CreateWardSheet depId={department.id} getWards={getWards}/> : ''
-                        : 
-                        ""
-                    }
-                    
-                    <div className="flex gap-4 ml-2">
-                        <div className="w-6 h-6 bg-orange-100"></div> взяты в отделение
-                        <div className="w-6 h-6 bg-green-100"></div> отданы другим отделением
-                                    </div>
+                            day: 'numeric'
+                        })}</h4>
+                        <h4 className="ml-2 font-medium">Отделение: {department?.name}</h4>
+                        {profile?.grade == 'CHIEFNURSE' || profile?.grade == 'DEPNURSTAFF' ?
+                            department ? <CreateWardSheet depId={department.id} getWards={getWards} /> : ''
+                            :
+                            ""
+                        }
 
+                        <div className="flex gap-4 ml-2">
+                            <div className="w-6 h-6 bg-orange-100"></div> взяты в отделение
+                            <div className="w-6 h-6 bg-green-100"></div> отданы другим отделением
+                        </div>
+
+                    </div>
+                    <Table>
+                        <TableCaption>Лист палат.</TableCaption>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-[100px]">палата №</TableHead>
+                                <TableHead>кол-во мест</TableHead>
+                                <TableHead>занято</TableHead>
+                                <TableHead>свободно</TableHead>
+                                <TableHead>пол</TableHead>
+                                <TableHead>резерв по распоряжению</TableHead>
+                                <TableHead></TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {department ? wards.map((invoice) => (
+                                <UserWard ward={invoice} key={invoice.id} getWards={getWards} depId={department.id} grade={profile?.grade} />
+                            )) : ''}
+                            {department ? takenWards.map((invoice) => (
+                                <UserWard ward={invoice} key={invoice.id} getWards={getWards} depId={department.id} taken={true} grade={profile?.grade} />
+                            )) : ''}
+                        </TableBody>
+
+                        <TableFooter>
+                            <TableRow>
+                                <TableCell colSpan={1}>Кол-во мест:</TableCell>
+                                <TableCell className="text-left">
+                                    {
+                                        wards.reduce((sum, current) => {
+                                            return sum + current.numberOfSeats
+                                        }, 0) +
+                                        takenWards.reduce((sum, current) => {
+                                            return sum + current.numberOfSeats
+                                        }, 0) -
+                                        givenNumberofSeats(wards)
+                                    }
+                                </TableCell>
+                                <TableCell className="text-right">Занято:</TableCell>
+                                <TableCell className="text-left">{
+                                    wards.reduce((sum, current) => {
+                                        return sum + current.engaged
+                                    }, 0) +
+                                    takenWards.reduce((sum, current) => {
+                                        return sum + current.engaged
+                                    }, 0) -
+                                    givenEngaged(wards)
+                                }</TableCell>
+                                <TableCell className="text-right">Свободно:</TableCell>
+                                <TableCell className="text-left">{
+                                    wards.reduce((sum, current) => {
+                                        return sum + current.free
+                                    }, 0) +
+                                    takenWards.reduce((sum, current) => {
+                                        return sum + current.free
+                                    }, 0) -
+                                    givenFree(wards)
+                                }</TableCell>
+                            </TableRow>
+                        </TableFooter>
+                    </Table>
                 </div>
-                <Table>
-                    <TableCaption>Лист палат.</TableCaption>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead className="w-[100px]">палата №</TableHead>
-                            <TableHead>кол-во мест</TableHead>
-                            <TableHead>занято</TableHead>
-                            <TableHead>свободно</TableHead>
-                            <TableHead>пол</TableHead>
-                            <TableHead>резерв по распоряжению</TableHead>
-                            <TableHead></TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {department?wards.map((invoice) => (
-                            <UserWard ward={invoice}  key={invoice.id} getWards={getWards} depId={department.id} grade={profile?.grade} />
-                        )):''}
-                        {department?takenWards.map((invoice) => (
-                            <UserWard ward={invoice}  key={invoice.id} getWards={getWards} depId={department.id} taken={true}  grade={profile?.grade}  />
-                        )):''}
-                    </TableBody>
+://CHIEF
+                <div className="rounded-md border basis-4/5">
+                    <div className="">
+                        <h1 className="text-center mt-4 mb-2 text-lg font-bold">Сводка по местам</h1>
+                        <h4 className="ml-2 font-medium">{new Date().toLocaleString('ru', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        })}</h4>
+                        <h4 className="ml-2 font-medium">Отделение: {isTo?.name}</h4>
+                        {profile?.grade == 'CHIEFNURSE' || profile?.grade == 'DEPNURSTAFF' ?
+                            isTo ? <CreateWardSheet depId={isTo.id} getWards={getToWards} /> : ''
+                            :
+                            ""
+                        }
 
-                    <TableFooter>
-                                    <TableRow>
-                                        <TableCell colSpan={1}>Кол-во мест:</TableCell>
-                                        <TableCell className="text-left">
-                                            {
-                                             wards.reduce((sum, current) => {
-                                                    return sum + current.numberOfSeats
-                                                }, 0) + 
-                                                takenWards.reduce((sum, current) => {
-                                                    return sum + current.numberOfSeats
-                                                }, 0) -
-                                                givenNumberofSeats(wards)
-                                            }
-                                                </TableCell>
-                                        <TableCell className="text-right">Занято:</TableCell>
-                                        <TableCell className="text-left">{
-                                             wards.reduce((sum, current) => {
-                                                    return sum + current.engaged
-                                                }, 0) + 
-                                                takenWards.reduce((sum, current) => {
-                                                    return sum + current.engaged
-                                                }, 0) -
-                                                givenEngaged(wards)
-                                            }</TableCell>
-                                        <TableCell className="text-right">Свободно:</TableCell>
-                                        <TableCell className="text-left">{
-                                             wards.reduce((sum, current) => {
-                                                    return sum + current.free
-                                                }, 0) + 
-                                                takenWards.reduce((sum, current) => {
-                                                    return sum + current.free
-                                                }, 0) -
-                                                givenFree(wards)
-                                            }</TableCell>
-                                    </TableRow>
-                                </TableFooter>
-                </Table>
-            </div>
+                        <div className="flex gap-4 ml-2">
+                            <div className="w-6 h-6 bg-orange-100"></div> взяты в отделение
+                            <div className="w-6 h-6 bg-green-100"></div> отданы другим отделением
+                        </div>
 
+                    </div>
+                    <Table>
+                        <TableCaption>Лист палат.</TableCaption>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-[100px]">палата №</TableHead>
+                                <TableHead>кол-во мест</TableHead>
+                                <TableHead>занято</TableHead>
+                                <TableHead>свободно</TableHead>
+                                <TableHead>пол</TableHead>
+                                <TableHead>резерв по распоряжению</TableHead>
+                                <TableHead></TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {isTo ? Towards.map((invoice) => (
+                                <UserWard ward={invoice} key={invoice.id} getWards={getToWards} depId={isTo.id} grade={profile?.grade} />
+                            )) : ''}
+                            {isTo ? takenToWards.map((invoice) => (
+                                <UserWard ward={invoice} key={invoice.id} getWards={getToWards} depId={isTo.id} taken={true} grade={profile?.grade} />
+                            )) : ''}
+                        </TableBody>
+
+                        <TableFooter>
+                            <TableRow>
+                                <TableCell colSpan={1}>Кол-во мест:</TableCell>
+                                <TableCell className="text-left">
+                                    {
+                                        Towards.reduce((sum, current) => {
+                                            return sum + current.numberOfSeats
+                                        }, 0) +
+                                        takenToWards.reduce((sum, current) => {
+                                            return sum + current.numberOfSeats
+                                        }, 0) -
+                                        givenNumberofSeats(Towards)
+                                    }
+                                </TableCell>
+                                <TableCell className="text-right">Занято:</TableCell>
+                                <TableCell className="text-left">{
+                                    Towards.reduce((sum, current) => {
+                                        return sum + current.engaged
+                                    }, 0) +
+                                    takenToWards.reduce((sum, current) => {
+                                        return sum + current.engaged
+                                    }, 0) -
+                                    givenEngaged(Towards)
+                                }</TableCell>
+                                <TableCell className="text-right">Свободно:</TableCell>
+                                <TableCell className="text-left">{
+                                    Towards.reduce((sum, current) => {
+                                        return sum + current.free
+                                    }, 0) +
+                                    takenToWards.reduce((sum, current) => {
+                                        return sum + current.free
+                                    }, 0) -
+                                    givenFree(Towards)
+                                }</TableCell>
+                            </TableRow>
+                        </TableFooter>
+                    </Table>
+
+
+
+                    <h4 className="ml-2 font-medium">Отделение: {isXo?.name}</h4>
+                        {profile?.grade == 'CHIEFNURSE' || profile?.grade == 'DEPNURSTAFF' ?
+                            isXo ? <CreateWardSheet depId={isXo.id} getWards={getXoWards} /> : ''
+                            :
+                            ""
+                        }
+
+                        <div className="flex gap-4 ml-2">
+                            <div className="w-6 h-6 bg-orange-100"></div> взяты в отделение
+                            <div className="w-6 h-6 bg-green-100"></div> отданы другим отделением
+                        </div>
+                        <Table>
+                        <TableCaption>Лист палат.</TableCaption>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-[100px]">палата №</TableHead>
+                                <TableHead>кол-во мест</TableHead>
+                                <TableHead>занято</TableHead>
+                                <TableHead>свободно</TableHead>
+                                <TableHead>пол</TableHead>
+                                <TableHead>резерв по распоряжению</TableHead>
+                                <TableHead></TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {isXo ? Xowards.map((invoice) => (
+                                <UserWard ward={invoice} key={invoice.id} getWards={getXoWards} depId={isXo.id} grade={profile?.grade} />
+                            )) : ''}
+                            {isXo ? takenXoWards.map((invoice) => (
+                                <UserWard ward={invoice} key={invoice.id} getWards={getXoWards} depId={isXo.id} taken={true} grade={profile?.grade} />
+                            )) : ''}
+                        </TableBody>
+
+                        <TableFooter>
+                            <TableRow>
+                                <TableCell colSpan={1}>Кол-во мест:</TableCell>
+                                <TableCell className="text-left">
+                                    {
+                                        Xowards.reduce((sum, current) => {
+                                            return sum + current.numberOfSeats
+                                        }, 0) +
+                                        takenXoWards.reduce((sum, current) => {
+                                            return sum + current.numberOfSeats
+                                        }, 0) -
+                                        givenNumberofSeats(Xowards)
+                                    }
+                                </TableCell>
+                                <TableCell className="text-right">Занято:</TableCell>
+                                <TableCell className="text-left">{
+                                    Xowards.reduce((sum, current) => {
+                                        return sum + current.engaged
+                                    }, 0) +
+                                    takenXoWards.reduce((sum, current) => {
+                                        return sum + current.engaged
+                                    }, 0) -
+                                    givenEngaged(Xowards)
+                                }</TableCell>
+                                <TableCell className="text-right">Свободно:</TableCell>
+                                <TableCell className="text-left">{
+                                    Xowards.reduce((sum, current) => {
+                                        return sum + current.free
+                                    }, 0) +
+                                    takenXoWards.reduce((sum, current) => {
+                                        return sum + current.free
+                                    }, 0) -
+                                    givenFree(Xowards)
+                                }</TableCell>
+                            </TableRow>
+                        </TableFooter>
+                    </Table>
+
+                    <h4 className="ml-2 font-medium">Отделение: {isHo?.name}</h4>
+                        {profile?.grade == 'CHIEFNURSE' || profile?.grade == 'DEPNURSTAFF' ?
+                            isHo ? <CreateWardSheet depId={isHo.id} getWards={getHoWards} /> : ''
+                            :
+                            ""
+                        }
+
+                        <div className="flex gap-4 ml-2">
+                            <div className="w-6 h-6 bg-orange-100"></div> взяты в отделение
+                            <div className="w-6 h-6 bg-green-100"></div> отданы другим отделением
+                        </div>
+                        <Table>
+                        <TableCaption>Лист палат.</TableCaption>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-[100px]">палата №</TableHead>
+                                <TableHead>кол-во мест</TableHead>
+                                <TableHead>занято</TableHead>
+                                <TableHead>свободно</TableHead>
+                                <TableHead>пол</TableHead>
+                                <TableHead>резерв по распоряжению</TableHead>
+                                <TableHead></TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {isHo ? Howards.map((invoice) => (
+                                <UserWard ward={invoice} key={invoice.id} getWards={getHoWards} depId={isHo.id} grade={profile?.grade} />
+                            )) : ''}
+                            {isHo ? takenHoWards.map((invoice) => (
+                                <UserWard ward={invoice} key={invoice.id} getWards={getHoWards} depId={isHo.id} taken={true} grade={profile?.grade} />
+                            )) : ''}
+                        </TableBody>
+
+                        <TableFooter>
+                            <TableRow>
+                                <TableCell colSpan={1}>Кол-во мест:</TableCell>
+                                <TableCell className="text-left">
+                                    {
+                                        Howards.reduce((sum, current) => {
+                                            return sum + current.numberOfSeats
+                                        }, 0) +
+                                        takenHoWards.reduce((sum, current) => {
+                                            return sum + current.numberOfSeats
+                                        }, 0) -
+                                        givenNumberofSeats(Howards)
+                                    }
+                                </TableCell>
+                                <TableCell className="text-right">Занято:</TableCell>
+                                <TableCell className="text-left">{
+                                    Howards.reduce((sum, current) => {
+                                        return sum + current.engaged
+                                    }, 0) +
+                                    takenHoWards.reduce((sum, current) => {
+                                        return sum + current.engaged
+                                    }, 0) -
+                                    givenEngaged(Howards)
+                                }</TableCell>
+                                <TableCell className="text-right">Свободно:</TableCell>
+                                <TableCell className="text-left">{
+                                    Howards.reduce((sum, current) => {
+                                        return sum + current.free
+                                    }, 0) +
+                                    takenHoWards.reduce((sum, current) => {
+                                        return sum + current.free
+                                    }, 0) -
+                                    givenFree(Howards)
+                                }</TableCell>
+                            </TableRow>
+                        </TableFooter>
+                    </Table>
+
+                    <h4 className="ml-2 font-medium">Отделение: {isReab?.name}</h4>
+                        {profile?.grade == 'CHIEFNURSE' || profile?.grade == 'DEPNURSTAFF' ?
+                            isReab ? <CreateWardSheet depId={isReab.id} getWards={getReabWards} /> : ''
+                            :
+                            ""
+                        }
+
+                        <div className="flex gap-4 ml-2">
+                            <div className="w-6 h-6 bg-orange-100"></div> взяты в отделение
+                            <div className="w-6 h-6 bg-green-100"></div> отданы другим отделением
+                        </div>
+                        <Table>
+                        <TableCaption>Лист палат.</TableCaption>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-[100px]">палата №</TableHead>
+                                <TableHead>кол-во мест</TableHead>
+                                <TableHead>занято</TableHead>
+                                <TableHead>свободно</TableHead>
+                                <TableHead>пол</TableHead>
+                                <TableHead>резерв по распоряжению</TableHead>
+                                <TableHead></TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {isReab ? Reabwards.map((invoice) => (
+                                <UserWard ward={invoice} key={invoice.id} getWards={getReabWards} depId={isReab.id} grade={profile?.grade} />
+                            )) : ''}
+                            {isReab ? takenReabWards.map((invoice) => (
+                                <UserWard ward={invoice} key={invoice.id} getWards={getReabWards} depId={isReab.id} taken={true} grade={profile?.grade} />
+                            )) : ''}
+                        </TableBody>
+
+                        <TableFooter>
+                            <TableRow>
+                                <TableCell colSpan={1}>Кол-во мест:</TableCell>
+                                <TableCell className="text-left">
+                                    {
+                                        Reabwards.reduce((sum, current) => {
+                                            return sum + current.numberOfSeats
+                                        }, 0) +
+                                        takenReabWards.reduce((sum, current) => {
+                                            return sum + current.numberOfSeats
+                                        }, 0) -
+                                        givenNumberofSeats(Reabwards)
+                                    }
+                                </TableCell>
+                                <TableCell className="text-right">Занято:</TableCell>
+                                <TableCell className="text-left">{
+                                    Reabwards.reduce((sum, current) => {
+                                        return sum + current.engaged
+                                    }, 0) +
+                                    takenReabWards.reduce((sum, current) => {
+                                        return sum + current.engaged
+                                    }, 0) -
+                                    givenEngaged(Reabwards)
+                                }</TableCell>
+                                <TableCell className="text-right">Свободно:</TableCell>
+                                <TableCell className="text-left">{
+                                    Reabwards.reduce((sum, current) => {
+                                        return sum + current.free
+                                    }, 0) +
+                                    takenReabWards.reduce((sum, current) => {
+                                        return sum + current.free
+                                    }, 0) -
+                                    givenFree(Reabwards)
+                                }</TableCell>
+                            </TableRow>
+                        </TableFooter>
+                    </Table>
+                </div>
+            }
             <div className="flex justify-end mr-2 mb-2 h-64">
-                {department && profile ?<UserCard department={department} profile={profile} name={session.data?.user.name} /> : ''}
+                {department && profile ? <UserCard department={department} profile={profile} name={session.data?.user.name} /> : ''}
             </div>
+
         </div>
+
     )
 
 }
