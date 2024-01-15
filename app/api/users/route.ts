@@ -28,7 +28,7 @@ export async function DELETE(
 
         const user = await prisma.user.delete({
             where: {
-                id: id
+                id
             }
         })
 

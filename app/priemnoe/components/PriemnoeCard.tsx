@@ -116,7 +116,7 @@ export function PriemnoeCard({dep, wards, allWards} : {dep: Department, wards: W
                 { free }
             </TableCell>
             <TableCell className="bold text-lg">
-                <p>{Math.trunc(progress)}%</p>
+                <p>{!isNaN(progress)?Math.trunc(progress) + '%' : ''}</p>
                
                 <ProgressCustom value={progress} 
                 indicatorColor={

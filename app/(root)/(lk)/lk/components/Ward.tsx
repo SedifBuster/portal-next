@@ -325,7 +325,7 @@ return (
                                     <SelectValue placeholder="..." />
                                 </SelectTrigger>
                                 <SelectContent className="col-span-3">
-                                    {isDepartments?isDepartments.filter((dep) => {return dep.id !== depId}).map((dep) => {
+                                    {isDepartments?isDepartments.filter((dep) => {return dep.id !== depId && dep.name !== 'IT' && dep.name !== 'Chief'}).map((dep) => {
                                         //filter
                                         return <SelectItem value={dep.id.toString()} key={dep.id}>
                                                     {dep.name}
