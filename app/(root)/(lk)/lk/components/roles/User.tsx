@@ -282,7 +282,7 @@ export function User() {
             gap-4
             "
         >
-{department?.name !== 'CHIEF' ?
+{department?.name.toLowerCase() !== 'CHIEF'.toLowerCase() ?
                 <div className="rounded-md border basis-4/5">
                     <div className="">
                         <h1 className="text-center mt-4 mb-2 text-lg font-bold">Сводка по местам</h1>
