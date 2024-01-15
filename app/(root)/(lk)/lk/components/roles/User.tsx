@@ -98,17 +98,23 @@ export function User() {
 
     useEffect(() => {
         if(department) {
-            //@ts-ignore
-            getToWards(isTo.id)
-            //@ts-ignore
-            getXoWards(isXo.id)
-            //@ts-ignore
-            getHoWards(isHo.id)
-            //@ts-ignore
-            getReabWards(isReab.id)
+            if(isTo) {
+                //@ts-ignore
+                getToWards(isTo.id)
+            }
+            if(isXo) {
+                //@ts-ignore
+                getXoWards(isXo.id)
+            }
+            if(isHo) {
+                //@ts-ignore
+                getHoWards(isHo.id)
+            }
+            if(isReab) {
+                //@ts-ignore
+                getReabWards(isReab.id)
+            }
         }
-       
-
     }, [department])
 
     //указатель на то что палата отдана другим или взята из другого отделения
