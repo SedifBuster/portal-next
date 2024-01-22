@@ -62,6 +62,7 @@ export function CreateWardSheet({depId, getWards}: {depId: number, getWards: (id
                 getWards(depId)
                 form.reset()
                 setVisible(false)
+                //cюда нам надо вставить даш палаты
             }
         } catch (error) {
             toast.error("Ошибка при создании палаты")

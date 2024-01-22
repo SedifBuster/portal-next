@@ -107,7 +107,7 @@ export function UserWard(
             setVisibleChange(false)
             getWards(depId)
             setVisibleReturn(false)
-
+            //cюда нам надо вставить даш палаты
         } else {
             toast.error('Ошибка при изменении палаты')
         }

@@ -21,48 +21,66 @@ export async function POST(
 
         const {
             id,
-            dashDepId,
+            //dashDepId,
             number,
             numberOfSeats,
             engaged,//
             gender,//
             reserve,//
-            createdAt,
-            updatedAt
         } = body
         console.log(body)
+        const isFree = numberOfSeats - engaged
 
         if(id) {
+            //проверка на то что уже есть в бд
             let searchedWard = await prisma.dashWard.findUnique({
                 where: id
             })
             if(searchedWard) {
-        //проверка на то что уже есть в бд
+                //update       
+                if (!id || !number || !numberOfSeats) {
+                    return new NextResponse('Missing info', { status: 400 })
+                }
+            
+                const ward = await prisma.dashWard.update({
+                        where: {
+                            id
+                        },
+                        data: {
+                            number,
+                            numberOfSeats,
+                            engaged,
+                            free: isFree,
+                            gender,
+                            reserve,
+                        }
+                    })
+            
+                return NextResponse.json(ward.number)
+
+            } else return new NextResponse('UPDATE_DASH_WARD_ERROR', { status: 500 })
+
+        } else {
+            
+            if (!number || !numberOfSeats) {
+                return new NextResponse('Missing info', { status: 400 })
             }
+            const ward = await prisma.dashWard.create({
+                data: {
+                    //dashDepId,
+                    number,
+                    numberOfSeats,
+                    engaged,
+                    free: isFree,
+                    gender,
+                    reserve,
+                }
+            })
+    
+            return NextResponse.json(ward.id)
+            
         }
 
-
-
-        if (!number || !numberOfSeats) {
-            return new NextResponse('Missing info', { status: 400 })
-        }
-
-        const isFree = numberOfSeats - engaged
-        console.log(isFree)
-
-        const ward = await prisma.dashWard.create({
-            data: {
-                dashDepId,
-                number,
-                numberOfSeats,
-                engaged,
-                free: isFree,
-                gender,
-                reserve,
-            }
-        })
-
-        return NextResponse.json(ward.id)
     } catch (error) {
         console.log(error, 'WARD_CREATE_ERROR')
         return new NextResponse('Internal Error', { status: 500 })
@@ -70,7 +88,7 @@ export async function POST(
 }
 
 
-export async function DELETE(
+/*export async function DELETE(
     request: Request
 ) {
     try {
@@ -141,4 +159,4 @@ export async function PATCH(
         console.log(error, 'WARD_UPDATE_ERROR')
         return new NextResponse('Internal Error', { status: 500 })
     }
-}
+}*/

@@ -92,7 +92,7 @@ model Department {
 model DashDepartment {
   id Int @id @default(autoincrement())
   name String
-  wards DashWard[]
+  //wards DashWard[]
   numberOfSeats Int? @default(0)
   engaged Int? @default(0)//Всего находиться в стационаре, накопительным (чел.) 
   free Int? @default(0)//Свободных коек
@@ -117,8 +117,9 @@ model DashDepartment {
 //палата для дашбоарда
 model DashWard {
   id Int @id @default(autoincrement())
-  dashDepartment DashDepartment @relation(fields: [dashDepId], references: [id])
-  dashDepId Int
+  //привязка к департменту?
+  //dashDepartment DashDepartment @relation(fields: [dashDepId], references: [id])
+  //dashDepId Int
   number Int @unique
   numberOfSeats Int
   engaged Int
