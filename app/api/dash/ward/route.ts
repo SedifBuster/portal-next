@@ -21,7 +21,7 @@ export
     const body = await request.json()
     const {
       id,
-      //dashDepId,
+      dashDepId,
       number,
       numberOfSeats,
       engaged,
@@ -68,7 +68,7 @@ export
     //create new ward with new date
     const ward = await prisma.dashWard.create({
       data: {
-        //dashDepId,
+        dashDepId,
         number,
         numberOfSeats,
         engaged,
@@ -88,7 +88,7 @@ export
     //create new ward with new date
     const ward = await prisma.dashWard.create({
       data: {
-        //dashDepId,
+        dashDepId,
         number,
         numberOfSeats,
         engaged,

@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = env("DATABASE_URL")
 }
 
 model User {
@@ -92,7 +92,7 @@ model Department {
 model DashDepartment {
   id Int @id @default(autoincrement())
   name String
-  //wards DashWard[]
+  wards DashWard[]
   numberOfSeats Int? @default(0)
   engaged Int? @default(0)//Всего находиться в стационаре, накопительным (чел.) 
   free Int? @default(0)//Свободных коек
@@ -118,8 +118,8 @@ model DashDepartment {
 model DashWard {
   id Int @id @default(autoincrement())
   //привязка к департменту?
-  //dashDepartment DashDepartment @relation(fields: [dashDepId], references: [id])
-  //dashDepId Int
+  dashDepartment DashDepartment @relation(fields: [dashDepId], references: [id])
+  dashDepId Int
   number Int @unique
   numberOfSeats Int
   engaged Int

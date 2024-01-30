@@ -493,17 +493,3 @@ return (
     </TableRow>
 )
 }
-
-
-/**<div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="free" className="text-right">
-                                свободно
-                            </Label>
-                            <Input
-                                value={isFree}
-                                type="number"
-                                //@ts-ignore
-                                onChange={(e) => setFree(e.target.value)}
-                                className="col-span-3"
-                            />
-                        </div> */
