@@ -14,29 +14,32 @@ import { HiSquaresPlus } from "react-icons/hi2";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import clsx from "clsx"
 
-export type DepId = {
-    man: 'man',
-    woman: 'woman',
-    mutual: 'mutual'
+export
+  type DepId = {
+  man: 'man',
+  woman: 'woman',
+  mutual: 'mutual'
   };
 
-export type Indicator = 'given' | 'taken' | ''
+export
+  type Indicator = 'given' | 'taken' | ''
 
-export function UserWard(
+export
+  function UserWard(
     {
-        ward,
-        getWards,
-        depId,
-        taken,
-        grade,
+      ward,
+      getWards,
+      depId,
+      taken,
+      grade,
     }: {
-        ward: Ward
-        getWards: (id: number) => void
-        depId: number
-        taken?: boolean
-        grade: string | undefined
+      ward: Ward
+      getWards: (id: number) => void
+      depId: number
+      taken?: boolean
+      grade: string | undefined
     }
-) {
+  ) {
     const [isVisibleDelete, setVisibleDelete] = React.useState<boolean>(false)
     const [isVisibleChange, setVisibleChange] = React.useState<boolean>(false)
     const [isVisibleReturn, setVisibleReturn] = React.useState<boolean>(false)
@@ -44,31 +47,31 @@ export function UserWard(
     const [isDepartments, setIsDepartmens] = React.useState<Department[]>([])
 
     let getDepartments = async () => {
-        try {
-            let result = await axios.get('/api/department')
-            if (result.status === 200) {
-                setIsDepartmens(result.data)
-            }
-        } catch {
-            console.log('error')
+      try {
+        let result = await axios.get( '/api/department' )
+        if ( result.status === 200 ) {
+          setIsDepartmens(result.data)
         }
+      } catch {
+        console.log('error')
+      }
     }
 
     React.useEffect(() => {
-        getDepartments()
+      getDepartments()
     }, [])
 
     let onDeleteWard = async (id: number) => {
-        const postData = { id: id}
+      const postData = { id: id }
 
-        const result = await axios.delete('/api/ward', { data: postData })
-        if (result.statusText === "OK") {
-            toast.success('палата удалена')
-            setVisibleDelete(false)
-            getWards(depId)
-        } else {
-            toast.error('Ошибка при удалении палаты')
-        }
+      const result = await axios.delete( '/api/ward', { data: postData } )
+      if ( result.statusText === "OK" ) {
+        toast.success('палата удалена')
+        setVisibleDelete(false)
+        getWards(depId)
+      } else {
+        toast.error('Ошибка при удалении палаты')
+      }
     }
 
     //Изменение палаты
@@ -81,415 +84,394 @@ export function UserWard(
     const [isDepReserved, setDepReserved] = React.useState<boolean>(false)
 
     const [isVisibleReserve, setVisibleReserve] = React.useState<boolean>(false)
+
     let onChangeWard = async (id: number) => {
+      const postData = {
+        id: id,
+        depId: ward.depId,
+        number: Number(isNumber),
+        numberOfSeats: Number(isNumberOfSeats),
+        engaged: Number(isEngaged),
+        free: Number(isFree),
+        gender: isGender,
+        reserve: isReserve
+      }
+      let checkupArray = Object.values(postData)
+      if( postData.numberOfSeats < postData.engaged ) return toast.error( 'кол-во мест не должно быть меньше занятых' )
+      for(let i = 0; i < 6; i++) {
+        if(Number(checkupArray[i]) < 0) {
+          return toast.error( 'Числа не должны быть отрицательными' )
+        }
+      }
+      const result = await axios.patch( '/api/ward', postData )
 
-        const postData = {
-            id: id,
-            depId: ward.depId,
-            number: Number(isNumber),
-            numberOfSeats: Number(isNumberOfSeats),
-            engaged: Number(isEngaged),
-            free: Number(isFree),
-            gender: isGender,
-            reserve: isReserve
-        }
-        let checkupArray = Object.values(postData)
-        if(postData.numberOfSeats < postData.engaged) return toast.error('кол-во мест не должно быть меньше занятых')
-        for(let i = 0; i < 6; i++) {
-            if(Number(checkupArray[i]) < 0) {
-              return toast.error('Числа не должны быть отрицательными')
-            }
-        }
-        const result = await axios.patch('/api/ward', postData)
-
-        if (result.statusText === "OK") {
-            toast.success(`палата с номером ${result.data}  изменена`)
-            setVisibleChange(false)
-            getWards(depId)
-            setVisibleReturn(false)
-            //cюда нам надо вставить даш палаты
-        } else {
-            toast.error('Ошибка при изменении палаты')
-        }
+      if ( result.statusText === "OK" ) {
+        toast.success(`палата с номером ${result.data}  изменена`)
+        setVisibleChange(false)
+        getWards(depId)
+        setVisibleReturn(false)
+        //cюда нам надо вставить даш палаты
+      } else {
+        toast.error('Ошибка при изменении палаты')
+      }
     }
+
     let isTranslaredGender = (gender: string) => {
-        switch (gender) {
-            case "man": 
-                return "М"
-            case "woman":
-                return "Ж"
-            case "mutual": 
-                return "М/Ж"
-            default:
-                return gender
-        }
+      switch ( gender ) {
+        case "man": 
+          return "М"
+        case "woman":
+          return "Ж"
+        case "mutual": 
+          return "М/Ж"
+        default:
+          return gender
+      }
     }
+
     let isReserveDep = (reserveString: string | null) => {
-        if(reserveString === null) return null
-        if(Number.isNaN(Number(reserveString)) === false) {
-          let result =  isDepartments.filter((dep) => {
-                return dep.id === Number(reserveString)
-            }).map((dep) => {
-                return dep.name
-            })[0]
-            return result
-        } else return reserveString
+      if( reserveString === null ) return null
+      if( Number.isNaN(Number(reserveString)) === false ) {
+        let result =  isDepartments.filter((dep) => {
+          return dep.id === Number(reserveString)
+        }).map((dep) => {
+          return dep.name
+        })[0]
+        return result
+      } else return reserveString
     }
 
     const [isIndicator, setIndicator] = React.useState<Indicator>('')
-    //приемник своя даш панель- потом
-    let givenIndicator = (reserveString: string | null) => {
 
-        //если число в резерве, проверка на департмент и ставим гивен
-        if(Number.isNaN(Number(reserveString)) === false) {
-          let result =  isDepartments.filter((dep) => {
-                return dep.id === Number(reserveString)
-            }).map((dep) => {
-                return dep.name
-            })
-            if(result[0])  {
-                setIndicator('given')
-                setDepReserved(true)
-                return
-            } else {
-                setIndicator('')
-                setDepReserved(false)
-                return
-            }
-        } 
+    let givenIndicator = (reserveString: string | null) => {
+      //если число в резерве, проверка на департмент и ставим гивен
+      if( Number.isNaN(Number(reserveString)) === false ) {
+        let result =  isDepartments.filter((dep) => {
+          return dep.id === Number(reserveString)
+        }).map((dep) => {
+          return dep.name
+        })
+        if( result[0] )  {
+          setIndicator('given')
+          setDepReserved(true)
+          return
+        } else {
+          setIndicator('')
+          setDepReserved(false)
+          return
+        }
+      }
     }
 
     let onReturnWard = async (id: number) => {
+      const postData = {
+        id: id,
+        depId: ward.depId,
+        number: Number(isNumber),
+        numberOfSeats: Number(isNumberOfSeats),
+        engaged: Number(isEngaged),
+        free: Number(isFree),
+        gender: isGender,
+        reserve: ''
+      }
+      const result = await axios.patch( '/api/ward', postData )
 
-        const postData = {
-            id: id,
-            depId: ward.depId,
-            number: Number(isNumber),
-            numberOfSeats: Number(isNumberOfSeats),
-            engaged: Number(isEngaged),
-            free: Number(isFree),
-            gender: isGender,
-            reserve: ''
-        }
-        const result = await axios.patch('/api/ward', postData)
-
-        if (result.statusText === "OK") {
-            toast.success(`палата с номером ${result.data}  возвращена`)
-            setVisibleChange(false)
-            getWards(depId)
-            setReserve('')
-            setVisibleReturn(false)
-        } else {
-            toast.error('Ошибка при возвращении палаты')
-        }
+      if ( result.statusText === "OK" ) {
+        toast.success( `палата с номером ${result.data}  возвращена` )
+        setVisibleChange(false)
+        getWards(depId)
+        setReserve('')
+        setVisibleReturn(false)
+      } else {
+        toast.error( 'Ошибка при возвращении палаты' )
+      }
     }
 
     React.useEffect(() => {
-        if(ward)
+      if( ward )
         givenIndicator(ward.reserve)
     },[isReserveDep])
 
 return (
-    <TableRow key={ward.id} className={clsx(`
-        `,
-        isIndicator === 'given' && 'bg-orange-100',
-        taken && 'bg-lime-100'
+  <TableRow key={ward.id} className={clsx(`
+    `,
+    isIndicator === 'given' && 'bg-orange-100',
+    taken && 'bg-lime-100'
     )
-}>
-        <TableCell className="font-medium">{ward.number}</TableCell>
-        <TableCell>{ward.numberOfSeats}</TableCell>
-        <TableCell>{ward.engaged}</TableCell>
-        <TableCell>{ward.free}</TableCell>
-        <TableCell >{isTranslaredGender(ward.gender)}</TableCell>
-        {/**
-         * 
-         @ts-ignore*/}
-        <TableCell>{taken? " палата от " + isDepartments.filter((dep) => {return dep.id === ward.depId})[0]?.name :isReserveDep(ward.reserve)}</TableCell>
+  }>
+    <TableCell className="font-medium">{ward.number}</TableCell>
+    <TableCell>{ward.numberOfSeats}</TableCell>
+    <TableCell>{ward.engaged}</TableCell>
+    <TableCell>{ward.free}</TableCell>
+    <TableCell >{isTranslaredGender(ward.gender)}</TableCell>
+    {/**
+    *
+    @ts-ignore*/}
+    <TableCell>{taken? " палата от " + isDepartments.filter((dep) => {return dep.id === ward.depId})[0]?.name :isReserveDep(ward.reserve)}</TableCell>
     {!isDepReserved || taken?
-        <TableCell className="flex gap-1">
-            <Dialog open={isVisibleChange} onOpenChange={() => setVisibleChange(!isVisibleChange)}>
-                <DialogTrigger asChild>
-                    <Button variant={'outline'} onClick={() => setVisibleChange(true)}><HiPencil /></Button>
-                </DialogTrigger>
+      <TableCell className="flex gap-1">
+        <Dialog open={isVisibleChange} onOpenChange={() => setVisibleChange(!isVisibleChange)}>
+          <DialogTrigger asChild>
+            <Button variant={'outline'} onClick={() => setVisibleChange(true)}><HiPencil /></Button>
+          </DialogTrigger>
 
-                <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                        <DialogTitle>Изменение палаты</DialogTitle>
-                        <DialogDescription>
-                            Измените палату здесь. Нажмите сохранить когда закончите.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                        {grade === 'HEADNURSE' || grade === 'DEPNURSTAFF' || grade === 'CHIEFNURSE' || grade === 'TECHNICICAN'?
-                        <>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="number" className="text-right">
-                                номер палаты
-                            </Label>
-                            <Input
-                                value={isNumber}
-                                type="number"
-                                //@ts-ignore
-                                onChange={(e) => setNumber(e.target.value)}
-                                className="col-span-3"
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="numberOfSeats" className="text-right">
-                                кол-во мест
-                            </Label>
-                            <Input
-                                value={isNumberOfSeats}
-                                type="number"
-                                //@ts-ignore
-                                onChange={(e) => setNumberOfSeats(e.target.value)}
-                                className="col-span-3"
-                            />
-                        </div>
-                        </>
-                        :
-                       
-                        <>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="number" className="text-right">
-                                номер палаты
-                            </Label>
-                            <p>  {isNumber}</p> 
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="numberOfSeats" className="text-right">
-                                кол-во мест
-                            </Label>
-                           <p>{isNumberOfSeats}</p> 
-                        </div>
-                        </>
-                        }
-                        
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="engaged" className="text-right">
-                                занято
-                            </Label>
-                            <Input
-                                value={isEngaged}
-                                type="number"
-                                //@ts-ignore
-                                onChange={(e) => setEngaged(e.target.value)}
-                                className="col-span-3"
-                            />
-                        </div>
-                        
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Изменение палаты</DialogTitle>
+              <DialogDescription>
+                Измените палату здесь. Нажмите сохранить когда закончите.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              {grade === 'HEADNURSE' || grade === 'DEPNURSTAFF' || grade === 'CHIEFNURSE' || grade === 'TECHNICICAN'?
+                <>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="number" className="text-right">
+                      номер палаты
+                    </Label>
+                    <Input
+                      value={isNumber}
+                      type="number"
+                      //@ts-ignore
+                      onChange={(e) => setNumber(e.target.value)}
+                      className="col-span-3"
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="numberOfSeats" className="text-right">
+                      кол-во мест
+                    </Label>
+                    <Input
+                      value={isNumberOfSeats}
+                      type="number"
+                      //@ts-ignore
+                      onChange={(e) => setNumberOfSeats(e.target.value)}
+                      className="col-span-3"
+                    />
+                  </div>
+                </>
+              :
+                <>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="number" className="text-right">
+                      номер палаты
+                    </Label>
+                    <p> {isNumber} </p>
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="numberOfSeats" className="text-right">
+                      кол-во мест
+                    </Label>
+                    <p>{isNumberOfSeats}</p> 
+                  </div>
+                </>
+              }
 
-                        {grade === 'HEADNURSE' || grade === 'DEPNURSTAFF' || grade === 'CHIEFNURSE' || grade === 'TECHNICICAN'
-                        ?
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="gender" className="text-right">
-                                пол
-                            </Label>
-                            {/*
-                            //@ts-ignore*/}
-                            <Select value={isGender} onValueChange={(e)=> setGender(e)}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="..."   className="col-span-3"/> 
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="man">
-                                        М
-                                    </SelectItem>
-                                    <SelectItem value="woman">
-                                        Ж
-                                    </SelectItem>
-                                    <SelectItem value="mutual">
-                                        М/Ж
-                                    </SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        :
-                            ''
-                        }
-                        {/**gender */}
-                        {grade === 'DEPNURSTAFF' || grade === 'CHIEFNURSE' || grade === 'TECHNICICAN' ?
-                        !taken
-                            ?
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="reserve" className="text-right">
-                                резерв
-                            </Label>
-                            {
-                            !isVisibleReserve
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="engaged" className="text-right">
+                  занято
+                </Label>
+                <Input
+                  value={isEngaged}
+                  type="number"
+                  //@ts-ignore
+                  onChange={(e) => setEngaged(e.target.value)}
+                  className="col-span-3"
+                />
+              </div>
 
-                            ?
-                            //@ts-ignore
-                            <Select  value={isReserve} onValueChange={(e) => setReserve(e)}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="..." />
-                                </SelectTrigger>
-                                <SelectContent className="col-span-3">
-                                    {isDepartments?isDepartments.filter((dep) => {return dep.id !== depId && dep.name.toLowerCase() !== 'IT'.toLowerCase() && dep.name.toLowerCase() !== 'Chief'.toLowerCase() && dep.name.toLowerCase() !== 'ИТ'.toLowerCase()}).map((dep) => {
-                                        //filter
-                                        return <SelectItem value={dep.id.toString()} key={dep.id}>
-                                                    {dep.name}
-                                                </SelectItem>
-                                    }): ''}
-                                </SelectContent>
-                            </Select>
-
-                            :
-                            <Input
-                                value={isReserve?isReserve: ''}
-                                onChange={(e) => setReserve(e.target.value)}
-                                className="col-span-2"
-                            />
-                            }
-                            
-                            <HoverCard>
-                                <HoverCardTrigger asChild>
-                                <Button variant={'outline'} onClick={(e) => setVisibleReserve(!isVisibleReserve)}><HiSquaresPlus /></Button>
-                                </HoverCardTrigger>
-                               
-                            <HoverCardContent className="w-80">
-                            <div className="flex justify-between space-x-4">
-                
-                            <div className="space-y-1">
-                                <h4 className="text-sm font-semibold">Резерв имеет два режима</h4>
-                                <p className="text-sm">
-                                 1. Резерв за отделением. Вам надо будет выбрать отделение за которым будет закреплена палата.
-                                 </p>
-                                 <p className="text-sm">
-                                 2. Резерв по другим причинам.
-                                 </p>
+              {grade === 'HEADNURSE' || grade === 'DEPNURSTAFF' || grade === 'CHIEFNURSE' || grade === 'TECHNICICAN'
+              ?
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="gender" className="text-right">
+                  пол
+                </Label>
+                {/*
+                //@ts-ignore*/}
+                <Select value={isGender} onValueChange={(e)=> setGender(e)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="..."   className="col-span-3"/> 
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="man">
+                      М
+                    </SelectItem>
+                    <SelectItem value="woman">
+                      Ж
+                    </SelectItem>
+                    <SelectItem value="mutual">
+                      М/Ж
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              :
+              ''
+              }
+              {/**gender */}
+              {grade === 'DEPNURSTAFF' || grade === 'CHIEFNURSE' || grade === 'TECHNICICAN' ?
+                !taken
+                ?
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="reserve" className="text-right">
+                    резерв
+                  </Label>
+                  {
+                    !isVisibleReserve
+                    ?
+                    //@ts-ignore
+                    <Select  value={isReserve} onValueChange={(e) => setReserve(e)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="..." />
+                      </SelectTrigger>
+                      <SelectContent className="col-span-3">
+                        {isDepartments?isDepartments.filter((dep) => {return dep.id !== depId && dep.name.toLowerCase() !== 'IT'.toLowerCase() && dep.name.toLowerCase() !== 'Chief'.toLowerCase() && dep.name.toLowerCase() !== 'ИТ'.toLowerCase()}).map((dep) => {
+                          //filter
+                          return <SelectItem value={dep.id.toString()} key={dep.id}>
+                            {dep.name}
+                          </SelectItem>
+                        }): ''}
+                      </SelectContent>
+                    </Select>
+                    :
+                    <Input
+                      value={isReserve?isReserve: ''}
+                      onChange={(e) => setReserve(e.target.value)}
+                      className="col-span-2"
+                    />
+                    }
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        <Button variant={'outline'} onClick={(e) => setVisibleReserve(!isVisibleReserve)}><HiSquaresPlus /></Button>
+                      </HoverCardTrigger>
+                      <HoverCardContent className="w-80">
+                        <div className="flex justify-between space-x-4">
+                          <div className="space-y-1">
+                            <h4 className="text-sm font-semibold">Резерв имеет два режима</h4>
+                            <p className="text-sm">
+                              1. Резерв за отделением. Вам надо будет выбрать отделение за которым будет закреплена палата.
+                            </p>
+                            <p className="text-sm">
+                              2. Резерв по другим причинам.
+                            </p>
                             <div className="flex items-center pt-2">
-                                <span className="text-xs text-muted-foreground">
-                                     Нажмите на кнопку чтобы поменять режим
-                                </span>
-                                </div>
-                                    </div>
-                                    </div>
-                            </HoverCardContent>
-                        </HoverCard>
-                       
+                              <span className="text-xs text-muted-foreground">
+                                Нажмите на кнопку чтобы поменять режим
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </HoverCardContent>
+                    </HoverCard>
 
-
-          {/**ховер кнопки резета на пустую строку в резерве */}
-                        <HoverCard>
-                                <HoverCardTrigger asChild>
-                               {!isVisibleReserve?
-                                <Button className="bg-blue-200" variant={'outline'} onClick={(e) => {
-                                    setReserve('')
-                                }}><HiMiniArrowSmallUp /></Button>
-                                :
-                                 ''
-                                 } 
-                                </HoverCardTrigger>
-                               
-                            <HoverCardContent className="w-80">
-                            <div className="flex justify-between space-x-4">
-                
-                            <div className="space-y-1">
-                                <h4 className="text-sm font-semibold">Очистить поле резерва</h4>
+                    {/**ховер кнопки резета на пустую строку в резерве */}
+                    <HoverCard>
+                      <HoverCardTrigger asChild>
+                        {!isVisibleReserve?
+                          <Button className="bg-blue-200" variant={'outline'} onClick={(e) => {
+                            setReserve('')
+                          }}><HiMiniArrowSmallUp /></Button>
+                        :
+                          ''
+                        }
+                      </HoverCardTrigger>
+                      <HoverCardContent className="w-80">
+                        <div className="flex justify-between space-x-4">
+                          <div className="space-y-1">
+                            <h4 className="text-sm font-semibold">Очистить поле резерва</h4>
                             <div className="flex items-center pt-2">
-                                <span className="text-xs text-muted-foreground">
-                                     Убирает привязку к отделению, очищает строку "резерв"
-                                </span>
-                                </div>
-                                    </div>
-                                    </div>
-                            </HoverCardContent>
-                        </HoverCard>
-                      
-                       </div>
-                        : 
-                        '' 
-                        
-                        :  ''}
-                    </div>
-                    
-               
-                    <DialogFooter>
-                        <Button type="submit" onClick={() => onChangeWard(ward.id)}>Сохранить изменения</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+                              <span className="text-xs text-muted-foreground">
+                                Убирает привязку к отделению, очищает строку "резерв"
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </HoverCardContent>
+                    </HoverCard>
+                  </div>
+                :
+                ''
+                :
+                ''}
+              </div>
+              <DialogFooter>
+                <Button type="submit" onClick={() => onChangeWard(ward.id)}>Сохранить изменения</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
           {/*удаление палаты */}
           {grade === 'DEPNURSTAFF' || grade === 'CHIEFNURSE' || grade === 'TECHNICICAN' ?
             <Dialog open={isVisibleDelete} onOpenChange={() => setVisibleDelete(!isVisibleDelete)}>
-                <DialogTrigger asChild>
-
-                    <Button variant={'destructive'} onClick={() => setVisibleDelete(true)}><HiTrash /></Button>
-
-                </DialogTrigger>
-
-                <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                        <DialogTitle>Удаление палаты</DialogTitle>
-                        <DialogDescription>
-                            Вы действительно хотите удалить палату?
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="flex gap-4 py-4">
-                        <div className="flex items-center gap-4">
-                            <Label htmlFor="number" className="text-right">
-                                Номер палаты №
-                            </Label>
-                            {ward.number}
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <Label htmlFor="numberOfSeats" className="text-right">
-                                Кол-во мест
-                            </Label>
-                            {ward.numberOfSeats}
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button onClick={() => onDeleteWard(ward.id)} variant={'destructive'}>Удалить</Button>
-                        <Button variant={'outline'} onClick={() => setVisibleDelete(false)}>Отменить</Button>
-                    </DialogFooter>
-                </DialogContent>
+              <DialogTrigger asChild>
+                <Button variant={'destructive'} onClick={() => setVisibleDelete(true)}><HiTrash /></Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Удаление палаты</DialogTitle>
+                  <DialogDescription>
+                    Вы действительно хотите удалить палату?
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="flex gap-4 py-4">
+                  <div className="flex items-center gap-4">
+                    <Label htmlFor="number" className="text-right">
+                      Номер палаты №
+                    </Label>
+                    {ward.number}
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <Label htmlFor="numberOfSeats" className="text-right">
+                      Кол-во мест
+                    </Label>
+                    {ward.numberOfSeats}
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button onClick={() => onDeleteWard(ward.id)} variant={'destructive'}>Удалить</Button>
+                  <Button variant={'outline'} onClick={() => setVisibleDelete(false)}>Отменить</Button>
+                </DialogFooter>
+              </DialogContent>
             </Dialog>
-             : ''}
+          : ''}
         </TableCell>
-        : //возвращение палаты себе
+        ://возвращение палаты себе
         grade === 'DEPNURSTAFF' || grade === 'CHIEFNURSE' || grade === 'TECHNICICAN' ?
         <TableCell className="flex gap-1">
-            <Dialog open={isVisibleReturn} onOpenChange={() => setVisibleReturn(!isVisibleReturn)}>
-                <DialogTrigger asChild>
+          <Dialog open={isVisibleReturn} onOpenChange={() => setVisibleReturn(!isVisibleReturn)}>
+            <DialogTrigger asChild>
+              <HoverCard>
+                <HoverCardTrigger asChild>
+                  <Button className="bg-blue-400" onClick={() => setVisibleReturn(true)}><HiMiniArrowDownOnSquareStack /></Button>
+                </HoverCardTrigger>
+                <HoverCardContent className="w-80">
+                  <div className="flex justify-between space-x-4">
+                    <div className="space-y-1">
+                      <h4 className="text-sm font-semibold">Забрать палату</h4>
+                      <p className="text-sm">
+                        Вернуть палату обратно в свое отделение
+                      </p>
+                    </div>
+                  </div>
+                </HoverCardContent>
+              </HoverCard>
+            </DialogTrigger>
 
-                    <HoverCard>
-                                <HoverCardTrigger asChild>
-                                <Button className="bg-blue-400" onClick={() => setVisibleReturn(true)}><HiMiniArrowDownOnSquareStack /></Button>
-                                </HoverCardTrigger>
-                               
-                            <HoverCardContent className="w-80">
-                            <div className="flex justify-between space-x-4">
-                
-                            <div className="space-y-1">
-                                <h4 className="text-sm font-semibold">Забрать палату</h4>
-                                <p className="text-sm">
-                                 Вернуть палату обратно в свое отделение
-                                 </p>
-                                    </div>
-                                    </div>
-                            </HoverCardContent>
-                        </HoverCard>
-
-                </DialogTrigger>
-
-                <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                        <DialogTitle>Вернуть палату в свое отделение?</DialogTitle>
-                        <DialogDescription>
-                            Палата вернется в отделение и будет доступна для редактирования.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                        <Button className="bg-blue-400" onClick={() => onReturnWard(ward.id)} >Вернуть</Button>
-                        <Button variant={'outline'} onClick={() => setVisibleReturn(false)}>Отменить</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Вернуть палату в свое отделение?</DialogTitle>
+                <DialogDescription>
+                  Палата вернется в отделение и будет доступна для редактирования.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button className="bg-blue-400" onClick={() => onReturnWard(ward.id)} >Вернуть</Button>
+                <Button variant={'outline'} onClick={() => setVisibleReturn(false)}>Отменить</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </TableCell>
         : ''
     }
     </TableRow>
-)
+  )
 }
