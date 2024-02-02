@@ -31,7 +31,7 @@ export
   console.log( body )
   const isFree = numberOfSeats - engaged
   //if getting id
-  if( id ) {
+  //if( id ) {
     //exist in bd this ward
     let searchedWard = await prisma.dashWard.findUnique({
       where: id
@@ -81,7 +81,7 @@ export
       }
     } else return new NextResponse( 'UPDATE_DASH_WARD_ERROR', { status: 500 } )
   //if no id (or,and) no ward
-  } else {
+  /*} else {
     if ( !number || !numberOfSeats ) {
       return new NextResponse('Missing info', { status: 400 })
     }
@@ -98,7 +98,7 @@ export
       }
     })
     return NextResponse.json(ward.id)
-  }
+  }*/
   } catch ( error ) {
     console.log( error, 'WARD_CREATE_ERROR' )
     return new NextResponse( 'Internal Error', { status: 500 })

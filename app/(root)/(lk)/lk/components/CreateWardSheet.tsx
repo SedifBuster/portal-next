@@ -75,6 +75,18 @@ export
         form.reset()
         setVisible(false)
         //cюда нам надо вставить даш палаты
+        try {
+          let dashWardResult = await axios.post( '/api/dash/ward')
+          if( dashWardResult.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
+          else if( dashWardResult.statusText === "OK") {
+            const dashWardNumber: number = await dashWardResult.data
+            console.log('dash ward' + ' ', dashWardNumber)
+          }
+        } catch ( error ) {
+          toast.error( "Ошибка при создании палаты для дашборда" )
+          console.log( "Ошибка при создании палаты для дашборда", error )
+        }
+
       }
     } catch ( error ) {
       toast.error( "Ошибка при создании палаты" )
