@@ -107,18 +107,51 @@ export
 
       if ( result.statusText === "OK" ) {
         toast.success(`палата с номером ${result.data}  изменена`)
-                //cюда нам надо вставить даш палаты
-                try {
-                    let dashWardResult = await axios.post( '/api/dash/ward', postData)
+        //cюда нам надо вставить даш палаты
+        try {
+          if( 
+            new Date(ward.updatedAt).getDay() === new Date().getDay()
+            &&
+            new Date(ward.updatedAt).getMonth() === new Date().getMonth()
+            &&
+            new Date(ward.updatedAt).getFullYear() === new Date().getFullYear()
+          ) {
+            console.log('tot zhe den')
+            let dashWardUpdate = await axios.patch( '/api/dash/ward', postData)
+            if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
+            else if( dashWardUpdate.statusText === "OK") {
+              const dashWardNumber: number = await dashWardUpdate.data
+              console.log('dash ward' + ' ', dashWardNumber)
+            }
+           } else{
+            console.log('drugoi den')
+            //post body
+            const dashBody = {
+              depId: ward.depId,
+              number: Number(isNumber),
+              numberOfSeats: Number(isNumberOfSeats),
+              engaged: Number(isEngaged),
+              free: Number(isFree),
+              gender: isGender,
+              reserve: isReserve,
+            }
+            let dashWardUpdate = await axios.post( '/api/dash/ward', dashBody)
+            if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
+            else if( dashWardUpdate.statusText === "OK") {
+              const dashWardNumber: number = await dashWardUpdate.data
+              console.log('dash ward' + ' ', dashWardNumber)
+            }
+           }
+                   /* let dashWardResult = await axios.post( '/api/dash/ward', postData)
                     if( dashWardResult.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
                     else if( dashWardResult.statusText === "OK") {
                       const dashWardNumber: number = await dashWardResult.data
                       console.log('dash ward' + ' ', dashWardNumber)
-                    }
-                  } catch ( error ) {
-                    toast.error( "Ошибка при создании палаты для дашборда" )
-                    console.log( "Ошибка при создании палаты для дашборда", error )
-                  }
+                    }*/
+        } catch ( error ) {
+          toast.error( "Ошибка при создании палаты для дашборда" )
+          console.log( "Ошибка при создании палаты для дашборда", error )
+        }
         setVisibleChange(false)
         getWards(depId)
         setVisibleReturn(false)

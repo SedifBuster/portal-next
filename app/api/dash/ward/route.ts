@@ -1,8 +1,8 @@
 import prisma from "@/lib/prismadb"
-import { DashWard, Gender } from "@prisma/client"
+//import { DashWard, Gender } from "@prisma/client"
 import { NextResponse } from "next/server"
 
-type DashWardPost = {
+/*type DashWardPost = {
   dashDepId: number;
   number: number;
   numberOfSeats: number;
@@ -33,7 +33,7 @@ const defaultPost:DashWardPost = {
   free: 0,
   gender: 'man',
   reserve: null,
-}
+}*/
 
 export
   async function GET(
@@ -47,6 +47,84 @@ export
   }
 }
 
+export
+  async function POST(
+    request: Request
+) {
+  try {
+    const body = await request.json()
+    const {
+      dashDepId,
+      number,
+      numberOfSeats,
+      engaged,
+      gender,
+      reserve,
+    } = body
+    console.log( body )
+    const isFree = numberOfSeats - engaged
+    if ( !number || !numberOfSeats ) {
+      return new NextResponse('Missing info', { status: 400 })
+    }
+    //create new ward with new date
+    const ward = await prisma.dashWard.create({
+      data: {
+        dashDepId,
+        number,
+        numberOfSeats,
+        engaged,
+        free: isFree,
+        gender,
+        reserve,
+      }
+    })
+    return NextResponse.json(ward.id)
+  } catch ( error ) {
+    console.log( error, 'DASH_WARD_CREATE_ERROR' )
+    return new NextResponse( 'Internal Error', { status: 500 })
+  }
+}
+
+export
+  async function PATCH(
+    request: Request
+) {
+  try {
+    const body = await request.json()
+    const {
+      id,
+      dashDepId,
+      number,
+      numberOfSeats,
+      engaged,
+      gender,
+      reserve,
+    } = body
+    console.log( body )
+    const isFree = numberOfSeats - engaged
+    const ward = await prisma.dashWard.update({
+      where: {
+        id
+      },
+      data: {
+        number,
+        dashDepId,
+        numberOfSeats,
+        engaged,
+        free: isFree,
+        gender,
+        reserve,
+      }
+    })
+    return NextResponse.json(ward.number)
+  } catch ( error ) {
+    console.log( error, 'DASH_WARD_UPDATE_ERROR' )
+    return new NextResponse( 'Internal Error', { status: 500 })
+  }
+}
+
+
+/*
 export
   async function POST(
     request: Request
@@ -146,3 +224,4 @@ export
     return new NextResponse( 'Internal Error', { status: 500 })
   }
 }
+*/
