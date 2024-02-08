@@ -3,23 +3,23 @@
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useEffect, useState } from "react"
-import { fillingTable } from "./Owerview"
 import { saveAs } from "file-saver"
 import { read, utils, write } from 'xlsx'
 import { File } from "buffer"
 import toast from "react-hot-toast"
 import axios from "axios"
-import { DashTable, Department, Ward } from "@prisma/client"
+import { Department, Ward } from "@prisma/client"
+import { DashInit } from "./Owerview"
 
 export function FillingTable({
     fillingTable,
     getTables
 }: {
-    fillingTable: DashTable
+    fillingTable: DashInit
     getTables: () => void
 }) {
 
-    const [isNewDataTable, setNewDataTable] = useState<DashTable>()
+    const [isNewDataTable, setNewDataTable] = useState<DashInit>()
 
     const GiveXMLS = () => {
         console.log(fillingTable)

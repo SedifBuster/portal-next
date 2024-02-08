@@ -72,6 +72,12 @@ export
         const wardNumber: number = await wardResult.data
         toast.success( `палата создана с айди: ${wardNumber}` )
         getWards(depId)
+        let dashWardUpdate = await axios.post( '/api/dash/ward', wardData)
+        if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
+        else if( dashWardUpdate.statusText === "OK") {
+          const dashWardNumber: number = await dashWardUpdate.data
+          console.log('dash ward' + ' ', dashWardNumber)
+        }
         form.reset()
         setVisible(false)
         //cюда нам надо вставить даш палаты

@@ -1,29 +1,26 @@
 "use client"
 
-import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 import { FillingTable } from "./FillingTable"
-import { DashTable, Department } from "@prisma/client"
 import axios from "axios"
 import toast from "react-hot-toast"
+import { Dash, DashDepartment } from "@prisma/client"
+import { FillingItem } from "./FillingItem"
 
-
-export type fillingTable = {
-    id: number
-    date: Date
-    table: Department[] | string
+export
+  interface DashInit extends Dash {
+    table: DashDepartment[] | string
 }
 
-
-export function Owerview() {
-
-    //получить данные
-    //возможность выгрузить и загрузить ексель
-    //создать таблицу
-    //из страрой таблицы
-    const [isTables, setTables] = useState<DashTable[]>()
-
-    const [isTable, setTable] = useState<DashTable>({
+export
+  function Owerview(
+) {
+  //получить данные
+  //возможность выгрузить и загрузить ексель
+  //создать таблицу
+  //из страрой таблицы
+  const [isTables, setTables] = useState<DashInit[]>()
+  const [isTable, setTable] = useState<DashInit>({
         id: 1,
         date: new Date(),
         table: JSON.stringify([{
@@ -151,47 +148,89 @@ export function Owerview() {
             updatedAt : new Date(),
           },
         ])
-    })
-
-    let getTables = async () => {
-        try {
-            let result = await axios.get('/api/dash')
-            if (result.status === 200) {
-                setTables(result.data)
-            }
-        } catch {
-            console.log('error')
-        }
+  })
+  let getTables = async () => {
+    try {
+      let result = await axios.get('/api/dash')
+      if (result.status === 200) {
+        setTables(result.data)
+      }
+    } catch {
+      console.log('error')
     }
-    //console.log(isTables)
-    useEffect(() => {
-        getTables()
-    }, [])
+  }
+  //console.log(isTables)
+  useEffect(() => {
+    getTables()
+  }, [])
+  let onChangeTable = (table: DashInit) => {
+    if(table)
+    setTable(table)
+    else return toast.error('таблица не найдена')
+  }
 
-    let onChangeTable = (table: DashTable) => {
-        if(table)
-        setTable(table)
-        else return toast.error('таблица не найдена')
-    }
-
-    return (
-        <main 
-            className=""
-        >
-            <div className="
-                h-44
-                bg-yellow-100
-                w-screen
-            "
+  return (
+    <main 
+      className="
+        h-screen
+        w-screen
+      "
+    >
+      <div
+        className="
+          overscroll-auto
+          flex
+          flex-wrap
+          p-2
+          gap-2
+        "
+      >
+        {isTables
+          ?
+          isTables.map((table) => {
+            return <div
+              className="
+                p-4
+                bg-slate-400
+              "
+              key={table.id}
+              onClick={() => onChangeTable(table)}
             >
-            {isTables? isTables.map((table) => {
-                    return <div className="p-4 bg-slate-400" key={table.id} onClick={() => onChangeTable(table)}><div></div>{table.date.toString()}</div>
-                })
-            :
-            ''
-            }
-            </div>
-            <FillingTable fillingTable={isTable} getTables={getTables}/>
-        </main>
-    )
+              <div>
+              </div>{table.date.toString()}</div>
+          })
+          :
+          ''
+        }
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+        <FillingItem/>
+      </div>
+      {/** <FillingTable fillingTable={isTable} getTables={getTables}/>*/}
+    </main>
+  )
 }
