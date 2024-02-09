@@ -19,8 +19,7 @@ export
   //возможность выгрузить и загрузить ексель
   //создать таблицу
   //из страрой таблицы
-  const [isTables, setTables] = useState<DashInit[]>()
-  const [isTable, setTable] = useState<DashInit>({
+    /*const [isTable, setTable] = useState<DashInit>({
         id: 1,
         date: new Date(),
         table: JSON.stringify([{
@@ -148,7 +147,13 @@ export
             updatedAt : new Date(),
           },
         ])
-  })
+  })*/
+  /*let onChangeTable = (table: DashInit) => {
+    if(table)
+    setTable(table)
+    else return toast.error('таблица не найдена')
+  }*/
+  const [isTables, setTables] = useState<DashInit[]>()
   let getTables = async () => {
     try {
       let result = await axios.get('/api/dash')
@@ -159,15 +164,9 @@ export
       console.log('error')
     }
   }
-  //console.log(isTables)
   useEffect(() => {
     getTables()
   }, [])
-  let onChangeTable = (table: DashInit) => {
-    if(table)
-    setTable(table)
-    else return toast.error('таблица не найдена')
-  }
 
   return (
     <main 
@@ -181,56 +180,23 @@ export
           overscroll-auto
           flex
           flex-wrap
-          p-2
+          justify-start
+          pt-2
+          pl-2
+          pb-6
           gap-2
         "
       >
+        <FillingItem date={'Создать новую таблицу'} id={0}/>
         {isTables
           ?
-          isTables.map((table) => {
-            return <div
-              className="
-                p-4
-                bg-slate-400
-              "
-              key={table.id}
-              onClick={() => onChangeTable(table)}
-            >
-              <div>
-              </div>{table.date.toString()}</div>
+          isTables.reverse().map((table) => {
+            return  <FillingItem date={new Date()/**тут из табле все вытаскиваем */} id={0}/>
           })
           :
           ''
         }
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
-        <FillingItem/>
       </div>
-      {/** <FillingTable fillingTable={isTable} getTables={getTables}/>*/}
     </main>
   )
 }
