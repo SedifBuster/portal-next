@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { DashDepartment } from "@prisma/client"
+import { DrawerTable } from "./DrawerTable"
 
 export
   function FillingItem({
@@ -17,7 +18,7 @@ export
   return (
     <main 
       className="
-        basis-1/6
+        basis-1/9
         text-center
         h-44
         border
@@ -43,14 +44,16 @@ export
         :
         ''
       }
-      <Button>
-        {table
+      <DrawerTable  button={
+        <Button>
+          {table
           ?
           'изменить'
           :
           'создать'
-        }
-      </Button>
+          }
+        </Button>
+      }/>
     </main>
   )
 }
