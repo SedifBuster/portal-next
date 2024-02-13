@@ -16,6 +16,134 @@ import { ReactNode, useState } from "react"
 import { saveAs } from "file-saver"
 import { read, utils, write } from 'xlsx'
 import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { DrawerTableFooter } from "./DrawerTableFooter"
+
+const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
+  id: 0,
+  date: new Date(),
+  table: [
+    {
+      id: 1,
+      name: 'ТО',
+      //wards DashWard[]
+      numberOfSeats: 0,
+      engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
+      free: 0, //Свободных коек
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      //to table
+      planHuman: 0,
+      planRub: 0,
+      begAcc: 0,
+      admRec: 0,
+      disCome: 0,
+      disTax: 0,
+      patOver: 0,
+      storColed: 0,
+      transHuman: 0,
+      transRub: 0,
+      medPrice: 0,
+      dolgDead: 0,
+      dashId: 0,
+    },
+    {
+      id: 2,
+      name: 'ХО',
+      //wards DashWard[]
+      numberOfSeats: 0,
+      engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
+      free: 0, //Свободных коек
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      //to table
+      planHuman: 0,
+      planRub: 0,
+      begAcc: 0,
+      admRec: 0,
+      disCome: 0,
+      disTax: 0,
+      patOver: 0,
+      storColed: 0,
+      transHuman: 0,
+      transRub: 0,
+      medPrice: 0,
+      dolgDead: 0,
+      dashId: 0,
+    },
+    {
+      id: 3,
+      name: 'НО',
+      //wards DashWard[]
+      numberOfSeats: 0,
+      engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
+      free: 0, //Свободных коек
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      //to table
+      planHuman: 0,
+      planRub: 0,
+      begAcc: 0,
+      admRec: 0,
+      disCome: 0,
+      disTax: 0,
+      patOver: 0,
+      storColed: 0,
+      transHuman: 0,
+      transRub: 0,
+      medPrice: 0,
+      dolgDead: 0,
+      dashId: 0,
+    },
+    {
+      id: 4,
+      name: 'Реаб',
+      //wards DashWard[]
+      numberOfSeats: 0,
+      engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
+      free: 0, //Свободных коек
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      //to table
+      planHuman: 0,
+      planRub: 0,
+      begAcc: 0,
+      admRec: 0,
+      disCome: 0,
+      disTax: 0,
+      patOver: 0,
+      storColed: 0,
+      transHuman: 0,
+      transRub: 0,
+      medPrice: 0,
+      dolgDead: 0,
+      dashId: 0,
+    },
+    {
+      id: 5,
+      name: 'Паллиатив',
+      //wards DashWard[]
+      numberOfSeats: 0,
+      engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
+      free: 0, //Свободных коек
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      //to table
+      planHuman: 0,
+      planRub: 0,
+      begAcc: 0,
+      admRec: 0,
+      disCome: 0,
+      disTax: 0,
+      patOver: 0,
+      storColed: 0,
+      transHuman: 0,
+      transRub: 0,
+      medPrice: 0,
+      dolgDead: 0,
+      dashId: 0,
+    },
+  ]
+}
 
 export
   function DrawerTable ({
@@ -27,7 +155,7 @@ export
     button: ReactNode,
     date?: Date | string,
     id?: number,
-    table?: DashDepartment[] | string
+    table?: DashDepartment[]
   }
 ) {
 
@@ -71,8 +199,6 @@ export
     //console.log(fileDataSend)
 }
 
-
-
   return (
     <Drawer>
     <DrawerTrigger>
@@ -109,10 +235,20 @@ export
               justify-center
               "
             >
-              <Button onClick={ () => GiveXMLS() }>выгрузить</Button>
+              {//если данные есть то показывает кнопку выгрузки
+                id && date && table?
+                <Button onClick={ () => GiveXMLS() }>выгрузить</Button>
+                :
+                ''
+              }
               <Button><input type="file" onChange={ (e) => handleFile(e) }/></Button>
             </div>
-            <Table>
+            <Table
+              className="
+                mb-20
+                mt-6
+              "
+            >
               <TableCaption> таблица заполнения </TableCaption>
               <TableHeader>
                 <TableRow>
@@ -132,435 +268,94 @@ export
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {/* мап по департаментам если нет то по новой таблице готовой для заполнениея */}
-              {/*table.map((dep: any, index: any) => {
-                        return <TableRow key={dep.id}>
-                            <TableCell>{dep.name ? dep.name : 0}
-                                {isNewDataTable ?
-                                    <div className="text-green-400"> /
-                                        {isNewDataTable.table ? isNewDataTable.table[index].name
-                                            : 0
-                                        }
-                                    </div>
-                                    : ''
-                                }
-                            </TableCell>
-                            <TableCell>
-                                {dep.planHuman ? dep.planHuman : 0}
-                                {isNewDataTable ?
-                                    <div className="text-green-400"> /
-                                        {isNewDataTable.table ? isNewDataTable.table[index].planHuman
-                                            : 0
-                                        }
-                                    </div>
-                                    : ''
-                                }
-                            </TableCell>
-                            <TableCell>
-                                {dep.planRub ? dep.planRub : 0}
-                                {isNewDataTable ?
-                                    <div className="text-green-400"> /
-                                        {isNewDataTable.table ? isNewDataTable.table[index].planRub
-                                            : 0
-                                        }
-                                    </div>
-                                    : ''
-                                }
-                            </TableCell>
-                            <TableCell>
-                                {dep.begAcc ? dep.begAcc : 0}
-                                {isNewDataTable ?
-                                    <div className="text-green-400"> /
-                                        {isNewDataTable.table ? isNewDataTable.table[index].begAcc
-                                            : 0
-                                        }
-                                    </div>
-                                    : ''
-                                }
-                                </TableCell>
-                            <TableCell>
-                                {dep.admRec ? dep.admRec : 0}
-                                {isNewDataTable ?
-                                    <div className="text-green-400"> /
-                                        {isNewDataTable.table ? isNewDataTable.table[index].admRec
-                                            : 0
-                                        }
-                                    </div>
-                                    : ''
-                                }
-                                </TableCell>
-                            <TableCell>
-                                {dep.engaged ? dep.engaged : 0}
-                                {isNewDataTable ?
-                                    <div className="text-green-400"> /
-                                        {isNewDataTable.table ? isNewDataTable.table[index].engaged
-                                            : 0
-                                        }
-                                    </div>
-                                    : ''
-                                }
-                                </TableCell>
-                            <TableCell>
-                                {dep.disCome ? dep.disCome : 0}
-                                {isNewDataTable ?
-                                    <div className="text-green-400"> /
-                                        {isNewDataTable.table ? isNewDataTable.table[index].disCome
-                                            : 0
-                                        }
-                                    </div>
-                                    : ''
-                                }
-                                </TableCell>
-                            <TableCell>
-                                {dep.disTax ? dep.disTax : 0}
-                                {isNewDataTable ?
-                                    <div className="text-green-400"> /
-                                        {isNewDataTable.table ? isNewDataTable.table[index].disTax
-                                            : 0
-                                        }
-                                    </div>
-                                    : ''
-                                }
-                                </TableCell>
-                            <TableCell>
-                                {dep.patOver ? dep.patOver : 0}
-                                {isNewDataTable ?
-                                    <div className="text-green-400"> /
-                                        {isNewDataTable.table ? isNewDataTable.table[index].patOver
-                                            : 0
-                                        }
-                                    </div>
-                                    : ''
-                                }
-                                </TableCell>
-                            <TableCell>
-                                {dep.storColed ? dep.storColed : 0}
-                                {isNewDataTable ?
-                                    <div className="text-green-400"> /
-                                        {isNewDataTable.table ? isNewDataTable.table[index].storColed
-                                            : 0
-                                        }
-                                    </div>
-                                    : ''
-                                }
-                                </TableCell>
-
-                            <TableCell>
-                                {dep.transHuman ? dep.transHuman : 0}
-                                {isNewDataTable ?
-                                    <div className="text-green-400"> /
-                                        {isNewDataTable.table ? isNewDataTable.table[index].transHuman
-                                            : 0
-                                        }
-                                    </div>
-                                    : ''
-                                }
-                            </TableCell>
-                            <TableCell>
-                                {dep.transRub ? dep.transRub : 0}
-                                {isNewDataTable ?
-                                    <div className="text-green-400"> /
-                                        {isNewDataTable.table ? isNewDataTable.table[index].transRub
-                                            : 0
-                                        }
-                                    </div>
-                                    : ''
-                                }
-                                </TableCell>
-                            <TableCell>
-                                {dep.medPrice ? dep.medPrice : 0}
-                                {isNewDataTable ?
-                                    <div className="text-green-400"> /
-                                        {isNewDataTable.table ? isNewDataTable.table[index].medPrice
-                                            : 0
-                                        }
-                                    </div>
-                                    : ''
-                                }
-                                </TableCell>
-                            <TableCell>
-                                {dep.dolgDead ? dep.dolgDead : 0}
-                                {isNewDataTable ?
-                                    <div className="text-green-400"> /
-                                        {isNewDataTable.table ? isNewDataTable.table[index].dolgDead
-                                            : 0
-                                        }
-                                    </div>
-                                    : ''
-                                }
-                                </TableCell>
-                            <TableCell>
-                                {dep.free ? dep.free : 0}
-                                {isNewDataTable ?
-                                    <div className="text-green-400"> /
-                                        {isNewDataTable.table ? isNewDataTable.table[index].free
-                                            : 0
-                                        }
-                                    </div>
-                                    : ''
-                                }
-                                </TableCell>
-                        </TableRow>
-                    })*/}
+              {/* мап по департаментам если нет то по новой таблице готовой для заполнениея */}
+              {
+                table
+                ?
+                ''
+                :
+                //если таблицы нет, ставит дефолт даш
+                defaultDash.table.map((row: DashDepartment) => {
+                  return <TableRow key={row.id}>
+                    <TableCell>
+                      {row.name}
+                    </TableCell>
+                    <TableCell>
+                      {row.planHuman}
+                    </TableCell>
+                    <TableCell>
+                      {row.planRub}
+                    </TableCell>
+                    <TableCell>
+                      {row.begAcc}
+                    </TableCell>
+                    <TableCell>
+                      {row.admRec}
+                    </TableCell>
+                    <TableCell>
+                      {row.disCome}
+                    </TableCell>
+                    <TableCell>
+                      {row.disTax}
+                    </TableCell>
+                    <TableCell>
+                      {row.patOver}
+                    </TableCell>
+                    <TableCell>
+                      {row.storColed}
+                    </TableCell>
+                    <TableCell>
+                      {row.transHuman}
+                    </TableCell>
+                    <TableCell>
+                      {row.transRub}
+                    </TableCell>
+                    <TableCell>
+                      {row.medPrice}
+                    </TableCell>
+                    <TableCell>
+                      {row.dolgDead}
+                    </TableCell>
+                  </TableRow>
+                })
+              }
               </TableBody>
-              <TableFooter>
-                <TableRow>
-                  <TableCell >По ЛПУ</TableCell>
-                  <TableCell>
-                            {/*fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
-                                //@ts-ignore
-                                return sum + current.planHuman
-                            }, 0)
-                                : 0
-                        */}
-                            {/*isNewDataTable ?
-                                <div className="text-green-400"> /
-                                    {isNewDataTable.table ? isNewDataTable.table.reduce((sum, current) => {
-                                        //@ts-ignore
-                                        return sum + current.planHuman
-                                    }, 0)
-                                        : 0
-                                    }
-                                </div>
-                                : ''
-                            */}
-                        </TableCell>
+
+              {/**<DrawerTableFooter table={table? table : defaultDash.table} /> */}
+
+            </Table>
+          </main>
+        </div>
+      </div>
+      <DrawerFooter>
+      <Button>Сохранить</Button>
+        <DrawerClose>
+
+          <Button variant="outline">Отменить</Button>
+        </DrawerClose>
+      </DrawerFooter>
+    </DrawerContent>
+  </Drawer>
+  )
+}
+
+
+
+{/*isNewDataTable? 
+  <div className="flex gap-4">
+  <Button className="bg-blue-400 text-white" variant={'outline'} onClick={() => onChangeTable(fillingTable.id)}>изменить текущую таблицу</Button>
+  <Button className="bg-blue-400 text-white" variant={'outline'} onClick={() => createTable()}>сохранить новую таблицу</Button>
+  </div>
+: ''*/}
+
+{/*
                         <TableCell>
-                            {/*fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
-                                //@ts-ignore
-                                return sum + current.planRub
-                            }, 0)
-                                : 0
-                            */}
-                            {/*isNewDataTable ?
-                                <div className="text-green-400"> /
-                                    {isNewDataTable.table ? isNewDataTable.table.reduce((sum, current) => {
-                                        //@ts-ignore
-                                        return sum + current.planRub
-                                    }, 0)
-                                        : 0
-                                    }
-                                </div>
-                                : ''
-                            */}
-                        </TableCell>
-                        <TableCell>
-                            {/*fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
-                                //@ts-ignore
-                                return sum + current.begAcc
-                            }, 0)
-                                : 0
-                            */}
-                            {/*isNewDataTable ?
-                                <div className="text-green-400"> /
-                                    {isNewDataTable.table ? isNewDataTable.table.reduce((sum, current) => {
-                                        //@ts-ignore
-                                        return sum + current.begAcc
-                                    }, 0)
-                                        : 0
-                                    }
-                                </div>
-                                : ''
-                            */}
-                        </TableCell>
-                        <TableCell>
-                            {/*fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
-                                //@ts-ignore
-                                return sum + current.admRec
-                            }, 0)
-                                : 0
-                            */}
-                            {/*isNewDataTable ?
-                                <div className="text-green-400"> /
-                                    {isNewDataTable.table ? isNewDataTable.table.reduce((sum, current) => {
-                                        //@ts-ignore
-                                        return sum + current.admRec
-                                    }, 0)
-                                        : 0
-                                    }
-                                </div>
-                                : ''
-                            */}
-                        </TableCell>
-                        <TableCell>
-                            {/*fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
-                                //@ts-ignore
-                                return sum + current.engaged
-                            }, 0)
-                                : 0
-                            */}
-                            {/*isNewDataTable ?
-                                <div className="text-green-400"> /
-                                    {isNewDataTable.table ? isNewDataTable.table.reduce((sum, current) => {
-                                        //@ts-ignore
-                                        return sum + current.engaged
-                                    }, 0)
-                                        : 0
-                                    }
-                                </div>
-                                : ''
-                            */}
-                        </TableCell>
-                        <TableCell>
-                            {/*fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
-                                //@ts-ignore
-                                return sum + current.disCome
-                            }, 0)
-                                : 0
-                            */}
-                            {/*isNewDataTable ?
-                                <div className="text-green-400"> /
-                                    {isNewDataTable.table ? isNewDataTable.table.reduce((sum, current) => {
-                                        //@ts-ignore
-                                        return sum + current.disCome
-                                    }, 0)
-                                        : 0
-                                    }
-                                </div>
-                                : ''
-                            */}
-                        </TableCell>
-                        <TableCell>
-                            {/*fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
-                                //@ts-ignore
-                                return sum + current.disTax
-                            }, 0)
-                                : 0
-                            */}
-                            {/*isNewDataTable ?
-                                <div className="text-green-400"> /
-                                    {isNewDataTable.table ? isNewDataTable.table.reduce((sum, current) => {
-                                        //@ts-ignore
-                                        return sum + current.disTax
-                                    }, 0)
-                                        : 0
-                                    }
-                                </div>
-                                : ''
-                            */}
-                        </TableCell>
-                        <TableCell>
-                            {/*fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
-                                //@ts-ignore
-                                return sum + current.patOver
-                            }, 0)
-                                : 0
-                            */}
-                            {/*isNewDataTable ?
-                                <div className="text-green-400"> /
-                                    {isNewDataTable.table ? isNewDataTable.table.reduce((sum, current) => {
-                                        //@ts-ignore
-                                        return sum + current.patOver
-                                    }, 0)
-                                        : 0
-                                    }
-                                </div>
-                                : ''
-                            */}
-                        </TableCell>
-                        <TableCell>
-                            {/*fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
-                                //@ts-ignore
-                                return sum + current.storColed
-                            }, 0)
-                                : 0
-                            */}
-                            {/*isNewDataTable ?
-                                <div className="text-green-400"> /
-                                    {isNewDataTable.table ? isNewDataTable.table.reduce((sum, current) => {
-                                        //@ts-ignore
-                                        return sum + current.storColed
-                                    }, 0)
-                                        : 0
-                                    }
-                                </div>
-                                : ''
-                            */}
-                        </TableCell>
-                        <TableCell>
-                            {/*fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
-                                //@ts-ignore
-                                return sum + current.transHuman
-                            }, 0)
-                                : 0
-                            */}
-                            {/*isNewDataTable ?
-                                <div className="text-green-400"> /
-                                    {isNewDataTable.table ? isNewDataTable.table.reduce((sum, current) => {
-                                        //@ts-ignore
-                                        return sum + current.transHuman
-                                    }, 0)
-                                        : 0
-                                    }
-                                </div>
-                                : ''
-                            */}
-                        </TableCell>
-                        <TableCell>
-                            {/*fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
-                                //@ts-ignore
-                                return sum + current.transRub
-                            }, 0)
-                                : 0
-                            */}
-                            {/*isNewDataTable ?
-                                <div className="text-green-400"> /
-                                    {isNewDataTable.table ? isNewDataTable.table.reduce((sum, current) => {
-                                        //@ts-ignore
-                                        return sum + current.transRub
-                                    }, 0)
-                                        : 0
-                                    }
-                                </div>
-                                : ''
-                            */}
-                        </TableCell>
-                        <TableCell>
-                            {/*fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
-                                //@ts-ignore
-                                return sum + current.medPrice
-                            }, 0)
-                                : 0
-                            */}
-                            {/*isNewDataTable ?
-                                <div className="text-green-400"> /
-                                    {isNewDataTable.table ? isNewDataTable.table.reduce((sum, current) => {
-                                        //@ts-ignore
-                                        return sum + current.medPrice
-                                    }, 0)
-                                        : 0
-                                    }
-                                </div>
-                                : ''
-                            */}
-                        </TableCell>
-                        <TableCell>
-                            {/*fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
-                                //@ts-ignore
-                                return sum + current.dolgDead
-                            }, 0)
-                                : 0
-                            */}
-                            {/*isNewDataTable ?
-                                <div className="text-green-400"> /
-                                    {isNewDataTable.table ? isNewDataTable.table.reduce((sum, current) => {
-                                        //@ts-ignore
-                                        return sum + current.dolgDead
-                                    }, 0)
-                                        : 0
-                                    }
-                                </div>
-                                : ''
-                            */}
-                        </TableCell>
-                        <TableCell>
-                            {/*fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
+                            {fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
                                 //@ts-ignore
                                 return sum + current.free
                             }, 0)
                                 : 0
-                            */}
-                            {/*isNewDataTable ?
+                            {isNewDataTable ?
                                 <div className="text-green-400"> /
                                     {isNewDataTable.table ? isNewDataTable.table.reduce((sum, current) => {
                                         //@ts-ignore
@@ -570,29 +365,4 @@ export
                                     }
                                 </div>
                                 : ''
-                            */}
-                        </TableCell>
-                    </TableRow>
-                </TableFooter>
-            </Table>
-            {/*isNewDataTable? 
-                        <div className="flex gap-4">
-                        <Button className="bg-blue-400 text-white" variant={'outline'} onClick={() => onChangeTable(fillingTable.id)}>изменить текущую таблицу</Button>
-                        <Button className="bg-blue-400 text-white" variant={'outline'} onClick={() => createTable()}>сохранить новую таблицу</Button>
-                    </div>
-            : ''*/}
-
-        </main>
-        </div>
-      </div>
-      <DrawerFooter>
-        <Button>Submit</Button>
-        <DrawerClose>
-          <Button variant="outline">Cancel</Button>
-        </DrawerClose>
-      </DrawerFooter>
-    </DrawerContent>
-  </Drawer>
-  )
-}
-
+</TableCell>*/}
