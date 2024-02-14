@@ -9,13 +9,12 @@ import {
     DrawerFooter,
     DrawerHeader,
     DrawerTitle,
-    DrawerTrigger,
   } from "@/components/ui/drawer"
 import { DashDepartment } from "@prisma/client"
 import { ReactNode, useState } from "react"
 import { saveAs } from "file-saver"
 import { read, utils, write } from 'xlsx'
-import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { DrawerTableFooter } from "./DrawerTableFooter"
 
 const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
@@ -158,7 +157,6 @@ export
     table?: DashDepartment[]
   }
 ) {
-
   const [isNewDataTable, setNewDataTable] = useState()
   const GiveXMLS = () => {
     console.log(table)
@@ -173,7 +171,6 @@ export
       console.log(dataB)
     }
   }
-
   const handleFile = async (e: any) => {
     const file: File = e.target.files[0]
     const dataFile = await file.arrayBuffer()
@@ -198,16 +195,32 @@ export
     }*/
     //console.log(fileDataSend)
 }
+//несколько стадий заливки
+//1 стадия - пост даша, он возвращает айди
+//если ошибка, то отмена всех операций
+//если все ок то поэтапная заливка департментов
+//мэйби с числовой стадией, типа 5 из 5 отделений что то типа такого
+//если все ок, то дравер клоуз
+//если хуево то все остается на своих местах
+
 
   return (
     <Drawer>
-    <DrawerTrigger>
-        {button}
-    </DrawerTrigger>
-    <DrawerContent>
+      {button}
+      <DrawerContent>
       <DrawerHeader>
-        <DrawerTitle>{ id? `Таблица под номером ${id}` : 'Создание новой таблицы' }</DrawerTitle>
-        <DrawerDescription>На этой странице вы можете создавать или изменять таблицы</DrawerDescription>
+        <DrawerTitle>
+          {
+            id
+            ?
+            `Таблица под номером ${id}`
+            :
+            'Создание новой таблицы'
+          }
+        </DrawerTitle>
+        <DrawerDescription>
+          На этой странице вы можете создавать или изменять таблицы
+        </DrawerDescription>
       </DrawerHeader>
       <div
         className="
@@ -226,7 +239,13 @@ export
             "
           >
             <div>
-              { date?date.toString() : '' } пикать дату на изменение
+              {
+                date
+                ?
+                date.toString()
+                :
+                ''
+              } пикать дату на изменение
             </div>
             <div
               className="
@@ -236,7 +255,8 @@ export
               "
             >
               {//если данные есть то показывает кнопку выгрузки
-                id && date && table?
+                id && date && table
+                ?
                 <Button onClick={ () => GiveXMLS() }>выгрузить</Button>
                 :
                 ''
@@ -320,17 +340,14 @@ export
                 })
               }
               </TableBody>
-
-              {/**<DrawerTableFooter table={table? table : defaultDash.table} /> */}
-
+              <DrawerTableFooter table={table? table : defaultDash.table} />
             </Table>
           </main>
         </div>
       </div>
       <DrawerFooter>
-      <Button>Сохранить</Button>
+        <Button>Сохранить</Button>
         <DrawerClose>
-
           <Button variant="outline">Отменить</Button>
         </DrawerClose>
       </DrawerFooter>
@@ -338,8 +355,6 @@ export
   </Drawer>
   )
 }
-
-
 
 {/*isNewDataTable? 
   <div className="flex gap-4">
@@ -349,20 +364,20 @@ export
 : ''*/}
 
 {/*
-                        <TableCell>
-                            {fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
-                                //@ts-ignore
-                                return sum + current.free
-                            }, 0)
-                                : 0
-                            {isNewDataTable ?
-                                <div className="text-green-400"> /
-                                    {isNewDataTable.table ? isNewDataTable.table.reduce((sum, current) => {
-                                        //@ts-ignore
-                                        return sum + current.free
-                                    }, 0)
-                                        : 0
-                                    }
-                                </div>
-                                : ''
+    <TableCell>
+    {fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
+    //@ts-ignore
+    return sum + current.free
+    }, 0)
+    : 0
+    {isNewDataTable ?
+    <div className="text-green-400"> /
+    {isNewDataTable.table ? isNewDataTable.table.reduce((sum, current) => {
+    //@ts-ignore
+    return sum + current.free
+     }, 0)
+     : 0
+    }
+     </div>
+      : ''
 </TableCell>*/}
