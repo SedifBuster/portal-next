@@ -23,18 +23,15 @@ export
 
     const {
       date,
-      table,
     } = body
     console.log(body)
 
-    if ( !date || !table ) {
+    if ( !date ) {
       return new NextResponse( 'Missing info', { status: 400 } )
     }
 
     const dash = await prisma.dash.create({
       data: {
-        date,
-        table,
       }
     })
 

@@ -16,6 +16,8 @@ import { saveAs } from "file-saver"
 import { read, utils, write } from 'xlsx'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { DrawerTableFooter } from "./DrawerTableFooter"
+import axios from "axios"
+import toast from "react-hot-toast"
 
 const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
   id: 0,
@@ -171,6 +173,7 @@ export
       console.log(dataB)
     }
   }
+  //тут мы должны преобразовать ексель в таблицу - массив зелененьких буковокб а отправкой на сервер будет заниматься другая функция
   const handleFile = async (e: any) => {
     const file: File = e.target.files[0]
     const dataFile = await file.arrayBuffer()
@@ -202,7 +205,24 @@ export
 //мэйби с числовой стадией, типа 5 из 5 отделений что то типа такого
 //если все ок, то дравер клоуз
 //если хуево то все остается на своих местах
+  const [isNewDate, setNewDate] = useState<Date>()
 
+
+  //1 stage - post dash
+  const onReleaseDash = async (date: Date): Promise<string | number> => {
+    try {
+      const resultDash = await axios.post('/api/dash', { date })
+      if( resultDash.statusText === "OK" ) {
+        toast.success( 'Даш создан с айди: ', resultDash.data )
+        return resultDash.data
+      }
+      else throw new Error( 'Статус текста запроса' )
+    } catch ( error ) {
+      toast.error( 'Ошибка при создании даша' )
+      return `ошибка при создании даша: ${error}`
+    }
+  }
+  //2 stage - post departments
 
   return (
     <Drawer>
