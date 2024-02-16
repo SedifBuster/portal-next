@@ -28,8 +28,8 @@ const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
       name: 'ТО',
       //wards DashWard[]
       numberOfSeats: 0,
-      engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
-      free: 0, //Свободных коек
+      //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
+      //free: 0, //Свободных коек
       createdAt: new Date(),
       updatedAt: new Date(),
       //to table
@@ -52,8 +52,8 @@ const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
       name: 'ХО',
       //wards DashWard[]
       numberOfSeats: 0,
-      engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
-      free: 0, //Свободных коек
+      //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
+      //free: 0, //Свободных коек
       createdAt: new Date(),
       updatedAt: new Date(),
       //to table
@@ -76,8 +76,8 @@ const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
       name: 'НО',
       //wards DashWard[]
       numberOfSeats: 0,
-      engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
-      free: 0, //Свободных коек
+      //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
+      //free: 0, //Свободных коек
       createdAt: new Date(),
       updatedAt: new Date(),
       //to table
@@ -100,8 +100,8 @@ const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
       name: 'Реаб',
       //wards DashWard[]
       numberOfSeats: 0,
-      engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
-      free: 0, //Свободных коек
+      //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
+      //free: 0, //Свободных коек
       createdAt: new Date(),
       updatedAt: new Date(),
       //to table
@@ -124,8 +124,8 @@ const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
       name: 'Паллиатив',
       //wards DashWard[]
       numberOfSeats: 0,
-      engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
-      free: 0, //Свободных коек
+      //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
+      //free: 0, //Свободных коек
       createdAt: new Date(),
       updatedAt: new Date(),
       //to table
@@ -203,10 +203,11 @@ export
 //если ошибка, то отмена всех операций
 //если все ок то поэтапная заливка департментов
 //мэйби с числовой стадией, типа 5 из 5 отделений что то типа такого
+//отображения состояния в лоадинг скрине
 //если все ок, то дравер клоуз
 //если хуево то все остается на своих местах
   const [isNewDate, setNewDate] = useState<Date>()
-
+  const [isNewDepartments, setNewDepartments] = useState<DashDepartment[]>()
 
   //1 stage - post dash
   const onReleaseDash = async (date: Date): Promise<string | number> => {
@@ -223,6 +224,29 @@ export
     }
   }
   //2 stage - post departments
+  const onReleaseDashDepartment = async ( department: DashDepartment ) => {
+    try {
+      const resultDashDepartment = await axios.post('/api/dash/department', department)
+      if( resultDashDepartment.statusText === "OK") {
+        toast.success( 'Отделение создано с айди: ', resultDashDepartment.data)
+        return resultDashDepartment.data
+      }
+      else throw new Error( 'Статус текста запроса' )
+    } catch ( error ) {
+      toast.error( 'Ошибка при создании отделения даша' )
+      return `ошибка при создании отделения даша: ${error}`
+    }
+  }
+  //3 stage - loading screen
+  //4 stage - compile this
+  const onPostData = async () => {
+    try {
+
+    } catch ( error ) {
+      toast.error( 'Ошибка при заливки данных для даша' )
+      return `ошибка при процессе заливки данных для даша: ${error}`
+    }
+  }
 
   return (
     <Drawer>
