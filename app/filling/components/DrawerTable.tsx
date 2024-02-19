@@ -18,6 +18,7 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { DrawerTableFooter } from "./DrawerTableFooter"
 import axios from "axios"
 import toast from "react-hot-toast"
+import { CustomLoading } from "./CustomLoading"
 
 const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
   id: 0,
@@ -387,6 +388,7 @@ export
               <DrawerTableFooter table={table? table : defaultDash.table} />
             </Table>
           </main>
+          <CustomLoading />
         </div>
       </div>
       <DrawerFooter>

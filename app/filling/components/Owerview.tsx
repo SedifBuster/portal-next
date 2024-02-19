@@ -6,6 +6,7 @@ import axios from "axios"
 import toast from "react-hot-toast"
 import { Dash, DashDepartment } from "@prisma/client"
 import { FillingItem } from "./FillingItem"
+import { CustomLoading } from "./CustomLoading"
 
 export
   interface DashInit extends Dash {
@@ -153,6 +154,7 @@ export
     setTable(table)
     else return toast.error('таблица не найдена')
   }*/
+  const [isVisible, setVisible] = useState(false)
   const [isTables, setTables] = useState<DashInit[]>()
   let getTables = async () => {
     try {
@@ -196,6 +198,12 @@ export
           :
           ''
         }
+         {
+          isVisible?
+          <CustomLoading />
+          :
+          ''
+         }         
       </div>
     </main>
   )
