@@ -198,12 +198,6 @@ export
           :
           ''
         }
-         {
-          isVisible?
-          <CustomLoading />
-          :
-          ''
-         }         
       </div>
     </main>
   )

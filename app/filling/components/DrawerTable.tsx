@@ -19,6 +19,7 @@ import { DrawerTableFooter } from "./DrawerTableFooter"
 import axios from "axios"
 import toast from "react-hot-toast"
 import { CustomLoading } from "./CustomLoading"
+import { DashDate } from "./DashDate"
 
 const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
   id: 0,
@@ -209,6 +210,17 @@ export
 //если хуево то все остается на своих местах
   const [isNewDate, setNewDate] = useState<Date>()
   const [isNewDepartments, setNewDepartments] = useState<DashDepartment[]>()
+  const [isLoading, setLoading] = useState<boolean>(false)
+
+
+
+
+
+
+
+
+
+
 
   //1 stage - post dash
   const onReleaseDash = async (date: Date): Promise<string | number> => {
@@ -248,6 +260,15 @@ export
       return `ошибка при процессе заливки данных для даша: ${error}`
     }
   }
+
+
+
+
+
+
+
+
+
 
   return (
     <Drawer>
@@ -290,7 +311,7 @@ export
                 date.toString()
                 :
                 ''
-              } пикать дату на изменение
+              } <DashDate/>пикать дату на изменение
             </div>
             <div
               className="
@@ -388,7 +409,7 @@ export
               <DrawerTableFooter table={table? table : defaultDash.table} />
             </Table>
           </main>
-          <CustomLoading />
+          {/**<CustomLoading statusText="любой текст загрузки..." loading={isLoading}/> */}
         </div>
       </div>
       <DrawerFooter>
