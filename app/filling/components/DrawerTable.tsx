@@ -304,14 +304,17 @@ export
               p-2
             "
           >
-            <div>
+            <DashDate/>
+            <div
+              className="p-2"
+            >
               {
                 date
                 ?
                 date.toString()
                 :
                 ''
-              } <DashDate/>пикать дату на изменение
+              }
             </div>
             <div
               className="
