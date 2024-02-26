@@ -20,6 +20,7 @@ import axios from "axios"
 import toast from "react-hot-toast"
 import { CustomLoading } from "./CustomLoading"
 import { DashDate } from "./DashDate"
+import clsx from "clsx"
 
 const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
   id: 0,
@@ -161,45 +162,6 @@ export
     table?: DashDepartment[]
   }
 ) {
-  const [isNewDataTable, setNewDataTable] = useState()
-  const GiveXMLS = () => {
-    console.log(table)
-    if(table) {
-      const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-      //@ts-ignore
-      const ws = utils.json_to_sheet(table)
-      const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] }
-      const excelBuffer = write(wb, { bookType: 'xlsx', type: 'array' })
-      const dataB = new Blob([excelBuffer], { type: fileType })
-      saveAs(dataB, `${date}`)
-      console.log(dataB)
-    }
-  }
-  //тут мы должны преобразовать ексель в таблицу - массив зелененьких буковокб а отправкой на сервер будет заниматься другая функция
-  const handleFile = async (e: any) => {
-    const file: File = e.target.files[0]
-    const dataFile = await file.arrayBuffer()
-    const dataName = file.name
-    const workbook = read(dataFile)
-    const worksheet = workbook.Sheets[workbook.SheetNames[0]]
-    const jsonData = utils.sheet_to_json(worksheet)
-    console.log(dataName)
-    console.log(jsonData)
-    const newTable = {
-      date: new Date(),
-      //@ts-ignore
-      table: jsonData
-    }
-    //setNewDataTable(newTable)
-    console.log(newTable)
-    /*const fileDataSend = {
-       id: item.id,
-       month: month,
-       year: year,
-       data: JSON.stringify(jsonData)
-    }*/
-    //console.log(fileDataSend)
-}
 //несколько стадий заливки
 //1 стадия - пост даша, он возвращает айди
 //если ошибка, то отмена всех операций
@@ -270,6 +232,51 @@ export
 
 
 
+
+
+
+
+
+  const GiveXMLS = () => {
+    console.log(table)
+    if(table) {
+      const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+      //@ts-ignore
+      const ws = utils.json_to_sheet(table)
+      const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] }
+      const excelBuffer = write(wb, { bookType: 'xlsx', type: 'array' })
+      const dataB = new Blob([excelBuffer], { type: fileType })
+      saveAs(dataB, `${date}`)
+      console.log(dataB)
+    }
+  }
+  //тут мы должны преобразовать ексель в таблицу - массив зелененьких буковокб а отправкой на сервер будет заниматься другая функция
+  const handleFile = async (e: any) => {
+    const file: File = e.target.files[0]
+    const dataFile = await file.arrayBuffer()
+    const dataName = file.name
+    const workbook = read(dataFile)
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]]
+    const jsonData = utils.sheet_to_json(worksheet)
+    console.log(dataName)
+    console.log(jsonData)
+    const newTable = {
+      date: new Date(),
+      //@ts-ignore
+      table: jsonData
+    }
+    //setNewDataTable(newTable)
+    console.log(newTable)
+    /*const fileDataSend = {
+       id: item.id,
+       month: month,
+       year: year,
+       data: JSON.stringify(jsonData)
+    }*/
+    //console.log(fileDataSend)
+}
+
+
   return (
     <Drawer>
       {button}
@@ -304,16 +311,25 @@ export
               p-2
             "
           >
-            <DashDate/>
+            {/**DATE CHANGE */}
+            <DashDate setDate={setNewDate} date={isNewDate}/>
             <div
               className="p-2"
             >
               {
                 date
                 ?
-                date.toString()
+                new Date(date).toLocaleString('ru', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+              })
                 :
-                ''
+                new Date().toLocaleString('ru', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+              })
               }
             </div>
             <div
@@ -416,9 +432,28 @@ export
         </div>
       </div>
       <DrawerFooter>
-        <Button>Сохранить</Button>
+        <div
+          className="
+            flex
+            justify-center
+            justify-items-center
+            justify-self-center
+            gap-1
+          "
+        >
+          <Button className={clsx(``,
+            id
+            ?
+            `w-1/4`
+            :
+            `w-2/4`
+          )}
+          disabled={!isNewDate && !isNewDepartments}
+          >Сохранить</Button>
+          {id? <Button variant="destructive" className="w-1/4">Удалить</Button> : ''}
+        </div>
         <DrawerClose>
-          <Button variant="outline">Отменить</Button>
+          <Button variant="outline"  className="w-2/4" onClick={() => setNewDate(undefined)}>Отменить</Button>
         </DrawerClose>
       </DrawerFooter>
     </DrawerContent>

@@ -3,6 +3,7 @@
 import { DashDepartment } from "@prisma/client"
 import { DrawerTable } from "./DrawerTable"
 import { DrawerTrigger } from "@/components/ui/drawer"
+import clsx from "clsx"
 
 export
   function FillingItem({
@@ -30,53 +31,76 @@ export
         p-2
       "
     >
-      <div>
+      <div> 
         {
-          typeof date !== 'string' && typeof date === 'object'
+          typeof date === 'string'
           ?
-          date.toISOString()
+          new Date(date).toLocaleString('ru', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        })
           :
-          date
+          'дата не строка'
         }
       </div>
       {
         id
         ?
-        <div>таблица номер {id}</div>
+        <div>таблица № {id}</div>
         :
-        ''
+        <div>новая таблица</div>
       }
-      <DrawerTable  button={
-        <DrawerTrigger
-          className="
-            bg-primary
-            text-primary-foreground
-            hover:bg-primary/90
-            inline-flex
-            items-center
-            justify-center
-            rounded-md
-            text-sm
-            font-medium
-            ring-offset-background
-            transition-colors
-            focus-visible:outline-none
-            focus-visible:ring-2
-            focus-visible:ring-ring
-            focus-visible:ring-offset-2
-            disabled:pointer-events-none
-            disabled:opacity-50
-            h-10 px-4 py-2
-          "
-        >
-          {table
-          ?
-          'изменить'
-          :
-          'создать'
-          }
-        </DrawerTrigger>
-      }/>
+      <DrawerTable
+        button={
+          <DrawerTrigger
+            className={
+              clsx(
+                `
+                text-primary-foreground
+                inline-flex
+                items-center
+                justify-center
+                rounded-md
+                text-sm
+                font-medium
+                ring-offset-background
+                transition-colors
+                focus-visible:outline-none
+                focus-visible:ring-2
+                focus-visible:ring-ring
+                focus-visible:ring-offset-2
+                disabled:pointer-events-none
+                disabled:opacity-50
+                h-10 px-4 py-2
+                `,
+                id
+                ?
+                `
+                bg-primary
+                hover:bg-primary/80
+                `
+                :
+                `
+                bg-blue-500
+                hover:bg-blue-500/80
+                `
+              )
+            }
+          >
+            {
+              id
+              ?
+              'изменить'
+              :
+              'создать'
+            }
+          </DrawerTrigger>
+        }
+      date={date}
+      table={typeof table !== 'string' ? table : undefined}
+      id={id}
+      />
     </main>
   )
 }

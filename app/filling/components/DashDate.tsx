@@ -1,7 +1,7 @@
 "use client"
  
 import * as React from "react"
-import { addDays, eachDayOfInterval, format, isEqual } from "date-fns"
+import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
  
 import { cn } from "@/lib/utils"
@@ -14,37 +14,15 @@ import {
 } from "@/components/ui/popover"
 import { ru } from "date-fns/locale"
  
-export function DashDate() {
-
-  const [date, setDate] = React.useState<Date>()
-  
-  const [testDate, isTestDate] = React.useState<Date[]>([new Date(2023, 10, 9), new Date(2023, 10, 10), new Date(2023, 10, 11), new Date(2023, 10, 12),])
-
-  let filteredDays = (arrTrueDates: Date[]) => {
-    let afterDays = addDays(new Date(), 300)
-    let beforeDays = new Date(2023, 0,0)
-  
-    let arrDates = eachDayOfInterval({
-      start: beforeDays,
-      end: afterDays
-    })
-    let result: Date[] = []
-    for(let i = 0; i < arrDates.length; i++) {
-      for(let j = 0; j < arrTrueDates.length; j++) {
-        if(isEqual(arrDates[i], arrTrueDates[j])) {
-          arrDates.splice(i, 1)
-        }
-      }
-    }
-    result = [...arrDates]
-
-    return result
+export
+  function DashDate({
+    date,
+    setDate,
+  }: {
+    date: Date | undefined,
+    setDate: React.Dispatch<React.SetStateAction<Date | undefined>>,
   }
-  //старая дата даша, если нет то сейчас дата
-  //пикать и меняется
-  //выход вверх замыкание даты
-  //новая зеленая, если сейчас(то есть нет) то сразу зеленая без белой
-  
+) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -67,8 +45,6 @@ export function DashDate() {
           initialFocus
           ISOWeek
           locale={ru}
-          disabled={filteredDays(testDate)}
-          
         />
       </PopoverContent>
     </Popover>
