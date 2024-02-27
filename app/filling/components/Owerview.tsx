@@ -55,11 +55,11 @@ export
           gap-2
         "
       >
-        <FillingItem date={new Date().toString()} id={0}/>
+        <FillingItem date={new Date().toString()} id={0}  getTables={getTables}/>
         {isTables
           ?
           isTables.reverse().map((item) => {
-            return  <FillingItem key={item.id} date={item.date} id={item.id} table={item.table}/>
+            return  <FillingItem key={item.id} date={item.date} id={item.id} table={item.table} getTables={getTables}/>
           })
           :
           ''

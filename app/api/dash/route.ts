@@ -53,7 +53,7 @@ export
       id
     } = body
 
-    const ward = await prisma.ward.delete({
+    const ward = await prisma.dash.delete({
       where: {
         id: id
       }

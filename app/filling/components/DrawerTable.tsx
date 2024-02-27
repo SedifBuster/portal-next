@@ -21,6 +21,8 @@ import toast from "react-hot-toast"
 import { CustomLoading } from "./CustomLoading"
 import { DashDate } from "./DashDate"
 import clsx from "clsx"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
 
 const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
   id: 0,
@@ -154,12 +156,14 @@ export
     button,
     date,
     id,
-    table
+    table,
+    getTables
   }: {
     button: ReactNode,
     date?: Date | string,
     id?: number,
-    table?: DashDepartment[]
+    table?: DashDepartment[],
+    getTables: () => Promise<void>
   }
 ) {
 //несколько стадий заливки
@@ -173,11 +177,11 @@ export
   const [isNewDate, setNewDate] = useState<Date>()
   const [isNewDepartments, setNewDepartments] = useState<DashDepartment[]>()
   const [isLoading, setLoading] = useState<boolean>(false)
+  const [isVisibleDelete, setVisibleDelete] = useState<boolean>(false)
 
 
-
-
-
+//хуярим преобразование туда сюда сюда туда
+// пост и все конец ебания
 
 
 
@@ -229,14 +233,6 @@ export
 
 
 
-
-
-
-
-
-
-
-
   const GiveXMLS = () => {
     console.log(table)
     if(table) {
@@ -276,6 +272,24 @@ export
     //console.log(fileDataSend)
 }
 
+
+
+
+
+  let onDeleteDash = async (id: number) => {
+    try {
+      const resultDash = await axios.delete( '/api/dash', { data: {id} })
+      if( resultDash.statusText !== "OK" ) throw new Error( 'Статус текста запроса' )
+      else {
+        toast.success(`таблица под номером: ${resultDash.data} удалена` )
+        getTables()
+        setVisibleDelete(false)
+      }
+    } catch ( error ) {
+      toast.error( 'Ошибка при удалении таблицы' )
+      return `ошибка при удалении таблицы: ${error}`
+    }
+  }
 
   return (
     <Drawer>
@@ -377,7 +391,7 @@ export
               {
                 table
                 ?
-                ''
+                ''//СЮДА НАДА ТАБЛИЦУ
                 :
                 //если таблицы нет, ставит дефолт даш
                 defaultDash.table.map((row: DashDepartment) => {
@@ -450,7 +464,30 @@ export
           )}
           disabled={!isNewDate && !isNewDepartments}
           >Сохранить</Button>
-          {id? <Button variant="destructive" className="w-1/4">Удалить</Button> : ''}
+          {
+            id
+            ?
+            <Dialog  open={isVisibleDelete} onOpenChange={() => setVisibleDelete(!isVisibleDelete)}>
+              <DialogTrigger asChild>
+                <Button variant="destructive" className="w-1/4"  onClick={() => setVisibleDelete(true)}>Удалить</Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Удаление таблицы</DialogTitle>
+                  <DialogDescription>
+                    Вы действительно хотите удалить таблицу под № {id}?
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <Button  variant={'destructive'}  onClick={() => onDeleteDash(id)}>Удалить</Button>
+                  <Button variant={'outline'}  onClick={() => setVisibleDelete(false)}>Отменить</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+            :
+            ''
+          }
+          
         </div>
         <DrawerClose>
           <Button variant="outline"  className="w-2/4" onClick={() => setNewDate(undefined)}>Отменить</Button>
@@ -486,3 +523,5 @@ export
      </div>
       : ''
 </TableCell>*/}
+// <Button variant="destructive" className="w-1/4">Удалить</Button>
+//onClick={() => onDeleteWard(ward.id)}

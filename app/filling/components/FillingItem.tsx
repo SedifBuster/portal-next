@@ -9,11 +9,13 @@ export
   function FillingItem({
     date,
     id,
-    table
+    table,
+    getTables
   }: {
     date?: Date | string,
     id?: number,
-    table?: DashDepartment[] | string
+    table?: DashDepartment[] | string,
+    getTables: () => Promise<void>
   }
 ) {
   return (
@@ -100,6 +102,7 @@ export
       date={date}
       table={typeof table !== 'string' ? table : undefined}
       id={id}
+      getTables={getTables}
       />
     </main>
   )
