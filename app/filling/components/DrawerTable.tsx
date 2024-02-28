@@ -234,18 +234,62 @@ export
 
 
   const GiveXMLS = () => {
+
+    const test = defaultDash.table.map((item) => {
+      return {
+        id: item.id,
+        name: item.name,
+        numberOfSeats: item.numberOfSeats,
+        planHuman: item.planHuman,
+        planRub: item.planRub,
+        begAcc: item.begAcc,
+        admRec: item.admRec,
+        disCome: item.disCome,
+        disTax: item.disTax,
+        patOver: item.patOver,
+        storColed: item.storColed,
+        transHuman: item.transHuman,
+        transRub: item.transRub,
+        medPrice: item.medPrice,
+        dolgDead: item.dolgDead,
+      }
+    })
     console.log(table)
-    if(table) {
-      const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-      //@ts-ignore
-      const ws = utils.json_to_sheet(table)
-      const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] }
+    //if(table) {
+      const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+      const ws = utils.json_to_sheet(test)
+      console.log('ws ', ws)
+      const wb = { Sheets: { 'table': ws }, SheetNames: ['table'] }
+      console.log('wb ',wb)
       const excelBuffer = write(wb, { bookType: 'xlsx', type: 'array' })
+      console.log('excel buffer ',excelBuffer)
       const dataB = new Blob([excelBuffer], { type: fileType })
-      saveAs(dataB, `${date}`)
       console.log(dataB)
-    }
+      if(date)
+      saveAs(dataB,
+        `${new Date(date).toLocaleString('ru', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+          })
+        }.xlsx`
+      )
+    //}
   }
+  //даш айди дается в момент заливки
+  //апдейтет и креатед
+
+  /*const GiveXMLS2 = () => {
+    console.log(item.data)
+    const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+    const ws = utils.json_to_sheet(item.data)
+    const wb = { Sheets: {'data': ws}, SheetNames: ['data']}
+    const excelBuffer = write(wb, {bookType: 'xlsx', type: 'array'})
+    const dataB = new Blob([excelBuffer], {type: fileType})
+
+    saveAs(dataB, `${year}  ${month} ${new Date()} `)
+    console.log(dataB)
+  }*/
   //тут мы должны преобразовать ексель в таблицу - массив зелененьких буковокб а отправкой на сервер будет заниматься другая функция
   const handleFile = async (e: any) => {
     const file: File = e.target.files[0]
@@ -354,11 +398,11 @@ export
               "
             >
               {//если данные есть то показывает кнопку выгрузки
-                id && date && table
-                ?
-                <Button onClick={ () => GiveXMLS() }>выгрузить</Button>
-                :
-                ''
+                //id && date && table
+                //?
+                <Button onClick={GiveXMLS}>выгрузить</Button>
+                //:
+                //''
               }
               <Button><input type="file" onChange={ (e) => handleFile(e) }/></Button>
             </div>

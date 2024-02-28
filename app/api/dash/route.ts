@@ -53,17 +53,17 @@ export
       id
     } = body
 
-    const ward = await prisma.dash.delete({
+    const dash = await prisma.dash.delete({
       where: {
         id: id
       }
     })
 
-    if ( !id || !ward ) {
+    if ( !id || !dash ) {
       return new NextResponse( 'Missing info', { status: 400 } )
     }
 
-    return NextResponse.json(ward.id)
+    return NextResponse.json(dash.id)
   } catch ( error ) {
     console.log( error, 'DASH_DELETE_ERROR' )
     return new NextResponse( 'Internal Error', { status: 500 } )
