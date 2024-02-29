@@ -23,6 +23,7 @@ import { DashDate } from "./DashDate"
 import clsx from "clsx"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
+import { HiMiniCloudArrowDown, HiMiniCloudArrowUp } from "react-icons/hi2";
 
 const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
   id: 0,
@@ -179,14 +180,8 @@ export
   const [isLoading, setLoading] = useState<boolean>(false)
   const [isVisibleDelete, setVisibleDelete] = useState<boolean>(false)
 
-
 //хуярим преобразование туда сюда сюда туда
 // пост и все конец ебания
-
-
-
-
-
 
   //1 stage - post dash
   const onReleaseDash = async (date: Date): Promise<string | number> => {
@@ -227,12 +222,6 @@ export
     }
   }
 
-
-
-
-
-
-
   const GiveXMLS = () => {
 
     const test = defaultDash.table.map((item) => {
@@ -271,6 +260,7 @@ export
           year: 'numeric',
           month: 'long',
           day: 'numeric'
+
           })
         }.xlsx`
       )
@@ -279,17 +269,6 @@ export
   //даш айди дается в момент заливки
   //апдейтет и креатед
 
-  /*const GiveXMLS2 = () => {
-    console.log(item.data)
-    const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-    const ws = utils.json_to_sheet(item.data)
-    const wb = { Sheets: {'data': ws}, SheetNames: ['data']}
-    const excelBuffer = write(wb, {bookType: 'xlsx', type: 'array'})
-    const dataB = new Blob([excelBuffer], {type: fileType})
-
-    saveAs(dataB, `${year}  ${month} ${new Date()} `)
-    console.log(dataB)
-  }*/
   //тут мы должны преобразовать ексель в таблицу - массив зелененьких буковокб а отправкой на сервер будет заниматься другая функция
   const handleFile = async (e: any) => {
     const file: File = e.target.files[0]
@@ -400,11 +379,37 @@ export
               {//если данные есть то показывает кнопку выгрузки
                 //id && date && table
                 //?
-                <Button onClick={GiveXMLS}>выгрузить</Button>
+                <Button onClick={GiveXMLS} className="gap-2"><HiMiniCloudArrowDown />выгрузить</Button>
                 //:
                 //''
               }
-              <Button><input type="file" onChange={ (e) => handleFile(e) }/></Button>
+              <Label htmlFor="file-upload"
+                className="
+                  text-primary-foreground
+                  inline-flex
+                  items-center
+                  justify-center
+                  rounded-md
+                  text-sm
+                  font-medium
+                  ring-offset-background
+                  transition-colors
+                  focus-visible:outline-none
+                  focus-visible:ring-2
+                  focus-visible:ring-ring
+                  focus-visible:ring-offset-2
+                  disabled:pointer-events-none
+                  disabled:opacity-50
+                  h-10 px-4 py-2
+                  bg-primary
+                  hover:bg-primary/80
+                  gap-2
+                  cursor-pointer
+                "
+              >
+                <HiMiniCloudArrowUp /> загрузить
+              </Label>
+              <input type="file" id="file-upload" onChange={ (e) => handleFile(e) } className="hidden"/>
             </div>
             <Table
               className="
