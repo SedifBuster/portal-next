@@ -180,9 +180,6 @@ export
   const [isLoading, setLoading] = useState<boolean>(false)
   const [isVisibleDelete, setVisibleDelete] = useState<boolean>(false)
 
-//хуярим преобразование туда сюда сюда туда
-// пост и все конец ебания
-
   //1 stage - post dash
   const onReleaseDash = async (date: Date): Promise<string | number> => {
     try {
@@ -279,25 +276,11 @@ export
     const jsonData = utils.sheet_to_json(worksheet)
     console.log(dataName)
     console.log(jsonData)
-    const newTable = {
-      date: new Date(),
-      //@ts-ignore
-      table: jsonData
-    }
-    //setNewDataTable(newTable)
-    console.log(newTable)
-    /*const fileDataSend = {
-       id: item.id,
-       month: month,
-       year: year,
-       data: JSON.stringify(jsonData)
-    }*/
-    //console.log(fileDataSend)
+    if(typeof jsonData === 'object')
+    //@ts-ignore
+    setNewDepartments(jsonData)
+    console.log(isNewDepartments)
 }
-
-
-
-
 
   let onDeleteDash = async (id: number) => {
     try {
@@ -313,6 +296,8 @@ export
       return `ошибка при удалении таблицы: ${error}`
     }
   }
+
+
 
   return (
     <Drawer>
@@ -443,50 +428,207 @@ export
                 ''//СЮДА НАДА ТАБЛИЦУ
                 :
                 //если таблицы нет, ставит дефолт даш
-                defaultDash.table.map((row: DashDepartment) => {
+                defaultDash.table.map((row: DashDepartment, index) => {
                   return <TableRow key={row.id}>
                     <TableCell>
                       {row.name}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index].name
+                            ?
+                            isNewDepartments[index].name
+                            :
+                            0
+                          }
+                        </div>
+                        : ''
+                      }
                     </TableCell>
                     <TableCell>
                       {row.planHuman}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index].planHuman
+                            ?
+                            isNewDepartments[index].planHuman
+                            :
+                            0
+                          }
+                        </div>
+                        : ''
+                      }
                     </TableCell>
                     <TableCell>
                       {row.planRub}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index].planRub
+                            ?
+                            isNewDepartments[index].planRub
+                            :
+                            0
+                          }
+                        </div>
+                        : ''
+                      }
                     </TableCell>
                     <TableCell>
                       {row.begAcc}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index].begAcc
+                            ?
+                            isNewDepartments[index].begAcc
+                            :
+                            0
+                          }
+                        </div>
+                        : ''
+                      }
                     </TableCell>
                     <TableCell>
                       {row.admRec}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index].admRec
+                            ?
+                            isNewDepartments[index].admRec
+                            :
+                            0
+                          }
+                        </div>
+                        : ''
+                      }
                     </TableCell>
                     <TableCell>
                       {row.disCome}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index].disCome
+                            ?
+                            isNewDepartments[index].disCome
+                            :
+                            0
+                          }
+                        </div>
+                        : ''
+                      }
                     </TableCell>
                     <TableCell>
                       {row.disTax}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index].disTax
+                            ?
+                            isNewDepartments[index].disTax
+                            :
+                            0
+                          }
+                        </div>
+                        : ''
+                      }
                     </TableCell>
                     <TableCell>
                       {row.patOver}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index].patOver
+                            ?
+                            isNewDepartments[index].patOver
+                            :
+                            0
+                          }
+                        </div>
+                        : ''
+                      }
                     </TableCell>
                     <TableCell>
                       {row.storColed}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index].storColed
+                            ?
+                            isNewDepartments[index].storColed
+                            :
+                            0
+                          }
+                        </div>
+                        : ''
+                      }
                     </TableCell>
                     <TableCell>
                       {row.transHuman}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index].transHuman
+                            ?
+                            isNewDepartments[index].transHuman
+                            :
+                            0
+                          }
+                        </div>
+                        : ''
+                      }
                     </TableCell>
                     <TableCell>
                       {row.transRub}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index].transRub
+                            ?
+                            isNewDepartments[index].transRub
+                            :
+                            0
+                          }
+                        </div>
+                        : ''
+                      }
                     </TableCell>
                     <TableCell>
                       {row.medPrice}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index].medPrice
+                            ?
+                            isNewDepartments[index].medPrice
+                            :
+                            0
+                          }
+                        </div>
+                        : ''
+                      }
                     </TableCell>
                     <TableCell>
                       {row.dolgDead}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index].dolgDead
+                            ?
+                            isNewDepartments[index].dolgDead
+                            :
+                            0
+                          }
+                        </div>
+                        : ''
+                      }
                     </TableCell>
                   </TableRow>
                 })
               }
+              
               </TableBody>
               <DrawerTableFooter table={table? table : defaultDash.table} />
             </Table>
@@ -539,38 +681,16 @@ export
           
         </div>
         <DrawerClose>
-          <Button variant="outline"  className="w-2/4" onClick={() => setNewDate(undefined)}>Отменить</Button>
+          <Button
+            variant="outline"
+            className="w-2/4"
+            onClick={() => {setNewDate(undefined); setNewDepartments(undefined)}}
+          >
+            Отменить
+          </Button>
         </DrawerClose>
       </DrawerFooter>
     </DrawerContent>
   </Drawer>
   )
 }
-
-{/*isNewDataTable? 
-  <div className="flex gap-4">
-  <Button className="bg-blue-400 text-white" variant={'outline'} onClick={() => onChangeTable(fillingTable.id)}>изменить текущую таблицу</Button>
-  <Button className="bg-blue-400 text-white" variant={'outline'} onClick={() => createTable()}>сохранить новую таблицу</Button>
-  </div>
-: ''*/}
-
-{/*
-    <TableCell>
-    {fillingTable.table ? JSON.parse(fillingTable.table).reduce((sum, current) => {
-    //@ts-ignore
-    return sum + current.free
-    }, 0)
-    : 0
-    {isNewDataTable ?
-    <div className="text-green-400"> /
-    {isNewDataTable.table ? isNewDataTable.table.reduce((sum, current) => {
-    //@ts-ignore
-    return sum + current.free
-     }, 0)
-     : 0
-    }
-     </div>
-      : ''
-</TableCell>*/}
-// <Button variant="destructive" className="w-1/4">Удалить</Button>
-//onClick={() => onDeleteWard(ward.id)}
