@@ -178,6 +178,8 @@ export
   const [isNewDate, setNewDate] = useState<Date>()
   const [isNewDepartments, setNewDepartments] = useState<DashDepartment[]>()
   const [isLoading, setLoading] = useState<boolean>(false)
+  const [isSending, setSending] = useState<boolean>(false)
+  const [isSendingMessage, setSendingMessage] = useState<string>('любой текст загрузки...')
   const [isVisibleDelete, setVisibleDelete] = useState<boolean>(false)
 
   //1 stage - post dash
@@ -212,6 +214,7 @@ export
   //4 stage - compile this
   const onPostData = async () => {
     try {
+      
 
     } catch ( error ) {
       toast.error( 'Ошибка при заливки данных для даша' )
@@ -265,7 +268,6 @@ export
   }
   //даш айди дается в момент заливки
   //апдейтет и креатед
-
   //тут мы должны преобразовать ексель в таблицу - массив зелененьких буковокб а отправкой на сервер будет заниматься другая функция
   const handleFile = async (e: any) => {
     const file: File = e.target.files[0]
@@ -296,8 +298,6 @@ export
       return `ошибка при удалении таблицы: ${error}`
     }
   }
-
-
 
   return (
     <Drawer>
@@ -435,11 +435,11 @@ export
                       {isNewDepartments ?
                         <div className="text-green-400">
                           {
-                            isNewDepartments[index].name
+                            isNewDepartments[index]?.name
                             ?
-                            isNewDepartments[index].name
+                            isNewDepartments[index]?.name
                             :
-                            0
+                            ''
                           }
                         </div>
                         : ''
@@ -450,11 +450,11 @@ export
                       {isNewDepartments ?
                         <div className="text-green-400">
                           {
-                            isNewDepartments[index].planHuman
+                            isNewDepartments[index]?.planHuman
                             ?
-                            isNewDepartments[index].planHuman
+                            isNewDepartments[index]?.planHuman
                             :
-                            0
+                            ''
                           }
                         </div>
                         : ''
@@ -465,11 +465,11 @@ export
                       {isNewDepartments ?
                         <div className="text-green-400">
                           {
-                            isNewDepartments[index].planRub
+                            isNewDepartments[index]?.planRub
                             ?
-                            isNewDepartments[index].planRub
+                            isNewDepartments[index]?.planRub
                             :
-                            0
+                            ''
                           }
                         </div>
                         : ''
@@ -480,11 +480,11 @@ export
                       {isNewDepartments ?
                         <div className="text-green-400">
                           {
-                            isNewDepartments[index].begAcc
+                            isNewDepartments[index]?.begAcc
                             ?
-                            isNewDepartments[index].begAcc
+                            isNewDepartments[index]?.begAcc
                             :
-                            0
+                            ''
                           }
                         </div>
                         : ''
@@ -495,11 +495,11 @@ export
                       {isNewDepartments ?
                         <div className="text-green-400">
                           {
-                            isNewDepartments[index].admRec
+                            isNewDepartments[index]?.admRec
                             ?
-                            isNewDepartments[index].admRec
+                            isNewDepartments[index]?.admRec
                             :
-                            0
+                            ''
                           }
                         </div>
                         : ''
@@ -510,11 +510,11 @@ export
                       {isNewDepartments ?
                         <div className="text-green-400">
                           {
-                            isNewDepartments[index].disCome
+                            isNewDepartments[index]?.disCome
                             ?
-                            isNewDepartments[index].disCome
+                            isNewDepartments[index]?.disCome
                             :
-                            0
+                            ''
                           }
                         </div>
                         : ''
@@ -525,11 +525,11 @@ export
                       {isNewDepartments ?
                         <div className="text-green-400">
                           {
-                            isNewDepartments[index].disTax
+                            isNewDepartments[index]?.disTax
                             ?
-                            isNewDepartments[index].disTax
+                            isNewDepartments[index]?.disTax
                             :
-                            0
+                            ''
                           }
                         </div>
                         : ''
@@ -540,11 +540,11 @@ export
                       {isNewDepartments ?
                         <div className="text-green-400">
                           {
-                            isNewDepartments[index].patOver
+                            isNewDepartments[index]?.patOver
                             ?
-                            isNewDepartments[index].patOver
+                            isNewDepartments[index]?.patOver
                             :
-                            0
+                            ''
                           }
                         </div>
                         : ''
@@ -555,11 +555,11 @@ export
                       {isNewDepartments ?
                         <div className="text-green-400">
                           {
-                            isNewDepartments[index].storColed
+                            isNewDepartments[index]?.storColed
                             ?
-                            isNewDepartments[index].storColed
+                            isNewDepartments[index]?.storColed
                             :
-                            0
+                            ''
                           }
                         </div>
                         : ''
@@ -570,11 +570,11 @@ export
                       {isNewDepartments ?
                         <div className="text-green-400">
                           {
-                            isNewDepartments[index].transHuman
+                            isNewDepartments[index]?.transHuman
                             ?
-                            isNewDepartments[index].transHuman
+                            isNewDepartments[index]?.transHuman
                             :
-                            0
+                            ''
                           }
                         </div>
                         : ''
@@ -585,11 +585,11 @@ export
                       {isNewDepartments ?
                         <div className="text-green-400">
                           {
-                            isNewDepartments[index].transRub
+                            isNewDepartments[index]?.transRub
                             ?
-                            isNewDepartments[index].transRub
+                            isNewDepartments[index]?.transRub
                             :
-                            0
+                            ''
                           }
                         </div>
                         : ''
@@ -600,9 +600,9 @@ export
                       {isNewDepartments ?
                         <div className="text-green-400">
                           {
-                            isNewDepartments[index].medPrice
+                            isNewDepartments[index]?.medPrice
                             ?
-                            isNewDepartments[index].medPrice
+                            isNewDepartments[index]?.medPrice
                             :
                             0
                           }
@@ -615,11 +615,11 @@ export
                       {isNewDepartments ?
                         <div className="text-green-400">
                           {
-                            isNewDepartments[index].dolgDead
+                            isNewDepartments[index]?.dolgDead
                             ?
-                            isNewDepartments[index].dolgDead
+                            isNewDepartments[index]?.dolgDead
                             :
-                            0
+                            ''
                           }
                         </div>
                         : ''
@@ -628,12 +628,88 @@ export
                   </TableRow>
                 })
               }
-              
+              {
+                isNewDepartments && isNewDepartments.length > 5
+                ?
+                isNewDepartments.slice(5).map((row) => { return <TableRow key={row.id}>
+                <TableCell>
+                  <div className="text-green-400">
+                    {row.name}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="text-green-400">
+                    {row.planHuman}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="text-green-400">
+                    {row.planRub}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="text-green-400">
+                    {row.begAcc}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="text-green-400">
+                    {row.admRec}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="text-green-400">
+                    {row.disCome}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="text-green-400">
+                    {row.disTax}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="text-green-400">
+                    {row.patOver}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="text-green-400">
+                    {row.storColed}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="text-green-400">
+                    {row.transHuman}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="text-green-400">
+                    {row.transRub}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="text-green-400">
+                    {row.medPrice}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="text-green-400">
+                    {row.dolgDead}
+                  </div>
+                </TableCell>
+              </TableRow>}
+              )
+                :
+                ''
+              }
               </TableBody>
-              <DrawerTableFooter table={table? table : defaultDash.table} />
+              <DrawerTableFooter table={table? table : defaultDash.table} newTable={isNewDepartments}/>
             </Table>
           </main>
-          {/**<CustomLoading statusText="любой текст загрузки..." loading={isLoading}/> */}
+
+          {isSending? <CustomLoading statusText={isSendingMessage} loading={isLoading}/> : ''}
+
+
         </div>
       </div>
       <DrawerFooter>
@@ -646,6 +722,8 @@ export
             gap-1
           "
         >
+
+
           <Button className={clsx(``,
             id
             ?
@@ -655,6 +733,8 @@ export
           )}
           disabled={!isNewDate && !isNewDepartments}
           >Сохранить</Button>
+
+
           {
             id
             ?

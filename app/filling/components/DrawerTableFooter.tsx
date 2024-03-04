@@ -5,9 +5,11 @@ import { DashDepartment } from "@prisma/client"
 
 export
   function DrawerTableFooter({
-    table
+    table,
+    newTable
   } : {
-    table: DashDepartment[]
+    table: DashDepartment[],
+    newTable?: DashDepartment[]
   }
 ) {
   /*по лпу редус по всем для визуализации*/ 
@@ -32,6 +34,20 @@ export
             :
             0
           }
+          <div className="text-green-400">
+          {
+            newTable
+            ?
+            newTable.filter((cell) => {
+              return cell!.planHuman
+            }).reduce((sum, current) => {
+              //@ts-ignore
+              return sum + current.planHuman
+            }, 0)
+            :
+            ''
+          }
+          </div>
         </TableCell>
 
         <TableCell>
@@ -47,6 +63,20 @@ export
             :
             0
           }
+          <div className="text-green-400">
+          {
+            newTable
+            ?
+            newTable.filter((cell) => {
+              return cell!.planRub
+            }).reduce((sum, current) => {
+              //@ts-ignore
+              return sum + current.planRub
+            }, 0)
+            :
+            ''
+          }
+          </div>
         </TableCell>
 
         <TableCell>
@@ -62,6 +92,20 @@ export
             :
             0
           }
+          <div className="text-green-400">
+          {
+            newTable
+            ?
+            newTable.filter((cell) => {
+              return cell!.begAcc
+            }).reduce((sum, current) => {
+              //@ts-ignore
+              return sum + current.begAcc
+            }, 0)
+            :
+            ''
+          }
+          </div>
         </TableCell>
 
         <TableCell>
@@ -77,6 +121,20 @@ export
             :
             0
           }
+         <div className="text-green-400">
+          {
+            newTable
+            ?
+            newTable.filter((cell) => {
+              return cell!.admRec
+            }).reduce((sum, current) => {
+              //@ts-ignore
+              return sum + current.admRec
+            }, 0)
+            :
+            ''
+          }
+          </div>
         </TableCell>
 
         <TableCell>
@@ -92,6 +150,20 @@ export
             :
             0
           }
+          <div className="text-green-400">
+          {
+            newTable
+            ?
+            newTable.filter((cell) => {
+              return cell!.disCome
+            }).reduce((sum, current) => {
+              //@ts-ignore
+              return sum + current.disCome
+            }, 0)
+            :
+            ''
+          }
+          </div>
         </TableCell>
 
         <TableCell>
@@ -107,6 +179,20 @@ export
             :
             0
           }
+          <div className="text-green-400">
+          {
+            newTable
+            ?
+            newTable.filter((cell) => {
+              return cell!.disTax
+            }).reduce((sum, current) => {
+              //@ts-ignore
+              return sum + current.disTax
+            }, 0)
+            :
+            ''
+          }
+          </div>
         </TableCell>
 
         <TableCell>
@@ -122,6 +208,20 @@ export
             :
             0
           }
+          <div className="text-green-400">
+          {
+            newTable
+            ?
+            newTable.filter((cell) => {
+              return cell!.patOver
+            }).reduce((sum, current) => {
+              //@ts-ignore
+              return sum + current.patOver
+            }, 0)
+            :
+            ''
+          }
+          </div>
         </TableCell>
 
         <TableCell>
@@ -137,6 +237,20 @@ export
             :
             0
           }
+          <div className="text-green-400">
+          {
+            newTable
+            ?
+            newTable.filter((cell) => {
+              return cell!.storColed
+            }).reduce((sum, current) => {
+              //@ts-ignore
+              return sum + current.storColed
+            }, 0)
+            :
+            ''
+          }
+          </div>
         </TableCell>
 
         <TableCell>
@@ -152,6 +266,20 @@ export
             :
             0
           }
+          <div className="text-green-400">
+          {
+            newTable
+            ?
+            newTable.filter((cell) => {
+              return cell!.transHuman
+            }).reduce((sum, current) => {
+              //@ts-ignore
+              return sum + current.transHuman
+            }, 0)
+            :
+            ''
+          }
+          </div>
         </TableCell>
 
         <TableCell>
@@ -167,6 +295,20 @@ export
             :
             0
           }
+          <div className="text-green-400">
+          {
+            newTable
+            ?
+            newTable.filter((cell) => {
+              return cell!.transRub
+            }).reduce((sum, current) => {
+              //@ts-ignore
+              return sum + current.transRub
+            }, 0)
+            :
+            ''
+          }
+          </div>
         </TableCell>
 
         <TableCell>
@@ -182,6 +324,20 @@ export
             :
             0
           }
+          <div className="text-green-400">
+          {
+            newTable
+            ?
+            newTable.filter((cell) => {
+              return cell!.medPrice
+            }).reduce((sum, current) => {
+              //@ts-ignore
+              return sum + current.medPrice
+            }, 0)
+            :
+            ''
+          }
+          </div>
         </TableCell>
 
         <TableCell>
@@ -197,6 +353,20 @@ export
             :
             0
           }
+          <div className="text-green-400">
+          {
+            newTable
+            ?
+            newTable.filter((cell) => {
+              return cell!.dolgDead
+            }).reduce((sum, current) => {
+              //@ts-ignore
+              return sum + current.dolgDead
+            }, 0)
+            :
+            ''
+          }
+          </div>
         </TableCell>
 
       </TableRow>
