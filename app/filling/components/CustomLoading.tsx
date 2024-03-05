@@ -3,14 +3,17 @@
 import { Button } from "@/components/ui/button"
 import clsx from "clsx"
 import Image from 'next/image'
+import { Dispatch, SetStateAction } from "react"
 
 export
   function CustomLoading({
     statusText,
     loading,
+    setSending
   }: {
     statusText: string,
     loading: boolean,
+    setSending: Dispatch<SetStateAction<boolean>>
   }
 ) {
   return (
@@ -55,7 +58,7 @@ export
       {
         !loading
         && 
-        <Button>
+        <Button onClick={() => setSending(false)}>
           закрыть
         </Button>
       }

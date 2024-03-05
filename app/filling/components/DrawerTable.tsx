@@ -197,7 +197,7 @@ export
     }
   }
   //2 stage - post departments
-  const onReleaseDashDepartment = async ( department: DashDepartment ) => {
+  const onReleaseDashDepartment = async ( department: DashDepartment, id: number ) => {
     try {
       const resultDashDepartment = await axios.post('/api/dash/department', department)
       if( resultDashDepartment.statusText === "OK") {
@@ -214,8 +214,30 @@ export
   //4 stage - compile this
   const onPostData = async () => {
     try {
-      
+      setLoading(true)
+      setSending(true)
+      setSendingMessage('загрузка даша...')
 
+      if(!isNewDate) {
+        setSendingMessage('ошибка: нет даты')
+        setLoading(false)
+        return
+      }
+      let resultDash = await onReleaseDash(isNewDate)
+
+      if(typeof resultDash === 'string') {
+        setSendingMessage('ошибка: не вернул айди')
+        setLoading(false)
+        return
+      }
+
+      else if (typeof resultDash === 'number' && isNewDepartments)
+        for(let i = 0; i < isNewDepartments?.length; i++) {
+          setSendingMessage(`загрузка отделения номер ${i}...`)
+         await onReleaseDashDepartment(isNewDepartments[i], resultDash)
+        }
+        setLoading(false)
+        setSendingMessage(`загрузка завершена...`)
     } catch ( error ) {
       toast.error( 'Ошибка при заливки данных для даша' )
       return `ошибка при процессе заливки данных для даша: ${error}`
@@ -706,10 +728,7 @@ export
               <DrawerTableFooter table={table? table : defaultDash.table} newTable={isNewDepartments}/>
             </Table>
           </main>
-
-          {isSending? <CustomLoading statusText={isSendingMessage} loading={isLoading}/> : ''}
-
-
+          {isSending? <CustomLoading statusText={isSendingMessage} loading={isLoading} setSending={setSending}/> : ''}
         </div>
       </div>
       <DrawerFooter>
@@ -722,8 +741,6 @@ export
             gap-1
           "
         >
-
-
           <Button className={clsx(``,
             id
             ?
@@ -733,8 +750,6 @@ export
           )}
           disabled={!isNewDate && !isNewDepartments}
           >Сохранить</Button>
-
-
           {
             id
             ?
@@ -758,7 +773,6 @@ export
             :
             ''
           }
-          
         </div>
         <DrawerClose>
           <Button
