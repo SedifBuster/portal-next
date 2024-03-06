@@ -77,16 +77,16 @@ export
     const {
       id
     } = body
-    const department = await prisma.dashDepartment.delete({
+    const department = await prisma.dashDepartment.deleteMany({
       where: {
-        id: id
+        dashId: id
       }
     })
     if ( !id || !department ) {
       return new NextResponse( 'Missing info', { status: 400 } )
     }
 
-    return NextResponse.json(department.id)
+    return NextResponse.json(department)
   } catch ( error ) {
     console.log( error, 'DEPARTMENT_DELETE_ERROR' )
     return new NextResponse( 'Internal Error', { status: 500 } )

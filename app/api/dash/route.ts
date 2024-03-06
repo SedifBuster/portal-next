@@ -32,6 +32,7 @@ export
 
     const dash = await prisma.dash.create({
       data: {
+        date: date
       }
     })
 

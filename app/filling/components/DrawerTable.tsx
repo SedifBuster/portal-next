@@ -167,27 +167,20 @@ export
     getTables: () => Promise<void>
   }
 ) {
-//несколько стадий заливки
-//1 стадия - пост даша, он возвращает айди
-//если ошибка, то отмена всех операций
-//если все ок то поэтапная заливка департментов
-//мэйби с числовой стадией, типа 5 из 5 отделений что то типа такого
-//отображения состояния в лоадинг скрине
-//если все ок, то дравер клоуз
-//если хуево то все остается на своих местах
   const [isNewDate, setNewDate] = useState<Date>()
   const [isNewDepartments, setNewDepartments] = useState<DashDepartment[]>()
   const [isLoading, setLoading] = useState<boolean>(false)
   const [isSending, setSending] = useState<boolean>(false)
-  const [isSendingMessage, setSendingMessage] = useState<string>('любой текст загрузки...')
+  const [isSendingMessage, setSendingMessage] = useState<string>('загрузка...')
   const [isVisibleDelete, setVisibleDelete] = useState<boolean>(false)
 
-  //1 stage - post dash
+  console.log(isNewDate)
+
   const onReleaseDash = async (date: Date): Promise<string | number> => {
     try {
       const resultDash = await axios.post('/api/dash', { date })
       if( resultDash.statusText === "OK" ) {
-        toast.success( 'Даш создан с айди: ', resultDash.data )
+        toast.success( `Таблица создана с айди: ${resultDash.data} ` )
         return resultDash.data
       }
       else throw new Error( 'Статус текста запроса' )
@@ -196,12 +189,12 @@ export
       return `ошибка при создании даша: ${error}`
     }
   }
-  //2 stage - post departments
-  const onReleaseDashDepartment = async ( department: DashDepartment, id: number ) => {
+
+  const onReleaseDashDepartment = async ( department: DashDepartment) => {
     try {
       const resultDashDepartment = await axios.post('/api/dash/department', department)
       if( resultDashDepartment.statusText === "OK") {
-        toast.success( 'Отделение создано с айди: ', resultDashDepartment.data)
+        toast.success( `Отделение создано с айди: ${resultDashDepartment.data}`)
         return resultDashDepartment.data
       }
       else throw new Error( 'Статус текста запроса' )
@@ -210,8 +203,104 @@ export
       return `ошибка при создании отделения даша: ${error}`
     }
   }
-  //3 stage - loading screen
-  //4 stage - compile this
+
+  const GiveXMLS = ( table: 'default' | 'regular') => {
+    let test
+    if(table === 'default')
+      test = defaultDash.table.map((item) => {
+        return {
+          id: item.id,
+          name: item.name,
+          numberOfSeats: item.numberOfSeats,
+          planHuman: item.planHuman,
+          planRub: item.planRub,
+          begAcc: item.begAcc,
+          admRec: item.admRec,
+          disCome: item.disCome,
+          disTax: item.disTax,
+          patOver: item.patOver,
+          storColed: item.storColed,
+          transHuman: item.transHuman,
+          transRub: item.transRub,
+          medPrice: item.medPrice,
+          dolgDead: item.dolgDead,
+        }
+      })
+    else if (table === 'regular') {
+      //@ts-ignore
+      test = isNewDepartments.map((item) => {
+        return {
+          id: item.id,
+          name: item.name,
+          numberOfSeats: item.numberOfSeats,
+          planHuman: item.planHuman,
+          planRub: item.planRub,
+          begAcc: item.begAcc,
+          admRec: item.admRec,
+          disCome: item.disCome,
+          disTax: item.disTax,
+          patOver: item.patOver,
+          storColed: item.storColed,
+          transHuman: item.transHuman,
+          transRub: item.transRub,
+          medPrice: item.medPrice,
+          dolgDead: item.dolgDead,
+        }
+      })
+    }
+
+    const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+    //@ts-ignore
+    const ws = utils.json_to_sheet(test)
+    const wb = { Sheets: { 'table': ws }, SheetNames: ['table'] }
+    const excelBuffer = write(wb, { bookType: 'xlsx', type: 'array' })
+    const dataB = new Blob([excelBuffer], { type: fileType })
+    if(date)
+    saveAs(dataB,
+      `${new Date(date).toLocaleString('ru', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })}.xlsx`
+    )
+  }
+
+  const handleFile = async (e: any) => {
+    const file: File = e.target.files[0]
+    const dataFile = await file.arrayBuffer()
+    const dataName = file.name
+    const workbook = read(dataFile)
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]]
+    const jsonData = utils.sheet_to_json(worksheet)
+    console.log(dataName)
+    console.log(jsonData)
+    if(typeof jsonData === 'object')
+    //@ts-ignore
+    setNewDepartments(jsonData)
+    console.log(isNewDepartments)
+  }
+
+  let onDeleteDash = async (id: number) => {
+    try {
+     const resultDep = await axios.delete( '/api/dash/department', {data: {id}})
+     if( resultDep.statusText !== "OK" ) throw new Error( 'Статус текста запроса при удалении отделений' )
+
+      const resultDash = await axios.delete( '/api/dash', { data: {id} } )
+
+      if( resultDash.statusText !== "OK" ) throw new Error( 'Статус текста запроса при удалении таблицы' )
+      else {
+        toast.success( `таблица под номером: ${resultDash.data} удалена` )
+        getTables()
+        setVisibleDelete(false)
+        //добавить удаление департментов
+      }
+
+    } catch ( error ) {
+      toast.error( 'Ошибка при удалении таблицы' )
+      return `ошибка при удалении таблицы: ${error}`
+    }
+  }
+
   const onPostData = async () => {
     try {
       setLoading(true)
@@ -231,93 +320,39 @@ export
         return
       }
 
-      else if (typeof resultDash === 'number' && isNewDepartments)
-        for(let i = 0; i < isNewDepartments?.length; i++) {
+      else if (typeof resultDash === 'number' && isNewDepartments) {
+        const filteredDeps = isNewDepartments.map((dep) => {
+          return {
+            name: dep.name,
+            numberOfSeats: dep.numberOfSeats,
+            planHuman: dep.planHuman,
+            planRub: dep.planRub,
+            begAcc: dep.begAcc,
+            admRec: dep.admRec,
+            disCome: dep.disCome,
+            disTax: dep.disTax,
+            patOver: dep.patOver,
+            storColed: dep.storColed,
+            transHuman: dep.transHuman,
+            transRub: dep.transRub,
+            medPrice: dep.medPrice,
+            dolgDead: dep.dolgDead,
+            dashId: resultDash
+          }
+        })
+        for(let i = 0; i < filteredDeps?.length; i++) {
           setSendingMessage(`загрузка отделения номер ${i}...`)
-         await onReleaseDashDepartment(isNewDepartments[i], resultDash)
+          //@ts-ignore
+          await onReleaseDashDepartment(filteredDeps[i])
         }
         setLoading(false)
-        setSendingMessage(`загрузка завершена...`)
+        setSendingMessage(`загрузка завершена`)
+        //убрать таблицу и обновить список таблиц
+      }
     } catch ( error ) {
       toast.error( 'Ошибка при заливки данных для даша' )
+      setLoading(false)
       return `ошибка при процессе заливки данных для даша: ${error}`
-    }
-  }
-
-  const GiveXMLS = () => {
-
-    const test = defaultDash.table.map((item) => {
-      return {
-        id: item.id,
-        name: item.name,
-        numberOfSeats: item.numberOfSeats,
-        planHuman: item.planHuman,
-        planRub: item.planRub,
-        begAcc: item.begAcc,
-        admRec: item.admRec,
-        disCome: item.disCome,
-        disTax: item.disTax,
-        patOver: item.patOver,
-        storColed: item.storColed,
-        transHuman: item.transHuman,
-        transRub: item.transRub,
-        medPrice: item.medPrice,
-        dolgDead: item.dolgDead,
-      }
-    })
-    console.log(table)
-    //if(table) {
-      const fileType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-      const ws = utils.json_to_sheet(test)
-      console.log('ws ', ws)
-      const wb = { Sheets: { 'table': ws }, SheetNames: ['table'] }
-      console.log('wb ',wb)
-      const excelBuffer = write(wb, { bookType: 'xlsx', type: 'array' })
-      console.log('excel buffer ',excelBuffer)
-      const dataB = new Blob([excelBuffer], { type: fileType })
-      console.log(dataB)
-      if(date)
-      saveAs(dataB,
-        `${new Date(date).toLocaleString('ru', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-
-          })
-        }.xlsx`
-      )
-    //}
-  }
-  //даш айди дается в момент заливки
-  //апдейтет и креатед
-  //тут мы должны преобразовать ексель в таблицу - массив зелененьких буковокб а отправкой на сервер будет заниматься другая функция
-  const handleFile = async (e: any) => {
-    const file: File = e.target.files[0]
-    const dataFile = await file.arrayBuffer()
-    const dataName = file.name
-    const workbook = read(dataFile)
-    const worksheet = workbook.Sheets[workbook.SheetNames[0]]
-    const jsonData = utils.sheet_to_json(worksheet)
-    console.log(dataName)
-    console.log(jsonData)
-    if(typeof jsonData === 'object')
-    //@ts-ignore
-    setNewDepartments(jsonData)
-    console.log(isNewDepartments)
-}
-
-  let onDeleteDash = async (id: number) => {
-    try {
-      const resultDash = await axios.delete( '/api/dash', { data: {id} })
-      if( resultDash.statusText !== "OK" ) throw new Error( 'Статус текста запроса' )
-      else {
-        toast.success(`таблица под номером: ${resultDash.data} удалена` )
-        getTables()
-        setVisibleDelete(false)
-      }
-    } catch ( error ) {
-      toast.error( 'Ошибка при удалении таблицы' )
-      return `ошибка при удалении таблицы: ${error}`
     }
   }
 
@@ -355,7 +390,6 @@ export
               p-2
             "
           >
-            {/**DATE CHANGE */}
             <DashDate setDate={setNewDate} date={isNewDate}/>
             <div
               className="p-2"
@@ -383,13 +417,10 @@ export
               justify-center
               "
             >
-              {//если данные есть то показывает кнопку выгрузки
-                //id && date && table
-                //?
-                <Button onClick={GiveXMLS} className="gap-2"><HiMiniCloudArrowDown />выгрузить</Button>
-                //:
-                //''
-              }
+              <Button onClick={() => GiveXMLS(isNewDepartments? 'regular' : 'default')} className="gap-2">
+                <HiMiniCloudArrowDown /> выгрузить
+              </Button>
+
               <Label htmlFor="file-upload"
                 className="
                   text-primary-foreground
@@ -749,6 +780,8 @@ export
             `w-2/4`
           )}
           disabled={!isNewDate && !isNewDepartments}
+          onClick={() => onPostData()}
+          //СОХРАНИТЬ
           >Сохранить</Button>
           {
             id

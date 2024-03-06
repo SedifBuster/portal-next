@@ -9,11 +9,11 @@ export
   function CustomLoading({
     statusText,
     loading,
-    setSending
+    setSending,
   }: {
     statusText: string,
     loading: boolean,
-    setSending: Dispatch<SetStateAction<boolean>>
+    setSending: Dispatch<SetStateAction<boolean>>,
   }
 ) {
   return (
