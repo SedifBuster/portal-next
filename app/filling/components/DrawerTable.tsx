@@ -174,8 +174,6 @@ export
   const [isSendingMessage, setSendingMessage] = useState<string>('загрузка...')
   const [isVisibleDelete, setVisibleDelete] = useState<boolean>(false)
 
-  console.log(isNewDate)
-
   const onReleaseDash = async (date: Date): Promise<string | number> => {
     try {
       const resultDash = await axios.post('/api/dash', { date })
@@ -292,7 +290,6 @@ export
         toast.success( `таблица под номером: ${resultDash.data} удалена` )
         getTables()
         setVisibleDelete(false)
-        //добавить удаление департментов
       }
 
     } catch ( error ) {

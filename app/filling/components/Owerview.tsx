@@ -1,12 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { FillingTable } from "./FillingTable"
 import axios from "axios"
-import toast from "react-hot-toast"
 import { Dash, DashDepartment } from "@prisma/client"
 import { FillingItem } from "./FillingItem"
-import { CustomLoading } from "./CustomLoading"
 
 export
   interface DashInit extends Dash {
@@ -16,12 +13,8 @@ export
 export
   function Owerview(
 ) {
-  //получить данные - success
-  //возможность выгрузить и загрузить ексель
-  //создать таблицу - success
-  //из страрой таблицы
-
   const [isTables, setTables] = useState<DashInit[]>()
+
   let getTables = async () => {
     try {
       let result = await axios.get('/api/dash')
@@ -32,6 +25,7 @@ export
       console.log('error')
     }
   }
+
   useEffect(() => {
     getTables()
   }, [])
