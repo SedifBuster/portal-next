@@ -19,6 +19,15 @@ export
     try {
       let result = await axios.get('/api/dash')
       if (result.status === 200) {
+        let resultDep = await axios.get('/api/dash/department')
+        if(!resultDep.data && !result.data) {
+         let filteredDashes = result.data.map((item: Dash) => {
+            return {...item, table: resultDep.data.filter((dep: DashDepartment) => {
+             return dep.dashId === item.id
+            })}
+          })
+          console.log(filteredDashes)
+        }
         setTables(result.data)
       }
     } catch {
