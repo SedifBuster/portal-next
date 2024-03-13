@@ -81,11 +81,10 @@ export
     const {
       id,
       date,
-      table,
     } = body
     console.log(body)
 
-    if ( !id || !date || !table ) {
+    if ( !id || !date ) {
       return new NextResponse('Missing info', { status: 400 })
     }
 
@@ -95,7 +94,6 @@ export
       },
       data: {
         date,
-        table,
       }
     })
 

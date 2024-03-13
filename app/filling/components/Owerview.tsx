@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import { Dash, DashDepartment } from "@prisma/client"
 import { FillingItem } from "./FillingItem"
+import toast from "react-hot-toast"
 
 export
   interface DashInit extends Dash {
@@ -19,16 +20,21 @@ export
     try {
       let result = await axios.get('/api/dash')
       if (result.status === 200) {
+        toast.success(`таблицы код ${result.status}`)
         let resultDep = await axios.get('/api/dash/department')
-        if(!resultDep.data && !result.data) {
+        toast.success(`отделения код ${resultDep.status}`)
+        if(resultDep.data && result.data) {
+          console.log(resultDep.status)
          let filteredDashes = result.data.map((item: Dash) => {
             return {...item, table: resultDep.data.filter((dep: DashDepartment) => {
              return dep.dashId === item.id
+             
             })}
           })
           console.log(filteredDashes)
+          setTables(filteredDashes)
         }
-        setTables(result.data)
+       
       }
     } catch {
       console.log('error')

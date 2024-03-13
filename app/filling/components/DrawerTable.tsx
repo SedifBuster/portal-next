@@ -183,8 +183,8 @@ export
       }
       else throw new Error( 'Статус текста запроса' )
     } catch ( error ) {
-      toast.error( 'Ошибка при создании даша' )
-      return `ошибка при создании даша: ${error}`
+      toast.error( 'Ошибка при создании таблицы' )
+      return `ошибка при создании таблицы: ${error}`
     }
   }
 
@@ -197,8 +197,8 @@ export
       }
       else throw new Error( 'Статус текста запроса' )
     } catch ( error ) {
-      toast.error( 'Ошибка при создании отделения даша' )
-      return `ошибка при создании отделения даша: ${error}`
+      toast.error( 'Ошибка при создании отделения таблицы' )
+      return `ошибка при создании отделения таблицы: ${error}`
     }
   }
 
@@ -302,7 +302,7 @@ export
     try {
       setLoading(true)
       setSending(true)
-      setSendingMessage('загрузка даша...')
+      setSendingMessage('создание таблицы...')
 
       if(!isNewDate) {
         setSendingMessage('ошибка: нет даты')
@@ -344,13 +344,73 @@ export
         }
         setLoading(false)
         setSendingMessage(`загрузка завершена`)
+        getTables()
         //убрать таблицу и обновить список таблиц
       }
     } catch ( error ) {
-      toast.error( 'Ошибка при заливки данных для даша' )
+      toast.error( 'Ошибка при заливки данных для таблицы' )
       setLoading(false)
-      return `ошибка при процессе заливки данных для даша: ${error}`
+      return `ошибка при процессе заливки данных для таблицы: ${error}`
     }
+  }
+
+  let onUpdateData = async () => {
+    try {
+      setLoading(true)
+      setSending(true)
+      setSendingMessage('обновление таблицы...')
+
+      if(!isNewDate) {
+        setSendingMessage('ошибка: нет даты')
+        setLoading(false)
+        return
+      }
+      //поменять
+      let resultDash = await onReleaseDash(isNewDate)
+
+      if(typeof resultDash === 'string') {
+        setSendingMessage('ошибка: не вернул айди')
+        setLoading(false)
+        return
+      }
+
+      else if (typeof resultDash === 'number' && isNewDepartments) {
+        const filteredDeps = isNewDepartments.map((dep) => {
+          return {
+            name: dep.name,
+            numberOfSeats: dep.numberOfSeats,
+            planHuman: dep.planHuman,
+            planRub: dep.planRub,
+            begAcc: dep.begAcc,
+            admRec: dep.admRec,
+            disCome: dep.disCome,
+            disTax: dep.disTax,
+            patOver: dep.patOver,
+            storColed: dep.storColed,
+            transHuman: dep.transHuman,
+            transRub: dep.transRub,
+            medPrice: dep.medPrice,
+            dolgDead: dep.dolgDead,
+            dashId: resultDash
+          }
+        })
+        //поменять
+        for(let i = 0; i < filteredDeps?.length; i++) {
+          setSendingMessage(`обновление отделения номер ${i}...`)
+          //@ts-ignore
+          await onReleaseDashDepartment(filteredDeps[i])
+        }
+        setLoading(false)
+        setSendingMessage(`обновление завершено`)
+        //убрать таблицу и обновить список таблиц
+        //получить айди старых и обновить по айди
+      }
+    } catch ( error ) {
+      toast.error( 'Ошибка при обновлении данных для таблицы' )
+      setLoading(false)
+      return `ошибка при процессе обновления данных для таблицы: ${error}`
+    }
+
   }
 
   return (
@@ -475,7 +535,205 @@ export
               {
                 table
                 ?
-                ''//СЮДА НАДА ТАБЛИЦУ
+                table.map((row: DashDepartment, index) => {
+                  return <TableRow key={row.id}>
+                    <TableCell>
+                      {row.name}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index]?.name
+                            ?
+                            isNewDepartments[index]?.name
+                            :
+                            ''
+                          }
+                        </div>
+                        : ''
+                      }
+                    </TableCell>
+                    <TableCell>
+                      {row.planHuman}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index]?.planHuman
+                            ?
+                            isNewDepartments[index]?.planHuman
+                            :
+                            ''
+                          }
+                        </div>
+                        : ''
+                      }
+                    </TableCell>
+                    <TableCell>
+                      {row.planRub}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index]?.planRub
+                            ?
+                            isNewDepartments[index]?.planRub
+                            :
+                            ''
+                          }
+                        </div>
+                        : ''
+                      }
+                    </TableCell>
+                    <TableCell>
+                      {row.begAcc}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index]?.begAcc
+                            ?
+                            isNewDepartments[index]?.begAcc
+                            :
+                            ''
+                          }
+                        </div>
+                        : ''
+                      }
+                    </TableCell>
+                    <TableCell>
+                      {row.admRec}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index]?.admRec
+                            ?
+                            isNewDepartments[index]?.admRec
+                            :
+                            ''
+                          }
+                        </div>
+                        : ''
+                      }
+                    </TableCell>
+                    <TableCell>
+                      {row.disCome}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index]?.disCome
+                            ?
+                            isNewDepartments[index]?.disCome
+                            :
+                            ''
+                          }
+                        </div>
+                        : ''
+                      }
+                    </TableCell>
+                    <TableCell>
+                      {row.disTax}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index]?.disTax
+                            ?
+                            isNewDepartments[index]?.disTax
+                            :
+                            ''
+                          }
+                        </div>
+                        : ''
+                      }
+                    </TableCell>
+                    <TableCell>
+                      {row.patOver}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index]?.patOver
+                            ?
+                            isNewDepartments[index]?.patOver
+                            :
+                            ''
+                          }
+                        </div>
+                        : ''
+                      }
+                    </TableCell>
+                    <TableCell>
+                      {row.storColed}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index]?.storColed
+                            ?
+                            isNewDepartments[index]?.storColed
+                            :
+                            ''
+                          }
+                        </div>
+                        : ''
+                      }
+                    </TableCell>
+                    <TableCell>
+                      {row.transHuman}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index]?.transHuman
+                            ?
+                            isNewDepartments[index]?.transHuman
+                            :
+                            ''
+                          }
+                        </div>
+                        : ''
+                      }
+                    </TableCell>
+                    <TableCell>
+                      {row.transRub}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index]?.transRub
+                            ?
+                            isNewDepartments[index]?.transRub
+                            :
+                            ''
+                          }
+                        </div>
+                        : ''
+                      }
+                    </TableCell>
+                    <TableCell>
+                      {row.medPrice}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index]?.medPrice
+                            ?
+                            isNewDepartments[index]?.medPrice
+                            :
+                            0
+                          }
+                        </div>
+                        : ''
+                      }
+                    </TableCell>
+                    <TableCell>
+                      {row.dolgDead}
+                      {isNewDepartments ?
+                        <div className="text-green-400">
+                          {
+                            isNewDepartments[index]?.dolgDead
+                            ?
+                            isNewDepartments[index]?.dolgDead
+                            :
+                            ''
+                          }
+                        </div>
+                        : ''
+                      }
+                    </TableCell>
+                  </TableRow>
+                })
                 :
                 //если таблицы нет, ставит дефолт даш
                 defaultDash.table.map((row: DashDepartment, index) => {
@@ -777,7 +1035,7 @@ export
             `w-2/4`
           )}
           disabled={!isNewDate && !isNewDepartments}
-          onClick={() => onPostData()}
+          onClick={() => table? onUpdateData() : onPostData()}
           //СОХРАНИТЬ
           >Сохранить</Button>
           {
