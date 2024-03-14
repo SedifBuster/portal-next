@@ -188,6 +188,20 @@ export
     }
   }
 
+  const onUpdateDash = async (date: Date, id: number | undefined): Promise<string | number> => {
+    try {
+      const resultUpdateDash = await axios.patch('/api/dash', {date: date, id: id})
+      if(resultUpdateDash.statusText === "OK") {
+        toast.success( `Таблица обновлена с айди: ${resultUpdateDash.data}`)
+        return resultUpdateDash.data
+      }
+      else throw new Error( 'Статус текста запроса' )
+    } catch ( error ) {
+      toast.error( 'Ошибка при обновлении таблицы')
+      return `ошибка при обновлении таблицы: ${error}`
+    }
+  }
+
   const onReleaseDashDepartment = async ( department: DashDepartment) => {
     try {
       const resultDashDepartment = await axios.post('/api/dash/department', department)
@@ -199,6 +213,20 @@ export
     } catch ( error ) {
       toast.error( 'Ошибка при создании отделения таблицы' )
       return `ошибка при создании отделения таблицы: ${error}`
+    }
+  }
+
+  const onUpdateDashDepartment = async ( department: DashDepartment) => {
+    try {
+      const resultUpdateDashDepartment = await axios.patch('/api/dash/department', department)
+      if( resultUpdateDashDepartment.statusText === "OK") {
+        toast.success( `Отделение обновлено с айди: ${resultUpdateDashDepartment.data}`)
+        return resultUpdateDashDepartment.data
+      }
+      else throw new Error ( 'Статус текста запроса' )
+    } catch ( error ) {
+      toast.error( 'Ошибка при обновлении отделений таблицы')
+      return `ошибка при обновлении отделений таблицы: ${error}`
     }
   }
 
@@ -366,7 +394,7 @@ export
         return
       }
       //поменять
-      let resultDash = await onReleaseDash(isNewDate)
+      let resultDash = await onUpdateDash(isNewDate, id)
 
       if(typeof resultDash === 'string') {
         setSendingMessage('ошибка: не вернул айди')
@@ -374,36 +402,39 @@ export
         return
       }
 
-      else if (typeof resultDash === 'number' && isNewDepartments) {
-        const filteredDeps = isNewDepartments.map((dep) => {
-          return {
-            name: dep.name,
-            numberOfSeats: dep.numberOfSeats,
-            planHuman: dep.planHuman,
-            planRub: dep.planRub,
-            begAcc: dep.begAcc,
-            admRec: dep.admRec,
-            disCome: dep.disCome,
-            disTax: dep.disTax,
-            patOver: dep.patOver,
-            storColed: dep.storColed,
-            transHuman: dep.transHuman,
-            transRub: dep.transRub,
-            medPrice: dep.medPrice,
-            dolgDead: dep.dolgDead,
-            dashId: resultDash
-          }
-        })
+      else if (typeof resultDash === 'number' && isNewDepartments && table) {
+          const filteredDeps = isNewDepartments.map((dep, index) => {
+            return {
+              id: table[index].id,
+              name: dep.name,
+              numberOfSeats: dep.numberOfSeats,
+              planHuman: dep.planHuman,
+              planRub: dep.planRub,
+              begAcc: dep.begAcc,
+              admRec: dep.admRec,
+              disCome: dep.disCome,
+              disTax: dep.disTax,
+              patOver: dep.patOver,
+              storColed: dep.storColed,
+              transHuman: dep.transHuman,
+              transRub: dep.transRub,
+              medPrice: dep.medPrice,
+              dolgDead: dep.dolgDead,
+              dashId: resultDash
+            }
+          })
+
         //поменять
         for(let i = 0; i < filteredDeps?.length; i++) {
           setSendingMessage(`обновление отделения номер ${i}...`)
           //@ts-ignore
-          await onReleaseDashDepartment(filteredDeps[i])
+          await onUpdateDashDepartment(filteredDeps[i])
         }
         setLoading(false)
         setSendingMessage(`обновление завершено`)
         //убрать таблицу и обновить список таблиц
         //получить айди старых и обновить по айди
+        //старые найти с помощью айди и имени мб?
       }
     } catch ( error ) {
       toast.error( 'Ошибка при обновлении данных для таблицы' )
@@ -1035,7 +1066,7 @@ export
             `w-2/4`
           )}
           disabled={!isNewDate && !isNewDepartments}
-          onClick={() => table? onUpdateData() : onPostData()}
+          onClick={() => table? undefined /*onUpdateData()*/ : onPostData()}
           //СОХРАНИТЬ
           >Сохранить</Button>
           {

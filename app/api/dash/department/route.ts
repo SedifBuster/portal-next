@@ -95,11 +95,12 @@ export
 
 //not real
 export
-  async function UPDATE(
+  async function PATCH(
     request: Request
 ) {
   try {
     const body = await request.json()
+    console.log(body)
     const {
       id,
       name,
