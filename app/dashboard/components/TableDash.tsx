@@ -362,7 +362,7 @@ const tableDashData: dash[] = [
   }
 ]
 
-export function DataTableDemo() {
+export function DataTable() {
   const [isDash, setDash] = React.useState<dash>()
 
   const [sorting, setSorting] = React.useState<SortingState>([])

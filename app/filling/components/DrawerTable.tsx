@@ -230,9 +230,9 @@ export
     }
   }
 
-  const GiveXMLS = ( table: 'default' | 'regular') => {
+  const GiveXMLS = ( tableForm: 'default' | 'regular') => {
     let test
-    if(table === 'default')
+    if(tableForm === 'default')
       test = defaultDash.table.map((item) => {
         return {
           id: item.id,
@@ -252,9 +252,9 @@ export
           dolgDead: item.dolgDead,
         }
       })
-    else if (table === 'regular') {
+    else if (tableForm === 'regular') {
       //@ts-ignore
-      test = isNewDepartments.map((item) => {
+      test = table.map((item) => {
         return {
           id: item.id,
           name: item.name,
@@ -478,7 +478,13 @@ export
               p-2
             "
           >
-            <DashDate setDate={setNewDate} date={isNewDate}/>
+            {
+              id?
+              ''
+              :
+              <DashDate setDate={setNewDate} date={isNewDate}/>
+            }
+            
             <div
               className="p-2"
             >
@@ -505,37 +511,45 @@ export
               justify-center
               "
             >
-              <Button onClick={() => GiveXMLS(isNewDepartments? 'regular' : 'default')} className="gap-2">
+              <Button onClick={() => GiveXMLS(table? 'regular' : 'default')} className="gap-2">
                 <HiMiniCloudArrowDown /> выгрузить
               </Button>
-
+            {
+              !id
+              ?
+              <>
               <Label htmlFor="file-upload"
-                className="
-                  text-primary-foreground
-                  inline-flex
-                  items-center
-                  justify-center
-                  rounded-md
-                  text-sm
-                  font-medium
-                  ring-offset-background
-                  transition-colors
-                  focus-visible:outline-none
-                  focus-visible:ring-2
-                  focus-visible:ring-ring
-                  focus-visible:ring-offset-2
-                  disabled:pointer-events-none
-                  disabled:opacity-50
-                  h-10 px-4 py-2
-                  bg-primary
-                  hover:bg-primary/80
-                  gap-2
-                  cursor-pointer
-                "
-              >
-                <HiMiniCloudArrowUp /> загрузить
-              </Label>
-              <input type="file" id="file-upload" onChange={ (e) => handleFile(e) } className="hidden"/>
+              className="
+                text-primary-foreground
+                inline-flex
+                items-center
+                justify-center
+                rounded-md
+                text-sm
+                font-medium
+                ring-offset-background
+                transition-colors
+                focus-visible:outline-none
+                focus-visible:ring-2
+                focus-visible:ring-ring
+                focus-visible:ring-offset-2
+                disabled:pointer-events-none
+                disabled:opacity-50
+                h-10 px-4 py-2
+                bg-primary
+                hover:bg-primary/80
+                gap-2
+                cursor-pointer
+              "
+            >
+              <HiMiniCloudArrowUp /> загрузить
+            </Label>
+            <input type="file" id="file-upload" onChange={ (e) => handleFile(e) } className="hidden"/>
+            </>
+              :
+              ''
+            }
+
             </div>
             <Table
               className="
@@ -1058,7 +1072,11 @@ export
             gap-1
           "
         >
-          <Button className={clsx(``,
+          {
+            id?
+            ''
+            :
+            <Button className={clsx(``,
             id
             ?
             `w-1/4`
@@ -1069,12 +1087,20 @@ export
           onClick={() => table? undefined /*onUpdateData()*/ : onPostData()}
           //СОХРАНИТЬ
           >Сохранить</Button>
+          }
+
           {
             id
             ?
             <Dialog  open={isVisibleDelete} onOpenChange={() => setVisibleDelete(!isVisibleDelete)}>
               <DialogTrigger asChild>
-                <Button variant="destructive" className="w-1/4"  onClick={() => setVisibleDelete(true)}>Удалить</Button>
+                <Button variant="destructive" className={clsx(``,
+            id
+            ?
+            `w-2/4`
+            :
+            `w-2/4`
+          )}  onClick={() => setVisibleDelete(true)}>Удалить</Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>

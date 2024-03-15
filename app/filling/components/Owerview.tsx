@@ -30,7 +30,7 @@ export
              return dep.dashId === item.id
              
             })}
-          })
+          }).reverse()
           console.log(filteredDashes)
           setTables(filteredDashes)
         }
@@ -67,7 +67,7 @@ export
         <FillingItem date={new Date().toString()} id={0}  getTables={getTables}/>
         {isTables
           ?
-          isTables.reverse().map((item) => {
+          isTables.map((item) => {
             return  <FillingItem key={item.id} date={item.date} id={item.id} table={item.table} getTables={getTables}/>
           })
           :
