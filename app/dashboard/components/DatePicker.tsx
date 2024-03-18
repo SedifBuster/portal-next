@@ -1,9 +1,9 @@
 "use client"
- 
+
 import * as React from "react"
 import { addDays, eachDayOfInterval, format, isEqual } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
- 
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -13,12 +13,18 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { ru } from "date-fns/locale"
- 
-export function DatePicker() {
 
-  const [date, setDate] = React.useState<Date>()
-  
-  const [testDate, isTestDate] = React.useState<Date[]>([new Date(2023, 10, 9), new Date(2023, 10, 10), new Date(2023, 10, 11), new Date(2023, 10, 12),])
+export
+  function DatePicker({
+    dashDates,
+    date,
+    setDate,
+  } : {
+    dashDates: Date[],
+    date: Date,
+    setDate: React.Dispatch<React.SetStateAction<Date | undefined>>
+  }
+) {
 
   let filteredDays = (arrTrueDates: Date[]) => {
     let afterDays = addDays(new Date(), 300)
@@ -40,9 +46,9 @@ export function DatePicker() {
 
     return result
   }
-  
-  
+
   return (
+    <div className="flex justify-center pb-6 pt-2">
     <Popover>
       <PopoverTrigger asChild>
         <Button
@@ -53,7 +59,7 @@ export function DatePicker() {
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "PPP", {locale: ru}) : <span>Выберите дату</span>}
+          {date ? format(new Date(date), "PPP", {locale: ru}) : <span>Выберите дату</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
@@ -64,10 +70,10 @@ export function DatePicker() {
           initialFocus
           ISOWeek
           locale={ru}
-          disabled={filteredDays(testDate)}
-          
+          disabled={filteredDays(dashDates)}
         />
       </PopoverContent>
     </Popover>
+    </div>
   )
 }

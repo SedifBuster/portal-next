@@ -33,6 +33,10 @@ import {
 } from "@/components/ui/table"
 import { Charts } from "./Charts"
 import { DatePicker } from "./DatePicker"
+import axios from "axios"
+import { useEffect, useState } from "react"
+import { Dash, DashDepartment } from "@prisma/client"
+import toast from "react-hot-toast"
 
 export type Department = {
   department: string
@@ -52,12 +56,7 @@ export type Department = {
   freeBeds: number
 }
 
-export type dash = {
-  date: Date;
-  table: Department[];
-}
-
-const data: Department[] = [
+/*const data: Department[] = [
   {
     department: "TO",
     planHuman: 392,
@@ -143,28 +142,9 @@ const data: Department[] = [
     dolgDead: 73,
     freeBeds: 24
   },
-]
+]*/
 
 export const columns: ColumnDef<Department>[] = [
-  /*{
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },*/
   {
     accessorKey: "department",
     header: "Отделение",
@@ -174,42 +154,42 @@ export const columns: ColumnDef<Department>[] = [
   },
   {
     accessorKey: "planHuman",
-    header: "План (чел)",
+    header: "План (чел.)",
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("planHuman")}</div>
     ),
   },
   {
     accessorKey: "planRub",
-    header: "План (руб)",
+    header: "План (руб.)",
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("planRub")}</div>
     ),
   },
   {
     accessorKey: "begAcc",
-    header: "Состояло на начало месяца (чел)",
+    header: "Состояло на начало месяца (чел.)",
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("begAcc")}</div>
     ),
   },
   {
     accessorKey: "admRec",
-    header: "Поступили в приёмное, накопительным (чел)",
+    header: "Поступили в приёмное, накопительным (чел.)",
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("admRec")}</div>
     ),
   },
   {
     accessorKey: "totalStays",
-    header: "Всего находится в стационаре (чел)",
+    header: "Всего находится в стационаре (чел.)",
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("totalStays")}</div>
     ),
   },
   {
     accessorKey: "disCome",
-    header: "Выбыло, накопительным (чел)",
+    header: "Выбыло, накопительным (чел.)",
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("disCome")}</div>
     ),
@@ -270,100 +250,51 @@ export const columns: ColumnDef<Department>[] = [
       <div className="capitalize">{row.getValue("freeBeds")}</div>
     ),
   },
-  /*{
-    accessorKey: "email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
-  },
-  {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
-
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount)
-
-      return <div className="text-right font-medium">{formatted}</div>
-    },
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const payment = row.original
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.department)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
-    },
-  },*/
 ]
 
-const tableDashData: dash[] = [
-  {
-    date: new Date(2023, 10, 1),
-    table: data
-  },
-  {
-    date: new Date(2023, 10, 5),
-    table: data
-  },
-  {
-    date: new Date(2023, 10, 8),
-    table: data
-  },
-  {
-    date: new Date(2023, 10, 12),
-    table: data
-  },
-  {
-    date: new Date(2023, 10, 16),
-    table: data
-  },
-  {
-    date: new Date(2023, 10, 20),
-    table: data
-  },
-  {
-    date: new Date(2023, 10, 21),
-    table: data
+export
+  interface DashInit extends Dash {
+    table: DashDepartment[] | string
+}
+
+export
+  function DataTable(
+) {
+  //get dashes with departments
+  const [isTables, setTables] = useState<DashInit[]>()
+  const [isDash, setDash] = React.useState<DashInit>()
+  const [date, setDate] = React.useState<Date>()
+  let getTables = async () => {
+    try {
+      let result = await axios.get('/api/dash')
+      if (result.status === 200) {
+        toast.success(`таблицы код ${result.status}`)
+        let resultDep = await axios.get('/api/dash/department')
+        toast.success(`отделения код ${resultDep.status}`)
+        if(resultDep.data && result.data) {
+          console.log(resultDep.status)
+         let filteredDashes = result.data.map((item: Dash) => {
+            return {...item, table: resultDep.data.filter((dep: DashDepartment) => {
+             return dep.dashId === item.id
+            })}
+          })
+          console.log(filteredDashes)
+          setTables(filteredDashes)
+        }
+      }
+    } catch {
+      console.log('error')
+    }
   }
-]
+  useEffect(() => {
+    getTables()
+  }, [])
+  useEffect(() => {
+    if(isTables)
+    setDash(isTables[isTables.length - 1])
+    setDate(isDash?.date)
+  }, [isTables])
 
-export function DataTable() {
-  const [isDash, setDash] = React.useState<dash>()
 
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -375,7 +306,7 @@ export function DataTable() {
 
 
   const table = useReactTable({
-    data,
+    data: isTables,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -393,22 +324,23 @@ export function DataTable() {
     },
   })
 
-  React.useEffect(() => {
-    if(tableDashData)
-    setDash(tableDashData[tableDashData.length - 1])
-  }, [])
 
-  console.log(isDash)
+ console.log(isDash)
   return (
     <div className="w-full ml-4 mr-4">
-      <div className="flex justify-center pb-6 pt-2">
-        <DatePicker />
-      </div>
-      <div className="flex p-2">
-        <Charts data={data} />
-      </div>
-      <div className="flex items-center py-4">
+      {
+        date && isTables
+        ?
+        <DatePicker date={date} setDate={setDate} dashDates={isTables?.map((el) => {
+          return new Date(el.date)
+        })}/>
+        :
+        ""
+      }
 
+      <Charts data={data} />
+
+      <div className="flex items-center py-4 pl-6 pr-6">
         <Input
           placeholder="фильтр отделений..."
           value={(table.getColumn("department")?.getFilterValue() as string) ?? ""}
@@ -503,7 +435,7 @@ export function DataTable() {
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Previous
+            назад!
           </Button>
           <Button
             variant="outline"
@@ -511,7 +443,7 @@ export function DataTable() {
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Next
+            вперед!
           </Button>
         </div>
       </div>
@@ -519,7 +451,52 @@ export function DataTable() {
   )
 }
 
-//       <div className="flex-1 text-sm text-muted-foreground">
-//{table.getFilteredSelectedRowModel().rows.length} of{" "}
-//{table.getFilteredRowModel().rows.length} row(s) selected.
-//</div>
+  /*{
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={table.getIsAllPageRowsSelected()}
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },*/
+  /*{
+    accessorKey: "email",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Email
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+  },
+  {
+    accessorKey: "amount",
+    header: () => <div className="text-right">Amount</div>,
+    cell: ({ row }) => {
+      const amount = parseFloat(row.getValue("amount"))
+
+      // Format the amount as a dollar amount
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(amount)
+
+      return <div className="text-right font-medium">{formatted}</div>
+    },
+  },*/
