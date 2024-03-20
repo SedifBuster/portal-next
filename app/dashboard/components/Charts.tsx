@@ -1,12 +1,12 @@
 "use client"
 
 import { Bar, BarChart, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
-import { Department } from "./TableDash"
 //@ts-ignore
 import { DefaultTooltipContent } from 'recharts/lib/component/DefaultTooltipContent';
+import { DashDepartment } from "@prisma/client";
 
 interface ChartsProps {
-  data: Department[]
+  data: DashDepartment[]
 }
 
 const CustomTooltip = (props: any) => {
@@ -71,7 +71,7 @@ export
         <ResponsiveContainer width="100%" height={350}>
           <BarChart data={data}>
             <XAxis
-              dataKey="department"
+              dataKey="name"
               stroke="#888888"
               fontSize={12}
               tickLine={false}
@@ -114,7 +114,7 @@ export
         <ResponsiveContainer width="100%" height={350}>
           <LineChart data={data}>
             <XAxis
-              dataKey="department"
+              dataKey="name"
               stroke="#888888"
               fontSize={12}
               tickLine={false}
