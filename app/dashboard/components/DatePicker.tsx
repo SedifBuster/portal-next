@@ -13,16 +13,19 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { ru } from "date-fns/locale"
+import { DashInit } from "./TableDash"
 
 export
   function DatePicker({
     dashDates,
     date,
     setDate,
+
   } : {
     dashDates: Date[],
     date: Date,
     setDate: React.Dispatch<React.SetStateAction<Date | undefined>>
+
   }
 ) {
 
@@ -47,8 +50,18 @@ export
     return result
   }
 
+
   return (
     <div className="flex justify-center pb-6 pt-2">
+      <Button
+        variant="outline"
+        size="sm"
+        className="
+          p-2 mr-4 pt-2 
+        "
+            >
+              Предыдущая таблица
+            </Button>
     <Popover>
       <PopoverTrigger asChild>
         <Button
@@ -74,6 +87,16 @@ export
         />
       </PopoverContent>
     </Popover>
+    <Button
+              variant="outline"
+              size="sm"
+              className="
+              p-2 ml-4 pt-2
+            "
+            
+            >
+              Следующая таблица
+            </Button>
     </div>
   )
 }
