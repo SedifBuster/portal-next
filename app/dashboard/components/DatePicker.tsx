@@ -20,12 +20,14 @@ export
     dashDates,
     date,
     setDate,
-
+    previous,
+    next
   } : {
     dashDates: Date[],
     date: Date,
-    setDate: React.Dispatch<React.SetStateAction<Date | undefined>>
-
+    setDate: React.Dispatch<React.SetStateAction<Date | undefined>>,
+    previous: () => void
+    next: () => void
   }
 ) {
 
@@ -59,6 +61,7 @@ export
         className="
           p-2 mr-4 pt-2 
         "
+        onClick={() => previous()}
             >
               Предыдущая таблица
             </Button>
@@ -93,7 +96,7 @@ export
               className="
               p-2 ml-4 pt-2
             "
-            
+            onClick={() => next()}
             >
               Следующая таблица
             </Button>

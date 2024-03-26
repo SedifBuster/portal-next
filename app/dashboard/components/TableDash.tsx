@@ -20,6 +20,7 @@ export
   const [isTables, setTables] = useState<DashInit[]>()
   const [isDash, setDash] = React.useState<DashInit>()
   const [date, setDate] = React.useState<Date>()
+  const [isIndex, setIndex] = React.useState<number>()
   let getTables = async () => {
     try {
       let result = await axios.get('/api/dash')
@@ -98,13 +99,75 @@ export
   }
 }
   }
+  const onExist = () => {
+    if(isTables && isDash) {
+      return isTables.findIndex(el => el.id === isDash.id)
+    }
+  }
 
+  const next = () => {
+    /*let index = onExist()
+    if(index && index !== -1 && isTables) {
+      console.log('rabotaet')
+      if(index < isTables.length - 1) {
+        index ++
+        console.log('menshe')
+        setDash(isTables[index])
+      }
+    }*/
 
+    //if(isIndex && isIndex !== -1 && isTables) {
+      console.log('rabotaet')
+      if(isIndex < isTables.length - 1) {
+        setIndex(isIndex + 1)
+        console.log('menshe')
+        setDash(isTables[isIndex])
+      }
+    //}
+  }
+
+  const previous = () => {
+    /*let index = onExist()
+    if(index && index !== -1 && isTables) {
+      if(index !== 0 /*&& index < isTables.length - 1) {
+        console.log('do', index)
+        index --
+        console.log('posle', index)
+        setDash(isTables[index])
+        console.log('dash posle previousa', isDash)
+      }
+    }*/
+    if(isIndex && isIndex !== -1 && isTables) {
+      if(isIndex !== 0 /*&& index < isTables.length - 1*/) {
+        console.log('do', isIndex)
+        setIndex(isIndex - 1)
+        console.log('posle', isIndex)
+        setDash(isTables[isIndex])
+        console.log('dash posle previousa', isDash)
+      }
+    }
+  }
+
+  const datePick = () => {
+    /*let res = isTables.findIndex(el => el.date.toString() === date?.toString())
+    if(res !== -1) {
+     //@ts-ignore
+     setDash(isTables[res])
+    }*/
+  }
+  useEffect(() => {
+    //setIndex(onExist())
+    setInterval(() => console.log(isIndex), 5000)
+    //console.log(isIndex)
+  }, [isIndex])
 
   useEffect(() => {
     if(isTables && isDash)
-    //onNextDash('next')
-  console.log(onNextDash('next'))
+      console.log('index', onExist())
+      setIndex(onExist())
+      //console.log('next', next())
+      //console.log('previous', previous())
+      console.log('dash', isDash)
   }, [isTables])
   
 
@@ -114,11 +177,12 @@ export
         date && isTables && isDash
         ?
         <>
-          <DatePicker date={date} setDate={setDate}
+          <DatePicker date={date} setDate={setDate} previous={previous} next={next}
           dashDates={isTables?.map((el) => {
             return new Date(el.date)
           })}
           />
+          {isIndex}
           <DashItem data={isDash.table} />
         </>
         :
@@ -127,15 +191,3 @@ export
     </div>
   )
 }
-
-
-//switch case
-/*return () => {
-const value = array[index]
-if(index < array.length) {
-index ++
-}
-console.log(isDash)
-console.log(value)
-return value
-}*/
