@@ -52,53 +52,6 @@ export
     setDate(isDash?.date)
   }, [isTables])
 
-  const onNextDash = (type: 'next' | 'previous' | 'date') => {
-  if(isTables && isDash) {
-  let index = isTables.findIndex(el => el.id === isDash.id)
-  console.log('testIndex' ,index)
-
-  switch(type) {
-
-    case 'next': 
-    console.log('next')
-    //return () => {
-      //@ts-ignore
-      if(index < isTables.length) {
-        index --
-        //@ts-ignore
-        setDash(isTables[index])
-        console.log(isDash)
-        break
-      }
-    //}
-
-    case 'previous':
-    console.log('previos')
-    return () => {
-      //@ts-ignore
-      if(index !== 0 && index < isTables.length) {
-        index --
-        //@ts-ignore
-        setDash(isTables[index])
-      }
-    }
-
-    case 'date':
-      console.log('date')
-      return () => {
-        //@ts-ignore
-       let res = isTables.findIndex(el => el.date.toString() === date?.toString())
-       if(res !== -1) {
-        //@ts-ignore
-        setDash(isTables[res])
-       }
-      }
-
-    default:
-      return () => undefined
-  }
-}
-  }
   const onExist = () => {
     if(isTables && isDash) {
       return isTables.findIndex(el => el.id === isDash.id)
@@ -106,42 +59,19 @@ export
   }
 
   const next = () => {
-    /*let index = onExist()
-    if(index && index !== -1 && isTables) {
-      console.log('rabotaet')
-      if(index < isTables.length - 1) {
-        index ++
-        console.log('menshe')
-        setDash(isTables[index])
-      }
-    }*/
-
-    //if(isIndex && isIndex !== -1 && isTables) {
-      console.log('rabotaet')
+    if(typeof isIndex === 'number' && isIndex !== -1 && isTables) {
       if(isIndex < isTables.length - 1) {
         setIndex(isIndex + 1)
-        console.log('menshe')
         setDash(isTables[isIndex])
+        console.log('dash posle nexta', isDash)
       }
-    //}
+    }
   }
 
   const previous = () => {
-    /*let index = onExist()
-    if(index && index !== -1 && isTables) {
-      if(index !== 0 /*&& index < isTables.length - 1) {
-        console.log('do', index)
-        index --
-        console.log('posle', index)
-        setDash(isTables[index])
-        console.log('dash posle previousa', isDash)
-      }
-    }*/
     if(isIndex && isIndex !== -1 && isTables) {
-      if(isIndex !== 0 /*&& index < isTables.length - 1*/) {
-        console.log('do', isIndex)
+      if(isIndex !== 0) {
         setIndex(isIndex - 1)
-        console.log('posle', isIndex)
         setDash(isTables[isIndex])
         console.log('dash posle previousa', isDash)
       }
@@ -155,11 +85,7 @@ export
      setDash(isTables[res])
     }*/
   }
-  useEffect(() => {
-    //setIndex(onExist())
-    setInterval(() => console.log(isIndex), 5000)
-    //console.log(isIndex)
-  }, [isIndex])
+
 
   useEffect(() => {
     if(isTables && isDash)
@@ -191,3 +117,79 @@ export
     </div>
   )
 }
+  //previous
+  /*let index = onExist()
+  if(index && index !== -1 && isTables) {
+    if(index !== 0 /*&& index < isTables.length - 1) {
+      console.log('do', index)
+      index --
+      console.log('posle', index)
+      setDash(isTables[index])
+      console.log('dash posle previousa', isDash)
+    }
+  }*/
+
+  //next
+  /*let index = onExist()
+  if(index && index !== -1 && isTables) {
+    console.log('rabotaet')
+    if(index < isTables.length - 1) {
+      index ++
+      console.log('menshe')
+      setDash(isTables[index])
+    }
+  }*/
+
+ /* useEffect(() => {
+    //setIndex(onExist())
+    setInterval(() => console.log(isIndex), 5000)
+    //console.log(isIndex)
+  }, [isIndex])*/
+
+ /* const onNextDash = (type: 'next' | 'previous' | 'date') => {
+    if(isTables && isDash) {
+    let index = isTables.findIndex(el => el.id === isDash.id)
+    console.log('testIndex' ,index)
+  
+    switch(type) {
+  
+      case 'next': 
+      console.log('next')
+      //return () => {
+        //@ts-ignore
+        if(index < isTables.length) {
+          index --
+          //@ts-ignore
+          setDash(isTables[index])
+          console.log(isDash)
+          break
+        }
+      //}
+  
+      case 'previous':
+      console.log('previos')
+      return () => {
+        //@ts-ignore
+        if(index !== 0 && index < isTables.length) {
+          index --
+          //@ts-ignore
+          setDash(isTables[index])
+        }
+      }
+  
+      case 'date':
+        console.log('date')
+        return () => {
+          //@ts-ignore
+         let res = isTables.findIndex(el => el.date.toString() === date?.toString())
+         if(res !== -1) {
+          //@ts-ignore
+          setDash(isTables[res])
+         }
+        }
+  
+      default:
+        return () => undefined
+    }
+  }
+    }*/
