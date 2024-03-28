@@ -228,6 +228,9 @@ export
     },
   })
 
+  React.useEffect(() => {
+  }, [data])
+
   return (
     <>
     <Charts data={data} />

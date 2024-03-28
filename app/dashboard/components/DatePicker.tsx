@@ -13,7 +13,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { ru } from "date-fns/locale"
-import { DashInit } from "./TableDash"
 
 export
   function DatePicker({
@@ -21,13 +20,15 @@ export
     date,
     setDate,
     previous,
-    next
+    next,
+    testDate
   } : {
     dashDates: Date[],
     date: Date,
     setDate: React.Dispatch<React.SetStateAction<Date | undefined>>,
     previous: () => void
     next: () => void
+    testDate: Date
   }
 ) {
 
@@ -52,6 +53,9 @@ export
     return result
   }
 
+  React.useEffect(() => {
+
+  }, [next, previous, testDate])
 
   return (
     <div className="flex justify-center pb-6 pt-2">
@@ -75,7 +79,7 @@ export
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(new Date(date), "PPP", {locale: ru}) : <span>Выберите дату</span>}
+          {date ? format(new Date(testDate), "PPP", {locale: ru}) : <span>Выберите дату</span>}date
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">

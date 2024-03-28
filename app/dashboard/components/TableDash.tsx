@@ -30,9 +30,9 @@ export
         toast.success(`отделения код ${resultDep.status}`)
         if(resultDep.data && result.data) {
           console.log(resultDep.status)
-         let filteredDashes = result.data.map((item: Dash) => {
+          let filteredDashes = result.data.map((item: Dash) => {
             return {...item, table: resultDep.data.filter((dep: DashDepartment) => {
-             return dep.dashId === item.id
+              return dep.dashId === item.id
             })}
           })
           console.log(filteredDashes)
@@ -57,7 +57,6 @@ export
       return isTables.findIndex(el => el.id === isDash.id)
     }
   }
-
   const next = () => {
     if(typeof isIndex === 'number' && isIndex !== -1 && isTables) {
       if(isIndex < isTables.length - 1) {
@@ -67,8 +66,26 @@ export
       }
     }
   }
-
   const previous = () => {
+    if(isIndex && isIndex !== -1 && isTables) {
+      if(isIndex !== 0) {
+        setIndex(isIndex - 1)
+        setDash(isTables[isIndex])
+        
+        console.log('dash posle previousa', isDash)
+      }
+    }
+  }
+
+  const datePick = () => {
+    /*
+    let res = isTables.findIndex(el => el.date.toString() === date?.toString())
+    if(res !== -1) {
+     //@ts-ignore
+     setDash(isTables[res])
+    }
+
+
     if(isIndex && isIndex !== -1 && isTables) {
       if(isIndex !== 0) {
         setIndex(isIndex - 1)
@@ -76,14 +93,14 @@ export
         console.log('dash posle previousa', isDash)
       }
     }
-  }
-
-  const datePick = () => {
-    /*let res = isTables.findIndex(el => el.date.toString() === date?.toString())
-    if(res !== -1) {
-     //@ts-ignore
-     setDash(isTables[res])
-    }*/
+        if(typeof isIndex === 'number' && isIndex !== -1 && isTables) {
+      if(isIndex < isTables.length - 1) {
+        setIndex(isIndex + 1)
+        setDash(isTables[isIndex])
+        console.log('dash posle nexta', isDash)
+      }
+    }
+    */
   }
 
 
@@ -91,11 +108,8 @@ export
     if(isTables && isDash)
       console.log('index', onExist())
       setIndex(onExist())
-      //console.log('next', next())
-      //console.log('previous', previous())
       console.log('dash', isDash)
   }, [isTables])
-  
 
   return (
     <div className="w-full ml-4 mr-4">
@@ -103,10 +117,10 @@ export
         date && isTables && isDash
         ?
         <>
-          <DatePicker date={date} setDate={setDate} previous={previous} next={next}
-          dashDates={isTables?.map((el) => {
-            return new Date(el.date)
-          })}
+          <DatePicker date={date} setDate={setDate} previous={previous} next={next} testDate={isDash.date}
+            dashDates={isTables?.map((el) => {
+              return new Date(el.date)
+            })}
           />
           {isIndex}
           <DashItem data={isDash.table} />
@@ -128,7 +142,6 @@ export
       console.log('dash posle previousa', isDash)
     }
   }*/
-
   //next
   /*let index = onExist()
   if(index && index !== -1 && isTables) {
@@ -139,13 +152,11 @@ export
       setDash(isTables[index])
     }
   }*/
-
  /* useEffect(() => {
     //setIndex(onExist())
     setInterval(() => console.log(isIndex), 5000)
     //console.log(isIndex)
   }, [isIndex])*/
-
  /* const onNextDash = (type: 'next' | 'previous' | 'date') => {
     if(isTables && isDash) {
     let index = isTables.findIndex(el => el.id === isDash.id)
