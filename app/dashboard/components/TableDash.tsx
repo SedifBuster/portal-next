@@ -52,6 +52,11 @@ export
     setDate(isDash?.date)
   }, [isTables])
 
+  useEffect(() => {
+    if(isDash)
+    console.log(isLpu(isDash.table))
+  }, [isDash])
+
   const onExist = () => {
     if(isTables && isDash) {
       return isTables.findIndex(el => el.id === isDash.id)
@@ -66,17 +71,17 @@ export
       }
     }
   }
-  const previous = () => {
+  const previous = (/**react.mouseevent */) => {
     if(isIndex && isIndex !== -1 && isTables) {
       if(isIndex !== 0) {
         setIndex(isIndex - 1)
         setDash(isTables[isIndex])
-        
+        //tut che to poticat podergat
         console.log('dash posle previousa', isDash)
-      }
+      }//else setDisabledPrev true
     }
   }
-
+//voobshe zanyatsa table: lpu and filters okay
   const datePick = () => {
     /*
     let res = isTables.findIndex(el => el.date.toString() === date?.toString())
@@ -102,6 +107,78 @@ export
     }
     */
   }
+
+  const isLpu = (deps: DashDepartment[] ) => {
+    if(!deps) return undefined
+
+    let withoutPal = deps.filter((dep) => {
+      return dep.name.toLowerCase() !== "Паллиатив".toLowerCase()
+    })
+
+    if(!withoutPal) return undefined
+
+    let LpuDep: DashDepartment = {
+      id: 0,
+      name: "по ЛПУ",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      planHuman: isValue(withoutPal.map((dep) => {return dep.planHuman})),
+      planRub:   isValue(withoutPal.map((dep) => {return dep.planRub})),
+      begAcc:    isValue(withoutPal.map((dep) => {return dep.begAcc})),
+      admRec:    isValue(withoutPal.map((dep) => {return dep.admRec})),
+      disCome:   isValue(withoutPal.map((dep) => {return dep.disCome})),
+      disTax:    isValue(withoutPal.map((dep) => {return dep.disTax})),
+      patOver:   isValue(withoutPal.map((dep) => {return dep.patOver})),
+      storColed: isValue(withoutPal.map((dep) => {return dep.storColed})),
+      transHuman:isValue(withoutPal.map((dep) => {return dep.transHuman})),
+      transRub:  isValue(withoutPal.map((dep) => {return dep.transRub})),
+      medPrice:  isValue(withoutPal.map((dep) => {return dep.medPrice})),
+      dolgDead:  isValue(withoutPal.map((dep) => {return dep.dolgDead})),
+      dashId:    isDash? isDash.id : 0
+    }
+
+    //let adm = isValue(deps)
+      /*let adm = deps.filter((dep) => {
+        return dep.name.toLowerCase() !== "Паллиатив".toLowerCase()
+      }).map((dep) => {
+        return dep.admRec
+      }).reduce((sum, current) => {
+        return sum + current
+      }, 0)
+      /*if(adm.length > 0) {
+        adm.reduce((sum, current) => {
+          return sum + current
+        }, 0)
+      }
+      /*.reduce((sum, current) => {
+        if(sum && current) {
+          return sum + current
+        }
+        
+      }, 0)*/
+    //return adm
+    return LpuDep
+  }
+
+  const isValue = (lpuValues: (number | null) []): number => {
+    if(!lpuValues) return 0
+
+    let lpuValue = lpuValues.reduce((sum: number, current) => {
+      return sum + current
+    }, 0)
+
+  //lpuValue = lpuValues.filter((dep) => {
+  //  return dep.name.toLowerCase() !== "Паллиатив".toLowerCase()
+  //})
+  return 0
+  }
+
+  /**{
+    wards.filter((ward) => {
+       return ward.depId === dep.id}).reduce((sum, current) => {
+           return sum + current.numberOfSeats
+       }, 0)
+   }*/
 
 
   useEffect(() => {

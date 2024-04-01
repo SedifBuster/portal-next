@@ -96,7 +96,7 @@ model DashDepartment {
   id            Int      @id @default(autoincrement())
   name          String
   //wards DashWard[]
-  numberOfSeats Int?     @default(0)
+  //numberOfSeats Int?     @default(0)
   //engaged       Int?     @default(0) //Всего находиться в стационаре, накопительным (чел.) 
   //free          Int?     @default(0) //Свободных коек
   createdAt     DateTime @default(now())

@@ -235,7 +235,8 @@ export
     <>
     <Charts data={data} />
     <div className="w-full">
-      <div className="flex items-center py-4">
+     {
+     /*<div className="flex items-center py-4">
         <Input
           placeholder="Фильтр отделений..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -244,7 +245,8 @@ export
           }
           className="max-w-sm"
         />
-      </div>
+      </div> */
+      } 
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -292,6 +294,7 @@ export
                 </TableCell>
               </TableRow>
             )}
+            <TableRow>test</TableRow>
           </TableBody>
         </Table>
       </div>
