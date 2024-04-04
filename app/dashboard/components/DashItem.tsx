@@ -22,11 +22,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
 import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -56,7 +56,7 @@ export const columns: ColumnDef<DashDepartment>[] = [
           </Button>
         )
       },
-      cell: ({ row }) => <div className="lowercase">{row.getValue("planHuman")}</div>,
+      cell: ({ row }) => <div className="lowercase text-center">{row.getValue("planHuman")}</div>,
     },
     {
       accessorKey: "planRub",
@@ -76,7 +76,7 @@ export const columns: ColumnDef<DashDepartment>[] = [
         accessorKey: "begAcc",
         header: "Состояло на начало месяца (чел.)",
         cell: ({ row }) => (
-          <div className="capitalize">{row.getValue("begAcc")}</div>
+          <div className="capitalize ">{row.getValue("begAcc")}</div>
         ),
       },
       {
@@ -196,9 +196,11 @@ export const columns: ColumnDef<DashDepartment>[] = [
 
 export
   function DashItem({
-    data
+    data,
+    isStateLpu
   }: {
-    data:DashDepartment[] 
+    data:DashDepartment[],
+    isStateLpu: DashDepartment | undefined
   }) {
 
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -294,11 +296,82 @@ export
                 </TableCell>
               </TableRow>
             )}
-            <TableRow>test</TableRow>
           </TableBody>
+          {
+            isStateLpu
+            ?
+            <TableFooter>
+            <TableRow>
+              <TableCell>
+                {isStateLpu.name}
+              </TableCell>
+              <TableCell className="text-center">
+                {isStateLpu.planHuman}
+              </TableCell>
+              <TableCell>
+                {
+                  new Intl.NumberFormat("ru-RU", {
+                    style: "currency",
+                    currency: "RUB",
+                    //@ts-ignore
+                  }).format(parseFloat(isStateLpu.planRub.toString()))
+                }
+              </TableCell>
+              <TableCell>
+                {isStateLpu.begAcc}
+              </TableCell>
+              <TableCell>
+                {isStateLpu.admRec}
+              </TableCell>
+              <TableCell>
+                otpalat
+              </TableCell>
+              <TableCell>
+              {isStateLpu.disCome}
+              </TableCell>
+              <TableCell>
+              {
+                new Intl.NumberFormat("ru-RU", {
+                  style: "currency",
+                  currency: "RUB",
+                  //@ts-ignore
+                }).format(parseFloat(isStateLpu.disTax.toString()))
+              }
+              </TableCell>
+              <TableCell>
+              {isStateLpu.patOver}
+              </TableCell>
+              <TableCell>
+              {isStateLpu.storColed}
+              </TableCell>
+              <TableCell>
+              {isStateLpu.transHuman}
+              </TableCell>
+              <TableCell>
+              {
+                new Intl.NumberFormat("ru-RU", {
+                  style: "currency",
+                  currency: "RUB",
+                  //@ts-ignore
+                }).format(parseFloat(isStateLpu.transRub.toString()))
+              }
+              </TableCell>
+              <TableCell>
+              {isStateLpu.medPrice}
+              </TableCell>
+              <TableCell>
+              {isStateLpu.dolgDead}
+              </TableCell>
+              <TableCell>
+              ot palat
+              </TableCell>
+            </TableRow>
+          </TableFooter>
+            :
+            null
+          }
         </Table>
       </div>
-
     </div>
     </>
   )

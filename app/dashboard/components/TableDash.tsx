@@ -21,6 +21,9 @@ export
   const [isDash, setDash] = React.useState<DashInit>()
   const [date, setDate] = React.useState<Date>()
   const [isIndex, setIndex] = React.useState<number>()
+  const [isStateLpu, setStateLpu] = React.useState<DashDepartment>()
+
+  //getting data
   let getTables = async () => {
     try {
       let result = await axios.get('/api/dash')
@@ -43,25 +46,15 @@ export
       console.log('error')
     }
   }
-  useEffect(() => {
-    getTables()
-  }, [])
-  useEffect(() => {
-    if(isTables)
-    setDash(isTables[isTables.length - 1])
-    setDate(isDash?.date)
-  }, [isTables])
 
-  useEffect(() => {
-    if(isDash)
-    console.log(isLpu(isDash.table))
-  }, [isDash])
-
+  //finding index
   const onExist = () => {
     if(isTables && isDash) {
       return isTables.findIndex(el => el.id === isDash.id)
     }
   }
+
+  //buttons change table data
   const next = () => {
     if(typeof isIndex === 'number' && isIndex !== -1 && isTables) {
       if(isIndex < isTables.length - 1) {
@@ -81,7 +74,6 @@ export
       }//else setDisabledPrev true
     }
   }
-//voobshe zanyatsa table: lpu and filters okay
   const datePick = () => {
     /*
     let res = isTables.findIndex(el => el.date.toString() === date?.toString())
@@ -89,8 +81,6 @@ export
      //@ts-ignore
      setDash(isTables[res])
     }
-
-
     if(isIndex && isIndex !== -1 && isTables) {
       if(isIndex !== 0) {
         setIndex(isIndex - 1)
@@ -108,6 +98,7 @@ export
     */
   }
 
+  //create Lpu department
   const isLpu = (deps: DashDepartment[] ) => {
     if(!deps) return undefined
 
@@ -137,49 +128,28 @@ export
       dashId:    isDash? isDash.id : 0
     }
 
-    //let adm = isValue(deps)
-      /*let adm = deps.filter((dep) => {
-        return dep.name.toLowerCase() !== "Паллиатив".toLowerCase()
-      }).map((dep) => {
-        return dep.admRec
-      }).reduce((sum, current) => {
-        return sum + current
-      }, 0)
-      /*if(adm.length > 0) {
-        adm.reduce((sum, current) => {
-          return sum + current
-        }, 0)
-      }
-      /*.reduce((sum, current) => {
-        if(sum && current) {
-          return sum + current
-        }
-        
-      }, 0)*/
-    //return adm
     return LpuDep
   }
-
   const isValue = (lpuValues: (number | null) []): number => {
     if(!lpuValues) return 0
 
     let lpuValue = lpuValues.reduce((sum: number, current) => {
+      //@ts-ignore
       return sum + current
     }, 0)
 
-  //lpuValue = lpuValues.filter((dep) => {
-  //  return dep.name.toLowerCase() !== "Паллиатив".toLowerCase()
-  //})
-  return 0
+  return lpuValue
   }
 
-  /**{
-    wards.filter((ward) => {
-       return ward.depId === dep.id}).reduce((sum, current) => {
-           return sum + current.numberOfSeats
-       }, 0)
-   }*/
+  useEffect(() => {
+    getTables()
+  }, [])
 
+  useEffect(() => {
+    if(isTables)
+    setDash(isTables[isTables.length - 1])
+    setDate(isDash?.date)
+  }, [isTables])
 
   useEffect(() => {
     if(isTables && isDash)
@@ -188,6 +158,22 @@ export
       console.log('dash', isDash)
   }, [isTables])
 
+  useEffect(() => {
+    if(isDash)
+    setStateLpu(isLpu(isDash.table))
+    //console.log(isLpu(isDash.table))
+    //setDash(isDash?.table.splice(isDash.table.length - 2, 0 , isLpu(isDash.table)))
+  }, [isDash])
+
+  /*useEffect(() => {
+    if(isTestDep && isDash)
+    setDash({
+      id: isDash.id,
+      date: isDash.date,
+      table: isDash.table
+    })
+
+  }, [isTables])*/
   return (
     <div className="w-full ml-4 mr-4">
       {
@@ -200,7 +186,7 @@ export
             })}
           />
           {isIndex}
-          <DashItem data={isDash.table} />
+          <DashItem data={isDash.table} isStateLpu={isStateLpu} />
         </>
         :
         <DashSkeleton/>
@@ -208,76 +194,3 @@ export
     </div>
   )
 }
-  //previous
-  /*let index = onExist()
-  if(index && index !== -1 && isTables) {
-    if(index !== 0 /*&& index < isTables.length - 1) {
-      console.log('do', index)
-      index --
-      console.log('posle', index)
-      setDash(isTables[index])
-      console.log('dash posle previousa', isDash)
-    }
-  }*/
-  //next
-  /*let index = onExist()
-  if(index && index !== -1 && isTables) {
-    console.log('rabotaet')
-    if(index < isTables.length - 1) {
-      index ++
-      console.log('menshe')
-      setDash(isTables[index])
-    }
-  }*/
- /* useEffect(() => {
-    //setIndex(onExist())
-    setInterval(() => console.log(isIndex), 5000)
-    //console.log(isIndex)
-  }, [isIndex])*/
- /* const onNextDash = (type: 'next' | 'previous' | 'date') => {
-    if(isTables && isDash) {
-    let index = isTables.findIndex(el => el.id === isDash.id)
-    console.log('testIndex' ,index)
-  
-    switch(type) {
-  
-      case 'next': 
-      console.log('next')
-      //return () => {
-        //@ts-ignore
-        if(index < isTables.length) {
-          index --
-          //@ts-ignore
-          setDash(isTables[index])
-          console.log(isDash)
-          break
-        }
-      //}
-  
-      case 'previous':
-      console.log('previos')
-      return () => {
-        //@ts-ignore
-        if(index !== 0 && index < isTables.length) {
-          index --
-          //@ts-ignore
-          setDash(isTables[index])
-        }
-      }
-  
-      case 'date':
-        console.log('date')
-        return () => {
-          //@ts-ignore
-         let res = isTables.findIndex(el => el.date.toString() === date?.toString())
-         if(res !== -1) {
-          //@ts-ignore
-          setDash(isTables[res])
-         }
-        }
-  
-      default:
-        return () => undefined
-    }
-  }
-    }*/
