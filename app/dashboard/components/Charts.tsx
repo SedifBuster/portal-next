@@ -4,9 +4,10 @@ import { Bar, BarChart, Legend, Line, LineChart, ResponsiveContainer, Tooltip, X
 //@ts-ignore
 import { DefaultTooltipContent } from 'recharts/lib/component/DefaultTooltipContent';
 import { DashDepartment } from "@prisma/client";
+import { useEffect, useState } from "react";
 
 interface ChartsProps {
-  data: DashDepartment[]
+  data: DashDepartment[],
 }
 
 const CustomTooltip = (props: any) => {
@@ -65,11 +66,12 @@ export
   function Charts(
     { data }: ChartsProps
 ) {
+
   return (
     <div  className="flex ml-12 mr-12">
       <>
         <ResponsiveContainer width="100%" height={350}>
-          <BarChart data={data}>
+          <BarChart data={/*isChartData */data}>
             <XAxis
               dataKey="name"
               stroke="#888888"

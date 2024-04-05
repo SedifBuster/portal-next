@@ -230,25 +230,44 @@ export
     },
   })
 
+  /*React.useEffect(() => {
+
+    if(isStateLpu) {
+      data = data.splice(data.length - 2 , 0 , isStateLpu)
+    }
+  }, [data])*/
+//.splice(data.length - 2 , 0)
+
+  const [isTest, setTest] = React.useState<DashDepartment[]>()
+  const [isTest2, setTest2] = React.useState<DashDepartment[]>()
+
   React.useEffect(() => {
+    if(data) {
+      setTest(data)
+    }
+    if(isTest && isStateLpu) {
+      setTest2(isTest.splice(0, 0, isStateLpu))
+    }
   }, [data])
 
+  /*React.useEffect(() => {
+    if(isTest && isStateLpu) {
+      setTest(isTest.splice(isTest?.length - 2 , 0, isStateLpu))
+    }
+  }, [isTest])*/
+ 
   return (
     <>
-    <Charts data={data} />
+    { isTest?
+    <Charts data={isTest}/>
+    :
+      null
+  }
+
     <div className="w-full">
-     {
-     /*<div className="flex items-center py-4">
-        <Input
-          placeholder="Фильтр отделений..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-      </div> */
-      } 
+    {
+     // tur bil filter, teper on vnizu
+    } 
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -400,3 +419,16 @@ export
           </Button>
         </div>
 */
+
+/*
+     <div className="flex items-center py-4">
+        <Input
+          placeholder="Фильтр отделений..."
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("name")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+      </div> 
+      */
