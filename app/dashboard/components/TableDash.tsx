@@ -3,7 +3,7 @@
 import * as React from "react"
 import { DatePicker } from "./DatePicker"
 import axios from "axios"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Dash, DashDepartment } from "@prisma/client"
 import toast from "react-hot-toast"
 import { DashItem } from "./DashItem"
@@ -18,10 +18,10 @@ export
   function DataTable(
 ) {
   const [isTables, setTables] = useState<DashInit[]>()
-  const [isDash, setDash] = React.useState<DashInit>()
-  const [date, setDate] = React.useState<Date>()
-  const [isIndex, setIndex] = React.useState<number>()
-  const [isStateLpu, setStateLpu] = React.useState<DashDepartment>()
+  const [isDash, setDash] = useState<DashInit>()
+  const [date, setDate] = useState<Date>()
+  const [isIndex, setIndex] = useState<number>()
+  const [isStateLpu, setStateLpu] = useState<DashDepartment>()
 
   //getting data
   let getTables = async () => {
@@ -48,12 +48,12 @@ export
   }
 
   //finding index
-  const onExist = () => {
-    if(isTables && isDash) {
-      return isTables.findIndex(el => el.id === isDash.id)
+  const onExist = (tables: DashInit[] | undefined) => {
+    if(tables && isDash) {
+      setIndex(tables.findIndex(el => el.id === isDash.id)) 
     }
   }
-
+  console.log(isIndex)
   //buttons change table data
   const next = () => {
     if(typeof isIndex === 'number' && isIndex !== -1 && isTables) {
@@ -98,8 +98,11 @@ export
     */
   }
 
+
+
+  
   //create Lpu department
-  const isLpu = (deps: DashDepartment[] ) => {
+  const isLpu = useCallback((deps: DashDepartment[] ) => {
     if(!deps) return undefined
 
     let withoutPal = deps.filter((dep) => {
@@ -107,7 +110,7 @@ export
     })
 
     if(!withoutPal) return undefined
-
+    //@ts-ignore
     let LpuDep: DashDepartment = {
       id: 0,
       name: "по ЛПУ",
@@ -129,7 +132,10 @@ export
     }
 
     return LpuDep
-  }
+  },[isDash])
+
+
+
   const isValue = (lpuValues: (number | null) []): number => {
     if(!lpuValues) return 0
 
@@ -148,22 +154,25 @@ export
   useEffect(() => {
     if(isTables)
     setDash(isTables[isTables.length - 1])
-    setDate(isDash?.date)
-  }, [isTables])
+    //setDate(isDash?.date)
+    //setIndex(onExist())
+    
+  }, [isTables/*, isDash?.date*/])
 
   useEffect(() => {
-    if(isTables && isDash)
-      console.log('index', onExist())
-      setIndex(onExist())
-      console.log('dash', isDash)
-  }, [isTables])
+    //if(isTables && isDash) {}
+      //console.log('index', onExist())
+      //setIndex(onExist()
+      onExist(isTables)
+      //console.log('dash', isDash)
+  }, [/*isTables, isDash, onExist*/])
 
   useEffect(() => {
     if(isDash)
     setStateLpu(isLpu(isDash.table))
     //console.log(isLpu(isDash.table))
     //setDash(isDash?.table.splice(isDash.table.length - 2, 0 , isLpu(isDash.table)))
-  }, [isDash])
+  }, [isDash, isLpu])
 
   /*useEffect(() => {
     if(isTestDep && isDash)
@@ -177,7 +186,7 @@ export
   return (
     <div className="w-full ml-4 mr-4">
       {
-        date && isTables && isDash
+        /*date &&*/ isTables && isDash
         ?
         <>
           <DatePicker date={date} setDate={setDate} previous={previous} next={next} testDate={isDash.date}

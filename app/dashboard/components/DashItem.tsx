@@ -245,9 +245,9 @@ export
     if(data) {
       setTest(data)
     }
-    if(isTest && isStateLpu) {
+    /*if(isTest && isStateLpu) {
       setTest2(isTest.splice(0, 0, isStateLpu))
-    }
+    }*/
   }, [data])
 
   /*React.useEffect(() => {
@@ -259,7 +259,7 @@ export
   return (
     <>
     { isTest?
-    <Charts data={isTest}/>
+    <Charts data={data}/>
     :
       null
   }
