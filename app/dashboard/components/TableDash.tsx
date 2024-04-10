@@ -48,11 +48,17 @@ export
   }
 
   //finding index
-  const onExist = (tables: DashInit[] | undefined) => {
+  /*const onExist = (tables: DashInit[] | undefined) => {
     if(tables && isDash) {
       setIndex(tables.findIndex(el => el.id === isDash.id)) 
     }
-  }
+  }*/
+
+  const onExist = useCallback(() => {
+    if(isTables && isDash) {
+      setIndex(isTables.findIndex(el => el.id === isDash.id)) 
+    }
+  }, [isDash, isTables])
   console.log(isIndex)
   //buttons change table data
   const next = () => {
@@ -133,9 +139,6 @@ export
 
     return LpuDep
   },[isDash])
-
-
-
   const isValue = (lpuValues: (number | null) []): number => {
     if(!lpuValues) return 0
 
@@ -147,25 +150,29 @@ export
   return lpuValue
   }
 
+  //получаем таблицы
   useEffect(() => {
     getTables()
   }, [])
-
+  //если получили таблицы ставим дэш
   useEffect(() => {
     if(isTables)
     setDash(isTables[isTables.length - 1])
-    //setDate(isDash?.date)
-    //setIndex(onExist())
-    
-  }, [isTables/*, isDash?.date*/])
+  }, [isTables])
+  //если дэш поставили ищем его индекс
+  useEffect(() => {
+    onExist()
+  },[onExist])
 
   useEffect(() => {
     //if(isTables && isDash) {}
       //console.log('index', onExist())
       //setIndex(onExist()
-      onExist(isTables)
+    //setDate(isDash?.date)
+    //setIndex(onExist())
+    //onExist(isTables)
       //console.log('dash', isDash)
-  }, [/*isTables, isDash, onExist*/])
+  }, [/*isTables, isDash, onExist*//*, isDash?.date*/])
 
   useEffect(() => {
     if(isDash)
@@ -183,6 +190,7 @@ export
     })
 
   }, [isTables])*/
+  //ПАГИНАЦИЯ НОРМАЛЬНАЯ ДОЛЖНА БЫТЬ 
   return (
     <div className="w-full ml-4 mr-4">
       {
