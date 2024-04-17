@@ -24,11 +24,11 @@ export
     testDate
   } : {
     dashDates: Date[],
-    date: Date,
+    date: Date | undefined,
     setDate: React.Dispatch<React.SetStateAction<Date | undefined>>,
     previous: () => void
     next: () => void
-    testDate: Date
+    testDate: Date | undefined
   }
 ) {
 
@@ -79,7 +79,7 @@ export
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(new Date(testDate), "PPP", {locale: ru}) : <span>Выберите дату</span>}date
+          {date ? format(new Date(testDate? testDate : new Date()), "PPP", {locale: ru}) : <span>Выберите дату</span>}date
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
