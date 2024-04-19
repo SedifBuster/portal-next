@@ -7,40 +7,40 @@ import { ru } from "date-fns/locale"
 
 export
   function DashPagination({
-    itemsDate,
+    items,
     current,
     onPageChange
   }: {
-    itemsDate: Date[]
+    items: {date: any, count: any }[]
     current: number
-    onPageChange: (action: 'prev' | 'next' | 'date') => void
+    onPageChange: (action: 'prev' | 'next' | 'date', count: number) => void
   }
 ) {
-  //count of pages
-  const pagesCount = itemsDate.length
-  const pages = Array.from({ length: pagesCount }, (_, i) => i + 1)
-
-
-
-
-    console.log('current' ,current)
-    console.log('pages' ,pages)
-  return (
+  /*count of pages
+  //const pagesCount = itemsDate.length
+ // const pages = Array.from({ length: pagesCount }, (_, i) => i + 1)
+   // console.log('current' ,current)
+   // console.log('pages' ,pages)*/
+  console.log('current page', current)
+   return (
     <div className="w-full ml-4 mr-4 mt-4">
       <Pagination>
         <PaginationContent>
           <PaginationItem>
-            <PaginationPrevious size={'lg'} onClick={() => onPageChange('prev')} />
+            <PaginationPrevious size={'lg'} />
           </PaginationItem>
           {
-            itemsDate.map((date, index) => {
+            items.map((item, index) => {
               return  <PaginationItem key={index}>
-                        <PaginationLink size={'lg'} isActive={index === current - 1}  onClick={() => onPageChange('prev')} >{format(new Date(date), "P", {locale: ru})}</PaginationLink>
+                        <PaginationLink size={'lg'} isActive={index === current - 1}
+                          onClick={() => onPageChange('prev', item.count)} >
+                          {format(new Date(item.date), "P", {locale: ru})}
+                        </PaginationLink>
                       </PaginationItem>
             })
           }
           <PaginationItem>
-            <PaginationNext size={'lg'} onClick={() => onPageChange('next')} />
+            <PaginationNext size={'lg'} />
           </PaginationItem>
         </PaginationContent>
       </Pagination>

@@ -22,7 +22,6 @@ export
   const [isTables, setTables] = useState<DashInit[]>()
   const [isDash, setDash] = useState<DashInit>()
   const [isStateLpu, setStateLpu] = useState<DashDepartment>()
-  const [currentPage, setCurrentPage] = useState<number>(1)
 
   //getting data
   let getTables = async () => {
@@ -50,14 +49,33 @@ export
   useEffect(() => {
     getTables()
   }, [])
+
+  //pagination
+  let pagesCount: number
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [pagesWithData, setPagesWithData] = useState<any[]>([])
+
   useEffect(() => {
     if(isTables)
       setDash(isTables[currentPage - 1])
+    if(isTables)
+      pagesCount = isTables.map((table) => {
+        return table.date
+      }).length
+      console.log('pages count' ,pagesCount)
+
+      const pages = Array.from({ length: pagesCount}, (_, i) => i + 1)
+      setPagesWithData( pages.map((item, index) => {
+        if(isTables)
+          return {count: item, date: isTables[index].date, table: isTables[index].table, id: isTables[index].id }
+      }))
+      console.log( 'pages with data' ,pagesWithData)
   }, [isTables])
 
-  const onPageChange = (action: 'prev' | 'next' | 'date') => {
+  const onPageChange = (action: 'prev' | 'next' | 'date', count: number) => {
 
-    switch (action) {
+    /*switch (action) {
+      
       case 'prev':
         if(currentPage - 1 !== undefined) {
           setCurrentPage(currentPage - 1)
@@ -65,21 +83,28 @@ export
             setDash(isTables[currentPage])
           }
         }
+        break
       case 'next':
-        if(currentPage + 1 !== undefined) {
+        if(currentPage + 1 === undefined) {
           setCurrentPage(currentPage + 1)
           if(isTables) {
             setDash(isTables[currentPage])
           }
         }
+        break
       default: 
       setCurrentPage(currentPage + 1)
     if(isTables && isTables[currentPage])
     setDash(isTables[currentPage])
+    break
+    }*/
+    //console.log(currentPage, 'current', pagesCount, 'pages count')
+    if(currentPage !== pagesCount) {
+      setCurrentPage(count)
     }
-    //setCurrentPage(currentPage + 1)
-    //if(isTables && isTables[currentPage])
-    //setDash(isTables[currentPage])
+    
+    if(isTables && isTables[currentPage])
+    setDash(isTables[currentPage])
   }
 
   return (
@@ -90,11 +115,8 @@ export
         <>
           {format(new Date(isDash.date), "P", {locale: ru})}
           <DashItem data={isDash.table} isStateLpu={isStateLpu} />
-          {
-
-          }
-          <DashPagination itemsDate={isTables.map((table) => {
-            return table.date
+          <DashPagination items={pagesWithData.map((table) => {
+            return {date: table.date, count: table.count}
           })} 
           current={currentPage}
           onPageChange={onPageChange}
@@ -388,44 +410,5 @@ export
     //setIndex(onExist())
     //onExist(isTables)
       //console.log('dash', isDash)
-  }, [/*isTables, isDash, onExist*//*, isDash?.date])
-  useEffect(() => {
-    if(isDash)
-    setStateLpu(isLpu(isDash.table))
-
-    //console.log(isLpu(isDash.table))
-    //setDash(isDash?.table.splice(isDash.table.length - 2, 0 , isLpu(isDash.table)))
-  }, [isDash, isLpu])
-
-  /*useEffect(() => {
-    if(isTestDep && isDash)
-    setDash({
-      id: isDash.id,
-      date: isDash.date,
-      table: isDash.table
-    })
-
-  }, [isTables])
-  //ПАГИНАЦИЯ НОРМАЛЬНАЯ ДОЛЖНА БЫТЬ 
-  return (
-    <div className="w-full ml-4 mr-4">
-      {
-        /*date && isTables && isDash
-        ?
-        <>
-          <DatePicker date={date} setDate={setDate} previous={previous} next={next} testDate={isDash.date}
-            dashDates={isTables?.map((el) => {
-              return new Date(el.date)
-            })}
-          />
-          {isIndex}
-          <DashItem data={isDash.table} isStateLpu={isStateLpu} />
-          <DashPagination />
-        </>
-        :
-        <DashSkeleton/>
-      }
-    </div>
-  )
-}
+  }, [/*isTables, isDash, onExist*//*, isDash?.date])useEffect(() => {if(isDash)setStateLpu(isLpu(isDash.table))//console.log(isLpu(isDash.table))//setDash(isDash?.table.splice(isDash.table.length - 2, 0 , isLpu(isDash.table)))}, [isDash, isLpu])  /*useEffect(() => {if(isTestDep && isDash)setDash({id: isDash.id,date: isDash.date,table: isDash.table})}, [isTables])//ПАГИНАЦИЯ НОРМАЛЬНАЯ ДОЛЖНА БЫТЬ return (<div className="w-full ml-4 mr-4">{/*date && isTables && isDash?<><DatePicker date={date} setDate={setDate} previous={previous} next={next} testDate={isDash.date}dashDates={isTables?.map((el) => {return new Date(el.date)})}/>{isIndex}<DashItem data={isDash.table} isStateLpu={isStateLpu} /><DashPagination /></>:<DashSkeleton/>}</div>)}
 */
