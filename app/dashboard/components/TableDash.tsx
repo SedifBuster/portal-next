@@ -7,6 +7,362 @@ import { Dash, DashDepartment } from "@prisma/client"
 import toast from "react-hot-toast"
 import { DashItem } from "./DashItem"
 import { DashSkeleton } from "./DashSkeleton"
+import { DashPagination, paginate } from "./DashPagination"
+import format from "date-fns/format"
+import ru from "date-fns/locale/ru"
+
+export
+  interface DashInit extends Dash {
+    table: DashDepartment[]
+}
+
+export
+  function DataTable(
+) {
+  const [isTables, setTables] = useState<DashInit[]>()
+  const [isDash, setDash] = useState<DashInit>()
+  const [isStateLpu, setStateLpu] = useState<DashDepartment>()
+  const [isPaginatedPosts, setPaginatedPosts] = useState<any[]>([])
+
+  //getting data
+  let getTables = async () => {
+    try {
+      let result = await axios.get('/api/dash')
+      if (result.status === 200) {
+        toast.success(`таблицы код ${result.status}`)
+        let resultDep = await axios.get('/api/dash/department')
+        toast.success(`отделения код ${resultDep.status}`)
+        if(resultDep.data && result.data) {
+          console.log(resultDep.status)
+          let filteredDashes = result.data.map((item: Dash) => {
+            return {...item, table: resultDep.data.filter((dep: DashDepartment) => {
+              return dep.dashId === item.id
+            })}
+          })
+          console.log(filteredDashes)
+          setTables(filteredDashes)
+        }
+      }
+    } catch {
+      console.log('error')
+    }
+  }
+  useEffect(() => {
+    getTables()
+  }, [])
+
+  //pagination
+  let pagesCount: number
+
+
+  const pageSize = 1
+  const [pagesWithData, setPagesWithData] = useState<any[]>([])
+
+  const onPageChange = (page: any) => {
+    setCurrentPage(page)
+  }
+
+  /*
+  useEffect(() => {
+    if(isTables)
+      setDash(isTables[currentPage - 1])
+    if(isTables)
+      pagesCount = isTables.map((table) => {
+        return table.date
+      }).length
+      console.log('pages count' ,pagesCount)
+
+      const pages = Array.from({ length: pagesCount}, (_, i) => i + 1)
+      setPagesWithData( pages.map((item, index) => {
+        if(isTables)
+          return {count: item, date: isTables[index].date, table: isTables[index].table, id: isTables[index].id }
+      }))
+      console.log( 'pages with data' ,pagesWithData)
+  }, [isTables])
+  const onPageChange = (action: 'prev' | 'next' | 'date', count: number) => {
+
+    /*switch (action) {
+
+      
+      case 'prev':
+        if(currentPage - 1 !== undefined) {
+          setCurrentPage(currentPage - 1)
+          if(isTables) {
+            setDash(isTables[currentPage])
+          }
+        }
+        break
+      case 'next':
+        if(currentPage + 1 === undefined) {
+          setCurrentPage(currentPage + 1)
+          if(isTables) {
+            setDash(isTables[currentPage])
+          }
+        }
+        break
+      default: 
+      setCurrentPage(currentPage + 1)
+    if(isTables && isTables[currentPage])
+    setDash(isTables[currentPage])
+    break
+    }
+    //console.log(currentPage, 'current', pagesCount, 'pages count')
+    if(currentPage !== pagesCount) {
+      setCurrentPage(count)
+    }
+    
+    if(isTables && isTables[currentPage])
+    setDash(isTables[currentPage])
+  }
+  */
+
+  /*let paginatedPosts: any[]
+  useEffect(() => {
+    if(isTables)
+      setPaginatedPosts(paginate(testArray, currentPage, pageSize))
+  }, [isTables])
+    console.log(isPaginatedPosts)*/
+
+
+    const testArray = [2,342,4354,56,564,34,21,23,2,345,56,68,564,43,423,32,23,54,6,6556,56,65,235,34,34,34,2231234,54,57,67]
+
+
+
+    const [currentPage, setCurrentPage] = useState<number>(1)
+    const [itemsPerPage, setItemsPerPage] = useState(2)
+
+    const lastItemIndex = currentPage * itemsPerPage
+    const firstItemIndex = lastItemIndex - itemsPerPage
+    const currentItems = testArray.slice(firstItemIndex, lastItemIndex)
+
+  return (
+    <div className="w-full ml-4 mr-4">
+
+      {currentItems?
+      currentItems.map((item) => {
+        return <>
+        <p>{currentPage}</p>
+        <p>{item}</p>
+        <p> {/*item.date.toString()*/}</p>
+        </>
+      }):
+      null}
+      {isTables
+      ?
+      <DashPagination
+      totalItems={testArray.length} 
+      currentPage={currentPage}
+      itemsPerPage={itemsPerPage}
+      setCurrentPage={setCurrentPage}
+      />
+      :
+        null
+      }
+    </div>
+  )
+}
+
+
+{
+  /*
+    isTables && isDash
+    ?
+    <>
+      {format(new Date(isDash.date), "P", {locale: ru})}
+      <DashItem data={isDash.table} isStateLpu={isStateLpu} />
+      <DashPagination items={pagesWithData.map((table) => {
+        return {date: table.date, count: table.count}
+      })} 
+      current={currentPage}
+      onPageChange={onPageChange}
+      />
+    </>
+    :
+    <DashSkeleton/>
+  */
+  }
+{
+  /**          <DatePicker date={date} setDate={setDate} previous={previous} next={next} testDate={isDash.date}
+    dashDates={isTables?.map((el) => {
+      return new Date(el.date)
+    })}
+  />
+  {isIndex} */
+}
+
+
+
+
+
+
+//Version 3?
+/*"use client"
+
+import * as React from "react"
+import axios from "axios"
+import { useCallback, useEffect, useState } from "react"
+import { Dash, DashDepartment } from "@prisma/client"
+import toast from "react-hot-toast"
+import { DashItem } from "./DashItem"
+import { DashSkeleton } from "./DashSkeleton"
+import { DashPagination, paginate } from "./DashPagination"
+import format from "date-fns/format"
+import ru from "date-fns/locale/ru"
+
+export
+  interface DashInit extends Dash {
+    table: DashDepartment[]
+}
+
+export
+  function DataTable(
+) {
+  const [isTables, setTables] = useState<DashInit[]>()
+  const [isDash, setDash] = useState<DashInit>()
+  const [isStateLpu, setStateLpu] = useState<DashDepartment>()
+  const [isPaginatedPosts, setPaginatedPosts] = useState<any[]>([])
+
+  //getting data
+  let getTables = async () => {
+    try {
+      let result = await axios.get('/api/dash')
+      if (result.status === 200) {
+        toast.success(`таблицы код ${result.status}`)
+        let resultDep = await axios.get('/api/dash/department')
+        toast.success(`отделения код ${resultDep.status}`)
+        if(resultDep.data && result.data) {
+          console.log(resultDep.status)
+          let filteredDashes = result.data.map((item: Dash) => {
+            return {...item, table: resultDep.data.filter((dep: DashDepartment) => {
+              return dep.dashId === item.id
+            })}
+          })
+          console.log(filteredDashes)
+          setTables(filteredDashes)
+        }
+      }
+    } catch {
+      console.log('error')
+    }
+  }
+  useEffect(() => {
+    getTables()
+  }, [])
+
+  //pagination
+  let pagesCount: number
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const pageSize = 1
+  const [pagesWithData, setPagesWithData] = useState<any[]>([])
+
+  const onPageChange = (page: any) => {
+    setCurrentPage(page)
+  }
+
+  /*
+  useEffect(() => {
+    if(isTables)
+      setDash(isTables[currentPage - 1])
+    if(isTables)
+      pagesCount = isTables.map((table) => {
+        return table.date
+      }).length
+      console.log('pages count' ,pagesCount)
+
+      const pages = Array.from({ length: pagesCount}, (_, i) => i + 1)
+      setPagesWithData( pages.map((item, index) => {
+        if(isTables)
+          return {count: item, date: isTables[index].date, table: isTables[index].table, id: isTables[index].id }
+      }))
+      console.log( 'pages with data' ,pagesWithData)
+  }, [isTables])
+  const onPageChange = (action: 'prev' | 'next' | 'date', count: number) => {
+
+    /*switch (action) {
+
+      
+      case 'prev':
+        if(currentPage - 1 !== undefined) {
+          setCurrentPage(currentPage - 1)
+          if(isTables) {
+            setDash(isTables[currentPage])
+          }
+        }
+        break
+      case 'next':
+        if(currentPage + 1 === undefined) {
+          setCurrentPage(currentPage + 1)
+          if(isTables) {
+            setDash(isTables[currentPage])
+          }
+        }
+        break
+      default: 
+      setCurrentPage(currentPage + 1)
+    if(isTables && isTables[currentPage])
+    setDash(isTables[currentPage])
+    break
+    }
+    //console.log(currentPage, 'current', pagesCount, 'pages count')
+    if(currentPage !== pagesCount) {
+      setCurrentPage(count)
+    }
+    
+    if(isTables && isTables[currentPage])
+    setDash(isTables[currentPage])
+  }
+ 
+
+  let paginatedPosts: any[]
+  useEffect(() => {
+    if(isTables)
+      setPaginatedPosts(paginate(testArray, currentPage, pageSize))
+  }, [isTables])
+    console.log(isPaginatedPosts)
+
+
+    const testArray = [2,342,4354,56,564,34,21,23,2,345,56,68,564,43,423,32,23,54,6,6556,56,65,235,34,34,34,2231234,54,57,67]
+
+  return (
+    <div className="w-full ml-4 mr-4">
+
+      {isPaginatedPosts?
+      isPaginatedPosts.map((item) => {
+        return <>
+        <p>{currentPage}</p>
+        <p>{item}</p>
+        <p> {/*item.date.toString()}</p>
+        </>
+      }):
+      null}
+      {isTables
+      ?
+      <DashPagination
+      items={testArray.length} 
+      current={currentPage}
+      pageSize={pageSize}
+      onPageChange={onPageChange}
+      />
+      :
+        null
+      }
+    </div>
+  )
+}*/
+
+
+
+
+//Vesion 2
+/*"use client"
+
+import * as React from "react"
+import axios from "axios"
+import { useCallback, useEffect, useState } from "react"
+import { Dash, DashDepartment } from "@prisma/client"
+import toast from "react-hot-toast"
+import { DashItem } from "./DashItem"
+import { DashSkeleton } from "./DashSkeleton"
 import { DashPagination } from "./DashPagination"
 import format from "date-fns/format"
 import ru from "date-fns/locale/ru"
@@ -74,7 +430,8 @@ export
 
   const onPageChange = (action: 'prev' | 'next' | 'date', count: number) => {
 
-    /*switch (action) {
+    switch (action) {
+
       
       case 'prev':
         if(currentPage - 1 !== undefined) {
@@ -97,7 +454,7 @@ export
     if(isTables && isTables[currentPage])
     setDash(isTables[currentPage])
     break
-    }*/
+    }
     //console.log(currentPage, 'current', pagesCount, 'pages count')
     if(currentPage !== pagesCount) {
       setCurrentPage(count)
@@ -127,16 +484,31 @@ export
       }
     </div>
   )
-}
+}*/
 
-{
-  /**          <DatePicker date={date} setDate={setDate} previous={previous} next={next} testDate={isDash.date}
-    dashDates={isTables?.map((el) => {
-      return new Date(el.date)
-    })}
-  />
-  {isIndex} */
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Version 1
   //если дэш поставили ищем его индекс
  /*
    //create Lpu department
