@@ -7,7 +7,7 @@ import { Dash, DashDepartment } from "@prisma/client"
 import toast from "react-hot-toast"
 import { DashItem } from "./DashItem"
 import { DashSkeleton } from "./DashSkeleton"
-import { DashPagination, paginate } from "./DashPagination"
+import { DashPagination} from "./DashPagination"
 import format from "date-fns/format"
 import ru from "date-fns/locale/ru"
 
@@ -20,9 +20,6 @@ export
   function DataTable(
 ) {
   const [isTables, setTables] = useState<DashInit[]>()
-  const [isDash, setDash] = useState<DashInit>()
-  const [isStateLpu, setStateLpu] = useState<DashDepartment>()
-  const [isPaginatedPosts, setPaginatedPosts] = useState<any[]>([])
 
   //getting data
   let getTables = async () => {
@@ -52,111 +49,39 @@ export
   }, [])
 
   //pagination
-  let pagesCount: number
+  //const testArray = [2,342,4354,56,564,34,21,23,2,345,56,68,564,43,423,32,23,54,6,6556,56,65,235,34,34,34,2231234,54,57,67]
 
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [itemsPerPage, setItemsPerPage] = useState(1)
 
-  const pageSize = 1
-  const [pagesWithData, setPagesWithData] = useState<any[]>([])
-
-  const onPageChange = (page: any) => {
-    setCurrentPage(page)
-  }
-
-  /*
-  useEffect(() => {
-    if(isTables)
-      setDash(isTables[currentPage - 1])
-    if(isTables)
-      pagesCount = isTables.map((table) => {
-        return table.date
-      }).length
-      console.log('pages count' ,pagesCount)
-
-      const pages = Array.from({ length: pagesCount}, (_, i) => i + 1)
-      setPagesWithData( pages.map((item, index) => {
-        if(isTables)
-          return {count: item, date: isTables[index].date, table: isTables[index].table, id: isTables[index].id }
-      }))
-      console.log( 'pages with data' ,pagesWithData)
-  }, [isTables])
-  const onPageChange = (action: 'prev' | 'next' | 'date', count: number) => {
-
-    /*switch (action) {
-
-      
-      case 'prev':
-        if(currentPage - 1 !== undefined) {
-          setCurrentPage(currentPage - 1)
-          if(isTables) {
-            setDash(isTables[currentPage])
-          }
-        }
-        break
-      case 'next':
-        if(currentPage + 1 === undefined) {
-          setCurrentPage(currentPage + 1)
-          if(isTables) {
-            setDash(isTables[currentPage])
-          }
-        }
-        break
-      default: 
-      setCurrentPage(currentPage + 1)
-    if(isTables && isTables[currentPage])
-    setDash(isTables[currentPage])
-    break
-    }
-    //console.log(currentPage, 'current', pagesCount, 'pages count')
-    if(currentPage !== pagesCount) {
-      setCurrentPage(count)
-    }
-    
-    if(isTables && isTables[currentPage])
-    setDash(isTables[currentPage])
-  }
-  */
-
-  /*let paginatedPosts: any[]
-  useEffect(() => {
-    if(isTables)
-      setPaginatedPosts(paginate(testArray, currentPage, pageSize))
-  }, [isTables])
-    console.log(isPaginatedPosts)*/
-
-
-    const testArray = [2,342,4354,56,564,34,21,23,2,345,56,68,564,43,423,32,23,54,6,6556,56,65,235,34,34,34,2231234,54,57,67]
-
-
-
-    const [currentPage, setCurrentPage] = useState<number>(1)
-    const [itemsPerPage, setItemsPerPage] = useState(2)
-
-    const lastItemIndex = currentPage * itemsPerPage
-    const firstItemIndex = lastItemIndex - itemsPerPage
-    const currentItems = testArray.slice(firstItemIndex, lastItemIndex)
+  const lastItemIndex = currentPage * itemsPerPage
+  const firstItemIndex = lastItemIndex - itemsPerPage
+  const currentItems = isTables?.slice(firstItemIndex, lastItemIndex)
 
   return (
     <div className="w-full ml-4 mr-4">
-
-      {currentItems?
-      currentItems.map((item) => {
-        return <>
-        <p>{currentPage}</p>
-        <p>{item}</p>
-        <p> {/*item.date.toString()*/}</p>
+      {
+        currentItems && isTables
+        ?
+        <>
+          {
+            currentItems.map((item) => {
+              return <>
+                <p>{currentPage}</p>
+                <p> {format(new Date(item.date), "P", {locale: ru})}</p>
+                <DashItem data={item.table} />
+              </>
+            })
+          }
+          <DashPagination
+            totalItems={isTables.length} 
+            currentPage={currentPage}
+            itemsPerPage={itemsPerPage}
+            setCurrentPage={setCurrentPage}
+          />
         </>
-      }):
-      null}
-      {isTables
-      ?
-      <DashPagination
-      totalItems={testArray.length} 
-      currentPage={currentPage}
-      itemsPerPage={itemsPerPage}
-      setCurrentPage={setCurrentPage}
-      />
-      :
-        null
+        :
+        <DashSkeleton/>
       }
     </div>
   )

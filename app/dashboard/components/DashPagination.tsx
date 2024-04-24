@@ -27,7 +27,7 @@ export
   }
 
   const handleNextPage = () => {
-    if(currentPage < pages.length) {
+    if(currentPage < pages.length - 1) {
       setCurrentPage(currentPage + 1)
     }
   }
@@ -37,7 +37,13 @@ export
       setCurrentPage(currentPage -1)
     }
   }
-
+  //показывать первые четыре страницы если есть
+  //показывать даты на кнопках снизу
+  //лпу ебаное
+  //клик по дате перемещает
+  //опцоонально добавить лоадинг при переключении если будет долго
+  //палаты
+  //
    return (
     <div className="w-full ml-4 mr-4 mt-4">
       <Pagination>
@@ -46,14 +52,15 @@ export
             <PaginationPrevious size={'lg'} onClick={() => handlePrevPage()} />
           </PaginationItem>
         {
-          pages.map( (page, idx) => (
+          
+          pages.slice(1).map( (page, idx) => (
             <PaginationItem key={idx}>
                         <PaginationLink size={'lg'} isActive={currentPage === page}
                           onClick={() => setCurrentPage(page)} >
                           {page}
                         </PaginationLink>
                       </PaginationItem>
-          ) )  
+          ) )
         }
           <PaginationItem>
             <PaginationNext size={'lg'} onClick={() => handleNextPage()} />
@@ -64,13 +71,6 @@ export
   )
 }
 
-export const paginate = (items: any[], pageNumber: number, pageSize: number) => {
-  console.log('items' ,items)
-  const startIndex = (pageNumber - 1) * pageSize
-  console.log('start index' ,startIndex)
-  console.log(pageSize)
-  return items.slice(startIndex, startIndex + pageSize)
-}
 
 
 

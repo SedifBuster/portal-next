@@ -200,7 +200,7 @@ export
     isStateLpu
   }: {
     data:DashDepartment[],
-    isStateLpu: DashDepartment | undefined
+    isStateLpu?: DashDepartment | undefined
   }) {
 
   const [sorting, setSorting] = React.useState<SortingState>([])
