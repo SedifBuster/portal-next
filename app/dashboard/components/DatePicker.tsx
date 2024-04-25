@@ -16,6 +16,116 @@ import { ru } from "date-fns/locale"
 
 export
   function DatePicker({
+    date,
+  } : {
+    date: Date,
+  }
+) {
+
+  let pages = []
+
+  //for(let i = 0; i <= Math.ceil(totalItems / 1); i++) {
+  //  pages.push(i)
+ // }
+
+  let filteredDays = (arrTrueDates: Date[]) => {
+    let afterDays = addDays(new Date(), 300)
+    let beforeDays = new Date(2023, 0,0)
+  
+    let arrDates = eachDayOfInterval({
+      start: beforeDays,
+      end: afterDays
+    })
+    let result: Date[] = []
+    for(let i = 0; i < arrDates.length; i++) {
+      for(let j = 0; j < arrTrueDates.length; j++) {
+        if(isEqual(arrDates[i], arrTrueDates[j])) {
+          arrDates.splice(i, 1)
+        }
+      }
+    }
+    result = [...arrDates]
+
+    return result
+  }//filter callback
+
+  
+
+  return (
+    <div className="flex justify-center pb-6 pt-2">
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant={"outline"}
+            className={cn(
+              "w-[280px] justify-start text-left font-normal",
+              !date && "text-muted-foreground"
+            )}
+          >
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            { format(new Date(date? date : new Date()), "PPP", {locale: ru}) }
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0">
+          <Calendar
+            mode="single"
+            selected={date}
+            initialFocus
+            ISOWeek
+            locale={ru}
+            //disabled={filteredDays(dashDates)}
+          />
+        </PopoverContent>
+      </Popover>
+    </div>
+  )
+}
+
+/**    <Button
+              variant="outline"
+              size="sm"
+              className="
+              p-2 ml-4 pt-2
+            "
+            onClick={() => next()}
+            >
+              Следующая таблица
+            </Button> */
+
+            /**
+             *       <Button
+        variant="outline"
+        size="sm"
+        className="
+          p-2 mr-4 pt-2 
+        "
+        onClick={() => previous()}
+            >
+              Предыдущая таблица
+            </Button>
+             */
+
+
+//Versoin 1
+/**
+ * "use client"
+
+import * as React from "react"
+import { addDays, eachDayOfInterval, format, isEqual } from "date-fns"
+import { Calendar as CalendarIcon } from "lucide-react"
+
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { ru } from "date-fns/locale"
+
+export
+  function DatePicker({
     dashDates,
     date,
     setDate,
@@ -23,12 +133,12 @@ export
     next,
     testDate
   } : {
-    dashDates: Date[],
-    date: Date | undefined,
-    setDate: React.Dispatch<React.SetStateAction<Date | undefined>>,
-    previous: () => void
-    next: () => void
-    testDate: Date | undefined
+    dashDates?: Date[],
+    date?: Date | undefined,
+    setDate?: React.Dispatch<React.SetStateAction<Date | undefined>>,
+    previous?: () => void
+    next?: () => void
+    testDate?: Date | undefined
   }
 ) {
 
@@ -59,16 +169,7 @@ export
 
   return (
     <div className="flex justify-center pb-6 pt-2">
-      <Button
-        variant="outline"
-        size="sm"
-        className="
-          p-2 mr-4 pt-2 
-        "
-        onClick={() => previous()}
-            >
-              Предыдущая таблица
-            </Button>
+
     <Popover>
       <PopoverTrigger asChild>
         <Button
@@ -90,20 +191,12 @@ export
           initialFocus
           ISOWeek
           locale={ru}
-          disabled={filteredDays(dashDates)}
+          //disabled={filteredDays(dashDates)}
         />
       </PopoverContent>
     </Popover>
-    <Button
-              variant="outline"
-              size="sm"
-              className="
-              p-2 ml-4 pt-2
-            "
-            onClick={() => next()}
-            >
-              Следующая таблица
-            </Button>
+
     </div>
   )
 }
+ */

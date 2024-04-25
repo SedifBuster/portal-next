@@ -255,6 +255,8 @@ export
       setTest(isTest.splice(isTest?.length - 2 , 0, isStateLpu))
     }
   }, [isTest])*/
+
+  const colors = ["#FFFFCC", "#FFFF99", "#FFFF66", "#FFFF33", "#FFFF00", "#CCCC00", "#FFCC66", "#FFCC00", "#FFCC33", "#FFCC33", "#FFCC33", "#FFCC33", "#FFCC33", "#FFCC33", "#FFCC33" ]
  
   return (
     <>
@@ -263,6 +265,8 @@ export
     :
       null
   }
+
+  
 
     <div className="w-full">
     {
@@ -273,9 +277,9 @@ export
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
+                {headerGroup.headers.map((header, index) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className={`bg-[${colors[index]}]`}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(

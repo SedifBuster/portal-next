@@ -10,6 +10,7 @@ import { DashSkeleton } from "./DashSkeleton"
 import { DashPagination} from "./DashPagination"
 import format from "date-fns/format"
 import ru from "date-fns/locale/ru"
+import { DatePicker } from "./DatePicker"
 
 export
   interface DashInit extends Dash {
@@ -64,11 +65,11 @@ export
         currentItems && isTables
         ?
         <>
-          {
+          {//<DatePicker />
             currentItems.map((item) => {
               return <>
+                <DatePicker  date={item.date}/>
                 <p>{currentPage}</p>
-                <p> {format(new Date(item.date), "P", {locale: ru})}</p>
                 <DashItem data={item.table} />
               </>
             })
@@ -86,7 +87,6 @@ export
     </div>
   )
 }
-
 
 {
   /*
@@ -114,11 +114,6 @@ export
   />
   {isIndex} */
 }
-
-
-
-
-
 
 //Version 3?
 /*"use client"
@@ -274,9 +269,6 @@ export
     </div>
   )
 }*/
-
-
-
 
 //Vesion 2
 /*"use client"
