@@ -67,11 +67,20 @@ export
         <>
           {//<DatePicker />
             currentItems.map((item) => {
-              return <>
-                <DatePicker  date={item.date}/>
+              return <div key={item.id}>
+                <DatePicker
+                  date={item.date}
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                  dashDates={isTables?.map((el) => {
+                    return {date:new Date(el.date), id: el.id }
+                  })}
+                />
+
                 <p>{currentPage}</p>
+
                 <DashItem data={item.table} />
-              </>
+              </div>
             })
           }
           <DashPagination

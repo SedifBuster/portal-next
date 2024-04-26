@@ -13,22 +13,34 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { ru } from "date-fns/locale"
+import { useCallback, useEffect } from "react"
 
 export
   function DatePicker({
     date,
+    dashDates,
+    currentPage,
+    setCurrentPage,
   } : {
-    date: Date,
+    date: Date
+    dashDates: {date: Date, id: number}[]
+    currentPage: number
+    setCurrentPage: any
   }
 ) {
 
+  const [isDate, setDate] = React.useState<Date | undefined>(date)
+
   let pages = []
 
-  //for(let i = 0; i <= Math.ceil(totalItems / 1); i++) {
-  //  pages.push(i)
- // }
+  console.log(dashDates)
 
-  let filteredDays = (arrTrueDates: Date[]) => {
+  if(dashDates)
+  for(let i = 0; i <= Math.ceil(dashDates.length / 1); i++) {
+    pages.push({date: dashDates[i - 1], count: i})
+  }
+
+  let filteredDays = useCallback((arrTrueDates: {date: Date, id: number}[]) => {
     let afterDays = addDays(new Date(), 300)
     let beforeDays = new Date(2023, 0,0)
   
@@ -36,10 +48,11 @@ export
       start: beforeDays,
       end: afterDays
     })
+
     let result: Date[] = []
     for(let i = 0; i < arrDates.length; i++) {
       for(let j = 0; j < arrTrueDates.length; j++) {
-        if(isEqual(arrDates[i], arrTrueDates[j])) {
+        if(isEqual(arrDates[i], arrTrueDates[j].date)) {
           arrDates.splice(i, 1)
         }
       }
@@ -47,9 +60,15 @@ export
     result = [...arrDates]
 
     return result
-  }//filter callback
+  }, [dashDates])
 
-  
+console.log('pages' ,pages.slice(1))
+
+
+useEffect(() => {
+  console.log('setted date')
+ // setCurrentPage(2)
+}, [isDate])
 
   return (
     <div className="flex justify-center pb-6 pt-2">
@@ -63,23 +82,49 @@ export
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            { format(new Date(date? date : new Date()), "PPP", {locale: ru}) }
+            { format(new Date(isDate? isDate : new Date()), "PPP", {locale: ru}) }
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
           <Calendar
             mode="single"
-            selected={date}
+            selected={isDate}
+            onSelect={setDate}
             initialFocus
             ISOWeek
             locale={ru}
-            //disabled={filteredDays(dashDates)}
+            disabled={filteredDays(dashDates)}
           />
         </PopoverContent>
       </Popover>
     </div>
   )
 }
+
+
+/*
+  let filteredDays = useCallback((arrTrueDates: Date[]) => {
+    let afterDays = addDays(new Date(), 300)
+    let beforeDays = new Date(2023, 0,0)
+  
+    let arrDates = eachDayOfInterval({
+      start: beforeDays,
+      end: afterDays
+    })
+
+    let result: Date[] = []
+    for(let i = 0; i < arrDates.length; i++) {
+      for(let j = 0; j < arrTrueDates.length; j++) {
+        if(isEqual(arrDates[i], arrTrueDates[j])) {
+          arrDates.splice(i, 1)
+        }
+      }
+    }
+    result = [...arrDates]
+
+    return result
+  }, [dashDates])
+*/
 
 /**    <Button
               variant="outline"
