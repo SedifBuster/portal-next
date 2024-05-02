@@ -37,7 +37,8 @@ export
 
   if(dashDates)
   for(let i = 0; i <= Math.ceil(dashDates.length / 1); i++) {
-    pages.push({date: dashDates[i - 1], count: i})
+console.log(i)
+    pages.push({item: dashDates[i - 1], count: i})
   }
 
   let filteredDays = useCallback((arrTrueDates: {date: Date, id: number}[]) => {
@@ -65,10 +66,35 @@ export
 console.log('pages' ,pages.slice(1))
 
 
+const onFindDate = (newDate: Date, dates: {
+    item: {
+        date: Date;
+        id: number;
+    };
+    count: number;
+}[]) => {
+  if(dates)
+    dates.filter((i: {
+      item: {
+          date: Date;
+          id: number;
+      };
+      count: number;
+  }) => {return new Date(i.item.date).getTime() === new Date(newDate).getTime()})
+}
+
+
 useEffect(() => {
   console.log('setted date')
+  if(isDate)
+  console.log("date in getTime",new Date(isDate).getTime())
  // setCurrentPage(2)
+ if(isDate && pages)
+ console.log('findDate',onFindDate(isDate, pages))
 }, [isDate])
+
+
+
 
   return (
     <div className="flex justify-center pb-6 pt-2">
@@ -125,7 +151,6 @@ useEffect(() => {
     return result
   }, [dashDates])
 */
-
 /**    <Button
               variant="outline"
               size="sm"
@@ -136,7 +161,6 @@ useEffect(() => {
             >
               Следующая таблица
             </Button> */
-
             /**
              *       <Button
         variant="outline"
@@ -149,8 +173,6 @@ useEffect(() => {
               Предыдущая таблица
             </Button>
              */
-
-
 //Versoin 1
 /**
  * "use client"

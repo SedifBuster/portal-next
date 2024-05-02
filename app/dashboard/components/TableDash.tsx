@@ -65,7 +65,7 @@ export
         currentItems && isTables
         ?
         <>
-          {//<DatePicker />
+          {
             currentItems.map((item) => {
               return <div key={item.id}>
                 <DatePicker
@@ -76,8 +76,6 @@ export
                     return {date:new Date(el.date), id: el.id }
                   })}
                 />
-
-                <p>{currentPage}</p>
 
                 <DashItem data={item.table} />
               </div>
@@ -96,6 +94,8 @@ export
     </div>
   )
 }
+
+/*<p>{currentPage}</p>*/
 
 {
   /*
