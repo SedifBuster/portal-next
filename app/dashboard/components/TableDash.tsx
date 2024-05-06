@@ -31,13 +31,13 @@ export
         let resultDep = await axios.get('/api/dash/department')
         toast.success(`отделения код ${resultDep.status}`)
         if(resultDep.data && result.data) {
-          console.log(resultDep.status)
+          //console.log(resultDep.status)
           let filteredDashes = result.data.map((item: Dash) => {
             return {...item, table: resultDep.data.filter((dep: DashDepartment) => {
               return dep.dashId === item.id
             })}
           })
-          console.log(filteredDashes)
+          //console.log(filteredDashes)
           setTables(filteredDashes)
         }
       }

@@ -14,6 +14,10 @@ import {
 } from "@/components/ui/popover"
 import { ru } from "date-fns/locale"
 import { useCallback, useEffect } from "react"
+import toast from "react-hot-toast"
+
+
+type dateForPick = {item: { date: Date, id: number}, count: number}
 
 export
   function DatePicker({
@@ -30,18 +34,14 @@ export
 ) {
 
   const [isDate, setDate] = React.useState<Date | undefined>(date)
-
+  //set pages array
   let pages = []
-
-  console.log(dashDates)
-
   if(dashDates)
   for(let i = 0; i <= Math.ceil(dashDates.length / 1); i++) {
-console.log(i)
     pages.push({item: dashDates[i - 1], count: i})
   }
-
-  let filteredDays = useCallback((arrTrueDates: {date: Date, id: number}[]) => {
+  //remove dates without tables
+  const filteredDays = useCallback((arrTrueDates: {date: Date, id: number}[]) => {
     let afterDays = addDays(new Date(), 300)
     let beforeDays = new Date(2023, 0,0)
   
@@ -62,35 +62,26 @@ console.log(i)
 
     return result
   }, [dashDates])
+  //click date  => does it exist or not exist 
+  const onFindDate = (newDate: Date, dates: dateForPick[]) => {
+    let result = []
+      result = dates.filter((i) => i.item && i.item.date? i.item.date.getTime() === new Date(newDate).getTime() : null)
+    return result
+  }
 
-console.log('pages' ,pages.slice(1))
-
-
-const onFindDate = (newDate: Date, dates: {
-    item: {
-        date: Date;
-        id: number;
-    };
-    count: number;
-}[]) => {
-  if(dates)
-    dates.filter((i: {
-      item: {
-          date: Date;
-          id: number;
-      };
-      count: number;
-  }) => {return new Date(i.item.date).getTime() === new Date(newDate).getTime()})
-}
-
+  const onSelectDate = () => {
+    console.log('select')
+    let result = onFindDate(date, pages)
+      if(result.length === 0) {
+        return toast.error(('date is undefined'));
+      } else {
+        setCurrentPage(result[0].count)
+      }
+  }
 
 useEffect(() => {
-  console.log('setted date')
-  if(isDate)
-  console.log("date in getTime",new Date(isDate).getTime())
- // setCurrentPage(2)
- if(isDate && pages)
- console.log('findDate',onFindDate(isDate, pages))
+  //if(isDate && pages)
+    //console.log('findDate',onFindDate(isDate, pages))
 }, [isDate])
 
 
@@ -115,7 +106,7 @@ useEffect(() => {
           <Calendar
             mode="single"
             selected={isDate}
-            onSelect={setDate}
+            onSelect={onSelectDate}
             initialFocus
             ISOWeek
             locale={ru}
