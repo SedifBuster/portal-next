@@ -2,9 +2,6 @@
 
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
 import * as React from "react"
-import { format } from "date-fns"
-import { ru } from "date-fns/locale"
-import { DashInit } from "./TableDash"
 
 export
   function DashPagination({
@@ -13,10 +10,10 @@ export
     currentPage,
     setCurrentPage
   }: {
-    totalItems: any//{date: any, count: any }[]
+    totalItems: any
     itemsPerPage: number
     currentPage: number
-    setCurrentPage: any //(action: 'prev' | 'next' | 'date', count: number) => void
+    setCurrentPage: any
   }
 ) {
 
@@ -27,23 +24,20 @@ export
   }
 
   const handleNextPage = () => {
-    if(currentPage < pages.length - 1) {
+    if(currentPage < pages.length - 1) 
       setCurrentPage(currentPage + 1)
-    }
   }
 
   const handlePrevPage = () => {
-    if( currentPage > 1) {
+    if( currentPage > 1)
       setCurrentPage(currentPage -1)
-    }
   }
   //показывать первые четыре страницы если есть
   //показывать даты на кнопках снизу
   //лпу ебаное
-  //клик по дате перемещает
+
   //опцоонально добавить лоадинг при переключении если будет долго
   //палаты
-  //
    return (
     <div className="w-full ml-4 mr-4 mt-4">
       <Pagination>
@@ -52,7 +46,6 @@ export
             <PaginationPrevious size={'lg'} onClick={() => handlePrevPage()} />
           </PaginationItem>
         {
-          
           pages.slice(1).map( (page, idx) => (
             <PaginationItem key={idx}>
                         <PaginationLink size={'lg'} isActive={currentPage === page}

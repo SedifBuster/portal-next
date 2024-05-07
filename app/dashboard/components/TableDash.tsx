@@ -8,8 +8,6 @@ import toast from "react-hot-toast"
 import { DashItem } from "./DashItem"
 import { DashSkeleton } from "./DashSkeleton"
 import { DashPagination} from "./DashPagination"
-import format from "date-fns/format"
-import ru from "date-fns/locale/ru"
 import { DatePicker } from "./DatePicker"
 
 export
@@ -31,13 +29,11 @@ export
         let resultDep = await axios.get('/api/dash/department')
         toast.success(`отделения код ${resultDep.status}`)
         if(resultDep.data && result.data) {
-          //console.log(resultDep.status)
           let filteredDashes = result.data.map((item: Dash) => {
             return {...item, table: resultDep.data.filter((dep: DashDepartment) => {
               return dep.dashId === item.id
             })}
           })
-          //console.log(filteredDashes)
           setTables(filteredDashes)
         }
       }
@@ -49,15 +45,16 @@ export
     getTables()
   }, [])
 
-  //pagination
-  //const testArray = [2,342,4354,56,564,34,21,23,2,345,56,68,564,43,423,32,23,54,6,6556,56,65,235,34,34,34,2231234,54,57,67]
-
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [itemsPerPage, setItemsPerPage] = useState(1)
 
   const lastItemIndex = currentPage * itemsPerPage
   const firstItemIndex = lastItemIndex - itemsPerPage
   const currentItems = isTables?.slice(firstItemIndex, lastItemIndex)
+
+  //palaty s okoshkom 
+  //lpu
+  //and fix numbers on pagination
 
   return (
     <div className="w-full ml-4 mr-4">
@@ -70,7 +67,6 @@ export
               return <div key={item.id}>
                 <DatePicker
                   date={item.date}
-                  currentPage={currentPage}
                   setCurrentPage={setCurrentPage}
                   dashDates={isTables?.map((el) => {
                     return {date:new Date(el.date), id: el.id }
