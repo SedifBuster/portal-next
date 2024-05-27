@@ -90,7 +90,31 @@ export const columns: ColumnDef<DashDepartment>[] = [
         accessorKey: "totalStays",
         header: "Всего находится в стационаре (чел.) ot palat",
         cell: ({ row }) => (
-          <div className="capitalize">{row.getValue("totalStays")}</div>
+  
+          <div className="capitalize">
+            {row.getValue("totalStays")}
+            <>
+            <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(row.getValue("totalStays"))}
+              >
+                Copy payment ID
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>View customer</DropdownMenuItem>
+              <DropdownMenuItem>View payment details</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+           </>
+          </div>
         ),
       },
       {
@@ -105,8 +129,7 @@ export const columns: ColumnDef<DashDepartment>[] = [
         header: () => <div className="text-right">Выбывшие к оплате</div>,
         cell: ({ row }) => {
           const amount = parseFloat(row.getValue("disTax"))
-    
-          // Format the amount as a dollar amount
+
           const formatted = new Intl.NumberFormat("ru-RU", {
             style: "currency",
             currency: "RUB",

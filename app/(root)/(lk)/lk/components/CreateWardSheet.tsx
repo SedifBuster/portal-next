@@ -72,17 +72,26 @@ export
         const wardNumber: number = await wardResult.data
         toast.success( `палата создана с айди: ${wardNumber}` )
         getWards(depId)
-        let dashWardUpdate = await axios.post( '/api/dash/ward', wardData)
-        if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
-        else if( dashWardUpdate.statusText === "OK") {
-          const dashWardNumber: number = await dashWardUpdate.data
-          console.log('dash ward' + ' ', dashWardNumber)
-        }
+        //let dashWardUpdate = await axios.post( '/api/dash/ward', wardData)
+        //if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
+        //else if( dashWardUpdate.statusText === "OK") {
+          //const dashWardNumber: number = await dashWardUpdate.data
+          //console.log('dash ward' + ' ', dashWardNumber)
+        //}
         form.reset()
         setVisible(false)
         //cюда нам надо вставить даш палаты
+        const dashWardData = {
+          dashDepId: depId,
+          number: Number(values.number),
+          numberOfSeats: Number(values.numberOfSeats),
+          engaged: Number(values.engaged),
+          free: Number(values.free),
+          gender: values.gender,
+          reserve: values.reserve,
+        }
         try {
-          let dashWardResult = await axios.post( '/api/dash/ward')
+          let dashWardResult = await axios.post( '/api/dash/ward', dashWardData)
           if( dashWardResult.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
           else if( dashWardResult.statusText === "OK") {
             const dashWardNumber: number = await dashWardResult.data

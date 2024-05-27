@@ -10,7 +10,6 @@ export
     const {
       name,
       dashId,
-      numberOfSeats,
       planHuman,
       planRub,
       begAcc,
@@ -31,7 +30,6 @@ export
     data: {
       dashId,
       name,
-      numberOfSeats,
       planHuman,
       planRub,
       begAcc,
@@ -131,7 +129,6 @@ export
       data: {
         name,
         dashId,
-        numberOfSeats,
         planHuman,
         planRub,
         begAcc,

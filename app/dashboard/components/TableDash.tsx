@@ -52,7 +52,14 @@ export
   const firstItemIndex = lastItemIndex - itemsPerPage
   const currentItems = isTables?.slice(firstItemIndex, lastItemIndex)
 
-  //palaty s okoshkom 
+  //palaty s okoshkom
+  //
+  //получение палат по отделению
+  //распределение палат по времени(тут сложно)
+  //вывод данных в таблице, клик по ним - вывод инфы по всем палатам отделения
+  //
+  //фикс таблицы именно данных
+  //добавить кнопки быстрых добавление\убавления в палатах (в конце)
   //lpu
   //and fix numbers on pagination
 
