@@ -132,6 +132,7 @@ model DashWard {
   reserve       String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  test {Boolean: tue , {}}
 }
 
 model Dash {
