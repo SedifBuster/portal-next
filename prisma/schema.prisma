@@ -132,7 +132,7 @@ model DashWard {
   reserve       String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-  test {Boolean: tue , {}}
+  status        Status @default(active)
 }
 
 model Dash {
@@ -181,4 +181,10 @@ enum Category {
   problemWithMIS
   newMISAccount
   uploadNewProgramm
+}
+
+enum Status {
+  active
+  disabled
+  deleted
 }
