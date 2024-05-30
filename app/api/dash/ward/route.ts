@@ -104,7 +104,7 @@ export
     const isFree = numberOfSeats - engaged
     const ward = await prisma.dashWard.update({
       where: {
-        id
+        number
       },
       data: {
         number,

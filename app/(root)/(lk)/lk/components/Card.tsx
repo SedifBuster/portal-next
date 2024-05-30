@@ -3,7 +3,6 @@ import * as React from "react"
 import { Button } from "@/components/ui/button"
 import {
   Card,
-  CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -13,22 +12,23 @@ import { Label } from "@/components/ui/label"
 import { Department, Profile } from "@prisma/client"
 import { signOut } from "next-auth/react"
 import { useRouter } from "next/navigation"
+/*cool */
+export
+  function UserCard(
+    {
+      department,
+      profile,
+      name
+    }: {
+      department: Department
+      profile: Profile
+      name: string | null | undefined
+    }
+  ) {
+    const router = useRouter()
+    let [userGrade, setUserGrade] = React.useState<string>('')
 
-export function UserCard(
-  {
-    department,
-    profile,
-    name
-  }: {
-    department: Department
-    profile: Profile
-    name: string | null | undefined
-  }
-) {
-  const router = useRouter()
-  let [userGrade, setUserGrade] = React.useState<string>('')
-
-  let onChangeGrade = ( grade: string ) => {
+    let onTranslateGrade = ( grade: string ) => {
       switch(grade) {
         case 'HEADNURSE': 
           setUserGrade('Старшая медсестра')
@@ -51,29 +51,47 @@ export function UserCard(
         default: 
           setUserGrade('Не определено')
       }
-  }
+    }
 
-  React.useEffect(() => {
-    onChangeGrade(profile.grade)
-  }, [])
+    React.useEffect(() => {
+      onTranslateGrade(profile.grade)
+    }, [])
 
   return (
-    <Card className="w-[350px]">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Информация пользователя</CardTitle>
-        <CardDescription><Label>Ф.И.О.: </Label>{name}</CardDescription>
-        <CardDescription><Label>Отделение: </Label>{department.name}</CardDescription>
-        <CardDescription><Label>Должность: </Label>{userGrade}</CardDescription>
+        <CardDescription>
+          <Label>
+            Ф.И.О. : {name}
+          </Label>
+        </CardDescription>
+        <CardDescription>
+          <Label>
+            Отделение: {department.name}
+          </Label>
+        </CardDescription>
+        <CardDescription>
+          <Label>
+            Должность: {userGrade}
+          </Label>
+        </CardDescription>
       </CardHeader>
       <CardFooter className="flex justify-between">
-        <Button onClick={async() => {
-                   await signOut({
-                        redirect: false,
-                        callbackUrl: `/`
-                    })
-                    router.push('/')
-                    localStorage.clear()
-                }}>Выйти из аккаунта</Button>
+        <Button
+          onClick={
+            async() => {
+              await signOut({
+                redirect: false,
+                callbackUrl: `/`
+              })
+              router.push('/')
+              localStorage.clear()
+            }
+          }
+        >
+          Выйти из аккаунта
+        </Button>
       </CardFooter>
     </Card>
   )

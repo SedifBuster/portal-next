@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { HiSquaresPlus } from "react-icons/hi2";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import clsx from "clsx"
+import { Checkbox } from "@/components/ui/checkbox"
 
 export
   type DepId = {
@@ -72,6 +73,53 @@ export
       } else {
         toast.error('Ошибка при удалении палаты')
       }
+      if ( result.statusText === "OK" ) {
+        const dashWardData = {
+          dashDepId: ward.depId,
+          number: Number(isNumber),
+          numberOfSeats: Number(isNumberOfSeats),
+          engaged: Number(isEngaged),
+          free: Number(isFree),
+          gender: isGender,
+          reserve: isReserve,
+          status: "deleted"
+        }
+        try {
+          if(
+            new Date(ward.updatedAt).getDay() === new Date().getDay()
+            &&
+            new Date(ward.updatedAt).getMonth() === new Date().getMonth()
+            &&
+            new Date(ward.updatedAt).getFullYear() === new Date().getFullYear()
+            &&
+            result.data === ward.number
+          ) {
+            console.log('tot zhe den')
+            let dashWardUpdate = await axios.patch( '/api/dash/ward', {...dashWardData, id: id})//id ne tot kotory nuzhen
+            if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
+            else if( dashWardUpdate.statusText === "OK") {
+              const dashWardNumber: number = await dashWardUpdate.data
+              console.log('dash ward' + ' ', dashWardNumber)
+            }
+          } else{
+            console.log('drugoi den')
+            let dashWardUpdate = await axios.post( '/api/dash/ward', dashWardData)
+            if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
+            else if( dashWardUpdate.statusText === "OK") {
+              const dashWardNumber: number = await dashWardUpdate.data
+              console.log('dash ward' + ' ', dashWardNumber)
+            }
+          }
+        } catch ( error ) {
+          toast.error( "Ошибка при удалении палаты" )
+          console.log( "Ошибка при удалении палаты", error )
+        }
+        setVisibleChange(false)
+        getWards(depId)
+        setVisibleReturn(false)
+      } else {
+        toast.error('Ошибка при удалении палаты')
+      }
     }
 
     //Изменение палаты
@@ -82,6 +130,7 @@ export
     const [isGender, setGender] = React.useState<Gender>(ward.gender)
     const [isReserve, setReserve] = React.useState<string | null>(ward.reserve)
     const [isDepReserved, setDepReserved] = React.useState<boolean>(false)
+    const [isDisabled, setDisabled] = React.useState<boolean>(false)
 
     const [isVisibleReserve, setVisibleReserve] = React.useState<boolean>(false)
 
@@ -240,15 +289,21 @@ return (
     taken && 'bg-lime-100'
     )
   }>
-    <TableCell className="font-medium">{ward.number}</TableCell>
+    <TableCell className="font-bold">{ward.number}</TableCell>
     <TableCell>{ward.numberOfSeats}</TableCell>
     <TableCell>{ward.engaged}</TableCell>
     <TableCell>{ward.free}</TableCell>
     <TableCell >{isTranslaredGender(ward.gender)}</TableCell>
-    {/**
-    *
-    @ts-ignore*/}
-    <TableCell>{taken? " палата от " + isDepartments.filter((dep) => {return dep.id === ward.depId})[0]?.name :isReserveDep(ward.reserve)}</TableCell>
+    {/**проблема со строкой */}
+    <TableCell className="text-wrap">
+      {
+        taken
+        ?
+        " палата от " + isDepartments.filter((dep) => {return dep.id === ward.depId})[0]?.name
+        :
+        isReserveDep(ward.reserve)
+      }
+    </TableCell>
     {!isDepReserved || taken?
       <TableCell className="flex gap-1">
         <Dialog open={isVisibleChange} onOpenChange={() => setVisibleChange(!isVisibleChange)}>
@@ -270,13 +325,7 @@ return (
                     <Label htmlFor="number" className="text-right">
                       номер палаты
                     </Label>
-                    <Input
-                      value={isNumber}
-                      type="number"
-                      //@ts-ignore
-                      onChange={(e) => setNumber(e.target.value)}
-                      className="col-span-3"
-                    />
+                    <p className="pl-4">{isNumber}</p>
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="numberOfSeats" className="text-right">
@@ -289,6 +338,7 @@ return (
                       onChange={(e) => setNumberOfSeats(e.target.value)}
                       className="col-span-3"
                     />
+                    
                   </div>
                 </>
               :
@@ -513,6 +563,40 @@ return (
         </TableCell>
         : ''
     }
+    <TableCell>   <div className="flex items-center space-x-2">
+      {/*disable  блокировка только теми кто владеет палатой
+      реализовать блокировку и разблокировку со всей логикой (пиздец) добавить иконки с быстрым добавлением убавлением
+      и пооооотом только решать проблемы с дашбордом
+      */}
+      <Checkbox id="terms" />
+      <HoverCard>
+          <HoverCardTrigger asChild>
+          <label
+            htmlFor="terms"
+           className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+           {ward.status === "active"? 'заблокировать' : 'разблокировать'}
+           </label>
+          </HoverCardTrigger>
+            <HoverCardContent className="w-80">
+              <div className="flex justify-between space-x-4">
+                <div className="space-y-1">
+                  <h4 className="text-sm font-semibold">Блокировка палаты</h4>
+                    <p className="text-sm">
+                      1. Если палата закреплена за отделением, но не используется по определенным причинам, то ее нужно заблокировать.
+                      Это нужно чтобы показатели палаты которая не используется, не попадали в общую сводку.
+                    </p>
+                     <div className="flex items-center pt-2">
+                       <span className="text-xs text-muted-foreground">
+                       Поставьте галку чтобы заблокировать. Чтобы разблокировать уберите ее.
+                     </span>
+                   </div>
+                   </div>
+                 </div>
+              </HoverCardContent>
+            </HoverCard>
+    </div>
+    </TableCell>
     </TableRow>
   )
 }

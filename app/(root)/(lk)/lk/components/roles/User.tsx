@@ -277,12 +277,17 @@ export function User() {
         <div
             className="
             bg-white
-            p-4
+            p-2
             flex
-            gap-4
+            flex-col
+            gap-1
             "
         >
-{department?.name.toLowerCase() !== 'CHIEF'.toLowerCase() ?
+          <div className="flex justify-end mb-2">
+            {/*Информация пользователя*/}
+            {department && profile ? <UserCard department={department} profile={profile} name={session.data?.user.name} /> : ''}
+          </div>
+        {department?.name.toLowerCase() !== 'CHIEF'.toLowerCase() ?
                 <div className="rounded-md border basis-4/5">
                     <div className="">
                         <h1 className="text-center mt-4 mb-2 text-lg font-bold">Сводка по местам</h1>
@@ -446,8 +451,6 @@ export function User() {
                         </TableFooter>
                     </Table>
 
-
-
                     <h4 className="ml-2 font-medium">Отделение: {isXo?.name}</h4>
                         {profile?.grade == 'CHIEFNURSE' || profile?.grade == 'DEPNURSTAFF' ?
                             isXo ? <CreateWardSheet depId={isXo.id} getWards={getXoWards} /> : ''
@@ -589,14 +592,12 @@ export function User() {
                             </TableRow>
                         </TableFooter>
                     </Table>
-
                     <h4 className="ml-2 font-medium">Отделение: {isReab?.name}</h4>
                         {profile?.grade == 'CHIEFNURSE' || profile?.grade == 'DEPNURSTAFF' ?
                             isReab ? <CreateWardSheet depId={isReab.id} getWards={getReabWards} /> : ''
                             :
                             ""
                         }
-
                         <div className="flex gap-4 ml-2">
                             <div className="w-6 h-6 bg-orange-100"></div> взяты в отделение
                             <div className="w-6 h-6 bg-green-100"></div> отданы другим отделением
@@ -662,9 +663,7 @@ export function User() {
                     </Table>
                 </div>
             }
-            <div className="flex justify-end mr-2 mb-2 h-64">
-                {department && profile ? <UserCard department={department} profile={profile} name={session.data?.user.name} /> : ''}
-            </div>
+
 
         </div>
 
