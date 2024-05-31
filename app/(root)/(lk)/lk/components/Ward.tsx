@@ -3,7 +3,7 @@ import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Department, Gender, Ward } from "@prisma/client"
 import { TableCell, TableRow } from "@/components/ui/table"
-import { HiMiniArrowDownOnSquareStack, HiMiniArrowSmallUp, HiPencil, HiTrash } from "react-icons/hi2"
+import { HiMiniArrowDownOnSquareStack, HiMiniArrowSmallUp, HiPencil, HiTrash, HiUserMinus, HiUserPlus } from "react-icons/hi2"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -304,8 +304,18 @@ return (
         isReserveDep(ward.reserve)
       }
     </TableCell>
+    <TableCell className="text-wrap">
+      <div className="flex gap-1">
+        <Button variant={'outline'} onClick={(e) => setVisibleReserve(!isVisibleReserve)}><HiUserPlus /></Button>
+        <Button variant={'outline'} onClick={(e) => setVisibleReserve(!isVisibleReserve)}><HiUserMinus /></Button>
+      </div>
+
+    </TableCell>
+
     {!isDepReserved || taken?
       <TableCell className="flex gap-1">
+
+        
         <Dialog open={isVisibleChange} onOpenChange={() => setVisibleChange(!isVisibleChange)}>
           <DialogTrigger asChild>
             <Button variant={'outline'} onClick={() => setVisibleChange(true)}><HiPencil /></Button>
