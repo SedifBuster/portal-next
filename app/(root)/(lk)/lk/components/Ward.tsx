@@ -266,6 +266,8 @@ export
       }
       const result = await axios.patch( '/api/ward', postData )
 
+      //TUT DOBAVIT STORY
+
       if ( result.statusText === "OK" ) {
         toast.success( `палата с номером ${result.data}  возвращена` )
         setVisibleChange(false)
