@@ -1,4 +1,5 @@
 import prisma from "@/lib/prismadb"
+import { DashWard, Gender, Status } from "@prisma/client"
 //import { DashWard, Gender } from "@prisma/client"
 import { NextResponse } from "next/server"
 
@@ -60,6 +61,7 @@ export
       engaged,
       gender,
       reserve,
+      status
     } = body
     console.log( body )
     const isFree = numberOfSeats - engaged
@@ -76,6 +78,7 @@ export
         free: isFree,
         gender,
         reserve,
+        status
       }
     })
     return NextResponse.json(ward.id)
@@ -90,7 +93,16 @@ export
     request: Request
 ) {
   try {
-    const body = await request.json()
+    const body: {
+      id: number,
+      dashDepId: number,
+      number: number,
+      numberOfSeats: number,
+      engaged: number,
+      gender: Gender,
+      reserve: string,
+      status: Status
+    } = await request.json()
     const {
       id,
       dashDepId,
@@ -99,24 +111,35 @@ export
       engaged,
       gender,
       reserve,
+      status,
     } = body
     console.log( body )
     const isFree = numberOfSeats - engaged
-    const ward = await prisma.dashWard.update({
-      where: {
-        number
-      },
-      data: {
-        number,
-        dashDepId,
-        numberOfSeats,
-        engaged,
-        free: isFree,
-        gender,
-        reserve,
-      }
+
+    const onSearchedWard = await prisma.dashWard.findMany({
+      where: { number: number}
     })
-    return NextResponse.json(ward.number)
+
+    if(onSearchedWard) {
+      let searchedWard: DashWard = onSearchedWard[onSearchedWard.length - 1]
+      if(searchedWard) {
+        const ward = await prisma.dashWard.update({
+          where: { id: searchedWard.id},
+          data: {
+            number,
+            dashDepId,
+            numberOfSeats,
+            engaged,
+            free: isFree,
+            gender,
+            reserve,
+            status
+          }
+        })
+        return NextResponse.json(ward.number)
+      }
+
+  }
   } catch ( error ) {
     console.log( error, 'DASH_WARD_UPDATE_ERROR' )
     return new NextResponse( 'Internal Error', { status: 500 })

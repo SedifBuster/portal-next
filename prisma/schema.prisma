@@ -125,7 +125,7 @@ model DashWard {
   //привязка к департменту?
   //dashDepartment DashDepartment @relation(fields: [dashDepId], references: [id])
   dashDepId     Int
-  number        Int      @unique
+  number        Int
   numberOfSeats Int
   engaged       Int
   free          Int

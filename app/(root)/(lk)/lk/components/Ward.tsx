@@ -304,18 +304,12 @@ return (
         isReserveDep(ward.reserve)
       }
     </TableCell>
-    <TableCell className="text-wrap">
-      <div className="flex gap-1">
-        <Button variant={'outline'} onClick={(e) => setVisibleReserve(!isVisibleReserve)}><HiUserPlus /></Button>
-        <Button variant={'outline'} onClick={(e) => setVisibleReserve(!isVisibleReserve)}><HiUserMinus /></Button>
-      </div>
-
-    </TableCell>
-
     {!isDepReserved || taken?
       <TableCell className="flex gap-1">
-
-        
+        {/** 
+        <Button variant={'outline'} onClick={(e) => setVisibleReserve(!isVisibleReserve)}><HiUserPlus /></Button>
+        <Button variant={'outline'} onClick={(e) => setVisibleReserve(!isVisibleReserve)}><HiUserMinus /></Button>
+        */}
         <Dialog open={isVisibleChange} onOpenChange={() => setVisibleChange(!isVisibleChange)}>
           <DialogTrigger asChild>
             <Button variant={'outline'} onClick={() => setVisibleChange(true)}><HiPencil /></Button>
