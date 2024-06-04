@@ -52,6 +52,7 @@ export
       engaged,
       gender,
       reserve,
+      status
     } = body
     console.log(body)
     if ( !number || !depId || !numberOfSeats ) {
@@ -68,6 +69,7 @@ export
         free: isFree,
         gender,
         reserve,
+        status
       }
     })
 
@@ -118,7 +120,8 @@ export
       engaged,
       //free,//
       gender,
-      reserve,//
+      reserve,
+      status//
     } = body
     console.log(body)
     if ( !id || !number || !depId || !numberOfSeats ) {
@@ -137,6 +140,7 @@ export
         free: isFree,
         gender,
         reserve,
+        status
       }
     })
 

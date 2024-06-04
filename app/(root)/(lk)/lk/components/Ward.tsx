@@ -1,7 +1,7 @@
 import * as React from "react"
 
 import { Button } from "@/components/ui/button"
-import { Department, Gender, Ward } from "@prisma/client"
+import { Department, Gender, Status, Ward } from "@prisma/client"
 import { TableCell, TableRow } from "@/components/ui/table"
 import { HiMiniArrowDownOnSquareStack, HiMiniArrowSmallUp, HiPencil, HiTrash, HiUserMinus, HiUserPlus } from "react-icons/hi2"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -269,6 +269,47 @@ export
       //TUT DOBAVIT STORY
 
       if ( result.statusText === "OK" ) {
+        const dashWardData = {
+          dashDepId: ward.depId,
+          number: Number(isNumber),
+          numberOfSeats: Number(isNumberOfSeats),
+          engaged: Number(isEngaged),
+          free: Number(isFree),
+          gender: isGender,
+          reserve: isReserve
+        }
+        try {
+          if( //сравнивать намбер палаты result.number === ward.number
+            new Date(ward.updatedAt).getDay() === new Date().getDay()
+            &&
+            new Date(ward.updatedAt).getMonth() === new Date().getMonth()
+            &&
+            new Date(ward.updatedAt).getFullYear() === new Date().getFullYear()
+            &&
+            result.data === ward.number
+          ) {
+            console.log('tot zhe den')
+            let dashWardUpdate = await axios.patch( '/api/dash/ward', {...dashWardData, id: id})//id ne tot kotory nuzhen
+            if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
+            else if( dashWardUpdate.statusText === "OK") {
+              const dashWardNumber: number = await dashWardUpdate.data
+              console.log('dash ward' + ' ', dashWardNumber)
+            }
+          } else{
+            console.log('drugoi den')
+            //post body
+            let dashWardUpdate = await axios.post( '/api/dash/ward', dashWardData)
+            if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
+            else if( dashWardUpdate.statusText === "OK") {
+              const dashWardNumber: number = await dashWardUpdate.data
+              console.log('dash ward' + ' ', dashWardNumber)
+            }
+          }
+        } catch ( error ) {
+          toast.error( "Ошибка при создании палаты для дашборда" )
+          console.log( "Ошибка при создании палаты для дашборда", error )
+        }
+
         toast.success( `палата с номером ${result.data}  возвращена` )
         setVisibleChange(false)
         getWards(depId)
@@ -277,6 +318,79 @@ export
       } else {
         toast.error( 'Ошибка при возвращении палаты' )
       }
+    }
+
+    let onBlockWard = async (id: number, status: Status) => {
+        const postData = {
+          id: id,
+          depId: ward.depId,
+          number: Number(isNumber),
+          numberOfSeats: Number(isNumberOfSeats),
+          engaged: Number(isEngaged),
+          free: Number(isFree),
+          gender: isGender,
+          reserve: isReserve,
+          status: status
+        }
+        let checkupArray = Object.values(postData)
+        if( postData.numberOfSeats < postData.engaged ) return toast.error( 'кол-во мест не должно быть меньше занятых' )
+        for(let i = 0; i < 6; i++) {
+          if(Number(checkupArray[i]) < 0) {
+            return toast.error( 'Числа не должны быть отрицательными' )
+          }
+        }
+        const result = await axios.patch( '/api/ward', postData )
+  
+        if ( result.statusText === "OK" ) {
+          toast.success(`палата с номером ${result.data}  изменена`)
+          //cюда нам надо вставить даш палаты
+          const dashWardData = {
+            dashDepId: ward.depId,
+            number: Number(isNumber),
+            numberOfSeats: Number(isNumberOfSeats),
+            engaged: Number(isEngaged),
+            free: Number(isFree),
+            gender: isGender,
+            reserve: isReserve,
+            status: status
+          }
+          try {
+            if( //сравнивать намбер палаты result.number === ward.number
+              new Date(ward.updatedAt).getDay() === new Date().getDay()
+              &&
+              new Date(ward.updatedAt).getMonth() === new Date().getMonth()
+              &&
+              new Date(ward.updatedAt).getFullYear() === new Date().getFullYear()
+              &&
+              result.data === ward.number
+            ) {
+              console.log('tot zhe den')
+              let dashWardUpdate = await axios.patch( '/api/dash/ward', {...dashWardData, id: id})//id ne tot kotory nuzhen
+              if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
+              else if( dashWardUpdate.statusText === "OK") {
+                const dashWardNumber: number = await dashWardUpdate.data
+                console.log('dash ward' + ' ', dashWardNumber)
+              }
+            } else{
+              console.log('drugoi den')
+              //post body
+              let dashWardUpdate = await axios.post( '/api/dash/ward', dashWardData)
+              if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
+              else if( dashWardUpdate.statusText === "OK") {
+                const dashWardNumber: number = await dashWardUpdate.data
+                console.log('dash ward' + ' ', dashWardNumber)
+              }
+            }
+          } catch ( error ) {
+            toast.error( "Ошибка при создании палаты для дашборда" )
+            console.log( "Ошибка при создании палаты для дашборда", error )
+          }
+          setVisibleChange(false)
+          getWards(depId)
+          setVisibleReturn(false)
+        } else {
+          toast.error('Ошибка при изменении палаты')
+        }
     }
 
     React.useEffect(() => {
@@ -288,7 +402,8 @@ return (
   <TableRow key={ward.id} className={clsx(`
     `,
     isIndicator === 'given' && 'bg-orange-100',
-    taken && 'bg-lime-100'
+    taken && 'bg-lime-100',
+    ward.status === "disabled" && 'bg-gray-200'
     )
   }>
     <TableCell className="font-bold">{ward.number}</TableCell>
@@ -569,12 +684,13 @@ return (
         </TableCell>
         : ''
     }
+    {isIndicator === 'given'? '' :
     <TableCell>   <div className="flex items-center space-x-2">
       {/*disable  блокировка только теми кто владеет палатой
       реализовать блокировку и разблокировку со всей логикой (пиздец) добавить иконки с быстрым добавлением убавлением
       и пооооотом только решать проблемы с дашбордом
       */}
-      <Checkbox id="terms" />
+      <Checkbox id="terms" checked={ward.status === "active"? false : true} onClick={() => onBlockWard(ward.id, ward.status === "active"? "disabled" : "active" )} />
       <HoverCard>
           <HoverCardTrigger asChild>
           <label
@@ -603,6 +719,7 @@ return (
             </HoverCard>
     </div>
     </TableCell>
+    }
     </TableRow>
   )
 }

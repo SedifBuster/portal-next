@@ -271,6 +271,38 @@ export function User() {
         else return 0
     }
 
+
+    let blockedFree = (wards: Ward[]) => {
+        if (wards)
+            return wards.filter((ward) => {
+                return ward.status === 'disabled'
+            }).reduce((sum, current) => {
+                return sum + current.free
+            }, 0)
+        else return 0
+    }
+
+    let blockedEngaged = (wards: Ward[]) => {
+        if (wards)
+            return wards.filter((ward) => {
+                return ward.status === 'disabled'
+            }).reduce((sum, current) => {
+                return sum + current.engaged
+            }, 0)
+        else return 0
+    }
+
+    let blockedNumberofSeats = (wards: Ward[]) => {
+        if (wards)
+            return wards.filter((ward) => {
+                return ward.status === 'disabled'
+            }).reduce((sum, current) => {
+                return sum + current.numberOfSeats
+            }, 0)
+        else return 0
+    }
+
+
     //DEPNURSTAFF //зам по среднему мед персоналу - менеджит койки/ создание/резерв по распоряжению
     //CHIEFNURSE //главная медсестра - менеджит койки/ создание/резерв по распоряжению
     return (
@@ -304,8 +336,9 @@ export function User() {
                         }
 
                         <div className="flex gap-4 ml-2">
-                            <div className="w-6 h-6 bg-orange-100"></div> взяты в отделение
+                            <div className="w-6 h-6 bg-orange-100"></div> взяты в другое отделение
                             <div className="w-6 h-6 bg-green-100"></div> отданы другим отделением
+                            <div className="w-6 h-6 bg-gray-200"></div> заблокированы
                         </div>
 
                     </div>
@@ -342,7 +375,8 @@ export function User() {
                                         takenWards.reduce((sum, current) => {
                                             return sum + current.numberOfSeats
                                         }, 0) -
-                                        givenNumberofSeats(wards)
+                                        givenNumberofSeats(wards) -
+                                        blockedNumberofSeats(wards)
                                     }
                                 </TableCell>
                                 <TableCell className="text-right">Занято:</TableCell>
@@ -353,7 +387,8 @@ export function User() {
                                     takenWards.reduce((sum, current) => {
                                         return sum + current.engaged
                                     }, 0) -
-                                    givenEngaged(wards)
+                                    givenEngaged(wards) - 
+                                    blockedEngaged(wards)
                                 }</TableCell>
                                 <TableCell className="text-right">Свободно:</TableCell>
                                 <TableCell className="text-left">{
@@ -363,7 +398,8 @@ export function User() {
                                     takenWards.reduce((sum, current) => {
                                         return sum + current.free
                                     }, 0) -
-                                    givenFree(wards)
+                                    givenFree(wards) -
+                                    blockedFree(wards)
                                 }</TableCell>
                             </TableRow>
                         </TableFooter>
@@ -425,6 +461,7 @@ export function User() {
                                             return sum + current.numberOfSeats
                                         }, 0) -
                                         givenNumberofSeats(Towards)
+                                        - blockedNumberofSeats(Towards)
                                     }
                                 </TableCell>
                                 <TableCell className="text-right">Занято:</TableCell>
@@ -435,7 +472,8 @@ export function User() {
                                     takenToWards.reduce((sum, current) => {
                                         return sum + current.engaged
                                     }, 0) -
-                                    givenEngaged(Towards)
+                                    givenEngaged(Towards) -
+                                    blockedEngaged(Towards)
                                 }</TableCell>
                                 <TableCell className="text-right">Свободно:</TableCell>
                                 <TableCell className="text-left">{
@@ -445,7 +483,8 @@ export function User() {
                                     takenToWards.reduce((sum, current) => {
                                         return sum + current.free
                                     }, 0) -
-                                    givenFree(Towards)
+                                    givenFree(Towards) -
+                                    blockedFree(Towards)
                                 }</TableCell>
                             </TableRow>
                         </TableFooter>
@@ -495,7 +534,8 @@ export function User() {
                                         takenXoWards.reduce((sum, current) => {
                                             return sum + current.numberOfSeats
                                         }, 0) -
-                                        givenNumberofSeats(Xowards)
+                                        givenNumberofSeats(Xowards) - 
+                                        blockedNumberofSeats(Xowards)
                                     }
                                 </TableCell>
                                 <TableCell className="text-right">Занято:</TableCell>
@@ -506,7 +546,8 @@ export function User() {
                                     takenXoWards.reduce((sum, current) => {
                                         return sum + current.engaged
                                     }, 0) -
-                                    givenEngaged(Xowards)
+                                    givenEngaged(Xowards) - 
+                                    blockedEngaged(Xowards)
                                 }</TableCell>
                                 <TableCell className="text-right">Свободно:</TableCell>
                                 <TableCell className="text-left">{
@@ -516,7 +557,8 @@ export function User() {
                                     takenXoWards.reduce((sum, current) => {
                                         return sum + current.free
                                     }, 0) -
-                                    givenFree(Xowards)
+                                    givenFree(Xowards) -
+                                    blockedFree(Xowards)
                                 }</TableCell>
                             </TableRow>
                         </TableFooter>
@@ -566,7 +608,8 @@ export function User() {
                                         takenHoWards.reduce((sum, current) => {
                                             return sum + current.numberOfSeats
                                         }, 0) -
-                                        givenNumberofSeats(Howards)
+                                        givenNumberofSeats(Howards) -
+                                        blockedNumberofSeats(Howards)
                                     }
                                 </TableCell>
                                 <TableCell className="text-right">Занято:</TableCell>
@@ -577,7 +620,8 @@ export function User() {
                                     takenHoWards.reduce((sum, current) => {
                                         return sum + current.engaged
                                     }, 0) -
-                                    givenEngaged(Howards)
+                                    givenEngaged(Howards) -
+                                    blockedEngaged(Howards)
                                 }</TableCell>
                                 <TableCell className="text-right">Свободно:</TableCell>
                                 <TableCell className="text-left">{
@@ -587,7 +631,8 @@ export function User() {
                                     takenHoWards.reduce((sum, current) => {
                                         return sum + current.free
                                     }, 0) -
-                                    givenFree(Howards)
+                                    givenFree(Howards) - 
+                                    blockedFree(Howards)
                                 }</TableCell>
                             </TableRow>
                         </TableFooter>
@@ -635,7 +680,8 @@ export function User() {
                                         takenReabWards.reduce((sum, current) => {
                                             return sum + current.numberOfSeats
                                         }, 0) -
-                                        givenNumberofSeats(Reabwards)
+                                        givenNumberofSeats(Reabwards) -
+                                        blockedNumberofSeats(Reabwards)
                                     }
                                 </TableCell>
                                 <TableCell className="text-right">Занято:</TableCell>
@@ -647,6 +693,7 @@ export function User() {
                                         return sum + current.engaged
                                     }, 0) -
                                     givenEngaged(Reabwards)
+                                    - blockedEngaged(Reabwards)
                                 }</TableCell>
                                 <TableCell className="text-right">Свободно:</TableCell>
                                 <TableCell className="text-left">{
@@ -656,7 +703,8 @@ export function User() {
                                     takenReabWards.reduce((sum, current) => {
                                         return sum + current.free
                                     }, 0) -
-                                    givenFree(Reabwards)
+                                    givenFree(Reabwards) -
+                                    blockedFree(Reabwards)
                                 }</TableCell>
                             </TableRow>
                         </TableFooter>
