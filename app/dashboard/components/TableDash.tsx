@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import axios from "axios"
-import { useCallback, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { Dash, DashDepartment } from "@prisma/client"
 import toast from "react-hot-toast"
 import { DashItem } from "./DashItem"

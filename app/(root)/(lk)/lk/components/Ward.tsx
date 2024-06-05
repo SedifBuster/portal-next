@@ -684,12 +684,9 @@ return (
         </TableCell>
         : ''
     }
-    {isIndicator === 'given'? '' :
+    {grade === 'DEPNURSTAFF' || grade === 'CHIEFNURSE' || grade === 'TECHNICICAN' ?
+    isIndicator === 'given'? '' :
     <TableCell>   <div className="flex items-center space-x-2">
-      {/*disable  блокировка только теми кто владеет палатой
-      реализовать блокировку и разблокировку со всей логикой (пиздец) добавить иконки с быстрым добавлением убавлением
-      и пооооотом только решать проблемы с дашбордом
-      */}
       <Checkbox id="terms" checked={ward.status === "active"? false : true} onClick={() => onBlockWard(ward.id, ward.status === "active"? "disabled" : "active" )} />
       <HoverCard>
           <HoverCardTrigger asChild>
@@ -719,7 +716,7 @@ return (
             </HoverCard>
     </div>
     </TableCell>
-    }
+    : ''}
     </TableRow>
   )
 }
