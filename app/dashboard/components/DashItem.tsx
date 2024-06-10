@@ -253,32 +253,27 @@ export
     },
   })
 
-  /*React.useEffect(() => {
-
-    if(isStateLpu) {
-      data = data.splice(data.length - 2 , 0 , isStateLpu)
-    }
-  }, [data])*/
-//.splice(data.length - 2 , 0)
 
   const [isTest, setTest] = React.useState<DashDepartment[]>()
-  const [isTest2, setTest2] = React.useState<DashDepartment[]>()
 
   React.useEffect(() => {
     if(data) {
       setTest(data)
     }
-    /*if(isTest && isStateLpu) {
-      setTest2(isTest.splice(0, 0, isStateLpu))
-    }*/
   }, [data])
 
-  /*React.useEffect(() => {
-    if(isTest && isStateLpu) {
-      setTest(isTest.splice(isTest?.length - 2 , 0, isStateLpu))
-    }
-  }, [isTest])*/
- 
+  let result = data.filter((item) => {return item.name === "Паллиатив"})
+  //@ts-ignore
+  let result2 = data.reduce((sum, current) => {
+    //@ts-ignore
+      if(!isNaN(current.planHuman))
+        //@ts-ignore
+      return sum + current.planHuman
+  }, 0)
+    
+  console.log(result)
+   //@ts-ignore
+  console.log(result2 - result[0].planHuman)
   return (
     <>
     { isTest?
@@ -287,7 +282,6 @@ export
       null
   }
 
-  
 
     <div className="w-full">
     {
@@ -341,78 +335,77 @@ export
               </TableRow>
             )}
           </TableBody>
-          {
-            isStateLpu
-            ?
+          {//footer
             <TableFooter>
             <TableRow>
               <TableCell>
-                {isStateLpu.name}
+                ЛПУ
               </TableCell>
               <TableCell className="text-center">
-                {isStateLpu.planHuman}
+
+                {
+                  //@ts-ignore
+                result2 - result[0].planHuman}
               </TableCell>
               <TableCell>
-                {
+                {/*
                   new Intl.NumberFormat("ru-RU", {
                     style: "currency",
                     currency: "RUB",
                     //@ts-ignore
                   }).format(parseFloat(isStateLpu.planRub.toString()))
-                }
+                */}
               </TableCell>
               <TableCell>
-                {isStateLpu.begAcc}
+                "isStateLpu.begAcc"
               </TableCell>
               <TableCell>
-                {isStateLpu.admRec}
+              "isStateLpu.admRec"
               </TableCell>
               <TableCell>
                 otpalat
               </TableCell>
               <TableCell>
-              {isStateLpu.disCome}
+              "isStateLpu.disCome"
               </TableCell>
               <TableCell>
-              {
+              {/*
                 new Intl.NumberFormat("ru-RU", {
                   style: "currency",
                   currency: "RUB",
                   //@ts-ignore
                 }).format(parseFloat(isStateLpu.disTax.toString()))
-              }
+              */}
               </TableCell>
               <TableCell>
-              {isStateLpu.patOver}
+              "isStateLpu.patOver"
               </TableCell>
               <TableCell>
-              {isStateLpu.storColed}
+              "isStateLpu.storColed"
               </TableCell>
               <TableCell>
-              {isStateLpu.transHuman}
+              "isStateLpu.transHuman"
               </TableCell>
               <TableCell>
-              {
+              {/*
                 new Intl.NumberFormat("ru-RU", {
                   style: "currency",
                   currency: "RUB",
                   //@ts-ignore
                 }).format(parseFloat(isStateLpu.transRub.toString()))
-              }
+              */}
               </TableCell>
               <TableCell>
-              {isStateLpu.medPrice}
+              "isStateLpu.medPrice"
               </TableCell>
               <TableCell>
-              {isStateLpu.dolgDead}
+              "isStateLpu.dolgDead"
               </TableCell>
               <TableCell>
               ot palat
               </TableCell>
             </TableRow>
           </TableFooter>
-            :
-            null
           }
         </Table>
       </div>
