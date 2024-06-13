@@ -220,10 +220,10 @@ export const columns: ColumnDef<DashDepartment>[] = [
 export
   function DashItem({
     data,
-    isStateLpu
+    stateLpu
   }: {
     data:DashDepartment[],
-    isStateLpu?: DashDepartment | undefined
+    stateLpu?: DashDepartment | undefined
   }) {
 
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -254,29 +254,10 @@ export
   })
 
 
-  const [isTest, setTest] = React.useState<DashDepartment[]>()
 
-  React.useEffect(() => {
-    if(data) {
-      setTest(data)
-    }
-  }, [data])
-
-  let result = data.filter((item) => {return item.name === "Паллиатив"})
-  //@ts-ignore
-  let result2 = data.reduce((sum, current) => {
-    //@ts-ignore
-      if(!isNaN(current.planHuman))
-        //@ts-ignore
-      return sum + current.planHuman
-  }, 0)
-    
-  console.log(result)
-   //@ts-ignore
-  console.log(result2 - result[0].planHuman)
   return (
     <>
-    { isTest?
+    { data?
     <Charts data={data}/>
     :
       null
@@ -335,77 +316,94 @@ export
               </TableRow>
             )}
           </TableBody>
-          {//footer
+          {stateLpu?
             <TableFooter>
             <TableRow>
               <TableCell>
                 ЛПУ
               </TableCell>
               <TableCell className="text-center">
-
-                {
-                  //@ts-ignore
-                result2 - result[0].planHuman}
+              {
+                stateLpu.planHuman
+              }
               </TableCell>
               <TableCell>
-                {/*
+                {
                   new Intl.NumberFormat("ru-RU", {
                     style: "currency",
                     currency: "RUB",
                     //@ts-ignore
-                  }).format(parseFloat(isStateLpu.planRub.toString()))
-                */}
+                  }).format(parseFloat(stateLpu.planRub.toString()))
+                }
               </TableCell>
               <TableCell>
-                "isStateLpu.begAcc"
+                {
+                  stateLpu.begAcc
+                }
               </TableCell>
               <TableCell>
-              "isStateLpu.admRec"
+              {
+                  stateLpu.admRec
+                }
               </TableCell>
               <TableCell>
                 otpalat
               </TableCell>
               <TableCell>
-              "isStateLpu.disCome"
+              {
+                  stateLpu.disCome
+                }
               </TableCell>
               <TableCell>
-              {/*
+              {
                 new Intl.NumberFormat("ru-RU", {
                   style: "currency",
                   currency: "RUB",
                   //@ts-ignore
-                }).format(parseFloat(isStateLpu.disTax.toString()))
-              */}
+                }).format(parseFloat(stateLpu.disTax.toString()))
+              }
               </TableCell>
               <TableCell>
-              "isStateLpu.patOver"
+              {
+                  stateLpu.patOver
+              }
               </TableCell>
               <TableCell>
-              "isStateLpu.storColed"
+              {
+                  stateLpu.storColed
+              }
               </TableCell>
               <TableCell>
-              "isStateLpu.transHuman"
+              {
+                  stateLpu.transHuman
+              }
               </TableCell>
               <TableCell>
-              {/*
+              {
                 new Intl.NumberFormat("ru-RU", {
                   style: "currency",
                   currency: "RUB",
                   //@ts-ignore
-                }).format(parseFloat(isStateLpu.transRub.toString()))
-              */}
+                }).format(parseFloat(stateLpu.transRub.toString()))
+              }
               </TableCell>
               <TableCell>
-              "isStateLpu.medPrice"
+              {
+                  stateLpu.medPrice
+              }
               </TableCell>
               <TableCell>
-              "isStateLpu.dolgDead"
+              {
+                  stateLpu.dolgDead
+              }
               </TableCell>
               <TableCell>
               ot palat
               </TableCell>
             </TableRow>
           </TableFooter>
+          :
+          ''
           }
         </Table>
       </div>
@@ -413,30 +411,6 @@ export
     </>
   )
 }
-
-/*
-      <div className="flex items-center justify-end space-x-2 py-4">
-        
-      </div>
-<div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
-*/
 
 /*
      <div className="flex items-center py-4">
