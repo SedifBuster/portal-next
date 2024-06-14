@@ -60,9 +60,9 @@ export
 
   const lastItemIndex = currentPage * itemsPerPage
   const firstItemIndex = lastItemIndex - itemsPerPage
-  const currentItems = isTables?.slice(firstItemIndex, lastItemIndex)
+  /*const*/let currentItems = isTables?.slice(firstItemIndex, lastItemIndex)
 
-
+  const [isLpu, setLpu] = useState<null | DashDepartment>(null)
 
   //const withoutPal = data.filter((item) => { return item.name.toLowerCase() === "Паллиатив".toLowerCase()} )
   //need refactoring
@@ -205,7 +205,7 @@ export
             return 0
       }
   }
-
+  //mapping object
   const onCreateLPU = (table: DashDepartment[]) => {
     let lpu: DashDepartment = {
       id: 100,
@@ -226,10 +226,36 @@ export
       dolgDead: setupReduce(table, 'dolgDead'),
       dashId: table?table[0].id: 15
     }
-    console.log(lpu)
+    //console.log(lpu)
     return lpu
   }
+
+  const objectMap = (obj, fn) =>
+    Object.fromEntries(
+      Object.entries(obj).map(
+        ([k, v], i) => [k, fn(v, k, i)]
+      )
+    )
+    
+  const myObject = { a: 1, b: 2, c: 3 }
+  
   //lpu issue
+  useEffect(() => {
+
+    if(currentItems && currentItems[0])
+      setLpu(onCreateLPU(currentItems[0].table))
+      //console.log( currentItems[0].table.splice(currentItems[0].table.length - 1, 0, onCreateLPU(currentItems[0].table)))
+      
+  }, [isTables])
+
+
+ /* useEffect(() => {
+    if(currentItems && currentItems[0])
+   currentItems[0].table = currentItems[0].table.splice(currentItems[0].table.length - 1, 0, onCreateLPU(currentItems[0].table))
+  }, [isLpu])*/
+
+console.log(isLpu)
+
   return (
     <div className="w-full ml-4 mr-4">
       {
@@ -238,8 +264,11 @@ export
         <>
           {
             currentItems.map((item) => {
-              let addedLPU = item.table.splice(item.table.length - 1, 0, onCreateLPU(item.table))
-              console.log(addedLPU)
+              
+             // const lpuTest2 = onCreateLPU(item.table)
+
+              //const LpuTest = item.table.splice(item.table.length - 1, 0, lpuTest2)
+              //console.log(LpuTest)
               return <div key={item.id}>
                 <DatePicker
                   date={item.date}
@@ -249,7 +278,7 @@ export
                   })}
                 />
 
-                <DashItem data={item.table.splice(item.table.length - 1, 0, onCreateLPU(item.table)) } stateLpu={onCreateLPU(item.table)}/>
+                <DashItem data={item.table/*.splice(item.table.length - 1, 0, onCreateLPU(item.table)) */} /*stateLpu={onCreateLPU(item.table)}*//>
               </div>
             })
           }
