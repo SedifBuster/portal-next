@@ -252,13 +252,24 @@ export
       rowSelection,
     },
   })
+  const [chartData, setChartData] = React.useState<DashDepartment[]>()
+  //@ts-ignore
+  let isChartData = data.filter((i) => i.name.toLowerCase() !== "Паллиатив".toLowerCase()).concat([stateLpu])
+  React.useEffect(() => {
+    if(data && stateLpu) {
+      setChartData(isChartData)
+    }
+  }, [data, stateLpu])
 
+  React.useEffect(() => {
+    if(chartData) 
+      setChartData(chartData)
+  }, [isChartData])
 
-  //console.log(data)
   return (
     <>
-    { data?
-    <Charts data={data}/>
+    { chartData?
+    <Charts data={chartData}/>
     :
       null
   }

@@ -4,7 +4,6 @@ import { Bar, BarChart, Legend, Line, LineChart, ResponsiveContainer, Tooltip, X
 //@ts-ignore
 import { DefaultTooltipContent } from 'recharts/lib/component/DefaultTooltipContent';
 import { DashDepartment } from "@prisma/client";
-import { useEffect, useState } from "react";
 
 interface ChartsProps {
   data: DashDepartment[],
