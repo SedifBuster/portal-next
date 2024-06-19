@@ -34,6 +34,9 @@ import {
 import { DashDepartment } from "@prisma/client"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { Charts } from "./Charts"
+import axios from "axios"
+import toast from "react-hot-toast"
+import { useEffect, useState } from "react"
 
 export const columns: ColumnDef<DashDepartment>[] = [
     {
@@ -266,6 +269,54 @@ export
       setChartData(chartData)
   }, [isChartData])
 
+
+  const [isTables, setTables] = useState()
+  //getting data
+ /* let getWardsDeparment = async (id: number) => {
+    try {
+      let result = await axios.get(`/api/dash/ward/${id}`)
+      if (result.status === 200) {
+        if(result.data && result.data) {
+          let filteredDashes = result.data.map((item:any) => {
+            return {...item, table: result.data.filter((dep: DashDepartment) => {
+              return dep.dashId === item.id
+            })}
+          })
+          setTables(filteredDashes)
+        }
+      }
+    } catch {
+      console.log('error')
+    }
+  }*/
+    
+  let getWardsDeparment = async (id: number) => {
+    //try {
+      let result = await axios.get(`/api/dash/ward/${id}`)
+      console.log(result.status === 404)
+
+      if (!result.data) toast.error("This didn't work.")
+
+        else toast.success(`ошибка при получении палат`)
+        if(result.data && result.data) {
+          let filteredDashes = result.data.map((item:any) => {
+            return {...item, table: result.data.filter((dep: DashDepartment) => {
+              return dep.dashId === item.id
+            })}
+          })
+          setTables(filteredDashes)
+        }
+      ебучий трай кетч
+    //} catch {
+     // console.log('error')
+    //}
+  }
+//console.log(isTables)
+  useEffect(() => {
+    getWardsDeparment(24)
+  }, [])
+
+
   return (
     <>
     { chartData?
@@ -273,8 +324,6 @@ export
     :
       null
   }
-
-
     <div className="w-full">
     {
      // tur bil filter, teper on vnizu

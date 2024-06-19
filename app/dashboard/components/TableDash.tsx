@@ -62,7 +62,6 @@ export
   const firstItemIndex = lastItemIndex - itemsPerPage
   /*const*/let currentItems = isTables?.slice(firstItemIndex, lastItemIndex)
 
-  //const withoutPal = data.filter((item) => { return item.name.toLowerCase() === "Паллиатив".toLowerCase()} )
   //need refactoring
   const setupReduce = (table: DashDepartment[], name: string): number => {
    let withoutPal = table.filter((item) => { return item.name.toLowerCase() === "Паллиатив".toLowerCase()} )
@@ -234,22 +233,6 @@ export
         ([k, v], i) => [k, fn(v, k, i)]
       )
     )*/
-  
-  //lpu issue
-  /*useEffect(() => {
-
-    if(currentItems && currentItems[0])
-      setLpu(onCreateLPU(currentItems[0].table))
-      //console.log( currentItems[0].table.splice(currentItems[0].table.length - 1, 0, onCreateLPU(currentItems[0].table)))
-      
-  }, [isTables])*/
-
-
- /* useEffect(() => {
-    if(currentItems && currentItems[0])
-   currentItems[0].table = currentItems[0].table.splice(currentItems[0].table.length - 1, 0, onCreateLPU(currentItems[0].table))
-  }, [isLpu])*/
-
 
   return (
     <div className="w-full ml-4 mr-4">
