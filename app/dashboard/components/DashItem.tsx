@@ -270,47 +270,32 @@ export
   }, [isChartData])
 
 
-  const [isTables, setTables] = useState()
-  //getting data
- /* let getWardsDeparment = async (id: number) => {
+  const [isWards, setWards] = useState()
+
+  let getWardsDeparment = async (id: number) => {
     try {
       let result = await axios.get(`/api/dash/ward/${id}`)
-      if (result.status === 200) {
-        if(result.data && result.data) {
-          let filteredDashes = result.data.map((item:any) => {
-            return {...item, table: result.data.filter((dep: DashDepartment) => {
-              return dep.dashId === item.id
-            })}
-          })
-          setTables(filteredDashes)
-        }
-      }
-    } catch {
-      console.log('error')
+
+      if (result.status !== 200)  throw new Error()
+
+      if(!result.data) throw new Error()
+
+      //filter by day now еще не сделан
+      let filteredDashes = result.data.map((item:any) => {
+        return {...item, table: result.data.filter((dep: DashDepartment) => {
+          return dep.dashId === item.id
+        })}
+      })
+
+      setWards(filteredDashes)
+
+      //ебучий трай кетч
+    } catch  (error){
+      toast.error(`ошибка при получении палат: ${(error as Error).message}`)
     }
-  }*/
-    
-  let getWardsDeparment = async (id: number) => {
-    //try {
-      let result = await axios.get(`/api/dash/ward/${id}`)
-      console.log(result.status === 404)
-
-      if (!result.data) toast.error("This didn't work.")
-
-        else toast.success(`ошибка при получении палат`)
-        if(result.data && result.data) {
-          let filteredDashes = result.data.map((item:any) => {
-            return {...item, table: result.data.filter((dep: DashDepartment) => {
-              return dep.dashId === item.id
-            })}
-          })
-          setTables(filteredDashes)
-        }
-      ебучий трай кетч
-    //} catch {
-     // console.log('error')
-    //}
   }
+
+
 //console.log(isTables)
   useEffect(() => {
     getWardsDeparment(24)
