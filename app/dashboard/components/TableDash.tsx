@@ -252,7 +252,7 @@ export
                 />
 
                 <DashItem data={item.table/*.splice(item.table.length - 1, 0, onCreateLPU(item.table)) */}
-                 stateLpu={onCreateLPU(item.table)}
+                 stateLpu={onCreateLPU(item.table)} date={item.date}
                  />
               </div>
             })

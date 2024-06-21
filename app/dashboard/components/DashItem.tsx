@@ -223,10 +223,12 @@ export const columns: ColumnDef<DashDepartment>[] = [
 export
   function DashItem({
     data,
-    stateLpu
+    stateLpu,
+    date
   }: {
     data:DashDepartment[],
-    stateLpu?: DashDepartment | undefined
+    stateLpu?: DashDepartment | undefined,
+    date: Date
   }) {
 
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -272,13 +274,48 @@ export
 
   const [isWards, setWards] = useState()
 
-  let getWardsDeparment = async (id: number) => {
+  let onSortedDepartments = (deps: DashDepartment[]) =>{
+    deps.sort((a:DashDepartment, b:DashDepartment) => {
+      if(a.name > b.name) return 1
+      if(a.name < b.name) return -1
+      return 0
+    })
+
+    return deps
+  } 
+
+  // not stabble
+  let findDepartmentId = async() => {
+    let result = await axios.get('/api/department')
+    if (result.status !== 200)  throw new Error()
+    if(!result.data) throw new Error()
+
+    let deps = onSortedDepartments(result.data).filter((i) => {return i.name.toLowerCase() !== 'IT'.toLowerCase()})
+
+    let dashDeps = onSortedDepartments(data)
+
+    let dashDepsWithId: DashDepartment[] = dashDeps.map((dep: DashDepartment, index) => {
+      return {...dep, defaultDepsId: deps[index].id}
+    })
+
+    return dashDepsWithId
+  }
+
+
+  let getWardsDeparment = async (id: number, date: Date) => {
     try {
       let result = await axios.get(`/api/dash/ward/${id}`)
 
       if (result.status !== 200)  throw new Error()
 
       if(!result.data) throw new Error()
+
+      let dashDepsWithId = await findDepartmentId()
+
+      if (!dashDepsWithId)  throw new Error()
+
+      
+     console.log(dashDepsWithId)
 
       //filter by day now еще не сделан
       let filteredDashes = result.data.map((item:any) => {
@@ -298,8 +335,9 @@ export
 
 //console.log(isTables)
   useEffect(() => {
-    getWardsDeparment(24)
+    getWardsDeparment(data[0].id, date)
   }, [])
+
 
 
   return (
