@@ -37,6 +37,7 @@ import { Charts } from "./Charts"
 import axios from "axios"
 import toast from "react-hot-toast"
 import { useEffect, useState } from "react"
+import { DashItemRow } from "./DashItemRow"
 
 export const columns: ColumnDef<DashDepartment>[] = [
     {
@@ -301,14 +302,14 @@ export
     return dashDepsWithId
   }
 
+  let onSetDepartmentsWards = async() => {
 
-  let getWardsDeparment = async (id: number, date: Date) => {
+  }
+
+
+  let getWardsDeparment = async () => {
     try {
-      let result = await axios.get(`/api/dash/ward/${id}`)
 
-      if (result.status !== 200)  throw new Error()
-
-      if(!result.data) throw new Error()
 
       let dashDepsWithId = await findDepartmentId()
 
@@ -317,25 +318,42 @@ export
       
      console.log(dashDepsWithId)
 
-      //filter by day now еще не сделан
-      let filteredDashes = result.data.map((item:any) => {
+     for(let i = 0; i < dashDepsWithId.length; i++) {
+
+      //@ts-ignore
+      let result = await axios.get(`/api/dash/ward/${dashDepsWithId[i].defaultDepsId}`)
+
+      if (result.status !== 200)  throw new Error()
+      if(!result.data) throw new Error()
+        //замапить результ на ближайшее время еще статус не забудь еще резерв по номеру палаты!
+      //по номеру палаты после по фильтра по дню?
+        //@ts-ignore
+      dashDepsWithId[i].totalStays = result.data.reduce((acc, currentValue) => acc + currentValue.engaged, 0)
+       //@ts-ignore
+      dashDepsWithId[i].freeBeds = result.data.reduce((acc, currentValue) => acc + currentValue.free, 0)
+
+
+        console.log(dashDepsWithId)
+              //filter by day now еще не сделан 
+      /*let filteredDashes = result.data.map((item:any) => {
         return {...item, table: result.data.filter((dep: DashDepartment) => {
           return dep.dashId === item.id
         })}
-      })
+      })*/
 
-      setWards(filteredDashes)
+      //setWards(filteredDashes)
+     }
 
-      //ебучий трай кетч
     } catch  (error){
       toast.error(`ошибка при получении палат: ${(error as Error).message}`)
     }
   }
 
 
-//console.log(isTables)
+console.log(isWards)
   useEffect(() => {
-    getWardsDeparment(data[0].id, date)
+
+    getWardsDeparment()
   }, [])
 
 
@@ -374,19 +392,7 @@ export
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
+                <DashItemRow key={row.id} row={row}/>
               ))
             ) : (
               <TableRow>

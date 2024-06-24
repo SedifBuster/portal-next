@@ -243,6 +243,12 @@ export
           {
             currentItems.map((item) => {
               return <div key={item.id}>
+                        <DashPagination
+            totalItems={isTables.length} 
+            currentPage={currentPage}
+            itemsPerPage={itemsPerPage}
+            setCurrentPage={setCurrentPage}
+          />
                 <DatePicker
                   date={item.date}
                   setCurrentPage={setCurrentPage}
@@ -257,12 +263,7 @@ export
               </div>
             })
           }
-          <DashPagination
-            totalItems={isTables.length} 
-            currentPage={currentPage}
-            itemsPerPage={itemsPerPage}
-            setCurrentPage={setCurrentPage}
-          />
+
         </>
         :
         <DashSkeleton/>
