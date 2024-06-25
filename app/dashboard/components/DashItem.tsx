@@ -239,9 +239,9 @@ export
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
-
+  const [isData, setData] = useState<any>([])
   const table = useReactTable({
-    data,
+    data: isData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -272,8 +272,8 @@ export
       setChartData(chartData)
   }, [isChartData])
 
-
   const [isWards, setWards] = useState()
+
 
   let onSortedDepartments = (deps: DashDepartment[]) =>{
     deps.sort((a:DashDepartment, b:DashDepartment) => {
@@ -283,8 +283,7 @@ export
     })
 
     return deps
-  } 
-
+  }
   // not stabble
   let findDepartmentId = async() => {
     let result = await axios.get('/api/department')
@@ -310,39 +309,36 @@ export
   let getWardsDeparment = async () => {
     try {
 
-
       let dashDepsWithId = await findDepartmentId()
 
       if (!dashDepsWithId)  throw new Error()
 
-      
      console.log(dashDepsWithId)
 
      for(let i = 0; i < dashDepsWithId.length; i++) {
-
       //@ts-ignore
-      let result = await axios.get(`/api/dash/ward/${dashDepsWithId[i].defaultDepsId}`)
+      let resultWards = await axios.get(`/api/dash/ward/${dashDepsWithId[i].defaultDepsId}`)
 
-      if (result.status !== 200)  throw new Error()
-      if(!result.data) throw new Error()
+      if (resultWards.status !== 200)  throw new Error()
+      if(!resultWards.data) throw new Error()
+
+        console.log(resultWards.data)
         //замапить результ на ближайшее время еще статус не забудь еще резерв по номеру палаты!
       //по номеру палаты после по фильтра по дню?
         //@ts-ignore
-      dashDepsWithId[i].totalStays = result.data.reduce((acc, currentValue) => acc + currentValue.engaged, 0)
+      dashDepsWithId[i].totalStays = resultWards.data.reduce((acc, currentValue) => acc + currentValue.engaged, 0)
        //@ts-ignore
-      dashDepsWithId[i].freeBeds = result.data.reduce((acc, currentValue) => acc + currentValue.free, 0)
+      dashDepsWithId[i].freeBeds = resultWards.data.reduce((acc, currentValue) => acc + currentValue.free, 0)
 
 
         console.log(dashDepsWithId)
-              //filter by day now еще не сделан 
-      /*let filteredDashes = result.data.map((item:any) => {
-        return {...item, table: result.data.filter((dep: DashDepartment) => {
-          return dep.dashId === item.id
-        })}
-      })*/
 
-      //setWards(filteredDashes)
      }
+     setData(dashDepsWithId.sort((a:DashDepartment, b:DashDepartment) => {
+      if(a.id > b.id) return 1
+      if(a.id < b.id) return -1
+      return 0
+    }))
 
     } catch  (error){
       toast.error(`ошибка при получении палат: ${(error as Error).message}`)
@@ -350,9 +346,9 @@ export
   }
 
 
-console.log(isWards)
+console.log(isData)
+  console.log(isWards)
   useEffect(() => {
-
     getWardsDeparment()
   }, [])
 
