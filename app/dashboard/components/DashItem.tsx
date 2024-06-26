@@ -31,7 +31,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { DashDepartment } from "@prisma/client"
+import { DashDepartment, DashWard } from "@prisma/client"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { Charts } from "./Charts"
 import axios from "axios"
@@ -39,7 +39,13 @@ import toast from "react-hot-toast"
 import { useEffect, useState } from "react"
 import { DashItemRow } from "./DashItemRow"
 
-export const columns: ColumnDef<DashDepartment>[] = [
+interface DashWithWards extends DashDepartment {
+  totalStays: number,
+  freeBeds: number,
+  wards: DashWard[]
+}
+
+export const columns: ColumnDef<DashWithWards>[] = [
     {
       accessorKey: "name",
       header: "Отделение",
@@ -94,7 +100,7 @@ export const columns: ColumnDef<DashDepartment>[] = [
         accessorKey: "totalStays",
         header: "Всего находится в стационаре (чел.) ot palat",
         cell: ({ row }) => (
-  
+
           <div className="capitalize">
             {row.getValue("totalStays")}
             <>
@@ -110,7 +116,14 @@ export const columns: ColumnDef<DashDepartment>[] = [
               <DropdownMenuItem
                 onClick={() => navigator.clipboard.writeText(row.getValue("totalStays"))}
               >
-                Copy payment ID
+                {//@ts-ignore
+                //console.log(row.getValue("wards"))
+                ////row.getValue("wards").map((i: any) => {
+                  //return <p>{i.name}</p>
+                //})
+                
+                //row.getUniqueValues("wards")
+                }
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>View customer</DropdownMenuItem>
@@ -190,13 +203,16 @@ export const columns: ColumnDef<DashDepartment>[] = [
         ),
       },
     {
-      id: "actions",
-      header: "Свободных коек",
+      accessorKey: 'freeBeds',
+      //id: "actions",
+      header: "Свободных коек ot palat",
       enableHiding: false,
       cell: ({ row }) => {
         const payment = row.original
   
         return (
+          <>
+          {row.getValue('freeBeds')}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
@@ -216,6 +232,45 @@ export const columns: ColumnDef<DashDepartment>[] = [
               <DropdownMenuItem>View payment details</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          </>
+        )
+      },
+    },
+    {
+      accessorKey: 'wards',
+      //id: "actions",
+      header: "wards",
+      enableHiding: false,
+      cell: ({ row }) => {
+        const payment = row.original
+  
+        return (
+          <>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              {//@ts-ignore
+              row.getValue('wards').map((i) => {
+                return <p>{i.number}</p>
+              })
+              }
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(payment.name)}
+              >
+                Copy payment ID
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>View customer</DropdownMenuItem>
+              <DropdownMenuItem>View payment details</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          </>
         )
       },
     },
@@ -329,6 +384,8 @@ export
       dashDepsWithId[i].totalStays = resultWards.data.reduce((acc, currentValue) => acc + currentValue.engaged, 0)
        //@ts-ignore
       dashDepsWithId[i].freeBeds = resultWards.data.reduce((acc, currentValue) => acc + currentValue.free, 0)
+      //@ts-ignore
+      dashDepsWithId[i].wards = resultWards.data
 
 
         console.log(dashDepsWithId)
@@ -346,8 +403,8 @@ export
   }
 
 
-console.log(isData)
-  console.log(isWards)
+  console.log(isData)
+
   useEffect(() => {
     getWardsDeparment()
   }, [])
