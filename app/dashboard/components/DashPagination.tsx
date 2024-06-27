@@ -1,6 +1,7 @@
 "use client"
 
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
+import clsx from "clsx"
 import * as React from "react"
 
 export
@@ -19,6 +20,9 @@ export
 
   let pages = []
 
+  const [isDisableNext, setDisableNext] = React.useState(false)
+  const [isDisablePrev, setDisablePrev] = React.useState(true)
+
   for(let i = 0; i <= Math.ceil(totalItems / itemsPerPage); i++) {
     pages.push(i)
   }
@@ -35,7 +39,14 @@ export
   //показывать первые четыре страницы если есть
   //показывать даты на кнопках снизу
   //лпу ебаное
+  React.useEffect(() => {
+    if(currentPage === pages.length - 1) setDisableNext(true)
+    else setDisableNext(!isDisableNext)
 
+    if(currentPage === 0) setDisablePrev(true)
+    else setDisablePrev(!isDisablePrev)
+
+  },[setCurrentPage])
   //опцоонально добавить лоадинг при переключении если будет долго
   //палаты
    return (
@@ -43,9 +54,14 @@ export
       <Pagination>
         <PaginationContent>
           <PaginationItem>
-            <PaginationPrevious size={'lg'} onClick={() => handlePrevPage()} />
+            <PaginationPrevious size={'lg'} onClick={() => handleNextPage()} 
+              className={
+                clsx("cursor-pointer",
+                !isDisableNext && 'bg-gray-300'
+                )} />
           </PaginationItem>
         {
+        /*
           pages.slice(1).map( (page, idx) => (
             <PaginationItem key={idx}>
                         <PaginationLink size={'lg'} isActive={currentPage === page}
@@ -54,9 +70,14 @@ export
                         </PaginationLink>
                       </PaginationItem>
           ) )
+        */
         }
           <PaginationItem>
-            <PaginationNext size={'lg'} onClick={() => handleNextPage()} />
+            <PaginationNext size={'lg'} onClick={() => handlePrevPage()} 
+            className={
+                clsx(`cursor-pointer`,
+                !isDisablePrev ? `bg-gray-300` : ``
+                )} />
           </PaginationItem>
         </PaginationContent>
       </Pagination>

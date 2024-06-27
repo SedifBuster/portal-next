@@ -49,6 +49,7 @@ export const columns: ColumnDef<DashWithWards>[] = [
     {
       accessorKey: "name",
       header: "Отделение",
+      
       cell: ({ row }) => (
         <div className="capitalize">{row.getValue("name")}</div>
       ),
@@ -98,12 +99,13 @@ export const columns: ColumnDef<DashWithWards>[] = [
       },
       {
         accessorKey: "totalStays",
-        header: "Всего находится в стационаре (чел.) ot palat",
+        header: "Всего находится в стационаре (чел.)",
+        
         cell: ({ row }) => (
 
           <div className="capitalize">
             {row.getValue("totalStays")}
-            <>
+            {/*<>
             <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
@@ -130,7 +132,7 @@ export const columns: ColumnDef<DashWithWards>[] = [
               <DropdownMenuItem>View payment details</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-           </>
+           </>*/}
           </div>
         ),
       },
@@ -205,15 +207,14 @@ export const columns: ColumnDef<DashWithWards>[] = [
     {
       accessorKey: 'freeBeds',
       //id: "actions",
-      header: "Свободных коек ot palat",
+      header: "Свободных коек",
       enableHiding: false,
       cell: ({ row }) => {
-        const payment = row.original
-  
+        //const payment = row.original
         return (
-          <>
+          <div className="capitalize">
           {row.getValue('freeBeds')}
-          <DropdownMenu>
+          {/*<DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">Open menu</span>
@@ -231,15 +232,15 @@ export const columns: ColumnDef<DashWithWards>[] = [
               <DropdownMenuItem>View customer</DropdownMenuItem>
               <DropdownMenuItem>View payment details</DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu>
-          </>
+          </DropdownMenu>*/}
+          </div>
         )
       },
     },
     {
       accessorKey: 'wards',
       //id: "actions",
-      header: "wards",
+      header: "Палаты",
       enableHiding: false,
       cell: ({ row }) => {
         const payment = row.original
@@ -264,6 +265,7 @@ export const columns: ColumnDef<DashWithWards>[] = [
                 onClick={() => navigator.clipboard.writeText(payment.name)}
               >
                 Copy payment ID
+
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>View customer</DropdownMenuItem>
@@ -326,9 +328,6 @@ export
     if(chartData) 
       setChartData(chartData)
   }, [isChartData])
-
-  const [isWards, setWards] = useState()
-
 
   let onSortedDepartments = (deps: DashDepartment[]) =>{
     deps.sort((a:DashDepartment, b:DashDepartment) => {
