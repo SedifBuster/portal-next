@@ -235,7 +235,7 @@ export
     )*/
 
   return (
-    <div className="w-full ml-4 mr-4">
+    <div className="w-full ml-2 mr-6">
       {
         currentItems && isTables
         ?
@@ -248,14 +248,18 @@ export
             currentPage={currentPage}
             itemsPerPage={itemsPerPage}
             setCurrentPage={setCurrentPage}
+            date={item.date}
+            dashDates={isTables?.map((el) => {
+              return {date:new Date(el.date), id: el.id }
+            })}
           />
-                <DatePicker
+                {/*<DatePicker
                   date={item.date}
                   setCurrentPage={setCurrentPage}
                   dashDates={isTables?.map((el) => {
                     return {date:new Date(el.date), id: el.id }
                   })}
-                />
+                />*/}
 
                 <DashItem data={item.table/*.splice(item.table.length - 1, 0, onCreateLPU(item.table)) */}
                  stateLpu={onCreateLPU(item.table)} date={item.date}

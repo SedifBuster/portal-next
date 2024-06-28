@@ -3,18 +3,23 @@
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
 import clsx from "clsx"
 import * as React from "react"
+import { DatePicker } from "./DatePicker"
 
 export
   function DashPagination({
     totalItems,
     itemsPerPage,
     currentPage,
-    setCurrentPage
+    setCurrentPage,
+    date,
+    dashDates,
   }: {
     totalItems: any
     itemsPerPage: number
     currentPage: number
     setCurrentPage: any
+    date: Date
+    dashDates: {date: Date, id: number}[]
   }
 ) {
 
@@ -50,16 +55,21 @@ export
   //опцоонально добавить лоадинг при переключении если будет долго
   //палаты
    return (
-    <div className="w-full ml-4 mr-4 mt-4">
+    <div className="w-full mt-2">
       <Pagination>
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious size={'lg'} onClick={() => handleNextPage()} 
               className={
                 clsx("cursor-pointer",
-                !isDisableNext && 'bg-gray-300'
+                //!isDisableNext && 'bg-gray-300'
                 )} />
           </PaginationItem>
+          <DatePicker
+                  date={date}
+                  setCurrentPage={setCurrentPage}
+                  dashDates={dashDates}
+                />
         {
         /*
           pages.slice(1).map( (page, idx) => (
@@ -76,7 +86,7 @@ export
             <PaginationNext size={'lg'} onClick={() => handlePrevPage()} 
             className={
                 clsx(`cursor-pointer`,
-                !isDisablePrev ? `bg-gray-300` : ``
+                //!isDisablePrev ? `bg-gray-300` : ``
                 )} />
           </PaginationItem>
         </PaginationContent>

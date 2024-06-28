@@ -25,6 +25,7 @@ import {
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableFooter,
   TableHead,
@@ -38,6 +39,8 @@ import axios from "axios"
 import toast from "react-hot-toast"
 import { useEffect, useState } from "react"
 import { DashItemRow } from "./DashItemRow"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 interface DashWithWards extends DashDepartment {
   totalStays: number,
@@ -250,26 +253,73 @@ export const columns: ColumnDef<DashWithWards>[] = [
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
+                <span className="sr-only">Открыть меню</span>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              {//@ts-ignore
-              row.getValue('wards').map((i) => {
-                return <p>{i.number}</p>
-              })
-              }
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(payment.name)}
-              >
-                Copy payment ID
 
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>{row.getValue('name')} палаты</DropdownMenuLabel>
+
+              <ScrollArea className="max-h-72 h-72 w-full rounded-md">
+
+              <Table>
+                <TableCaption></TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[50px]">Номер</TableHead>
+                    <TableHead>Кол-во мест</TableHead>
+                    <TableHead>занято</TableHead>
+                    <TableHead className="text-right">свободно</TableHead>
+                    <TableHead className="text-right">резерв</TableHead>
+                  </TableRow>
+                </TableHeader>
+                
+              <TableBody>
+                {//@ts-ignore
+                row.getValue('wards').map((ward) => (
+                  
+                  <TableRow key={ward.id} className="m-0 p-0">
+
+                    <TableCell className="font-medium text-center m-2 p-2">{ward.number}</TableCell>
+                    <TableCell className="text-center m-0 p-0">{ward.numberOfSeats}</TableCell>
+                    <TableCell className="text-center m-0 p-0">{ward.engaged}</TableCell>
+                    <TableCell className="text-center m-0 p-0">{ward.free}</TableCell>
+                    <TableCell className="text-center m-0 p-0">{ward.reserve}</TableCell>
+
+                  </TableRow>
+                ))}
+              </TableBody>
+              
+              <TableFooter>
+                <TableRow>
+                  <TableCell colSpan={1} className="font-medium text-center m-2 p-2">
+                    {//@ts-ignore
+                    row.getValue("wards").length
+                    }
+                  </TableCell>
+                  <TableCell className="font-medium text-center m-2 p-2">
+                    {//@ts-ignore
+                    row.getValue("wards").reduce((acc, currentValue) => acc + currentValue.numberOfSeats, 0)
+                    }
+                  </TableCell>
+                  <TableCell className="font-medium text-center m-2 p-2">
+                  {//@ts-ignore
+                    row.getValue("wards").reduce((acc, currentValue) => acc + currentValue.engaged, 0)
+                  }
+                  </TableCell>
+                  <TableCell className="font-medium text-center m-2 p-2">
+                 {//@ts-ignore
+                    row.getValue("wards").reduce((acc, currentValue) => acc + currentValue.free, 0)
+                  }
+                  </TableCell>
+                </TableRow>
+              </TableFooter>
+            </Table>
+            </ScrollArea>
+              <DropdownMenuItem>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>View customer</DropdownMenuItem>
-              <DropdownMenuItem>View payment details</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           </>
@@ -288,6 +338,21 @@ export
     stateLpu?: DashDepartment | undefined,
     date: Date
   }) {
+      
+    /*В футер              <Tabs defaultValue="account" className="w-[400px]">
+                  <TabsList>
+                    <TabsTrigger value="account">тогда</TabsTrigger>
+                    <TabsTrigger value="password">сейчас</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="account">
+                                  {//@ts-ignore
+              row.getValue('wards').map((i) => {
+                return <p>{i.number}</p>
+              })
+              }
+                  </TabsContent>
+                  <TabsContent value="password">Change your password here.</TabsContent>
+                </Tabs> */
 
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -417,7 +482,7 @@ export
     :
       null
   }
-    <div className="w-full">
+    <div className="w-full mr-2 ml-2">
     {
      // tur bil filter, teper on vnizu
     } 

@@ -82,7 +82,7 @@ useEffect(() => {
 }, [isDate])
 
   return (
-    <div className="flex justify-center pb-6 pt-2">
+    <div className="flex justify-center pb-2 mt-2">
       <Popover>
         <PopoverTrigger asChild>
           <Button
