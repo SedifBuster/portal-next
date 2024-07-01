@@ -32,7 +32,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { DashDepartment, DashWard } from "@prisma/client"
+import { DashDepartment, DashWard, Ward } from "@prisma/client"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { Charts } from "./Charts"
 import axios from "axios"
@@ -41,6 +41,10 @@ import { useEffect, useState } from "react"
 import { DashItemRow } from "./DashItemRow"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { HiOutlineRectangleStack } from "react-icons/hi2"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 
 interface DashWithWards extends DashDepartment {
   totalStays: number,
@@ -260,8 +264,12 @@ export const columns: ColumnDef<DashWithWards>[] = [
 
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>{row.getValue('name')} палаты</DropdownMenuLabel>
-
-              <ScrollArea className="max-h-72 h-72 w-full rounded-md">
+            {//@ts-ignore
+            row.getValue("wards").length !== 0
+            ?//@ts-ignore
+              row.getValue("wards").length < 6 
+              ?
+              <ScrollArea className="max-h-72 h-36 w-full rounded-md">
 
               <Table>
                 <TableCaption></TableCaption>
@@ -317,6 +325,67 @@ export const columns: ColumnDef<DashWithWards>[] = [
               </TableFooter>
             </Table>
             </ScrollArea>
+              :
+            <ScrollArea className="max-h-72 h-72 w-full rounded-md">
+
+              <Table>
+                <TableCaption></TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[50px]">Номер</TableHead>
+                    <TableHead>Кол-во мест</TableHead>
+                    <TableHead>занято</TableHead>
+                    <TableHead className="text-right">свободно</TableHead>
+                    <TableHead className="text-right">резерв</TableHead>
+                  </TableRow>
+                </TableHeader>
+                
+              <TableBody>
+                {//@ts-ignore
+                row.getValue('wards').map((ward) => (
+                  
+                  <TableRow key={ward.id} className="m-0 p-0">
+
+                    <TableCell className="font-medium text-center m-2 p-2">{ward.number}</TableCell>
+                    <TableCell className="text-center m-0 p-0">{ward.numberOfSeats}</TableCell>
+                    <TableCell className="text-center m-0 p-0">{ward.engaged}</TableCell>
+                    <TableCell className="text-center m-0 p-0">{ward.free}</TableCell>
+                    <TableCell className="text-center m-0 p-0">{ward.reserve}</TableCell>
+
+                  </TableRow>
+                ))}
+              </TableBody>
+              
+              <TableFooter>
+                <TableRow>
+                  <TableCell colSpan={1} className="font-medium text-center m-2 p-2">
+                    {//@ts-ignore
+                    row.getValue("wards").length
+                    }
+                  </TableCell>
+                  <TableCell className="font-medium text-center m-2 p-2">
+                    {//@ts-ignore
+                    row.getValue("wards").reduce((acc, currentValue) => acc + currentValue.numberOfSeats, 0)
+                    }
+                  </TableCell>
+                  <TableCell className="font-medium text-center m-2 p-2">
+                  {//@ts-ignore
+                    row.getValue("wards").reduce((acc, currentValue) => acc + currentValue.engaged, 0)
+                  }
+                  </TableCell>
+                  <TableCell className="font-medium text-center m-2 p-2">
+                 {//@ts-ignore
+                    row.getValue("wards").reduce((acc, currentValue) => acc + currentValue.free, 0)
+                  }
+                  </TableCell>
+                </TableRow>
+              </TableFooter>
+            </Table>
+            </ScrollArea>
+            :
+            <p className="ml-2">палат не обнаружено</p>
+            }
+              
               <DropdownMenuItem>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -381,6 +450,7 @@ export
     },
   })
   const [chartData, setChartData] = React.useState<DashDepartment[]>()
+  const [isWardsNow, setWardsNow] = useState<Ward[]>([])
   //@ts-ignore
   let isChartData = data.filter((i) => i.name.toLowerCase() !== "Паллиатив".toLowerCase()).concat([stateLpu])
   React.useEffect(() => {
@@ -420,13 +490,16 @@ export
     return dashDepsWithId
   }
 
-  let onSetDepartmentsWards = async() => {
-
-  }
-
-
   let getWardsDeparment = async () => {
     try {
+
+            //получение палат которые на данный момент
+      let resultNowWards = await axios.get(`/api/ward`)
+
+      if (resultNowWards.status !== 200)  throw new Error()
+      if(!resultNowWards.data) throw new Error()
+      
+      setWardsNow(resultNowWards.data)
 
       let dashDepsWithId = await findDepartmentId()
 
@@ -452,7 +525,10 @@ export
       dashDepsWithId[i].wards = resultWards.data
 
 
+
+
         console.log(dashDepsWithId)
+
 
      }
      setData(dashDepsWithId.sort((a:DashDepartment, b:DashDepartment) => {
@@ -466,7 +542,7 @@ export
     }
   }
 
-
+  console.log(isWardsNow)
   console.log(isData)
 
   useEffect(() => {
@@ -605,6 +681,97 @@ export
               </TableCell>
               <TableCell>
               ot palat
+              </TableCell>
+              <TableCell>
+
+              <Dialog>
+      <DialogTrigger asChild>
+        <Button className="ml-0 pl-2 pr-2"> <HiOutlineRectangleStack size={25}/> </Button>
+      </DialogTrigger>
+   
+      <DialogContent className="sm:max-w-[924px] cursor-pointer">
+        <DialogHeader>
+          <DialogTitle>Палаты отделений</DialogTitle>
+          <DialogDescription>
+           {/**  Make changes to your profile here. Click save when you're done.*/}
+          </DialogDescription>
+        </DialogHeader>
+        <ScrollArea className="h-96 w-full rounded-md">
+
+              <Table>
+                <TableCaption></TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[50px]">Номер</TableHead>
+                    <TableHead className="text-center">Кол-во мест</TableHead>
+                    <TableHead  className="text-center">занято</TableHead>
+                    <TableHead className="text-center">свободно</TableHead>
+                    <TableHead className="text-center">резерв</TableHead>
+                  </TableRow>
+                </TableHeader>
+                
+              <TableBody>
+
+              {
+              isWardsNow
+              ?
+              isWardsNow.map((row) => {
+                return <TableRow key={row.id} className="m-0 p-0">
+                          <TableCell className="font-medium text-center m-2 p-2">{row.number}</TableCell>
+                          <TableCell className="text-center">{row.numberOfSeats}</TableCell>
+                          <TableCell className="text-center">{row.engaged}</TableCell>
+                          <TableCell className="text-center">{row.free}</TableCell>
+                          <TableCell className="text-center">{row.reserve}</TableCell>
+                        </TableRow>
+              })
+              :
+              ''
+            }
+
+                {/*//@ts-ignore
+                row.getValue('wards').map((ward) => (
+                  
+                  <TableRow key={ward.id} className="m-0 p-0">
+
+                    <TableCell className="font-medium text-center m-2 p-2">{ward.number}</TableCell>
+                    <TableCell className="text-center m-0 p-0">{ward.numberOfSeats}</TableCell>
+                    <TableCell className="text-center m-0 p-0">{ward.engaged}</TableCell>
+                    <TableCell className="text-center m-0 p-0">{ward.free}</TableCell>
+                    <TableCell className="text-center m-0 p-0">{ward.reserve}</TableCell>
+
+                  </TableRow>
+                ))*/}
+              </TableBody>
+              {/** 
+              <TableFooter>
+                <TableRow>
+                  <TableCell colSpan={1} className="font-medium text-center m-2 p-2">
+                    {//@ts-ignore
+                    row.getValue("wards").length
+                    }
+                  </TableCell>
+                  <TableCell className="font-medium text-center m-2 p-2">
+                    {//@ts-ignore
+                    row.getValue("wards").reduce((acc, currentValue) => acc + currentValue.numberOfSeats, 0)
+                    }
+                  </TableCell>
+                  <TableCell className="font-medium text-center m-2 p-2">
+                  {//@ts-ignore
+                    row.getValue("wards").reduce((acc, currentValue) => acc + currentValue.engaged, 0)
+                  }
+                  </TableCell>
+                  <TableCell className="font-medium text-center m-2 p-2">
+                 {//@ts-ignore
+                    row.getValue("wards").reduce((acc, currentValue) => acc + currentValue.free, 0)
+                  }
+                  </TableCell>
+                </TableRow>
+              </TableFooter>
+              */}
+            </Table>
+            </ScrollArea>
+      </DialogContent>
+    </Dialog>
               </TableCell>
             </TableRow>
           </TableFooter>
