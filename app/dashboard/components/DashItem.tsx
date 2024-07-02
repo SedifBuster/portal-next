@@ -407,21 +407,6 @@ export
     stateLpu?: DashDepartment | undefined,
     date: Date
   }) {
-      
-    /*В футер              <Tabs defaultValue="account" className="w-[400px]">
-                  <TabsList>
-                    <TabsTrigger value="account">тогда</TabsTrigger>
-                    <TabsTrigger value="password">сейчас</TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="account">
-                                  {//@ts-ignore
-              row.getValue('wards').map((i) => {
-                return <p>{i.number}</p>
-              })
-              }
-                  </TabsContent>
-                  <TabsContent value="password">Change your password here.</TabsContent>
-                </Tabs> */
 
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -505,7 +490,7 @@ export
 
       if (!dashDepsWithId)  throw new Error()
 
-     console.log(dashDepsWithId)
+     //console.log(dashDepsWithId)
 
      for(let i = 0; i < dashDepsWithId.length; i++) {
       //@ts-ignore
@@ -514,20 +499,46 @@ export
       if (resultWards.status !== 200)  throw new Error()
       if(!resultWards.data) throw new Error()
 
-        console.log(resultWards.data)
+       // console.log(resultWards.data)
         //замапить результ на ближайшее время еще статус не забудь еще резерв по номеру палаты!
       //по номеру палаты после по фильтра по дню?
-        //@ts-ignore
-      dashDepsWithId[i].totalStays = resultWards.data.reduce((acc, currentValue) => acc + currentValue.engaged, 0)
-       //@ts-ignore
-      dashDepsWithId[i].freeBeds = resultWards.data.reduce((acc, currentValue) => acc + currentValue.free, 0)
+
+      
       //@ts-ignore
       dashDepsWithId[i].wards = resultWards.data
+      //фильтр чтобы были палата только ДО даты даша
+      //@ts-ignore
+      if(dashDepsWithId[i].wards) {
+        //@ts-ignore
+       let withoutAfterWards =  dashDepsWithId[i].wards.filter((ward) => {
+        //console.log('palata' ,new Date(ward.updatedAt  ).getTime())
+        //console.log('data' , new Date(date).getTime())
+        //НЕ ЗАБУДЬ ПОМЕНЯТЬ СТРЕЛОЧКУ ПОВЕРНИ
+        return new Date(ward.updatedAt ).getTime() <= new Date(date).getTime()
+       })
+       console.log(withoutAfterWards)
+       //@ts-ignore
+       dashDepsWithId[i].wards = withoutAfterWards
+
+       //отсев левых
+       //сортировка по дате
+       //полученные
+       //отданные
+       //удаленные нахуй
 
 
 
 
-        console.log(dashDepsWithId)
+
+
+
+
+       //В КОНЦЕ ДОЛЖНО БЫТЬ
+      //@ts-ignore
+      dashDepsWithId[i].totalStays = dashDepsWithId[i].wards.reduce((acc, currentValue) => acc + currentValue.engaged, 0)
+      //@ts-ignore
+      dashDepsWithId[i].freeBeds = dashDepsWithId[i].wards.reduce((acc, currentValue) => acc + currentValue.free, 0)
+      }
 
 
      }
@@ -542,8 +553,8 @@ export
     }
   }
 
-  console.log(isWardsNow)
-  console.log(isData)
+  //console.log(isWardsNow)
+  //console.log(isData)
 
   useEffect(() => {
     getWardsDeparment()
@@ -696,10 +707,24 @@ export
            {/**  Make changes to your profile here. Click save when you're done.*/}
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="h-96 w-full rounded-md">
 
-              <Table>
-                <TableCaption></TableCaption>
+                <Tabs defaultValue="inTime">
+                  <TabsList>
+                    <TabsTrigger value="inTime">на тот момент</TabsTrigger>
+                    <TabsTrigger value="inNow">на данный момент</TabsTrigger>
+                  </TabsList>
+
+
+
+                  <TabsContent value="inTime">
+                  in time in time in time
+                  </TabsContent>
+
+
+
+                  <TabsContent value="inNow">
+                    <Table>
+                  <ScrollArea className="h-96 w-full rounded-md">
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-[50px]">Номер</TableHead>
@@ -727,49 +752,14 @@ export
               :
               ''
             }
-
-                {/*//@ts-ignore
-                row.getValue('wards').map((ward) => (
-                  
-                  <TableRow key={ward.id} className="m-0 p-0">
-
-                    <TableCell className="font-medium text-center m-2 p-2">{ward.number}</TableCell>
-                    <TableCell className="text-center m-0 p-0">{ward.numberOfSeats}</TableCell>
-                    <TableCell className="text-center m-0 p-0">{ward.engaged}</TableCell>
-                    <TableCell className="text-center m-0 p-0">{ward.free}</TableCell>
-                    <TableCell className="text-center m-0 p-0">{ward.reserve}</TableCell>
-
-                  </TableRow>
-                ))*/}
               </TableBody>
-              {/** 
-              <TableFooter>
-                <TableRow>
-                  <TableCell colSpan={1} className="font-medium text-center m-2 p-2">
-                    {//@ts-ignore
-                    row.getValue("wards").length
-                    }
-                  </TableCell>
-                  <TableCell className="font-medium text-center m-2 p-2">
-                    {//@ts-ignore
-                    row.getValue("wards").reduce((acc, currentValue) => acc + currentValue.numberOfSeats, 0)
-                    }
-                  </TableCell>
-                  <TableCell className="font-medium text-center m-2 p-2">
-                  {//@ts-ignore
-                    row.getValue("wards").reduce((acc, currentValue) => acc + currentValue.engaged, 0)
-                  }
-                  </TableCell>
-                  <TableCell className="font-medium text-center m-2 p-2">
-                 {//@ts-ignore
-                    row.getValue("wards").reduce((acc, currentValue) => acc + currentValue.free, 0)
-                  }
-                  </TableCell>
-                </TableRow>
-              </TableFooter>
-              */}
-            </Table>
-            </ScrollArea>
+              </ScrollArea>
+            </Table></TabsContent>
+        </Tabs>
+
+
+              
+
       </DialogContent>
     </Dialog>
               </TableCell>
