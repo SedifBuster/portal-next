@@ -475,6 +475,18 @@ export
     return dashDepsWithId
   }
 
+  let onSortDepartmentWards = (wards: DashWard[]) => {
+
+    wards.filter((ward) => {
+      return 
+    })
+    for(let i = 0; i < wards.length; i++) {
+
+      wards[i].number === 
+
+    }
+  }
+
   let getWardsDeparment = async () => {
     try {
 
@@ -511,35 +523,26 @@ export
       if(dashDepsWithId[i].wards) {
         //@ts-ignore
        let withoutAfterWards =  dashDepsWithId[i].wards.filter((ward) => {
-        //console.log('palata' ,new Date(ward.updatedAt  ).getTime())
-        //console.log('data' , new Date(date).getTime())
+
         //НЕ ЗАБУДЬ ПОМЕНЯТЬ СТРЕЛОЧКУ ПОВЕРНИ
-        return new Date(ward.updatedAt ).getTime() <= new Date(date).getTime()
+        return new Date(ward.updatedAt ).getTime() >= new Date(date).getTime()
+       }).filter((ward: any) => {
+        return ward.status !== 'deleted' && ward.status !== 'disabled'
        })
        console.log(withoutAfterWards)
        //@ts-ignore
        dashDepsWithId[i].wards = withoutAfterWards
-
        //отсев левых
        //сортировка по дате
        //полученные
        //отданные
        //удаленные нахуй
-
-
-
-
-
-
-
-
        //В КОНЦЕ ДОЛЖНО БЫТЬ
       //@ts-ignore
       dashDepsWithId[i].totalStays = dashDepsWithId[i].wards.reduce((acc, currentValue) => acc + currentValue.engaged, 0)
       //@ts-ignore
       dashDepsWithId[i].freeBeds = dashDepsWithId[i].wards.reduce((acc, currentValue) => acc + currentValue.free, 0)
       }
-
 
      }
      setData(dashDepsWithId.sort((a:DashDepartment, b:DashDepartment) => {
