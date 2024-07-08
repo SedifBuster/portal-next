@@ -475,92 +475,34 @@ export
     return dashDepsWithId
   }
 
-  let onSortDepartmentWards = (wards: any) => {
-    //let filtredArr = wards.map((ward) => {
-     // return 
-    //})
-    
-    //let filteredArr = wards.filter((ward) => {
-    //  return ward.number === 
-    //})
-
-    /**let uniqSet = new Set()
-    //let testSet = new Set()
-    //let uniqSet = []
-    let testSet = []
-    for(let i = 0; i < wards.length; i++) {
-      for(let j = 0; j < i; j++) {
-        if(wards[j].number === wards[i].number) {
-          uniqSet.add(wards[i])
-          //uniqSet.push(wards[i])
-        }// else {
-          //testSet.add(wards[j])
-          //testSet.push(wards[j])
-        //}
-      }
-    }
-
-    let uniq = Array.from(uniqSet)//uniqSet//
-   // let test = testSet//Array.from(testSet)
-    //console.log(uniq)
-
-    return [...uniq, [...wards]]*/
+  let onSortDepartmentWards = (wards: DashWard[]) => {
+    let sortedWards = wards.sort((a, b) => new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime())//wards.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+    console.log("sortedWards" , sortedWards)
 
     let res: DashWard[] = []
-    console.log(res)
     for(let i = 0; i < wards.length; i++) {
-     let duplicate = wards.filter((w: any) => w.number === wards[i].number)
+     let onFindDuplicate = sortedWards
+     .filter((w: DashWard) => w.number === wards[i].number)
 
-     if(duplicate)
-      if(duplicate.length === 1){
-        res.push(wards[i])
-      } else if(duplicate.length > 1){
+     if(onFindDuplicate)
 
-        wards.splice(i, 1)
+      if(onFindDuplicate.length === 1) res = [...res, onFindDuplicate[0]]
 
-        res = [...res, duplicate]
+      else {
 
-        let onS = wards.findIndex((w: any) => w.number === wards[i].number)
-        console.log(onS)
-        if(onS)
-          wards.splice(onS, 1)
-         //res = [...res, duplicate]
+        if(res.length > 1)
+          if(!res.some((ward: DashWard) => ward.number === onFindDuplicate[0].number)) {
+        console.log(res.some((ward: DashWard) => ward.number === onFindDuplicate[0].number))
+            res = [...res, onFindDuplicate[onFindDuplicate.length - 1]]
 
-        //res = [...res]
+          }
 
-      } else res = [...res]
+
+      }
 
     }
-
+    console.log('конечный результат',res)
     return res
-  /*let sorted = wards.slice().sort((a, b) =>  a.number - b.number)
-  console.log(sorted)
-  let results = [];
-  for (let i = 1; i < sorted.length; i++) {
-    if (sorted[i - 1].number === sorted[i].number) {
-      results.push(sorted[i]);
-    }
-
-  }
-  let testRes = []
-  if(results)
-  for (let j = 1; j < results.length; j++) {
-    if (results[j - 1].number === results[j].number) {
-      testRes.push(results[j]);
-    }
-
-  }
-  console.log(testRes)
-  let test = Array.from(new Set(results))*/
-
-  //return [...test]
-
-  //const findUniqueDuplicates = (arr: DashWard[]) => arr.filter((e, i, a) => a.indexOf(e) !== i && a.lastIndexOf(e) === i);
-
-  //return findUniqueDuplicates(wards)
-
-
-
   }
 
   let getWardsDeparment = async () => {
@@ -615,7 +557,7 @@ export
        //полученные
        //отданные
        //удаленные нахуй
-       console.log(onSortDepartmentWards(dashDepsWithId[i].wards))
+       dashDepsWithId[i].wards = onSortDepartmentWards(dashDepsWithId[i].wards)
        //В КОНЦЕ ДОЛЖНО БЫТЬ
       //@ts-ignore
       dashDepsWithId[i].totalStays = dashDepsWithId[i].wards.reduce((acc, currentValue) => acc + currentValue.engaged, 0)
