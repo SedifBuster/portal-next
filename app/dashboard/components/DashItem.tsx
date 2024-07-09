@@ -45,11 +45,13 @@ import { HiOutlineRectangleStack } from "react-icons/hi2"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
+import clsx from "clsx"
 
 interface DashWithWards extends DashDepartment {
-  totalStays: number,
-  freeBeds: number,
-  wards: DashWard[]
+  totalStays?: number,
+  freeBeds?: number,
+  wards?: DashWard[],
+  defaultDepsId?: number
 }
 
 export const columns: ColumnDef<DashWithWards>[] = [
@@ -436,6 +438,7 @@ export
   })
   const [chartData, setChartData] = React.useState<DashDepartment[]>()
   const [isWardsNow, setWardsNow] = useState<Ward[]>([])
+  const [isDeparmentsNow, setDeparmentsNow] = useState<any[]>([])
   //@ts-ignore
   let isChartData = data.filter((i) => i.name.toLowerCase() !== "Паллиатив".toLowerCase()).concat([stateLpu])
   React.useEffect(() => {
@@ -463,7 +466,7 @@ export
     let result = await axios.get('/api/department')
     if (result.status !== 200)  throw new Error()
     if(!result.data) throw new Error()
-
+      setDeparmentsNow(result.data)
     let deps = onSortedDepartments(result.data).filter((i) => {return i.name.toLowerCase() !== 'IT'.toLowerCase()})
 
     let dashDeps = onSortedDepartments(data)
@@ -507,22 +510,17 @@ export
 
   let getWardsDeparment = async () => {
     try {
-
-            //получение палат которые на данный момент
+      //получение палат которые на данный момент
       let resultNowWards = await axios.get(`/api/ward`)
+        if( resultNowWards.status !== 200 ) throw new Error()
+        if( !resultNowWards.data ) throw new Error()
+      setWardsNow( resultNowWards.data )
+      //ищем и связываем id отделений
+      let dashDepsWithId: DashWithWards[] = await findDepartmentId()
+        if( !dashDepsWithId ) throw new Error()
 
-      if (resultNowWards.status !== 200)  throw new Error()
-      if(!resultNowWards.data) throw new Error()
-      
-      setWardsNow(resultNowWards.data)
 
-      let dashDepsWithId = await findDepartmentId()
-
-      if (!dashDepsWithId)  throw new Error()
-
-     //console.log(dashDepsWithId)
-
-     for(let i = 0; i < dashDepsWithId.length; i++) {
+      /*for(let i = 0; i < dashDepsWithId.length; i++) {
       //@ts-ignore
       let resultWards = await axios.get(`/api/dash/ward/${dashDepsWithId[i].defaultDepsId}`)
 
@@ -533,7 +531,6 @@ export
         //замапить результ на ближайшее время еще статус не забудь еще резерв по номеру палаты!
       //по номеру палаты после по фильтра по дню?
 
-      
       //@ts-ignore
       dashDepsWithId[i].wards = resultWards.data
       //фильтр чтобы были палата только ДО даты даша
@@ -557,6 +554,8 @@ export
        //полученные
        //отданные
        //удаленные нахуй
+
+
        dashDepsWithId[i].wards = onSortDepartmentWards(dashDepsWithId[i].wards)
        //В КОНЦЕ ДОЛЖНО БЫТЬ
       //@ts-ignore
@@ -565,7 +564,96 @@ export
       dashDepsWithId[i].freeBeds = dashDepsWithId[i].wards.reduce((acc, currentValue) => acc + currentValue.free, 0)
       }
 
-     }
+     }*/
+      
+      /*let releaseArr = await Promise.all(dashDepsWithId.map((dep) => {
+        try{
+          let resultWards = await axios.get(`/api/dash/ward/${dep.defaultDepsId}`)
+            if (resultWards.status !== 200)  throw new Error()
+            if(!resultWards.data) throw new Error()
+
+          dep.wards = resultWards.data
+
+          let withoutAfterWards: DashWard[] = []
+
+          if(dep.wards)
+            withoutAfterWards =  dep.wards.filter((ward) => {
+            //НЕ ЗАБУДЬ ПОМЕНЯТЬ СТРЕЛОЧКУ ПОВЕРНИ
+              return new Date(ward.updatedAt ).getTime() >= new Date(date).getTime()
+             }).filter((ward: any) => {
+              return ward.status !== 'deleted' && ward.status !== 'disabled'
+             }) 
+
+             dep.wards = withoutAfterWards
+
+             
+           dep.wards = onSortDepartmentWards(dep.wards)
+           //В КОНЦЕ ДОЛЖНО БЫТЬ
+          //@ts-ignore
+          dep.totalStays = dep.wards.reduce((acc, currentValue) => acc + currentValue.engaged, 0)
+          //@ts-ignore
+          dep.freeBeds = dep.wards.reduce((acc, currentValue) => acc + currentValue.free, 0)
+           setData(dashDepsWithId.sort((a:DashDepartment, b:DashDepartment) => {
+            if(a.id > b.id) return 1
+            if(a.id < b.id) return -1
+            return 0
+          }))
+
+          return dep
+        }catch {
+
+      }
+      } 
+  )
+    ) 
+
+      console.log(releaseArr)*/
+
+      for(let i = 0; i < dashDepsWithId.length; i++) {
+        //@ts-ignore
+        let resultWards = await axios.get(`/api/dash/ward/${dashDepsWithId[i].defaultDepsId}`)
+  
+        if (resultWards.status !== 200)  throw new Error()
+        if(!resultWards.data) throw new Error()
+  
+         // console.log(resultWards.data)
+          //замапить результ на ближайшее время еще статус не забудь еще резерв по номеру палаты!
+        //по номеру палаты после по фильтра по дню?
+  
+        //@ts-ignore
+        dashDepsWithId[i].wards = resultWards.data
+        //фильтр чтобы были палата только ДО даты даша
+        //@ts-ignore
+        if(dashDepsWithId[i].wards) {
+          //@ts-ignore
+         let withoutAfterWards =  dashDepsWithId[i].wards.filter((ward) => {
+  
+          //НЕ ЗАБУДЬ ПОМЕНЯТЬ СТРЕЛОЧКУ ПОВЕРНИ
+          return new Date(ward.updatedAt ).getTime() >= new Date(date).getTime()
+         }).filter((ward: any) => {
+          return ward.status !== 'deleted' && ward.status !== 'disabled'
+         })
+         //console.log(withoutAfterWards)
+         //@ts-ignore
+         dashDepsWithId[i].wards = withoutAfterWards
+         //@ts-ignore
+        // dashDepsWithId[i].wards = onSortDepartmentWards(dashDepsWithId[i].wards)
+         //отсев левых
+         //сортировка по дате
+         //полученные
+         //отданные
+         //удаленные нахуй
+  
+  
+         dashDepsWithId[i].wards = onSortDepartmentWards(dashDepsWithId[i].wards)
+         //В КОНЦЕ ДОЛЖНО БЫТЬ
+        //@ts-ignore
+        dashDepsWithId[i].totalStays = dashDepsWithId[i].wards.reduce((acc, currentValue) => acc + currentValue.engaged, 0)
+        //@ts-ignore
+        dashDepsWithId[i].freeBeds = dashDepsWithId[i].wards.reduce((acc, currentValue) => acc + currentValue.free, 0)
+        }
+  
+       }
      setData(dashDepsWithId.sort((a:DashDepartment, b:DashDepartment) => {
       if(a.id > b.id) return 1
       if(a.id < b.id) return -1
@@ -580,8 +668,7 @@ export
   useEffect(() => {
     getWardsDeparment()
   }, [])
-
-
+  console.log(isDeparmentsNow)
 
   return (
     <>
@@ -661,7 +748,11 @@ export
                 }
               </TableCell>
               <TableCell>
-                otpalat
+                {isData && isData[0] &&  isData[0].totalStays?isData.reduce((a: any, b: any) => {
+                    return a + b.totalStays
+                }, 0)
+                : 
+                0}
               </TableCell>
               <TableCell>
               {
@@ -712,7 +803,11 @@ export
               }
               </TableCell>
               <TableCell>
-              ot palat
+              {isData && isData[0] &&  isData[0].freeBeds?isData.reduce((a: any, b: any) => {
+                    return a + b.freeBeds
+                }, 0)
+                : 
+                0}
               </TableCell>
               <TableCell>
 
@@ -738,7 +833,61 @@ export
 
 
                   <TabsContent value="inTime">
-                  in time in time in time
+                  <ScrollArea className="h-[34rem] w-full rounded-md">
+                  {
+                    isData && isData[0] && isData[0].wards?
+                    isData.map((dep: any) => {
+                      if( dep.wards.length > 0) 
+                      return <>
+                        <Label className="">{dep.name}</Label>
+                        <Table>
+                            <TableHeader>
+                              <TableRow>
+                            <TableHead className="w-[50px]">Номер</TableHead>
+                            <TableHead className="text-center">Кол-во мест</TableHead>
+                           <TableHead  className="text-center">занято</TableHead>
+                            <TableHead className="text-center">свободно</TableHead>
+                           <TableHead className="text-center">резерв</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                
+                         <TableBody>
+
+              {
+              dep.wards
+              ?
+              dep.wards.map((row: any) => {
+                  //отданные
+                   let given: any | undefined = {}
+                   if(isDeparmentsNow) {
+                     given = isDeparmentsNow.find((dep: any) => {
+                     return Number(row.reserve) === dep.id
+                     })
+                   }
+                    
+
+                return <TableRow key={row.id} className={ clsx(`m-0 p-0`,
+                  given && 'bg-orange-100'
+                  )}>
+                            <TableCell className="font-medium text-center m-2 p-2">{row.number}</TableCell>
+                            <TableCell className="text-center">{row.numberOfSeats}</TableCell>
+                             <TableCell className="text-center">{row.engaged}</TableCell>
+                            <TableCell className="text-center">{row.free}</TableCell>
+                            <TableCell className="text-center">{given? given.name :row.reserve}</TableCell>
+                            
+                          </TableRow>
+              })
+              :
+              ''
+              }
+              </TableBody>
+            </Table>
+                            </>
+                    })
+                    :
+                    ''
+                  }
+                  </ScrollArea>
                   </TabsContent>
 
 
