@@ -439,6 +439,7 @@ export
   const [chartData, setChartData] = React.useState<DashDepartment[]>()
   const [isWardsNow, setWardsNow] = useState<Ward[]>([])
   const [isDeparmentsNow, setDeparmentsNow] = useState<any[]>([])
+  const [isTaken, setTaken] = useState<any[]>([])
   //@ts-ignore
   let isChartData = data.filter((i) => i.name.toLowerCase() !== "Паллиатив".toLowerCase()).concat([stateLpu])
   React.useEffect(() => {
@@ -480,7 +481,7 @@ export
 
   let onSortDepartmentWards = (wards: DashWard[]) => {
     let sortedWards = wards.sort((a, b) => new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime())//wards.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-    console.log("sortedWards" , sortedWards)
+   // console.log("sortedWards" , sortedWards)
 
     let res: DashWard[] = []
     for(let i = 0; i < wards.length; i++) {
@@ -495,7 +496,7 @@ export
 
         if(res.length > 1)
           if(!res.some((ward: DashWard) => ward.number === onFindDuplicate[0].number)) {
-        console.log(res.some((ward: DashWard) => ward.number === onFindDuplicate[0].number))
+        //console.log(res.some((ward: DashWard) => ward.number === onFindDuplicate[0].number))
             res = [...res, onFindDuplicate[onFindDuplicate.length - 1]]
 
           }
@@ -504,9 +505,11 @@ export
       }
 
     }
-    console.log('конечный результат',res)
+   // console.log('конечный результат',res)
     return res
   }
+
+
 
   let getWardsDeparment = async () => {
     try {
@@ -668,7 +671,7 @@ export
   useEffect(() => {
     getWardsDeparment()
   }, [])
-  console.log(isDeparmentsNow)
+  //console.log(isDeparmentsNow)
 
   return (
     <>
@@ -833,10 +836,11 @@ export
 
 
                   <TabsContent value="inTime">
-                  <ScrollArea className="h-[34rem] w-full rounded-md">
+                  <ScrollArea className="h-[38rem] w-full rounded-md">
                   {
                     isData && isData[0] && isData[0].wards?
                     isData.map((dep: any) => {
+                      let takenWards: any = []
                       if( dep.wards.length > 0) 
                       return <>
                         <Label className="">{dep.name}</Label>
@@ -859,12 +863,41 @@ export
               dep.wards.map((row: any) => {
                   //отданные
                    let given: any | undefined = {}
+                   let takenId: any
+                   let taken: any | undefined = []
                    if(isDeparmentsNow) {
-                     given = isDeparmentsNow.find((dep: any) => {
-                     return Number(row.reserve) === dep.id
+
+
+                     given = isDeparmentsNow.find((depart: any) => {
+                     //console.log(dep.id)
+                     return Number(row.reserve) === depart.id
                      })
+
+
+                     //taken = dep.wards.filter((ward: DashWard) => {
+                      
+                     // console.log(dep.id)
+                     // return Number(ward.reserve) === dep.id
+                    //})
+                      takenId = isDeparmentsNow.filter((depart: any) => {
+                        return Number(row.reserve) === depart.id
+                      })
+
+                      if(takenId && takenId[0]) {
+                        console.log(takenId.id)
+                        taken = dep.wards.filter((ward: DashWard) => {
+                          return Number(ward.reserve) === takenId[0].id
+                        })
+                      }
+
+
+                    //console.log(taken)
+                    if(taken && row)
+                      //console.log('row',row)
+                    takenWards = [...takenWards, ...taken]
+                    console.log(takenWards)
+
                    }
-                    
 
                 return <TableRow key={row.id} className={ clsx(`m-0 p-0`,
                   given && 'bg-orange-100'
@@ -880,6 +913,28 @@ export
               :
               ''
               }
+              {/*
+                takenWards
+                ?
+                takenWards.filter((ward: DashWard) => {
+                  console.log(ward.number)
+                  console.log(dep.defaultDepsId)
+                  return Number(ward.reserve) === dep.defaultDepsId
+                }).map((row:any) => {
+                  return <TableRow key={row.id} className={ clsx(`m-0 p-0 bg-lime-100`
+                    )}>
+                              <TableCell className="font-medium text-center m-2 p-2">{row.number}</TableCell>
+                              <TableCell className="text-center">{row.numberOfSeats}</TableCell>
+                               <TableCell className="text-center">{row.engaged}</TableCell>
+                              <TableCell className="text-center">{row.free}</TableCell>
+                              <TableCell className="text-center">{/*given? given.name :row.reserve}</TableCell>
+                              
+                            </TableRow>
+                })
+
+                :
+                ''
+              */}
               </TableBody>
             </Table>
                             </>
@@ -894,7 +949,7 @@ export
 
                   <TabsContent value="inNow">
                     <Table>
-                  <ScrollArea className="h-96 w-full rounded-md">
+                  <ScrollArea className="h-[38rem] w-full rounded-md">
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-[50px]">Номер</TableHead>
@@ -910,7 +965,11 @@ export
               {
               isWardsNow
               ?
-              isWardsNow.map((row) => {
+              //for(let i = 0; i < isWardsNow.length; i++) {
+
+                <p>sad</p>
+              //}
+              /*isWardsNow.map((row) => {
                 return <TableRow key={row.id} className="m-0 p-0">
                           <TableCell className="font-medium text-center m-2 p-2">{row.number}</TableCell>
                           <TableCell className="text-center">{row.numberOfSeats}</TableCell>
@@ -918,7 +977,7 @@ export
                           <TableCell className="text-center">{row.free}</TableCell>
                           <TableCell className="text-center">{row.reserve}</TableCell>
                         </TableRow>
-              })
+              })*/
               :
               ''
             }
