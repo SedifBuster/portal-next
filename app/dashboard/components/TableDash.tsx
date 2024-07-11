@@ -15,6 +15,7 @@ export
     table: DashDepartment[]
 }
 
+
   //palaty s okoshkom
   // 
   //получение палат по отделению 1/
@@ -35,9 +36,9 @@ export
     try {
       let result = await axios.get('/api/dash')
       if (result.status === 200) {
-        toast.success(`таблицы код ${result.status}`)
+        //toast.success(`таблицы код ${result.status}`)
         let resultDep = await axios.get('/api/dash/department')
-        toast.success(`отделения код ${resultDep.status}`)
+        //toast.success(`отделения код ${resultDep.status}`)
         if(resultDep.data && result.data) {
           let filteredDashes = result.data.map((item: Dash) => {
             return {...item, table: resultDep.data.filter((dep: DashDepartment) => {
@@ -57,6 +58,8 @@ export
 
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [itemsPerPage, setItemsPerPage] = useState(1)
+  const [departmentNow, setDepartmentNow] = useState()
+  
 
   const lastItemIndex = currentPage * itemsPerPage
   const firstItemIndex = lastItemIndex - itemsPerPage
@@ -227,12 +230,18 @@ export
     return lpu
   }
 
-  /*const objectMap = (obj, fn) =>
-    Object.fromEntries(
-      Object.entries(obj).map(
-        ([k, v], i) => [k, fn(v, k, i)]
-      )
-    )*/
+ useEffect(() => {
+    const timer = setInterval(() => {
+      getTables
+      console.log('update')
+    }, 10000)
+
+    return () => {
+      clearInterval(timer)
+    }
+  }, [])
+
+
 
   return (
     <div className="w-full ml-2 mr-6">
