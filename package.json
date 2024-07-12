@@ -1,11 +1,11 @@
 {
   "name": "portal-next",
-  "version": "0.1.1",
+  "version": "1.1 Dashboard Update",
   "private": true,
   "scripts": {
     "dev": "next dev -p 5020",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 5020",
     "lint": "next lint"
   },
   "dependencies": {

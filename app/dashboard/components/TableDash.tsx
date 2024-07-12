@@ -45,7 +45,7 @@ export
               return dep.dashId === item.id
             })}
           })
-          setTables(filteredDashes)
+          setTables(filteredDashes.reverse())
         }
       }
     } catch {
