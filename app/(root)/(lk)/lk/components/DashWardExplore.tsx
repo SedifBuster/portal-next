@@ -26,7 +26,7 @@ export
   type Indicator = 'given' | 'taken' | ''
 
 export
-  function UserWard(
+  function DashWardExplore(
     {
       ward,
       getWards,
@@ -429,7 +429,7 @@ return (
         */}
         <Dialog open={isVisibleChange} onOpenChange={() => setVisibleChange(!isVisibleChange)}>
           <DialogTrigger asChild>
-            <Button variant={'outline'} onClick={() => setVisibleChange(true)}><HiPencil /></Button>
+           
           </DialogTrigger>
 
           <DialogContent className="sm:max-w-[425px]">

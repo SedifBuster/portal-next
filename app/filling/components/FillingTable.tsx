@@ -3,23 +3,23 @@
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useEffect, useState } from "react"
-import { fillingTable } from "./Owerview"
 import { saveAs } from "file-saver"
 import { read, utils, write } from 'xlsx'
 import { File } from "buffer"
 import toast from "react-hot-toast"
 import axios from "axios"
-import { DashTable, Department, Ward } from "@prisma/client"
+import { Department, Ward } from "@prisma/client"
+import { DashInit } from "./Owerview"
 
 export function FillingTable({
     fillingTable,
     getTables
 }: {
-    fillingTable: DashTable
+    fillingTable: DashInit
     getTables: () => void
 }) {
 
-    const [isNewDataTable, setNewDataTable] = useState<DashTable>()
+   /* const [isNewDataTable, setNewDataTable] = useState<DashInit>()
 
     const GiveXMLS = () => {
         console.log(fillingTable)
@@ -56,11 +56,11 @@ export function FillingTable({
            month: month,
            year: year,
            data: JSON.stringify(jsonData)
-        }*/
+        }
         //console.log(fileDataSend)
 
     }
-
+    */
     //создать таблицу бд - succ
     //посчитать лпу - succ
     //создать тестовую хуйню - succ
@@ -70,7 +70,7 @@ export function FillingTable({
     //подгрузить варды и просуммировать всю хуйню взяты приняты
     // финальный тест
 
-    const createTable = async () => {
+  /*  const createTable = async () => {
         const postData = {
             date: isNewDataTable?.date,
             table: JSON.stringify(isNewDataTable?.table)
@@ -129,10 +129,10 @@ export function FillingTable({
         } else {
             toast.error('Ошибка при изменении таблицы')
         }
-        */
-    }
-
+        
+    }*/
     //WARDS
+    /*
     const [isDepartments, setIsDepartmens] = useState<Department[]>([])
     const [wards, setWards] = useState<Ward[]>([])
 
@@ -140,7 +140,7 @@ export function FillingTable({
         let result = wards.filter((ward) => {
 
             let nonDepartment = 
-            Number(ward.reserve)/*строка реверс ищем айди*/  !== depId/*айди департамента*/
+            Number(ward.reserve)/*строка реверс ищем айди  !== depId/*айди департамента
             &&
             ward.reserve
             &&
@@ -160,7 +160,7 @@ export function FillingTable({
         let result = wards.filter((ward) => {
 
             let nonDepartment = 
-            Number(ward.reserve)/*строка реверс ищем айди*/  !== depId/*айди департамента*/
+            Number(ward.reserve)/*строка реверс ищем айди  !== depId/*айди департамента
             &&
             ward.reserve
             &&
@@ -267,7 +267,7 @@ export function FillingTable({
     let PallGivenFree = givenFree(ReabWards, 6)
     let PallGivenEngaged = givenEngaged(ReabWards, 6)
 
-                                        
+                                        */
     return (
         <main
             className="
@@ -277,7 +277,7 @@ export function FillingTable({
                 p-2
             "
         >
-            <div>{fillingTable.date.toDateString()} пикать дату на изменение</div>
+            {/*<div>{fillingTable.date.toDateString()} пикать дату на изменение</div>
             <div className="flex gap-4 justify-center">
                 <Button onClick={() => GiveXMLS()}>выгрузить</Button>
                 <Button><input type="file" onChange={(e) => handleFile(e)} /></Button>
@@ -753,7 +753,7 @@ export function FillingTable({
                         <Button className="bg-blue-400 text-white" variant={'outline'} onClick={() => createTable()}>сохранить новую таблицу</Button>
                     </div>
             : ''}
-
+            */}
         </main>
     )
 }

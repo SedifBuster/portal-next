@@ -1,525 +1,902 @@
 "use client"
 
 import * as React from "react"
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
-import {ChevronDown } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { Charts } from "./Charts"
+import axios from "axios"
+import { useEffect, useState } from "react"
+import { Dash, DashDepartment } from "@prisma/client"
+import toast from "react-hot-toast"
+import { DashItem } from "./DashItem"
+import { DashSkeleton } from "./DashSkeleton"
+import { DashPagination} from "./DashPagination"
 import { DatePicker } from "./DatePicker"
 
-export type Department = {
-  department: string
-  planHuman: number
-  planRub: number
-  begAcc: number
-  admRec: number
-  totalStays: number
-  disCome: number
-  disTax: number
-  patOver: number
-  storColed: number
-  transHuman: number
-  transRub: number
-  medPrice: number
-  dolgDead: number
-  freeBeds: number
+export
+  interface DashInit extends Dash {
+    table: DashDepartment[]
 }
 
-export type dash = {
-  date: Date;
-  table: Department[];
-}
 
-const data: Department[] = [
-  {
-    department: "TO",
-    planHuman: 392,
-    planRub: 32327489,
-    begAcc: 104,
-    admRec: 671,
-    totalStays: 113,
-    disCome: 613,
-    disTax: 24182815,
-    patOver: 17,
-    storColed: 9,
-    transHuman: 179,
-    transRub: 10414661,
-    medPrice: 0,
-    dolgDead: 73,
-    freeBeds: 24
-  },
-  {
-    department: "XO",
-    planHuman: 392,
-    planRub: 32327489,
-    begAcc: 104,
-    admRec: 671,
-    totalStays: 113,
-    disCome: 613,
-    disTax: 24182815,
-    patOver: 17,
-    storColed: 9,
-    transHuman: 580,
-    transRub: 14541486,
-    medPrice: 0,
-    dolgDead: 73,
-    freeBeds: 24
-  },
-  {
-    department: "HO",
-    planHuman: 392,
-    planRub: 32327489,
-    begAcc: 104,
-    admRec: 671,
-    totalStays: 113,
-    disCome: 613,
-    disTax: 24182815,
-    patOver: 17,
-    storColed: 9,
-    transHuman: 108,
-    transRub: 10924027,
-    medPrice: 0,
-    dolgDead: 73,
-    freeBeds: 24
-  },
-  {
-    department: "Reab",
-    planHuman: 392,
-    planRub: 32327489,
-    begAcc: 104,
-    admRec: 671,
-    totalStays: 113,
-    disCome: 613,
-    disTax: 24182815,
-    patOver: 17,
-    storColed: 9,
-    transHuman: 580,
-    transRub: 10414661,
-    medPrice: 0,
-    dolgDead: 73,
-    freeBeds: 24
-  },
-  {
-    department: "Palliativ",
-    planHuman: 392,
-    planRub: 32327489,
-    begAcc: 104,
-    admRec: 671,
-    totalStays: 113,
-    disCome: 613,
-    disTax: 24182815,
-    patOver: 17,
-    storColed: 9,
-    transHuman: 1057,
-    transRub: 74711040,
-    medPrice: 0,
-    dolgDead: 73,
-    freeBeds: 24
-  },
-]
+  //palaty s okoshkom
+  // 
+  //получение палат по отделению 1/
+  //распределение палат по времени(тут сложно) 2/
+  //вывод данных в таблице, клик по ним - вывод инфы по всем палатам отделения 3/
+  //
+  //фикс таблицы именно данных ?5/
+  //добавить кнопки быстрых добавление\убавления в палатах (в конце) -/ne nado
+  //lpu 6/
+  //and fix numbers on pagination 7/
+export
+  function DataTable(
+) {
+  const [isTables, setTables] = useState<DashInit[]>()
 
-export const columns: ColumnDef<Department>[] = [
-  /*{
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },*/
-  {
-    accessorKey: "department",
-    header: "Отделение",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("department")}</div>
-    ),
-  },
-  {
-    accessorKey: "planHuman",
-    header: "План (чел)",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("planHuman")}</div>
-    ),
-  },
-  {
-    accessorKey: "planRub",
-    header: "План (руб)",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("planRub")}</div>
-    ),
-  },
-  {
-    accessorKey: "begAcc",
-    header: "Состояло на начало месяца (чел)",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("begAcc")}</div>
-    ),
-  },
-  {
-    accessorKey: "admRec",
-    header: "Поступили в приёмное, накопительным (чел)",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("admRec")}</div>
-    ),
-  },
-  {
-    accessorKey: "totalStays",
-    header: "Всего находится в стационаре (чел)",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("totalStays")}</div>
-    ),
-  },
-  {
-    accessorKey: "disCome",
-    header: "Выбыло, накопительным (чел)",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("disCome")}</div>
-    ),
-  },
-  {
-    accessorKey: "disTax",
-    header: "Выбывшие к оплате",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("disTax")}</div>
-    ),
-  },
-  {
-    accessorKey: "patOver",
-    header: "Пациенты свыше 10 дней (чел.)",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("patOver")}</div>
-    ),
-  },
-  {
-    accessorKey: "storColed",
-    header: "Не закрыто историй в Барсе (шт.)",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("storColed")}</div>
-    ),
-  },
-  {
-    accessorKey: "transHuman",
-    header: "Передано оплату в ФОМС (шт.)",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("transHuman")}</div>
-    ),
-  },
-  {
-    accessorKey: "transRub",
-    header: "Передано оплату в ФОМС  (руб.) по КСГ",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("transRub")}</div>
-    ),
-  },
-  {
-    accessorKey: "medPrice",
-    header: "Средняя стоимость лечения",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("medPrice")}</div>
-    ),
-  },
-  {
-    accessorKey: "dolgDead",
-    header: "Долг по умершим",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("dolgDead")}</div>
-    ),
-  },
-  {
-    accessorKey: "freeBeds",
-    header: "Свободных коек",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("freeBeds")}</div>
-    ),
-  },
-  /*{
-    accessorKey: "email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
-  },
-  {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
-
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount)
-
-      return <div className="text-right font-medium">{formatted}</div>
-    },
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const payment = row.original
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.department)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
-    },
-  },*/
-]
-
-const tableDashData: dash[] = [
-  {
-    date: new Date(2023, 10, 1),
-    table: data
-  },
-  {
-    date: new Date(2023, 10, 5),
-    table: data
-  },
-  {
-    date: new Date(2023, 10, 8),
-    table: data
-  },
-  {
-    date: new Date(2023, 10, 12),
-    table: data
-  },
-  {
-    date: new Date(2023, 10, 16),
-    table: data
-  },
-  {
-    date: new Date(2023, 10, 20),
-    table: data
-  },
-  {
-    date: new Date(2023, 10, 21),
-    table: data
+  //getting data
+  let getTables = async () => {
+    try {
+      let result = await axios.get('/api/dash')
+      if (result.status === 200) {
+        //toast.success(`таблицы код ${result.status}`)
+        let resultDep = await axios.get('/api/dash/department')
+        //toast.success(`отделения код ${resultDep.status}`)
+        if(resultDep.data && result.data) {
+          let filteredDashes = result.data.map((item: Dash) => {
+            return {...item, table: resultDep.data.filter((dep: DashDepartment) => {
+              return dep.dashId === item.id
+            })}
+          })
+          setTables(filteredDashes.reverse())
+        }
+      }
+    } catch {
+      console.log('error')
+    }
   }
-]
-
-export function DataTableDemo() {
-  const [isDash, setDash] = React.useState<dash>()
-
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
-
-
-  const table = useReactTable({
-    data,
-    columns,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
-  })
-
-  React.useEffect(() => {
-    if(tableDashData)
-    setDash(tableDashData[tableDashData.length - 1])
+  useEffect(() => {
+    getTables()
   }, [])
 
-  console.log(isDash)
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [itemsPerPage, setItemsPerPage] = useState(1)
+  const [departmentNow, setDepartmentNow] = useState()
+  
+
+  const lastItemIndex = currentPage * itemsPerPage
+  const firstItemIndex = lastItemIndex - itemsPerPage
+  /*const*/let currentItems = isTables?.slice(firstItemIndex, lastItemIndex)
+
+  //need refactoring
+  const setupReduce = (table: DashDepartment[], name: string): number => {
+   let withoutPal = table.filter((item) => { return item.name.toLowerCase() === "Паллиатив".toLowerCase()} )
+    switch(name) {
+      case "planHuman":
+        let resultPlanHuman = table.reduce((sum, current) => {
+          if(typeof current.planHuman === "number")
+            return sum + current.planHuman
+          else return 0
+        }, 0)
+
+        if(resultPlanHuman && withoutPal && withoutPal[0].planHuman)
+          return resultPlanHuman - withoutPal[0].planHuman
+        else return resultPlanHuman
+
+      case "planRub":
+        let resultPlanRub = table.reduce((sum, current) => {
+          if(typeof current.planRub === "number")
+            return sum + current.planRub
+          else return 0
+        }, 0)
+
+        if(resultPlanRub && withoutPal && withoutPal[0].planRub)
+          return resultPlanRub - withoutPal[0].planRub
+        else return resultPlanRub
+
+        case "begAcc":
+          let resultBegAcc = table.reduce((sum, current) => {
+            if(typeof current.begAcc === "number")
+              return sum + current.begAcc
+            else return 0
+          }, 0)
+  
+          if(resultBegAcc && withoutPal && withoutPal[0].begAcc)
+            return resultBegAcc - withoutPal[0].begAcc
+          else return resultBegAcc
+
+        case "admRec":
+          let resultAdmRec = table.reduce((sum, current) => {
+            if(typeof current.admRec === "number")
+              return sum + current.admRec
+            else return 0
+          }, 0)
+
+          if(resultAdmRec && withoutPal && withoutPal[0].admRec)
+            return resultAdmRec - withoutPal[0].admRec
+          else return resultAdmRec
+  
+        case "disCome":
+          let resultDisCome = table.reduce((sum, current) => {
+            if(typeof current.disCome === "number")
+              return sum + current.disCome
+            else return 0
+          }, 0)
+
+          if(resultDisCome && withoutPal && withoutPal[0].disCome)
+            return resultDisCome - withoutPal[0].disCome
+          else return resultDisCome
+
+        case "disTax":
+          let resultDisTax = table.reduce((sum, current) => {
+            if(typeof current.disTax === "number")
+              return sum + current.disTax
+            else return 0
+          }, 0)
+
+          if(resultDisTax && withoutPal && withoutPal[0].disTax)
+            return resultDisTax - withoutPal[0].disTax
+          else return resultDisTax
+
+        case "patOver":
+          let resultPatOver = table.reduce((sum, current) => {
+            if(typeof current.patOver === "number")
+              return sum + current.patOver
+            else return 0
+        }, 0)
+
+        if(resultPatOver && withoutPal && withoutPal[0].patOver)
+          return resultPatOver - withoutPal[0].patOver
+        else return resultPatOver
+
+          case "storColed":
+            let resultStorColed = table.reduce((sum, current) => {
+              if(typeof current.storColed === "number")
+                return sum + current.storColed
+              else return 0
+          }, 0)
+  
+          if(resultStorColed && withoutPal && withoutPal[0].storColed)
+            return resultStorColed - withoutPal[0].storColed
+          else return resultStorColed
+
+          case "transHuman":
+            let resultTransHuman = table.reduce((sum, current) => {
+              if(typeof current.transHuman === "number")
+                return sum + current.transHuman
+              else return 0
+          }, 0)
+    
+          if(resultTransHuman && withoutPal && withoutPal[0].transHuman)
+            return resultTransHuman - withoutPal[0].transHuman
+          else return resultTransHuman
+
+          case "transRub":
+            let resultTransRub = table.reduce((sum, current) => {
+              if(typeof current.transRub === "number")
+                return sum + current.transRub
+              else return 0
+          }, 0)
+      
+          if(resultTransRub && withoutPal && withoutPal[0].transRub)
+            return resultTransRub - withoutPal[0].transRub
+          else return resultTransRub
+
+          case "medPrice":
+            let resultMedPrice = table.reduce((sum, current) => {
+              if(typeof current.medPrice === "number")
+                return sum + current.medPrice
+              else return 0
+          }, 0)
+        
+          if(resultMedPrice && withoutPal && withoutPal[0].medPrice)
+            return resultMedPrice - withoutPal[0].medPrice
+          else return resultMedPrice
+
+          case "dolgDead":
+            let resultDolgDead = table.reduce((sum, current) => {
+              if(typeof current.dolgDead === "number")
+                return sum + current.dolgDead
+              else return 0
+          }, 0)
+        
+          if(resultDolgDead && withoutPal && withoutPal[0].dolgDead)
+            return resultDolgDead - withoutPal[0].dolgDead
+          else return resultDolgDead
+
+          default: 
+            return 0
+      }
+  }
+  //mapping object
+  const onCreateLPU = (table: DashDepartment[]) => {
+    let lpu: DashDepartment = {
+      id: 100,
+      name: "ЛПУ",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      planHuman: setupReduce(table, 'planHuman'),
+      planRub: setupReduce(table, 'planRub'),
+      begAcc: setupReduce(table, 'begAcc'),
+      admRec: setupReduce(table, 'admRec'),
+      disCome: setupReduce(table, 'disCome'),
+      disTax: setupReduce(table, 'disTax'),
+      patOver: setupReduce(table, 'patOver'),
+      storColed: setupReduce(table, 'storColed'),
+      transHuman: setupReduce(table, 'transHuman'),
+      transRub: setupReduce(table, 'transRub'),
+      medPrice: setupReduce(table, 'medPrice'),
+      dolgDead: setupReduce(table, 'dolgDead'),
+      dashId: table?table[0].id: 15
+    }
+    //console.log(lpu)
+    return lpu
+  }
+
+ useEffect(() => {
+    const timer = setInterval(() => {
+      getTables
+      console.log('update')
+    }, 10000)
+
+    return () => {
+      clearInterval(timer)
+    }
+  }, [])
+
+
+
   return (
-    <div className="w-full ml-4 mr-4">
-      <div className="flex justify-center pb-6 pt-2">
-        <DatePicker />
-      </div>
-      <div className="flex p-2">
-        <Charts data={data} />
-      </div>
-      <div className="flex items-center py-4">
+    <div className="w-full ml-2 mr-6">
+      {
+        currentItems && isTables
+        ?
+        <>
+          {
+            currentItems.map((item) => {
+              return <div key={item.id}>
+                        <DashPagination
+            totalItems={isTables.length} 
+            currentPage={currentPage}
+            itemsPerPage={itemsPerPage}
+            setCurrentPage={setCurrentPage}
+            date={item.date}
+            dashDates={isTables?.map((el) => {
+              return {date:new Date(el.date), id: el.id }
+            })}
+          />
+                {/*<DatePicker
+                  date={item.date}
+                  setCurrentPage={setCurrentPage}
+                  dashDates={isTables?.map((el) => {
+                    return {date:new Date(el.date), id: el.id }
+                  })}
+                />*/}
 
-        <Input
-          placeholder="фильтр отделений..."
-          value={(table.getColumn("department")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("department")?.setFilterValue(event.target.value)
+                <DashItem data={item.table/*.splice(item.table.length - 1, 0, onCreateLPU(item.table)) */}
+                 stateLpu={onCreateLPU(item.table)} date={item.date}
+                 />
+              </div>
+            })
           }
-          className="max-w-sm"
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Колонки <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.columnDef.header?.toString()}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
 
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
-      </div>
+        </>
+        :
+        <DashSkeleton/>
+      }
     </div>
   )
 }
 
-//       <div className="flex-1 text-sm text-muted-foreground">
-//{table.getFilteredSelectedRowModel().rows.length} of{" "}
-//{table.getFilteredRowModel().rows.length} row(s) selected.
-//</div>
+/*<p>{currentPage}</p>*/
+
+{
+  /*
+    isTables && isDash
+    ?
+    <>
+      {format(new Date(isDash.date), "P", {locale: ru})}
+      <DashItem data={isDash.table} isStateLpu={isStateLpu} />
+      <DashPagination items={pagesWithData.map((table) => {
+        return {date: table.date, count: table.count}
+      })} 
+      current={currentPage}
+      onPageChange={onPageChange}
+      />
+    </>
+    :
+    <DashSkeleton/>
+  */
+  }
+{
+  /**          <DatePicker date={date} setDate={setDate} previous={previous} next={next} testDate={isDash.date}
+    dashDates={isTables?.map((el) => {
+      return new Date(el.date)
+    })}
+  />
+  {isIndex} */
+}
+
+//Version 3?
+/*"use client"
+
+import * as React from "react"
+import axios from "axios"
+import { useCallback, useEffect, useState } from "react"
+import { Dash, DashDepartment } from "@prisma/client"
+import toast from "react-hot-toast"
+import { DashItem } from "./DashItem"
+import { DashSkeleton } from "./DashSkeleton"
+import { DashPagination, paginate } from "./DashPagination"
+import format from "date-fns/format"
+import ru from "date-fns/locale/ru"
+
+export
+  interface DashInit extends Dash {
+    table: DashDepartment[]
+}
+
+export
+  function DataTable(
+) {
+  const [isTables, setTables] = useState<DashInit[]>()
+  const [isDash, setDash] = useState<DashInit>()
+  const [isStateLpu, setStateLpu] = useState<DashDepartment>()
+  const [isPaginatedPosts, setPaginatedPosts] = useState<any[]>([])
+
+  //getting data
+  let getTables = async () => {
+    try {
+      let result = await axios.get('/api/dash')
+      if (result.status === 200) {
+        toast.success(`таблицы код ${result.status}`)
+        let resultDep = await axios.get('/api/dash/department')
+        toast.success(`отделения код ${resultDep.status}`)
+        if(resultDep.data && result.data) {
+          console.log(resultDep.status)
+          let filteredDashes = result.data.map((item: Dash) => {
+            return {...item, table: resultDep.data.filter((dep: DashDepartment) => {
+              return dep.dashId === item.id
+            })}
+          })
+          console.log(filteredDashes)
+          setTables(filteredDashes)
+        }
+      }
+    } catch {
+      console.log('error')
+    }
+  }
+  useEffect(() => {
+    getTables()
+  }, [])
+
+  //pagination
+  let pagesCount: number
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const pageSize = 1
+  const [pagesWithData, setPagesWithData] = useState<any[]>([])
+
+  const onPageChange = (page: any) => {
+    setCurrentPage(page)
+  }
+
+  /*
+  useEffect(() => {
+    if(isTables)
+      setDash(isTables[currentPage - 1])
+    if(isTables)
+      pagesCount = isTables.map((table) => {
+        return table.date
+      }).length
+      console.log('pages count' ,pagesCount)
+
+      const pages = Array.from({ length: pagesCount}, (_, i) => i + 1)
+      setPagesWithData( pages.map((item, index) => {
+        if(isTables)
+          return {count: item, date: isTables[index].date, table: isTables[index].table, id: isTables[index].id }
+      }))
+      console.log( 'pages with data' ,pagesWithData)
+  }, [isTables])
+  const onPageChange = (action: 'prev' | 'next' | 'date', count: number) => {
+
+    /*switch (action) {
+
+      
+      case 'prev':
+        if(currentPage - 1 !== undefined) {
+          setCurrentPage(currentPage - 1)
+          if(isTables) {
+            setDash(isTables[currentPage])
+          }
+        }
+        break
+      case 'next':
+        if(currentPage + 1 === undefined) {
+          setCurrentPage(currentPage + 1)
+          if(isTables) {
+            setDash(isTables[currentPage])
+          }
+        }
+        break
+      default: 
+      setCurrentPage(currentPage + 1)
+    if(isTables && isTables[currentPage])
+    setDash(isTables[currentPage])
+    break
+    }
+    //console.log(currentPage, 'current', pagesCount, 'pages count')
+    if(currentPage !== pagesCount) {
+      setCurrentPage(count)
+    }
+    
+    if(isTables && isTables[currentPage])
+    setDash(isTables[currentPage])
+  }
+ 
+
+  let paginatedPosts: any[]
+  useEffect(() => {
+    if(isTables)
+      setPaginatedPosts(paginate(testArray, currentPage, pageSize))
+  }, [isTables])
+    console.log(isPaginatedPosts)
+
+
+    const testArray = [2,342,4354,56,564,34,21,23,2,345,56,68,564,43,423,32,23,54,6,6556,56,65,235,34,34,34,2231234,54,57,67]
+
+  return (
+    <div className="w-full ml-4 mr-4">
+
+      {isPaginatedPosts?
+      isPaginatedPosts.map((item) => {
+        return <>
+        <p>{currentPage}</p>
+        <p>{item}</p>
+        <p> {/*item.date.toString()}</p>
+        </>
+      }):
+      null}
+      {isTables
+      ?
+      <DashPagination
+      items={testArray.length} 
+      current={currentPage}
+      pageSize={pageSize}
+      onPageChange={onPageChange}
+      />
+      :
+        null
+      }
+    </div>
+  )
+}*/
+
+//Vesion 2
+/*"use client"
+
+import * as React from "react"
+import axios from "axios"
+import { useCallback, useEffect, useState } from "react"
+import { Dash, DashDepartment } from "@prisma/client"
+import toast from "react-hot-toast"
+import { DashItem } from "./DashItem"
+import { DashSkeleton } from "./DashSkeleton"
+import { DashPagination } from "./DashPagination"
+import format from "date-fns/format"
+import ru from "date-fns/locale/ru"
+
+export
+  interface DashInit extends Dash {
+    table: DashDepartment[]
+}
+
+export
+  function DataTable(
+) {
+  const [isTables, setTables] = useState<DashInit[]>()
+  const [isDash, setDash] = useState<DashInit>()
+  const [isStateLpu, setStateLpu] = useState<DashDepartment>()
+
+  //getting data
+  let getTables = async () => {
+    try {
+      let result = await axios.get('/api/dash')
+      if (result.status === 200) {
+        toast.success(`таблицы код ${result.status}`)
+        let resultDep = await axios.get('/api/dash/department')
+        toast.success(`отделения код ${resultDep.status}`)
+        if(resultDep.data && result.data) {
+          console.log(resultDep.status)
+          let filteredDashes = result.data.map((item: Dash) => {
+            return {...item, table: resultDep.data.filter((dep: DashDepartment) => {
+              return dep.dashId === item.id
+            })}
+          })
+          console.log(filteredDashes)
+          setTables(filteredDashes)
+        }
+      }
+    } catch {
+      console.log('error')
+    }
+  }
+  useEffect(() => {
+    getTables()
+  }, [])
+
+  //pagination
+  let pagesCount: number
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [pagesWithData, setPagesWithData] = useState<any[]>([])
+
+  useEffect(() => {
+    if(isTables)
+      setDash(isTables[currentPage - 1])
+    if(isTables)
+      pagesCount = isTables.map((table) => {
+        return table.date
+      }).length
+      console.log('pages count' ,pagesCount)
+
+      const pages = Array.from({ length: pagesCount}, (_, i) => i + 1)
+      setPagesWithData( pages.map((item, index) => {
+        if(isTables)
+          return {count: item, date: isTables[index].date, table: isTables[index].table, id: isTables[index].id }
+      }))
+      console.log( 'pages with data' ,pagesWithData)
+  }, [isTables])
+
+  const onPageChange = (action: 'prev' | 'next' | 'date', count: number) => {
+
+    switch (action) {
+
+      
+      case 'prev':
+        if(currentPage - 1 !== undefined) {
+          setCurrentPage(currentPage - 1)
+          if(isTables) {
+            setDash(isTables[currentPage])
+          }
+        }
+        break
+      case 'next':
+        if(currentPage + 1 === undefined) {
+          setCurrentPage(currentPage + 1)
+          if(isTables) {
+            setDash(isTables[currentPage])
+          }
+        }
+        break
+      default: 
+      setCurrentPage(currentPage + 1)
+    if(isTables && isTables[currentPage])
+    setDash(isTables[currentPage])
+    break
+    }
+    //console.log(currentPage, 'current', pagesCount, 'pages count')
+    if(currentPage !== pagesCount) {
+      setCurrentPage(count)
+    }
+    
+    if(isTables && isTables[currentPage])
+    setDash(isTables[currentPage])
+  }
+
+  return (
+    <div className="w-full ml-4 mr-4">
+      {
+        isTables && isDash
+        ?
+        <>
+          {format(new Date(isDash.date), "P", {locale: ru})}
+          <DashItem data={isDash.table} isStateLpu={isStateLpu} />
+          <DashPagination items={pagesWithData.map((table) => {
+            return {date: table.date, count: table.count}
+          })} 
+          current={currentPage}
+          onPageChange={onPageChange}
+          />
+        </>
+        :
+        <DashSkeleton/>
+      }
+    </div>
+  )
+}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Version 1
+  //если дэш поставили ищем его индекс
+ /*
+   //create Lpu department
+  const isLpu = useCallback((deps: DashDepartment[] | undefined ) => {
+    if(!deps) return undefined
+
+    let withoutPal = deps.filter((dep) => {
+      return dep.name.toLowerCase() !== "Паллиатив".toLowerCase()
+    })
+  useEffect(() => {
+    if(isDash)
+    setStateLpu(isLpu(isDash.table))
+  }, [isDash, isLpu])
+    if(!withoutPal) return undefined
+    //@ts-ignore
+    let LpuDep: DashDepartment = {
+      id: 0,
+      name: "по ЛПУ",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      planHuman: isValue(withoutPal.map((dep) => {return dep.planHuman})),
+      planRub:   isValue(withoutPal.map((dep) => {return dep.planRub})),
+      begAcc:    isValue(withoutPal.map((dep) => {return dep.begAcc})),
+      admRec:    isValue(withoutPal.map((dep) => {return dep.admRec})),
+      disCome:   isValue(withoutPal.map((dep) => {return dep.disCome})),
+      disTax:    isValue(withoutPal.map((dep) => {return dep.disTax})),
+      patOver:   isValue(withoutPal.map((dep) => {return dep.patOver})),
+      storColed: isValue(withoutPal.map((dep) => {return dep.storColed})),
+      transHuman:isValue(withoutPal.map((dep) => {return dep.transHuman})),
+      transRub:  isValue(withoutPal.map((dep) => {return dep.transRub})),
+      medPrice:  isValue(withoutPal.map((dep) => {return dep.medPrice})),
+      dolgDead:  isValue(withoutPal.map((dep) => {return dep.dolgDead})),
+      dashId:    isDash? isDash.id : 0
+    }
+
+    return LpuDep
+  },[isDash])
+
+  const isValue = (lpuValues: (number | null) []): number => {
+    if(!lpuValues) return 0
+
+    let lpuValue = lpuValues.reduce((sum: number, current) => {
+      //@ts-ignore
+      return sum + current
+    }, 0)
+
+  return lpuValue
+  }
+ 
+ useEffect(() => {
+    onExist()
+  },[onExist])*/
+ /*const onExist = useCallback(() => {
+    if(isTables && isDash) {
+      setIndex(isTables.findIndex(el => el.id === isDash.id)) 
+    }
+  }, [isDash, isTables])
+  //console.log(isIndex)
+  //buttons change table data
+  const next = () => {
+    if(typeof isIndex === 'number' && isIndex !== -1 && isTables) {
+      if(isIndex < isTables.length - 1) {
+        setIndex(isIndex + 1)
+        setDash(isTables[isIndex])
+        console.log('dash posle nexta', isDash)
+      }
+    }
+  }
+  const previous = (/**react.mouseevent ) => {
+    if(isIndex && isIndex !== -1 && isTables) {
+      if(isIndex !== 0) {
+        setIndex(isIndex - 1)
+        setDash(isTables[isIndex])
+        //tut che to poticat podergat
+        console.log('dash posle previousa', isDash)
+      }//else setDisabledPrev true
+    }
+  }
+  const datePick = () => {
+    /*
+    let res = isTables.findIndex(el => el.date.toString() === date?.toString())
+    if(res !== -1) {
+     //@ts-ignore
+     setDash(isTables[res])
+    }
+    if(isIndex && isIndex !== -1 && isTables) {
+      if(isIndex !== 0) {
+        setIndex(isIndex - 1)
+        setDash(isTables[isIndex])
+        console.log('dash posle previousa', isDash)
+      }
+    }
+        if(typeof isIndex === 'number' && isIndex !== -1 && isTables) {
+      if(isIndex < isTables.length - 1) {
+        setIndex(isIndex + 1)
+        setDash(isTables[isIndex])
+        console.log('dash posle nexta', isDash)
+      }
+    }
+    
+  }*/
+
+/*
+"use client"
+import * as React from "react"
+import { DatePicker } from "./DatePicker"
+import axios from "axios"
+import { useCallback, useEffect, useState } from "react"
+import { Dash, DashDepartment } from "@prisma/client"
+import toast from "react-hot-toast"
+import { DashItem } from "./DashItem"
+import { DashSkeleton } from "./DashSkeleton"
+import { DashPagination } from "./DashPagination"
+export
+  interface DashInit extends Dash {
+    table: DashDepartment[]
+}
+export
+  function DataTable(
+) {
+  const [isTables, setTables] = useState<DashInit[]>()
+  const [isDash, setDash] = useState<DashInit>()
+  const [date, setDate] = useState<Date>()
+  const [isIndex, setIndex] = useState<number>()
+  const [isStateLpu, setStateLpu] = useState<DashDepartment>()
+  //getting data
+  let getTables = async () => {
+    try {
+      let result = await axios.get('/api/dash')
+      if (result.status === 200) {
+        toast.success(`таблицы код ${result.status}`)
+        let resultDep = await axios.get('/api/dash/department')
+        toast.success(`отделения код ${resultDep.status}`)
+        if(resultDep.data && result.data) {
+          console.log(resultDep.status)
+          let filteredDashes = result.data.map((item: Dash) => {
+            return {...item, table: resultDep.data.filter((dep: DashDepartment) => {
+              return dep.dashId === item.id
+            })}
+          })
+          console.log(filteredDashes)
+          setTables(filteredDashes)
+        }
+      }
+    } catch {
+      console.log('error')
+    }
+  }
+
+  //finding index
+  /*const onExist = (tables: DashInit[] | undefined) => {
+    if(tables && isDash) {
+      setIndex(tables.findIndex(el => el.id === isDash.id)) 
+    }
+  }
+
+  const onExist = useCallback(() => {
+    if(isTables && isDash) {
+      setIndex(isTables.findIndex(el => el.id === isDash.id)) 
+    }
+  }, [isDash, isTables])
+  //console.log(isIndex)
+  //buttons change table data
+  const next = () => {
+    if(typeof isIndex === 'number' && isIndex !== -1 && isTables) {
+      if(isIndex < isTables.length - 1) {
+        setIndex(isIndex + 1)
+        setDash(isTables[isIndex])
+        console.log('dash posle nexta', isDash)
+      }
+    }
+  }
+  const previous = (/**react.mouseevent ) => {
+    if(isIndex && isIndex !== -1 && isTables) {
+      if(isIndex !== 0) {
+        setIndex(isIndex - 1)
+        setDash(isTables[isIndex])
+        //tut che to poticat podergat
+        console.log('dash posle previousa', isDash)
+      }//else setDisabledPrev true
+    }
+  }
+  const datePick = () => {
+    /*
+    let res = isTables.findIndex(el => el.date.toString() === date?.toString())
+    if(res !== -1) {
+     //@ts-ignore
+     setDash(isTables[res])
+    }
+    if(isIndex && isIndex !== -1 && isTables) {
+      if(isIndex !== 0) {
+        setIndex(isIndex - 1)
+        setDash(isTables[isIndex])
+        console.log('dash posle previousa', isDash)
+      }
+    }
+        if(typeof isIndex === 'number' && isIndex !== -1 && isTables) {
+      if(isIndex < isTables.length - 1) {
+        setIndex(isIndex + 1)
+        setDash(isTables[isIndex])
+        console.log('dash posle nexta', isDash)
+      }
+    }
+    
+  }
+  //create Lpu department
+  const isLpu = useCallback((deps: DashDepartment[] | undefined ) => {
+    if(!deps) return undefined
+
+    let withoutPal = deps.filter((dep) => {
+      return dep.name.toLowerCase() !== "Паллиатив".toLowerCase()
+    })
+
+    if(!withoutPal) return undefined
+    //@ts-ignore
+    let LpuDep: DashDepartment = {
+      id: 0,
+      name: "по ЛПУ",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      planHuman: isValue(withoutPal.map((dep) => {return dep.planHuman})),
+      planRub:   isValue(withoutPal.map((dep) => {return dep.planRub})),
+      begAcc:    isValue(withoutPal.map((dep) => {return dep.begAcc})),
+      admRec:    isValue(withoutPal.map((dep) => {return dep.admRec})),
+      disCome:   isValue(withoutPal.map((dep) => {return dep.disCome})),
+      disTax:    isValue(withoutPal.map((dep) => {return dep.disTax})),
+      patOver:   isValue(withoutPal.map((dep) => {return dep.patOver})),
+      storColed: isValue(withoutPal.map((dep) => {return dep.storColed})),
+      transHuman:isValue(withoutPal.map((dep) => {return dep.transHuman})),
+      transRub:  isValue(withoutPal.map((dep) => {return dep.transRub})),
+      medPrice:  isValue(withoutPal.map((dep) => {return dep.medPrice})),
+      dolgDead:  isValue(withoutPal.map((dep) => {return dep.dolgDead})),
+      dashId:    isDash? isDash.id : 0
+    }
+
+    return LpuDep
+  },[isDash])
+
+  const isValue = (lpuValues: (number | null) []): number => {
+    if(!lpuValues) return 0
+
+    let lpuValue = lpuValues.reduce((sum: number, current) => {
+      //@ts-ignore
+      return sum + current
+    }, 0)
+
+  return lpuValue
+  }
+
+  //получаем таблицы
+  useEffect(() => {
+    getTables()
+  }, [])
+  //если получили таблицы ставим дэш
+  useEffect(() => {
+    if(isTables && isTables[isTables.length - 1].table)
+    setDash({...isTables[isTables.length - 1]/*, table: [...isTables[isTables.length - 1].table, isLpu(isTables[isTables.length - 1].table)]})
+  }, [isTables])
+  //если дэш поставили ищем его индекс
+  useEffect(() => {
+    onExist()
+  },[onExist])
+
+  useEffect(() => {
+    if(isStateLpu && isDash)
+      setDash({...isDash, table: [...isDash.table, isStateLpu]})
+    //if(isTables && isDash) {}
+      //console.log('index', onExist())
+      //setIndex(onExist()
+    //setDate(isDash?.date)
+    //setIndex(onExist())
+    //onExist(isTables)
+      //console.log('dash', isDash)
+  }, [/*isTables, isDash, onExist*//*, isDash?.date])useEffect(() => {if(isDash)setStateLpu(isLpu(isDash.table))//console.log(isLpu(isDash.table))//setDash(isDash?.table.splice(isDash.table.length - 2, 0 , isLpu(isDash.table)))}, [isDash, isLpu])  /*useEffect(() => {if(isTestDep && isDash)setDash({id: isDash.id,date: isDash.date,table: isDash.table})}, [isTables])//ПАГИНАЦИЯ НОРМАЛЬНАЯ ДОЛЖНА БЫТЬ return (<div className="w-full ml-4 mr-4">{/*date && isTables && isDash?<><DatePicker date={date} setDate={setDate} previous={previous} next={next} testDate={isDash.date}dashDates={isTables?.map((el) => {return new Date(el.date)})}/>{isIndex}<DashItem data={isDash.table} isStateLpu={isStateLpu} /><DashPagination /></>:<DashSkeleton/>}</div>)}
+*/

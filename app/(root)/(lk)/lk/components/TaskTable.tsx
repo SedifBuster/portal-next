@@ -79,7 +79,7 @@ export function TaskTable() {
                                 "
                             >
                                 {isTasks?.map((task, index) => {
-                                    return <Draggable draggableId={task.id.toString()} index={index}>
+                                    return <Draggable draggableId={task.id.toString()} key={task.id} index={index}>
                                         {provided => (
                                             <div {...provided.draggableProps}
                                                  {...provided.dragHandleProps}

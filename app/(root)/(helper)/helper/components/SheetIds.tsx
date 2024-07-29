@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 
 export function SheetIds() {
 
-    console.log(localStorage.getItem('id'))
+    /*console.log(localStorage.getItem('id'))
 
     const localIds = localStorage.getItem('id[]')
 
@@ -21,7 +21,7 @@ export function SheetIds() {
     const onClear = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault()
         localStorage.removeItem('id[]')
-    }
+    }*/
 
     return (
         <div 
@@ -31,7 +31,7 @@ export function SheetIds() {
                 gap-4
             "
         >
-            <div>
+            {/*<div>
                 <h5
                     className="
                         pt-2
@@ -39,7 +39,7 @@ export function SheetIds() {
                 >История</h5>
                 <ul>
                     {isIds.map((id) => {
-                        return <li>{id}</li>
+                        return <li key={id}>{id}</li>
                     })}
                 </ul>
 
@@ -65,7 +65,7 @@ export function SheetIds() {
             onClick={onClear}
             variant="secondary"
             >
-                очистить историю</Button>
+                очистить историю</Button>*/}
         </div>
     )
 }

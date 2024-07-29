@@ -8,18 +8,18 @@ export
   try {
     const url = request.url
     let depId = url.split("").reverse().join("").split('/', 1)[0].split("").reverse().join("")
-    const ward = await prisma.ward.findUnique({
+    const wards = await prisma.dashWard.findMany({
       where: {
-        id : Number(depId)
+        dashDepId : Number(depId)
       }
     })
-    if(!depId || !ward) {
-      return new NextResponse('Missing info', { status: 400 })
+    if( !depId || !wards ) {
+      return new NextResponse( 'Missing info', { status: 400 } )
     }
 
-    return NextResponse.json(ward)
+    return NextResponse.json(wards)
   } catch ( error ) {
-    console.log( error, 'WARD_GETONE_ERROR' )
+    console.log( error, 'PROFILE_GETONE_ERROR' )
     return new NextResponse( 'Internal Error', { status: 500 } )
   }
 }
