@@ -423,7 +423,8 @@ export
     data:DashDepartment[],
     stateLpu?: DashDepartment | undefined,
     date: Date
-  }) {
+  }
+) {
     const [department, setDepartment] = useState<Department>()
     const [profile, setProfile] = useState<Profile>()
     const [wards, setWards] = useState<Ward[]>([])
@@ -997,11 +998,11 @@ export
     :
       null
   }
-    <div className="w-full mr-2 ml-2">
+    <div className="w-full">
     {
      // tur bil filter, teper on vnizu
     } 
-      <div className="rounded-md border">
+      <div className="rounded-md border ml-2 mr-2">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -1159,7 +1160,7 @@ export
                     isData.map((dep: any) => {
                       let takenWards: any = []
                       if( dep.wards.length > 0)
-                      return <>
+                      return <div key={dep.id}>
                         <Label className="">{dep.name}</Label>
                         <Table>
                             <TableHeader>
@@ -1201,7 +1202,7 @@ export
                       })
 
                       if(takenId && takenId[0]) {
-                        console.log(takenId.id)
+                        //console.log(takenId.id)
                         taken = dep.wards.filter((ward: DashWard) => {
                           return Number(ward.reserve) === takenId[0].id
                         })
@@ -1212,7 +1213,7 @@ export
                     if(taken && row)
                       //console.log('row',row)
                     takenWards = [...takenWards, ...taken]
-                    console.log(takenWards)
+                    //console.log(takenWards)
 
                    }
 
@@ -1280,7 +1281,7 @@ export
                 </TableRow>
               </TableFooter>
             </Table>
-                            </>
+                            </div>
                             else <Label>sad</Label>
                     })
                     :
