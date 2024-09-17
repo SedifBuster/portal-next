@@ -15,14 +15,6 @@ import {
 } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
   Table,
   TableBody,
   TableCaption,
@@ -33,9 +25,10 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { DashDepartment, DashWard, Department, Profile, Ward } from "@prisma/client"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown } from "lucide-react"
 import { Charts } from "./Charts"
 import axios from "axios"
+
 import toast from "react-hot-toast"
 import { useEffect, useState } from "react"
 import { DashItemRow } from "./DashItemRow"
@@ -44,11 +37,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { HiOutlineRectangleStack } from "react-icons/hi2"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
 import clsx from "clsx"
-import { UserCard } from "@/app/(root)/(lk)/lk/components/Card"
-import { CreateWardSheet } from "@/app/(root)/(lk)/lk/components/CreateWardSheet"
-import { UserWard } from "@/app/(root)/(lk)/lk/components/Ward"
 import { DashWardExplore } from "@/app/(root)/(lk)/lk/components/DashWardExplore"
 
 interface DashWithWards extends DashDepartment {

@@ -223,6 +223,7 @@ export
   }
 
   useEffect(() => {
+    console.log('update')
     getTables(onGetDashs, onGetDeps)
 
     const timer = setInterval(() => getTables(onGetDashs, onGetDeps), 10000)
@@ -235,7 +236,6 @@ export
       <>
         {
           currentItems.map((item) => {
-
             return <div key={item.id}>
                       <DashPagination
                         totalItems={isTables.length} 

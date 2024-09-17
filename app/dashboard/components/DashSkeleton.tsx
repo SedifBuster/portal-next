@@ -9,5 +9,5 @@ export
 
   }) {
 
-  return <Skeleton className={`w-11/12 h-full rounded-lg`} />
+  return <Skeleton className={`w-full h-full rounded-lg`} />
 }
