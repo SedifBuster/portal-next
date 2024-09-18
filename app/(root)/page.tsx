@@ -23,6 +23,8 @@ export default function Home() {
         grid grid-cols-3 gap-4 h-[40vh]
         "
         >
+
+          
           <Link href={'http://192.168.0.148:3000/table'} target="blank" className="
           border h-[15vh] rounded-md p-4 flex justify-center content-center
           shadow-md hover:bg-green-100 
@@ -30,11 +32,14 @@ export default function Home() {
           >
             <p className="p-2 text-lg font-semibold">Журнал нежелательных случаев</p>
           </Link>
-          <Link href={''} className="
+
+
+
+          <Link href={"file://c/"} className="
           border h-[15vh] rounded-md p-4 flex justify-center content-center
           shadow-md hover:bg-green-100 
           "
-          >
+          >{/*\\192.168.0.5\база знаний*/}
             <p className="p-2 text-lg font-semibold">База знаний</p>
           </Link>
           <Link href={'http://192.168.0.148:5006/'} target="blank" className="
@@ -62,6 +67,9 @@ export default function Home() {
 
 
         </div>
+
+
+
 
         <div className="basis-2/5 h-[80vh] rounded-md p-4 border-green-100 border-2 shadow-sm overflow-auto flex flex-col gap-4">
 
@@ -108,7 +116,7 @@ export default function Home() {
     )
   }
 
-
+  
   /**<Label className="
         mt-4 text-xl block text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-pink-500 to-blue-500
         ">
