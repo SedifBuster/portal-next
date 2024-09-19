@@ -34,6 +34,7 @@ import { useForm } from "react-hook-form"
 import { Label } from "@/components/ui/label"
 import { signOut } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { Textarea } from "@/components/ui/textarea"
 
 
 export function Admin() {
@@ -158,6 +159,23 @@ export function Admin() {
             required_error: "Пожалуйста выберите должность",
         })
     })
+
+    const formNewsSchema = z.object({
+        nameNews: z.string().min(5),
+        dateNews: z.date(),
+        news: z.string().min(5)
+    })
+
+    const formNews = useForm<z.infer<typeof formNewsSchema>>({
+        resolver: zodResolver(formNewsSchema),
+        defaultValues: {
+            nameNews: "",
+            dateNews: new Date(),
+            news: ""
+        }
+    })
+
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -258,6 +276,62 @@ export function Admin() {
                 }}>
                     выйти
                 </Button>
+
+
+                <div>
+                    <h6 className="text-lg font-bold">Создание новости</h6>
+                    <div>
+
+                    <Form {...form}>
+                      <form onSubmit={formNews.handleSubmit(onSubmit)} className="space-y-2">
+                        <FormField
+                          control={formNews.control}
+                          name="nameNews"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Название новости*</FormLabel>
+                              <FormControl>
+                                <Input className="h-7" placeholder="Сегодня произошло..." {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={formNews.control}
+                          name="dateNews"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Дата новости*</FormLabel>
+                              <FormControl>
+                                <Input  className="h-7" placeholder="дата" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={formNews.control}
+                          name="news"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Описание новости*</FormLabel>
+                              <FormControl>
+                                <Textarea  className="h-7" placeholder="*********" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <Button type="submit">отправить новость</Button>
+                      </form>
+                    </Form>
+
+                    </div>
+                </div>
             {/*Контейнер отделений */} 
             <section className="
                     mt-4

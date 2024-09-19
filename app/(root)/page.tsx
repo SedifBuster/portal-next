@@ -35,13 +35,8 @@ export default function Home() {
 
 
 
-          <Link href={"file://c/"} className="
-          border h-[15vh] rounded-md p-4 flex justify-center content-center
-          shadow-md hover:bg-green-100 
-          "
-          >{/*\\192.168.0.5\база знаний*/}
-            <p className="p-2 text-lg font-semibold">База знаний</p>
-          </Link>
+
+
           <Link href={'http://192.168.0.148:5006/'} target="blank" className="
           border h-[15vh] rounded-md p-4 flex justify-center content-center
           shadow-md hover:bg-green-100 
@@ -64,7 +59,13 @@ export default function Home() {
             <p className="p-2 text-lg font-semibold">Панель мониторинга приемного отделения</p>
           </Link>
 
-
+          <Link href={"file://c/"} className="
+          border h-[15vh] rounded-md p-4 flex justify-center content-center
+          shadow-md bg-gray-100 text-gray-500
+          "
+          >{/*\\192.168.0.5\база знаний*/}
+            <p className="p-2 text-lg font-semibold">База знаний</p>
+          </Link>
 
         </div>
 
