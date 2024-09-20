@@ -7,19 +7,44 @@ import { DashItem } from "./DashItem"
 import { DashSkeleton } from "./DashSkeleton"
 import { DashPagination} from "./DashPagination"
 import {toast} from "react-hot-toast"
+import axios from "axios"
 
 export
   interface DashInit extends Dash { table: DashDepartment[]}
 
 export
   function TableDash({
-    onGetDashs,
-    onGetDeps
+
   }: {
-    onGetDashs: Promise<Dash[]>
-    onGetDeps: Promise<DashDepartment[]>
+    //onGetDashs?: Promise<Dash[]>
+    //onGetDeps?: Promise<DashDepartment[]>
   }
 ) {
+
+
+  async function onGetDashs() {
+    try {
+      const response = await axios.get('/api/dash')
+      console.log(response.data)
+      if (response.status !== 200 && typeof response === typeof 'undefined') throw new Error('Failed to fetch dash data')
+        
+      return response.data
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  
+  async function onGetDeps() {
+    try {
+      const response = await axios.get('http://localhost:5020/api/dash/department')
+      console.log(response.data)
+      if (response.status !== 200 && typeof response !== typeof 'undefined') throw new Error('Failed to fetch dep data')
+  
+      return response.data
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const [isTables, setTables] = useState<DashInit[]>()
   const [currentPage, setCurrentPage] = useState<number>(1)
@@ -31,6 +56,7 @@ export
 
   //filtered data
   const onFilterDashes = (dashes: Dash[], depaprtments: DashDepartment[]) => {
+    console.log(dashes)
     let filteredDashes = dashes.map((item) => {
       return {...item, table: depaprtments.filter((dep) => {
         return dep.dashId === item.id
@@ -224,9 +250,10 @@ export
 
   useEffect(() => {
     console.log('update')
-    getTables(onGetDashs, onGetDeps)
-
-    const timer = setInterval(() => getTables(onGetDashs, onGetDeps), 10000)
+    //@ts-ignore
+    getTables(onGetDashs(), onGetDeps())
+    //@ts-ignore
+    const timer = setInterval(() => getTables(onGetDashs(), onGetDeps()), 10000)
 
     return () => clearInterval(timer)
   }, [])
