@@ -1,6 +1,6 @@
 "use client"
 
-import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage, Form } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -17,7 +17,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-import { z } from "zod"
+import { date, z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 import axios from "axios"
@@ -34,6 +34,11 @@ import { useForm } from "react-hook-form"
 import { Label } from "@/components/ui/label"
 import { signOut } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { Textarea } from "@/components/ui/textarea"
+import { cn } from "@/lib/utils"
+import { format, setDate } from "date-fns"
+import { CalendarIcon, Calendar } from "lucide-react"
+import ru from "date-fns/locale/ru"
 
 
 export function Admin() {
@@ -51,6 +56,7 @@ export function Admin() {
             console.log('error')
         }
     }
+    const [isDate, setDate] = useState<Date>(new Date())
     const createDepartment = async () => {
         const postData = {
             name: isDepartmentName
@@ -158,6 +164,25 @@ export function Admin() {
             required_error: "Пожалуйста выберите должность",
         })
     })
+
+    const formNewsSchema = z.object({
+        nameNews: z.string().min(5),
+        dateNews: z.date(),
+        news: z.string().min(5),
+        liable: z.string()
+    })
+
+    const formNews = useForm<z.infer<typeof formNewsSchema>>({
+        resolver: zodResolver(formNewsSchema),
+        defaultValues: {
+            nameNews: "",
+            dateNews: new Date(),
+            news: "",
+            liable: '',
+        }
+    })
+
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -222,6 +247,28 @@ export function Admin() {
         }
       }
 
+      async function onSubmitNews(values: z.infer<typeof formNewsSchema>) {
+        try {
+            const userData = {
+                nameNews: values.nameNews,
+                dateNews: values.dateNews,
+                news: values.news,
+                liable: values.liable,
+              }
+              console.log(userData)
+
+              const newNews = await axios.post('/api/news', userData)
+              if(newNews.statusText !== 'OK') return toast.error("Ошибка при создании новости")
+                else {
+                    toast.success(`новость создана с id: ${newNews.data}`)
+                }
+
+        } catch (error) {
+            toast.error("Ошибка при создании новости")
+            console.log("Ошибка при создании нововсти: ", error)
+        }
+      }
+
     return (
         <section
             className="
@@ -258,6 +305,62 @@ export function Admin() {
                 }}>
                     выйти
                 </Button>
+
+
+                <div>
+                    <h6 className="text-lg font-bold">Создание новости</h6>
+                    <div>
+
+                    <Form {...form}>
+                      <form onSubmit={formNews.handleSubmit(onSubmitNews)} className="space-y-2">
+                        <FormField
+                          control={formNews.control}
+                          name="nameNews"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Название новости*</FormLabel>
+                              <FormControl>
+                                <Input className="h-7" placeholder="Сегодня произошло..." {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={formNews.control}
+                          name="news"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Описание новости*</FormLabel>
+                              <FormControl>
+                                <Textarea  className="h-7" placeholder="*********" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                    <FormField
+                          control={formNews.control}
+                          name="liable"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Отправитель*</FormLabel>
+                              <FormControl>
+                                <Input  className="h-7" placeholder="от..." {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <Button type="submit">отправить новость</Button>
+                      </form>
+                    </Form>
+
+                    </div>
+                </div>
             {/*Контейнер отделений */} 
             <section className="
                     mt-4

@@ -1,6 +1,6 @@
 "use client"
 
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
 import clsx from "clsx"
 import * as React from "react"
 import { DatePicker } from "./DatePicker"
@@ -41,9 +41,7 @@ export
     if( currentPage > 1)
       setCurrentPage(currentPage -1)
   }
-  //показывать первые четыре страницы если есть
-  //показывать даты на кнопках снизу
-  //лпу ебаное
+
   React.useEffect(() => {
     if(currentPage === pages.length - 1) setDisableNext(true)
     else setDisableNext(!isDisableNext)
@@ -52,42 +50,31 @@ export
     else setDisablePrev(!isDisablePrev)
 
   },[setCurrentPage])
-  //опцоонально добавить лоадинг при переключении если будет долго
-  //палаты
-   return (
-    <div className="w-full mt-2">
+
+  return (
+    <div className="w-full">
       <Pagination>
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious size={'lg'} onClick={() => handleNextPage()} 
               className={
-                clsx("cursor-pointer",
-                //!isDisableNext && 'bg-gray-300'
-                )} />
+                clsx("cursor-pointer")
+              }
+            />
           </PaginationItem>
           <DatePicker
-                  date={date}
-                  setCurrentPage={setCurrentPage}
-                  dashDates={dashDates}
-                />
-        {
-        /*
-          pages.slice(1).map( (page, idx) => (
-            <PaginationItem key={idx}>
-                        <PaginationLink size={'lg'} isActive={currentPage === page}
-                          onClick={() => setCurrentPage(page)} >
-                          {page}
-                        </PaginationLink>
-                      </PaginationItem>
-          ) )
-        */
-        }
+            date={date}
+            setCurrentPage={setCurrentPage}
+            dashDates={dashDates}
+          />
           <PaginationItem>
-            <PaginationNext size={'lg'} onClick={() => handlePrevPage()} 
-            className={
-                clsx(`cursor-pointer`,
-                //!isDisablePrev ? `bg-gray-300` : ``
-                )} />
+            <PaginationNext
+              size={'lg'}
+              onClick={() => handlePrevPage()} 
+              className={
+                clsx(`cursor-pointer`)
+              }
+            />
           </PaginationItem>
         </PaginationContent>
       </Pagination>

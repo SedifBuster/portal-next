@@ -15,14 +15,6 @@ import {
 } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
   Table,
   TableBody,
   TableCaption,
@@ -33,9 +25,10 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { DashDepartment, DashWard, Department, Profile, Ward } from "@prisma/client"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown } from "lucide-react"
 import { Charts } from "./Charts"
 import axios from "axios"
+
 import toast from "react-hot-toast"
 import { useEffect, useState } from "react"
 import { DashItemRow } from "./DashItemRow"
@@ -44,11 +37,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { HiOutlineRectangleStack } from "react-icons/hi2"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
 import clsx from "clsx"
-import { UserCard } from "@/app/(root)/(lk)/lk/components/Card"
-import { CreateWardSheet } from "@/app/(root)/(lk)/lk/components/CreateWardSheet"
-import { UserWard } from "@/app/(root)/(lk)/lk/components/Ward"
 import { DashWardExplore } from "@/app/(root)/(lk)/lk/components/DashWardExplore"
 
 interface DashWithWards extends DashDepartment {
@@ -423,7 +412,8 @@ export
     data:DashDepartment[],
     stateLpu?: DashDepartment | undefined,
     date: Date
-  }) {
+  }
+) {
     const [department, setDepartment] = useState<Department>()
     const [profile, setProfile] = useState<Profile>()
     const [wards, setWards] = useState<Ward[]>([])
@@ -997,11 +987,11 @@ export
     :
       null
   }
-    <div className="w-full mr-2 ml-2">
+    <div className="w-full">
     {
      // tur bil filter, teper on vnizu
     } 
-      <div className="rounded-md border">
+      <div className="rounded-md border ml-2 mr-2">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -1159,7 +1149,7 @@ export
                     isData.map((dep: any) => {
                       let takenWards: any = []
                       if( dep.wards.length > 0)
-                      return <>
+                      return <div key={dep.id}>
                         <Label className="">{dep.name}</Label>
                         <Table>
                             <TableHeader>
@@ -1201,7 +1191,7 @@ export
                       })
 
                       if(takenId && takenId[0]) {
-                        console.log(takenId.id)
+                        //console.log(takenId.id)
                         taken = dep.wards.filter((ward: DashWard) => {
                           return Number(ward.reserve) === takenId[0].id
                         })
@@ -1212,7 +1202,7 @@ export
                     if(taken && row)
                       //console.log('row',row)
                     takenWards = [...takenWards, ...taken]
-                    console.log(takenWards)
+                    //console.log(takenWards)
 
                    }
 
@@ -1280,7 +1270,7 @@ export
                 </TableRow>
               </TableFooter>
             </Table>
-                            </>
+                            </div>
                             else <Label>sad</Label>
                     })
                     :
