@@ -2,8 +2,16 @@ import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import logoImage from "../logoVKB.png"
 import Link from "next/link";
+import axios from "axios";
+import { New } from "@prisma/client";
+import { useState } from "react";
+import { NewsTable } from "./components/newsTable";
 
 export default function Home() {
+
+
+
+
     return (
       <section>
 
@@ -72,45 +80,7 @@ export default function Home() {
 
 
 
-        <div className="basis-2/5 h-[80vh] rounded-md p-4 border-green-100 border-2 shadow-sm overflow-auto flex flex-col gap-4">
-
-          <div className="w-full border-2 border-gray-200 flex p-4 flex-col shadow-md">
-            <Label className="text-xl border-b w-full">Заголовок новости</Label>
-            <p className="text-sm border-b w-full mb-2">Дата новости</p>
-            <p className="mb-4">Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости
-            Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости
-            Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости
-            </p>
-          </div>
-
-          <div className="w-full border-2 border-gray-200 flex p-4 flex-col shadow-md">
-            <Label className="text-xl border-b w-full">Заголовок новости</Label>
-            <p className="text-sm border-b w-full mb-2">Дата новости</p>
-            <p  className="mb-4">Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости
-            Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости
-            Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости
-            </p>
-          </div>
-
-          <div className="w-full border-2 border-gray-200 flex p-4 flex-col shadow-md">
-            <Label className="text-xl border-b w-full">Заголовок новости</Label>
-            <p className="text-sm border-b w-full mb-2">Дата новости</p>
-            <p className="mb-4">Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости
-            Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости
-            Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости
-            </p>
-          </div>
-
-          <div className="w-full border-2 border-gray-200 flex p-4 flex-col shadow-md">
-            <Label className="text-xl border-b w-full">Заголовок новости</Label>
-            <p className="text-sm border-b w-full mb-2">Дата новости</p>
-            <p className="mb-4">Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости
-            Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости
-            Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости
-            </p>
-          </div>
-
-        </div>
+        <NewsTable />
       </div>
 
       </section>
