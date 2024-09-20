@@ -2,9 +2,6 @@ import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import logoImage from "../logoVKB.png"
 import Link from "next/link";
-import axios from "axios";
-import { New } from "@prisma/client";
-import { useState } from "react";
 import { NewsTable } from "./components/newsTable";
 
 export default function Home() {

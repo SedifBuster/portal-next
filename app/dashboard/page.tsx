@@ -1,6 +1,6 @@
 import { TableDash } from "./components/TableDash";
 
-async function onFetchingDashsData() {
+/*async function onFetchingDashsData() {
   try {
     const response = await fetch('http://localhost:5020/api/dash')
     if (response.status !== 200 && typeof response === typeof 'undefined') throw new Error('Failed to fetch dash data')
@@ -20,13 +20,13 @@ async function onFetchingDepartmentsData() {
   } catch (error) {
     console.log(error)
   }
-}
+}*/
 
 export
   default async function DashBoard() {
 
   return <TableDash 
-            onGetDeps={onFetchingDepartmentsData()}
-            onGetDashs={onFetchingDashsData()}
+           // onGetDeps={onFetchingDepartmentsData()}
+           // onGetDashs={onFetchingDashsData()}
          />
 }
