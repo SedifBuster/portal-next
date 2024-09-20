@@ -36,7 +36,7 @@ export
   
   async function onGetDeps() {
     try {
-      const response = await axios.get('http://localhost:5020/api/dash/department')
+      const response = await axios.get('/api/dash/department')
       console.log(response.data)
       if (response.status !== 200 && typeof response !== typeof 'undefined') throw new Error('Failed to fetch dep data')
   
