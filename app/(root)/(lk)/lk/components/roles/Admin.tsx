@@ -3,7 +3,8 @@
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage, Form } from "@/components/ui/form"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { useRef } from "react"
+
 import {
     Table,
     TableBody,
@@ -182,6 +183,20 @@ export function Admin() {
         }
     })
 
+    const formFilesSchema = z.object({
+        fileName: z.string(),
+        category: z.string(),
+        //file: z.instanceof(File)
+    })
+
+    const formFiles = useForm<z.infer<typeof formFilesSchema>>({
+        resolver: zodResolver(formFilesSchema),
+        defaultValues: {
+          fileName: '',
+          category: ''
+        }
+    })
+
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -269,6 +284,37 @@ export function Admin() {
         }
       }
 
+
+      const fileInput = useRef<HTMLInputElement>(null)
+
+      async function onSubmitFile(values: z.infer<typeof formFilesSchema>) {
+        try {
+
+        const formData = new FormData()
+
+        formData.append("file", fileInput?.current?.files?.[0]!,`${values.category}_${values.fileName}` )
+
+        const fileData = {
+          fileName: values.fileName,
+          category: values.category,
+          file: formData
+        }
+        console.log(fileData.file.get('file').name)
+
+        //const uploadFile = await axios.post('/api/uploadFiles', fileData)
+        //if(uploadFile.statusText !== 'OK') return toast.error("Ошибка при загрузке файла")
+          //else {
+           //   toast.success(`файл успешно загружен: ${uploadFile.data}`)
+          //}
+
+        console.log(fileData)
+        } catch (error) {
+            toast.error("Ошибка при загрузке файла")
+            console.log("Ошибка при загрузке файла: ", error)
+        }
+      }
+
+
     return (
         <section
             className="
@@ -308,8 +354,9 @@ export function Admin() {
 
 
                 <div>
-                    <h6 className="text-lg font-bold">Создание новости</h6>
-                    <div>
+                    {/**NEWS */}
+                    <h6 className="text-lg font-bold mt-6">Создание новости</h6>
+                    <div  className="w-1/2">
 
                     <Form {...form}>
                       <form onSubmit={formNews.handleSubmit(onSubmitNews)} className="space-y-2">
@@ -359,7 +406,70 @@ export function Admin() {
                       </form>
                     </Form>
 
+
+
                     </div>
+
+
+                    <h6 className="text-lg font-bold mt-6">Загрузить файл</h6>
+                    <div className="w-1/2">
+                    <Form {...form}>
+                      <form onSubmit={formFiles.handleSubmit(onSubmitFile)} className="space-y-2">
+
+                        <FormField
+                          control={formFiles.control}
+                          name="fileName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Название файла*</FormLabel>
+                              <FormControl>
+                                <Input className="h-7" placeholder="Об утверждении стандарта..." {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={formFiles.control}
+                          name="category"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Категория файла*</FormLabel>
+                              <FormControl>
+                                <Input  className="h-7" placeholder="Лекарственная безопасность" {...field}/>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+
+                        <Input lang="ru" type="file" name="file" ref={fileInput}/>
+
+                   {
+                   /* <FormField
+                          control={formFiles.control}
+                          name="file"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Файл*</FormLabel>
+                              <FormControl>
+                                <Input type="file" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />*/
+                    } 
+
+                        <Button type="submit">загрузить файл</Button>
+                      </form>
+                    </Form>
+                    </div>
+
+
+
                 </div>
             {/*Контейнер отделений */} 
             <section className="
