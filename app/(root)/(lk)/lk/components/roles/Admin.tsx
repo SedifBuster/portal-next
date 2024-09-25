@@ -292,14 +292,16 @@ export function Admin() {
 
         const formData = new FormData()
 
-        formData.append("file", fileInput?.current?.files?.[0]!,`${values.category}_${values.fileName}` )
+        formData.append("file", fileInput?.current?.files?.[0]!,`${values.category}_${values.fileName}`)
 
-        const fileData = {
+        
+
+        /*const fileData = {
           fileName: values.fileName,
           category: values.category,
           file: formData
         }
-        console.log(fileData.file.get('file').name)
+        console.log(fileData.file.get('file').name)*/
 
         //const uploadFile = await axios.post('/api/uploadFiles', fileData)
         //if(uploadFile.statusText !== 'OK') return toast.error("Ошибка при загрузке файла")
@@ -307,7 +309,7 @@ export function Admin() {
            //   toast.success(`файл успешно загружен: ${uploadFile.data}`)
           //}
 
-        console.log(fileData)
+        //console.log(fileData)
         } catch (error) {
             toast.error("Ошибка при загрузке файла")
             console.log("Ошибка при загрузке файла: ", error)
