@@ -40,6 +40,9 @@ import { cn } from "@/lib/utils"
 import { format, setDate } from "date-fns"
 import { CalendarIcon, Calendar } from "lucide-react"
 import ru from "date-fns/locale/ru"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { AdminTab } from "./adminTabs/AdminTab"
 
 
 export function Admin() {
@@ -216,7 +219,6 @@ export function Admin() {
     
     console.log(users)
     console.log(profiles)
-    //console.log(isDepartments)
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
@@ -316,6 +318,38 @@ export function Admin() {
         }
       }
 
+      const tabs = [
+        {
+          value: "accounts",
+          title: "Аккаунты",
+          description: "Список аккаунтов приложения. Добавляйте, изменяйте и удаляйте аккаунты здесь.",
+          tabContent: <div>asdasd</div>
+        },
+        {
+          value: "departments",
+          title: "Отделения",
+          description: "Change your password here. After saving, you'll be logged out.",
+          tabContent: <div>asdasd</div>
+        },
+        {
+          value: "news",
+          title: "Новости",
+          description: "Управляйте новостной лентой здесь.",
+          tabContent: <div>asdasd</div>
+        },
+        {
+          value: "files",
+          title: "Файлы",
+          description: "Change your password here. After saving, you'll be logged out.",
+          tabContent: <div>asdasd</div>
+        },
+        {
+          value: "settings",
+          title: "Настройки",
+          description: " ",
+          tabContent: <div>asdasd</div>
+        },
+      ]
 
     return (
         <section
@@ -324,26 +358,9 @@ export function Admin() {
                 p-8
             "
         >
-            <section
-                className="
-                        flex
-                        gap-4
-                    "
-            >
-                <input
-                    placeholder="отделение"
-                    value={isDepartmentName}
-                    onChange={e => setIsDepartmentName(e.target.value)}
-                    className="
-                        border-2
-                        border-teal-400
-                    "
-                />
-                <Button onClick={createDepartment}>
-                    создать
-                </Button>
-            </section>
-                <Button onClick={async() => {
+
+<div className="flex justify-end p-4">
+<Button onClick={async() => {
                    await signOut({
                         redirect: false,
                         callbackUrl: `/`
@@ -353,338 +370,32 @@ export function Admin() {
                 }}>
                     выйти
                 </Button>
-
-
-                <div>
-                    {/**NEWS */}
-                    <h6 className="text-lg font-bold mt-6">Создание новости</h6>
-                    <div  className="w-1/2">
-
-                    <Form {...form}>
-                      <form onSubmit={formNews.handleSubmit(onSubmitNews)} className="space-y-2">
-                        <FormField
-                          control={formNews.control}
-                          name="nameNews"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Название новости*</FormLabel>
-                              <FormControl>
-                                <Input className="h-7" placeholder="Сегодня произошло..." {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={formNews.control}
-                          name="news"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Описание новости*</FormLabel>
-                              <FormControl>
-                                <Textarea  className="h-7" placeholder="*********" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                    <FormField
-                          control={formNews.control}
-                          name="liable"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Отправитель*</FormLabel>
-                              <FormControl>
-                                <Input  className="h-7" placeholder="от..." {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <Button type="submit">отправить новость</Button>
-                      </form>
-                    </Form>
+</div>
 
 
 
-                    </div>
 
+  <Tabs defaultValue="account" className="w-full">
+    <TabsList className="grid w-full grid-cols-5">
+      {
+        tabs.map((tab) => {
+          return <TabsTrigger value={tab.value}>{tab.title}</TabsTrigger>
+        })
+      }
+    </TabsList>
 
-                    <h6 className="text-lg font-bold mt-6">Загрузить файл</h6>
-                    <div className="w-1/2">
-                    <Form {...form}>
-                      <form onSubmit={formFiles.handleSubmit(onSubmitFile)} className="space-y-2">
+    <AdminTab value={tabs[0].value} title={tabs[0].title} description={tabs[0].description} tabContent={tabs[0].tabContent}/>
 
-                        <FormField
-                          control={formFiles.control}
-                          name="fileName"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Название файла*</FormLabel>
-                              <FormControl>
-                                <Input className="h-7" placeholder="Об утверждении стандарта..." {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+    <TabsContent value="account">
+      <Card>
+        <CardHeader>
+          <CardTitle>Акаунты</CardTitle>
+          <CardDescription>
+            Список аккаунтов приложения. Добавляйте, изменяйте и удаляйте аккаунты здесь.
+          </CardDescription>
+        </CardHeader>
 
-                        <FormField
-                          control={formFiles.control}
-                          name="category"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Категория файла*</FormLabel>
-                              <FormControl>
-                                <Input  className="h-7" placeholder="Лекарственная безопасность" {...field}/>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-
-                        <Input lang="ru" type="file" name="file" ref={fileInput}/>
-
-                   {
-                   /* <FormField
-                          control={formFiles.control}
-                          name="file"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Файл*</FormLabel>
-                              <FormControl>
-                                <Input type="file" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />*/
-                    } 
-
-                        <Button type="submit">загрузить файл</Button>
-                      </form>
-                    </Form>
-                    </div>
-
-
-
-                </div>
-            {/*Контейнер отделений */} 
-            <section className="
-                    mt-4
-                "
-            >
-                <ul
-                    className="
-                        flex
-                        flex-col
-                        gap-4
-                    "
-                >
-                    {isDepartments ? isDepartments.map((dep) => {
-                        return <li key={dep.id}
-                            className="
-                                        grid
-                                        grid-cols-3
-                                        gap-4
-                                        p-2
-                                        border
-                                    "
-                        >
-                            <div className="
-                                        flex
-                                        gap-4
-                                    ">
-                                <div>{dep.id}</div>
-                                <div>{dep.name}</div>
-                            </div>
-                            <div className="
-                                        flex
-                                        gap-4
-                                        flex-align
-                                    ">
-                                <div>создана: {dep.createdAt.toString()}</div>
-                                <div>изменена: {dep.updatedAt.toString()}</div>
-                            </div>
-                            <div className="
-                                        flex
-                                        gap-4
-                                        flex-align
-                                        justify-self-end
-                                        items-center
-                                    ">
-                                        <Button variant={'outline'}><HiPencil /></Button>
-
-                                <Popover>
-                                    <PopoverTrigger>
-                                        <Button variant={'destructive'}><HiTrash /></Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-80">
-                                        <div className="grid gap-4">
-                                            <div className="space-y-2">
-                                                <h4 className="font-medium leading-none">Удаление</h4>
-                                                <p className="text-sm text-muted-foreground">
-                                                    Вы действительно хотите удалить отделение?
-                                                </p>
-                                            </div>
-                                            <div className="grid gap-2">
-                                                <Button variant={'destructive'} onClick={() => deleteDepartment(dep.id)}>удалить</Button>
-                                            </div>
-                                        </div>
-                                    </PopoverContent>
-                                </Popover>
-
-                            </div>
-                            <div className="col-span-3">
-                                <Table className="w-full">
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>План(чел)</TableHead>
-                                            <TableHead>План (руб.)</TableHead>
-                                            <TableHead className="text-right">Состояло на начало месяца (чел.)</TableHead>
-                                            <TableHead className="text-right">Поступили в приёмное, накопительным (чел.)</TableHead>
-                                            <TableHead className="text-right">Всего находится в стационаре (чел.) ot ward</TableHead>
-                                            <TableHead className="text-right">Выбыло, накопительным (чел.)</TableHead>
-                                            <TableHead className="text-right">Выбывшие к оплате</TableHead>
-                                            <TableHead className="text-right">Пациенты свыше 10 дней (чел.)</TableHead>
-                                            <TableHead className="text-right">Не закрыто историй в Барсе (шт.)</TableHead>
-                                            <TableHead className="text-right">Передано оплату в ФОМС (шт.)</TableHead>
-                                            <TableHead className="text-right">Передано оплату в ФОМС  (руб.) по КСГ</TableHead>
-                                            <TableHead className="text-right">Средняя стоимость лечения</TableHead>
-                                            <TableHead className="text-right">Долг по умершим</TableHead>
-                                            <TableHead className="text-right">Свободных коек ot ward</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                            <TableRow>
-                                                <TableCell>{dep.planHuman}</TableCell>
-                                                <TableCell>{dep.planRub}</TableCell>
-                                                <TableCell className="text-right">{dep.begAcc}</TableCell>
-                                                <TableCell className="text-right">{dep.admRec}</TableCell>
-                                                <TableCell className="text-right">{/*dep.totalStays*/"ot ward"}</TableCell>
-                                                <TableCell className="text-right">{dep.disCome}</TableCell>
-                                                <TableCell className="text-right">{dep.disTax}</TableCell>
-                                                <TableCell className="text-right">{dep.patOver}</TableCell>
-                                                <TableCell className="text-right">{dep.storColed}</TableCell>
-                                                <TableCell className="text-right">{dep.transHuman}</TableCell>
-                                                <TableCell className="text-right">{dep.transRub}</TableCell>
-                                                <TableCell className="text-right">{dep.medPrice}</TableCell>
-                                                <TableCell className="text-right">{dep.dolgDead}</TableCell>
-                                                <TableCell className="text-right">{/*dep.freeBeds*/"ot ward"}</TableCell>
-                                            </TableRow>
-                                    </TableBody>
-                                </Table>
-                            </div>
-
-                            <div className="col-span-2">
-                                <Label className="
-                                                flex
-                                                justify-center
-                                                items-center
-                                                font-bold
-                                                "
-                                >
-                                        Сводка по местам
-                                </Label>
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="w-[100px]">Палата №</TableHead>
-                                        <TableHead className="text-right">Кол-во мест</TableHead>
-                                        <TableHead className="text-right">Занято</TableHead>
-                                        <TableHead className="text-right">Свободно</TableHead>
-                                        <TableHead className="text-right">Пол</TableHead>
-                                        <TableHead className="text-right">Резерв по распоряжению</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {wards.filter((ward) => {
-                                        return ward.depId === dep.id}).map((ward) => (
-                                        <TableRow key={ward.id}>
-                                            <TableCell className="font-medium">{ward.number}</TableCell>
-                                            <TableCell>{ward.numberOfSeats}</TableCell>
-                                            <TableCell>{ward.engaged}</TableCell>
-                                            <TableCell>{ward.free}</TableCell>
-                                            <TableCell>{ward.gender}</TableCell>
-                                            <TableCell className="text-right">{ward.reserve}</TableCell>
-                                        </TableRow>
-                                        ))}
-                                </TableBody>
-                                <TableFooter>
-                                    <TableRow>
-                                        <TableCell colSpan={1}>Кол-во мест:</TableCell>
-                                        <TableCell className="text-left">
-                                            {
-                                             wards.filter((ward) => {
-                                                return ward.depId === dep.id}).reduce((sum, current) => {
-                                                    return sum + current.numberOfSeats
-                                                }, 0)
-                                            }
-                                                </TableCell>
-                                        <TableCell className="text-right">Занято:</TableCell>
-                                        <TableCell className="text-left">{
-                                             wards.filter((ward) => {
-                                                return ward.depId === dep.id}).reduce((sum, current) => {
-                                                    return sum + current.engaged
-                                                }, 0)
-                                            }</TableCell>
-                                        <TableCell className="text-right">Свободно:</TableCell>
-                                        <TableCell className="text-left">{
-                                             wards.filter((ward) => {
-                                                return ward.depId === dep.id}).reduce((sum, current) => {
-                                                    return sum + current.free
-                                                }, 0)
-                                            }</TableCell>
-                                    </TableRow>
-                                </TableFooter>
-                            </Table>
-
-                            </div>
-
-                            <div className="col-span-1">
-                                <Label className="
-                                                flex
-                                                justify-center
-                                                items-center
-                                                font-bold
-                                                "
-                                >
-                                        Аккаунты
-                                </Label>
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="w-[100px]">имя</TableHead>
-                                        <TableHead className="text-center">должность</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {profiles? profiles.filter((profile) => {
-                                        return profile.depId === dep.id}).map((profile) => (
-                                        <TableRow key={profile.id}>
-                                            <TableCell className="font-medium text-center" >
-                                                {
-                                                    users?users.filter((user) => {
-                                                        return user.id === profile.userId
-                                                    })[0]?.name : ''
-                                                }
-                                            </TableCell>
-                                            <TableCell className="text-center">{profile.grade}</TableCell>
-                                        </TableRow>
-                                        )) : ''}
-                                </TableBody>
-                            </Table>
-
-                            </div>
-                        </li>
-                    }) : ''}
-                </ul>
-            </section>
-
+        <CardContent className="space-y-2">
             {/*Создание пользователя */}
             <section
                 className="
@@ -936,6 +647,388 @@ export function Admin() {
                     }) : ''}
                 </ul>
             </section>
+        </CardContent>
+        <CardFooter>
+          <Button>Save changes</Button>
+        </CardFooter>
+      </Card>
+    </TabsContent>
+
+      <TabsContent value="news">
+        <Card>
+          <CardHeader>
+            <CardTitle>Новости</CardTitle>
+            <CardDescription>
+              Управляйте новостной лентой здесь.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+          <h6 className="text-lg font-bold mt-6">Загрузить новость</h6>
+            <Form {...form}>
+              <form onSubmit={formNews.handleSubmit(onSubmitNews)} className="space-y-2">
+                <FormField
+                  control={formNews.control}
+                  name="nameNews"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Название новости*</FormLabel>
+                      <FormControl>
+                        <Input className="h-7" placeholder="Сегодня произошло..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={formNews.control}
+                  name="news"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Описание новости*</FormLabel>
+                      <FormControl>
+                        <Textarea  className="h-7" placeholder="*********" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={formNews.control}
+                  name="liable"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Отправитель*</FormLabel>
+                      <FormControl>
+                        <Input  className="h-7" placeholder="от..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </form>
+            </Form>
+
+          </CardContent>
+          <CardFooter>
+          <Button type="submit" onClick={formNews.handleSubmit(onSubmitNews)}>отправить новость</Button>
+          </CardFooter>
+        </Card>
+      </TabsContent>
+
+      <TabsContent value="files">
+        <Card>
+          <CardHeader>
+            <CardTitle>Файлы</CardTitle>
+            <CardDescription>
+              Change your password here. After saving, you'll be logged out.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <h6 className="text-lg font-bold mt-6">Загрузить файл</h6>
+            <Form {...form}>
+              <form onSubmit={formFiles.handleSubmit(onSubmitFile)} className="space-y-2">
+                <FormField
+                  control={formFiles.control}
+                  name="fileName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Название файла*</FormLabel>
+                      <FormControl>
+                        <Input className="h-7" placeholder="Об утверждении стандарта..." {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={formFiles.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Категория файла*</FormLabel>
+                      <FormControl>
+                        <Input  className="h-7" placeholder="Лекарственная безопасность" {...field}/>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Input lang="ru" type="file" name="file" ref={fileInput}/>
+                {
+                /* <FormField
+                          control={formFiles.control}
+                          name="file"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Файл*</FormLabel>
+                              <FormControl>
+                                <Input type="file" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />*/
+                }
+              </form>
+            </Form>
+          </CardContent>
+          <CardFooter>
+          <Button type="submit" onClick={formFiles.handleSubmit(onSubmitFile)}>загрузить файл</Button>
+          </CardFooter>
+        </Card>
+      </TabsContent>
+
+      <TabsContent value="departments">
+        <Card>
+          <CardHeader>
+            <CardTitle>Отделения</CardTitle>
+            <CardDescription>
+              Change your password here. After saving, you'll be logged out.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+          <section
+                className="
+                        flex
+                        gap-4
+                    "
+            >
+                <input
+                    placeholder="отделение"
+                    value={isDepartmentName}
+                    onChange={e => setIsDepartmentName(e.target.value)}
+                    className="
+                        border-2
+                        border-teal-400
+                    "
+                />
+                <Button onClick={createDepartment}>
+                    создать
+                </Button>
+            </section>
+            {/*Контейнер отделений */} 
+            <section className="
+                    mt-4
+                "
+            >
+                <ul
+                    className="
+                        flex
+                        flex-col
+                        gap-4
+                    "
+                >
+                    {isDepartments ? isDepartments.map((dep) => {
+                        return <li key={dep.id}
+                            className="
+                                        grid
+                                        grid-cols-3
+                                        gap-4
+                                        p-2
+                                        border
+                                    "
+                        >
+                            <div className="
+                                        flex
+                                        gap-4
+                                    ">
+                                <div>{dep.id}</div>
+                                <div>{dep.name}</div>
+                            </div>
+                            <div className="
+                                        flex
+                                        gap-4
+                                        flex-align
+                                    ">
+                                <div>создана: {dep.createdAt.toString()}</div>
+                                <div>изменена: {dep.updatedAt.toString()}</div>
+                            </div>
+                            <div className="
+                                        flex
+                                        gap-4
+                                        flex-align
+                                        justify-self-end
+                                        items-center
+                                    ">
+                                        <Button variant={'outline'}><HiPencil /></Button>
+
+                                <Popover>
+                                    <PopoverTrigger>
+                                        <Button variant={'destructive'}><HiTrash /></Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-80">
+                                        <div className="grid gap-4">
+                                            <div className="space-y-2">
+                                                <h4 className="font-medium leading-none">Удаление</h4>
+                                                <p className="text-sm text-muted-foreground">
+                                                    Вы действительно хотите удалить отделение?
+                                                </p>
+                                            </div>
+                                            <div className="grid gap-2">
+                                                <Button variant={'destructive'} onClick={() => deleteDepartment(dep.id)}>удалить</Button>
+                                            </div>
+                                        </div>
+                                    </PopoverContent>
+                                </Popover>
+
+                            </div>
+                            <div className="col-span-3">
+                                <Table className="w-full">
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>План(чел)</TableHead>
+                                            <TableHead>План (руб.)</TableHead>
+                                            <TableHead className="text-right">Состояло на начало месяца (чел.)</TableHead>
+                                            <TableHead className="text-right">Поступили в приёмное, накопительным (чел.)</TableHead>
+                                            <TableHead className="text-right">Всего находится в стационаре (чел.) ot ward</TableHead>
+                                            <TableHead className="text-right">Выбыло, накопительным (чел.)</TableHead>
+                                            <TableHead className="text-right">Выбывшие к оплате</TableHead>
+                                            <TableHead className="text-right">Пациенты свыше 10 дней (чел.)</TableHead>
+                                            <TableHead className="text-right">Не закрыто историй в Барсе (шт.)</TableHead>
+                                            <TableHead className="text-right">Передано оплату в ФОМС (шт.)</TableHead>
+                                            <TableHead className="text-right">Передано оплату в ФОМС  (руб.) по КСГ</TableHead>
+                                            <TableHead className="text-right">Средняя стоимость лечения</TableHead>
+                                            <TableHead className="text-right">Долг по умершим</TableHead>
+                                            <TableHead className="text-right">Свободных коек ot ward</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                            <TableRow>
+                                                <TableCell>{dep.planHuman}</TableCell>
+                                                <TableCell>{dep.planRub}</TableCell>
+                                                <TableCell className="text-right">{dep.begAcc}</TableCell>
+                                                <TableCell className="text-right">{dep.admRec}</TableCell>
+                                                <TableCell className="text-right">{/*dep.totalStays*/"ot ward"}</TableCell>
+                                                <TableCell className="text-right">{dep.disCome}</TableCell>
+                                                <TableCell className="text-right">{dep.disTax}</TableCell>
+                                                <TableCell className="text-right">{dep.patOver}</TableCell>
+                                                <TableCell className="text-right">{dep.storColed}</TableCell>
+                                                <TableCell className="text-right">{dep.transHuman}</TableCell>
+                                                <TableCell className="text-right">{dep.transRub}</TableCell>
+                                                <TableCell className="text-right">{dep.medPrice}</TableCell>
+                                                <TableCell className="text-right">{dep.dolgDead}</TableCell>
+                                                <TableCell className="text-right">{/*dep.freeBeds*/"ot ward"}</TableCell>
+                                            </TableRow>
+                                    </TableBody>
+                                </Table>
+                            </div>
+
+                            <div className="col-span-2">
+                                <Label className="
+                                                flex
+                                                justify-center
+                                                items-center
+                                                font-bold
+                                                "
+                                >
+                                        Сводка по местам
+                                </Label>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="w-[100px]">Палата №</TableHead>
+                                        <TableHead className="text-right">Кол-во мест</TableHead>
+                                        <TableHead className="text-right">Занято</TableHead>
+                                        <TableHead className="text-right">Свободно</TableHead>
+                                        <TableHead className="text-right">Пол</TableHead>
+                                        <TableHead className="text-right">Резерв по распоряжению</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {wards.filter((ward) => {
+                                        return ward.depId === dep.id}).map((ward) => (
+                                        <TableRow key={ward.id}>
+                                            <TableCell className="font-medium">{ward.number}</TableCell>
+                                            <TableCell>{ward.numberOfSeats}</TableCell>
+                                            <TableCell>{ward.engaged}</TableCell>
+                                            <TableCell>{ward.free}</TableCell>
+                                            <TableCell>{ward.gender}</TableCell>
+                                            <TableCell className="text-right">{ward.reserve}</TableCell>
+                                        </TableRow>
+                                        ))}
+                                </TableBody>
+                                <TableFooter>
+                                    <TableRow>
+                                        <TableCell colSpan={1}>Кол-во мест:</TableCell>
+                                        <TableCell className="text-left">
+                                            {
+                                             wards.filter((ward) => {
+                                                return ward.depId === dep.id}).reduce((sum, current) => {
+                                                    return sum + current.numberOfSeats
+                                                }, 0)
+                                            }
+                                                </TableCell>
+                                        <TableCell className="text-right">Занято:</TableCell>
+                                        <TableCell className="text-left">{
+                                             wards.filter((ward) => {
+                                                return ward.depId === dep.id}).reduce((sum, current) => {
+                                                    return sum + current.engaged
+                                                }, 0)
+                                            }</TableCell>
+                                        <TableCell className="text-right">Свободно:</TableCell>
+                                        <TableCell className="text-left">{
+                                             wards.filter((ward) => {
+                                                return ward.depId === dep.id}).reduce((sum, current) => {
+                                                    return sum + current.free
+                                                }, 0)
+                                            }</TableCell>
+                                    </TableRow>
+                                </TableFooter>
+                            </Table>
+
+                            </div>
+
+                            <div className="col-span-1">
+                                <Label className="
+                                                flex
+                                                justify-center
+                                                items-center
+                                                font-bold
+                                                "
+                                >
+                                        Аккаунты
+                                </Label>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="w-[100px]">имя</TableHead>
+                                        <TableHead className="text-center">должность</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {profiles? profiles.filter((profile) => {
+                                        return profile.depId === dep.id}).map((profile) => (
+                                        <TableRow key={profile.id}>
+                                            <TableCell className="font-medium text-center" >
+                                                {
+                                                    users?users.filter((user) => {
+                                                        return user.id === profile.userId
+                                                    })[0]?.name : ''
+                                                }
+                                            </TableCell>
+                                            <TableCell className="text-center">{profile.grade}</TableCell>
+                                        </TableRow>
+                                        )) : ''}
+                                </TableBody>
+                            </Table>
+
+                            </div>
+                        </li>
+                    }) : ''}
+                </ul>
+            </section>
+
+          </CardContent>
+          <CardFooter>
+            <Button>Save password</Button>
+          </CardFooter>
+        </Card>
+      </TabsContent>
+    </Tabs>
+
+
+
+
 
         </section>
     )
