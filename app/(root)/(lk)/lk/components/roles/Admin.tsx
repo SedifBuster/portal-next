@@ -43,6 +43,7 @@ import ru from "date-fns/locale/ru"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { AdminTab } from "./adminTabs/AdminTab"
+import { AccountTab } from "./adminTabs/AccountTab"
 
 
 export function Admin() {
@@ -323,7 +324,7 @@ export function Admin() {
           value: "accounts",
           title: "Аккаунты",
           description: "Список аккаунтов приложения. Добавляйте, изменяйте и удаляйте аккаунты здесь.",
-          tabContent: <div>asdasd</div>
+          tabContent: <AccountTab />
         },
         {
           value: "departments",
