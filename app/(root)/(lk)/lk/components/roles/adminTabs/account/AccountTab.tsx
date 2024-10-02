@@ -9,6 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Button } from "@/components/ui/button"
 import { HiPencil, HiTrash } from "react-icons/hi2"
 import { UserCreate } from "./UserCreate"
+import { UsersTable } from "./UsersTable"
 
 export
   function AccountTab(
@@ -17,8 +18,19 @@ export
 
 
   //нет отделений
-  const [departments] = useState<Department[]>([])
+  const [departments, setDepartments] = useState<Department[]>([])
   const [users, setUsers] = useState<User[]>([])
+
+  let onGetDepartments = async () => {
+    try {
+      let result = await axios.get('/api/department')
+
+      if(result.status === 200) setDepartments(result.data)
+
+    } catch(error) {
+      console.log('error', error)
+    }
+  }
 
   let onGetUsers = async () => {
     try {
@@ -45,18 +57,20 @@ export
     }
   }
 
-  useEffect(() => {onGetUsers()}, [])
+  useEffect(() => {onGetUsers(); onGetDepartments()}, [])
 
   return <section 
     className="
     "
   >
-    <UserCreate />
+    <UserCreate departments={departments} onGetUsers={onGetUsers}/>
+    <UsersTable users={users}/>
     <section
       className="
         mt-4
       "
     >
+      
       <ul
         className="
           flex
@@ -132,3 +146,5 @@ export
     </section>
   </section>
   }
+
+

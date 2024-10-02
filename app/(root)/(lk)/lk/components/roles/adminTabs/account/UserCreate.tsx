@@ -9,8 +9,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import toast from "react-hot-toast"
 import axios from "axios"
-import { useState } from "react"
-import { Department, User } from "@prisma/client"
+import { Department } from "@prisma/client"
 import { Input } from "@/components/ui/input"
 
 const formSchema = z.object({
@@ -41,87 +40,129 @@ const formSchema = z.object({
 
 export
   function UserCreate(
-
+    {
+      departments,
+      onGetUsers
+    }: {
+      departments: Department[]
+      onGetUsers: () => void
+    }
 ) {
 
-    const [users, setUsers] = useState<User[]>([])
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+      defaultValues: {
+        name: "",
+        login: "",
+        password: "",
+      },
+  })
 
-    const form = useForm<z.infer<typeof formSchema>>({
-      resolver: zodResolver(formSchema),
-        defaultValues: {
-          name: "",
-          login: "",
-          password: "",
-        },
-    })
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const userData = {
+        name: values.name,
+        login: values.login,
+        password: values.password,
+        role: values.role,
+      }
+      console.log(userData)
 
-    let onGetUsers = async () => {
-        try {
-          let result = await axios.get('/api/users')
-          if (result.status === 200) setUsers(result.data)
-        } catch(error) {
-          console.log('error: ', error)
+      const userResult = await axios.post('/api/register', userData)
+      if(userResult.statusText !== "OK") return toast.error("Ошибка при создании пользователя")
+      else if(userResult.statusText === "OK") {
+        const userId: number = userResult.data.id
+        toast.success(`пользователь создан с id: ${userId}`)
+
+        if(!userId) return toast.error("Id не найден")
+        const profileData = {
+          userId,
+          depId: Number(values.department),
+          grade: values.grade
+        }
+
+        const profileResult = await axios.post('/api/users/profile', profileData)
+        if(profileResult.statusText !== "OK") {
+          const deletedUser = {
+            id: userId
+          }
+
+          const deletedUserResult = await axios.delete('/api/users', { data: deletedUser})
+          if(deletedUserResult.statusText === "OK") return toast.error("Пользователь удален")
+          else {
+            toast.error("Ошибка при удалении профиля")
+          }
+          return toast.error("Ошибка при создании профиля")
+        }
+        else if(profileResult.statusText === "OK") {
+          toast.success(`профиль создан с id: ${profileResult.data}`)
+          form.reset()
+          onGetUsers()
         }
       }
-        //нет отделений
-      const [departments] = useState<Department[]>([])
+    } catch (error) {
+      toast.error("Ошибка при создании пользователя")
+      console.log("Ошибка при создании пользователя ", error)
+    }
+  }
 
-    async function onSubmit(values: z.infer<typeof formSchema>) {
-        try {
-            const userData = {
-                name: values.name,
-                login: values.login,
-                password: values.password,
-                role: values.role,
-              }
-              console.log(userData)
-            const userResult = await axios.post('/api/register', userData)
-            if(userResult.statusText !== "OK") return toast.error("Ошибка при создании пользователя")
-            else if(userResult.statusText === "OK") {
-                const userId: number = userResult.data.id
-                toast.success(`пользователь создан с id: ${userId}`)
-                if(!userId) return toast.error("Id не найден")
-                const profileData = {
-                    userId,
-                    depId: Number(values.department),
-                    grade: values.grade
-                }
-                const profileResult = await axios.post('/api/users/profile', profileData)
-                if(profileResult.statusText !== "OK") {
-                    const deletedUser = {
-                        id: userId
-                    }
-                    const deletedUserResult = await axios.delete('/api/users', { data: deletedUser})
-                    if(deletedUserResult.statusText === "OK") return toast.error("Пользователь удален")
-                    else {
-                        toast.error("Ошибка при удалении профиля")
-                    }
-                    return toast.error("Ошибка при создании профиля")
-                } 
-                else if(profileResult.statusText === "OK") {
-                    toast.success(`профиль создан с id: ${profileResult.data}`)
-                    form.reset()
-                    onGetUsers()
-                }
-            }
-        } catch (error) {
-            toast.error("Ошибка при создании пользователя")
-            console.log("Ошибка при создании пользователя ", error)
-        }
-      }
+  const roles = [
+    {
+      value: 'USER',
+      text: 'Пользователь'
+    },
+    {
+      value: 'TECHNICICAN',
+      text: 'Техник'
+    },
+    {
+      value: 'SYSADMIN',
+      text: 'Сисадмин'
+    },
+    {
+      value: 'ADMIN',
+      text: 'Админ'
+    },
+  ]
 
-  return  <Sheet>
-  <SheetTrigger>
-    <Button>создать пользователя</Button>
-  </SheetTrigger>
-  <SheetContent className="w-[400px] sm:w-[540px]">
-    <SheetHeader>
-      <SheetTitle>Создать пользователя</SheetTitle>
-      <SheetDescription>
-        Помните, у каждого должна быть должность и профиль. Кликните по "создать" когда заполните все поля.
-      </SheetDescription>
-    </SheetHeader>
-    <div>
+  const positions = [
+    {
+      value: 'NURSE',
+      text: 'медсестра - изменение значений'
+    },
+    {
+      value: 'HEADNURSE',
+      text: 'старшая медсестра - назначение, проверка'
+    },
+    {
+      value: 'DEPNURSTAFF',
+      text: 'зам по сред. мед. персоналу - менеджмент коек'
+    },
+    {
+      value: 'CHIEFNURSE',
+      text: 'главная медсестра - менеджмент коек'
+    },
+    {
+      value: 'CMO',
+      text: 'нач.мед. - просмотр'
+    },
+    {
+      value: 'TECHNICICAN',
+      text: 'технический специалист'
+    },
+  ]
+
+  return <Sheet>
+    <SheetTrigger>
+      <Button>создать пользователя</Button>
+    </SheetTrigger>
+    <SheetContent className="w-[400px] sm:w-[540px]">
+      <SheetHeader>
+        <SheetTitle>Создать пользователя</SheetTitle>
+        <SheetDescription>
+          Помните, у каждого должна быть должность и профиль. Кликните по "создать" когда заполните все поля.
+        </SheetDescription>
+      </SheetHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
           <FormField
@@ -185,18 +226,11 @@ export
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="USER">
-                      Юзер
-                    </SelectItem>
-                    <SelectItem value="TECHNICICAN">
-                      Техник
-                    </SelectItem>
-                    <SelectItem value="SYSADMIN">
-                      Сисадмин
-                    </SelectItem>
-                    <SelectItem value="ADMIN">
-                      Админ
-                    </SelectItem>
+                    {roles.map(role => {
+                      return <SelectItem value={role.value}>
+                        {role.text}
+                      </SelectItem>
+                    })}
                   </SelectContent>
                 </Select>
                 <FormDescription>
@@ -219,24 +253,11 @@ export
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="NURSE">
-                      медсестра - изменение значений
-                    </SelectItem>
-                    <SelectItem value="HEADNURSE">
-                      старшая медсестра - назначение, проверка
-                    </SelectItem>
-                    <SelectItem value="DEPNURSTAFF">
-                      зам по сред. мед. персоналу - менеджмент коек
-                    </SelectItem>
-                    <SelectItem value="CHIEFNURSE">
-                      главная медсестра - менеджмент коек
-                    </SelectItem>
-                    <SelectItem value="CMO">
-                      нач.мед. - просмотр
-                    </SelectItem>
-                    <SelectItem value="TECHNICICAN">
-                      технический специалист
-                    </SelectItem>
+                    {positions.map(position => {
+                      return <SelectItem value={position.value}>
+                        {position.text}
+                      </SelectItem>
+                    })}
                   </SelectContent>
                 </Select>
                 <FormDescription>
@@ -276,7 +297,6 @@ export
           <Button type="submit">отправить</Button>
         </form>
       </Form>
-    </div>
     </SheetContent>
-</Sheet>
+  </Sheet>
 }
