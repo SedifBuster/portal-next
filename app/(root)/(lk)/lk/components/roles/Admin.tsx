@@ -78,13 +78,13 @@ export
       <TabsList className="grid w-full grid-cols-5">
         {
           tabs.map((tab) => {
-            return <TabsTrigger value={tab.value}>{tab.title}</TabsTrigger>
+            return <TabsTrigger key={tab.title} value={tab.value}>{tab.title}</TabsTrigger>
           })
         }
       </TabsList>
       {
         tabs.map(tab => {
-          return <AdminTab value={tab.value} title={tab.title} description={tab.description} tabContent={tab.tabContent}/>
+          return <AdminTab key={tab.title} value={tab.value} title={tab.title} description={tab.description} tabContent={tab.tabContent}/>
         })
       }
     </Tabs>

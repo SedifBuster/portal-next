@@ -2,12 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { Department, User} from "@prisma/client"
-import toast from "react-hot-toast"
 import axios from "axios"
 
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Button } from "@/components/ui/button"
-import { HiPencil, HiTrash } from "react-icons/hi2"
 import { UserCreate } from "./UserCreate"
 import { UsersTable } from "./UsersTable"
 
@@ -15,45 +11,23 @@ export
   function AccountTab(
 
 ) {
-
-
-  //нет отделений
   const [departments, setDepartments] = useState<Department[]>([])
   const [users, setUsers] = useState<User[]>([])
 
   let onGetDepartments = async () => {
     try {
       let result = await axios.get('/api/department')
-
       if(result.status === 200) setDepartments(result.data)
-
     } catch(error) {
       console.log('error', error)
     }
   }
-
   let onGetUsers = async () => {
     try {
       let result = await axios.get('/api/users')
       if (result.status === 200) setUsers(result.data)
     } catch(error) {
       console.log('error: ', error)
-    }
-  }
-
-  let onChangeUser = async () => {
-    toast.error('еще не реализовано')
-  }
-
-  let onDeleteUser = async (userId: number) => {
-    const postData = { id: userId }
-
-    const result = await axios.delete('/api/users', { data: postData })
-    if (result.statusText === "OK") {
-      toast.success('пользователь удален')
-      onGetUsers()
-    } else {
-      toast.error('Ошибка при удалении пользователя')
     }
   }
 
@@ -64,8 +38,11 @@ export
     "
   >
     <UserCreate departments={departments} onGetUsers={onGetUsers}/>
-    <UsersTable users={users}/>
-    <section
+    <UsersTable users={users} onGetUsers={onGetUsers}/>
+  </section>
+}
+/**
+ * <section
       className="
         mt-4
       "
@@ -144,7 +121,5 @@ export
         }) : ''}
       </ul>
     </section>
-  </section>
-  }
-
+ */
 
