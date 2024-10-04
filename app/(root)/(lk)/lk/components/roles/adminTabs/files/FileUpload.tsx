@@ -8,6 +8,9 @@ import toast from "react-hot-toast"
 import { z } from "zod"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { FileCategory } from "@prisma/client"
+import axios from "axios"
 
 const formFilesSchema = z.object({
     fileName: z.string(),
@@ -16,9 +19,11 @@ const formFilesSchema = z.object({
 
 export
   function FileUpload({
-
+    onGetFilesCategory,
+    categories
   }: {
-
+    onGetFilesCategory: () => Promise<void>
+    categories: FileCategory[]
   }
 
 ) {
@@ -36,22 +41,16 @@ export
   async function onSubmitFile(values: z.infer<typeof formFilesSchema>) {
     try {
       const formData = new FormData()
+      console.log(values)
 
       formData.append("file", fileInput?.current?.files?.[0]!,`${values.category}_${values.fileName}`)
 
-        /*const fileData = {
-          fileName: values.fileName,
-          category: values.category,
-          file: formData
+      const uploadFile = await axios.post('/api/uploadFiles', formData)
+      if(uploadFile.statusText !== 'OK') return toast.error("Ошибка при загрузке файла")
+        else {
+      console.log(uploadFile.data)
+          toast.success(`файл успешно загружен: ${uploadFile.data}`)
         }
-        console.log(fileData.file.get('file').name)*/
-
-        //const uploadFile = await axios.post('/api/uploadFiles', fileData)
-        //if(uploadFile.statusText !== 'OK') return toast.error("Ошибка при загрузке файла")
-          //else {
-           //   toast.success(`файл успешно загружен: ${uploadFile.data}`)
-          //}
-     //console.log(fileData)
     } catch (error) {
       toast.error("Ошибка при загрузке файла")
       console.log("Ошибка при загрузке файла: ", error)
@@ -70,9 +69,9 @@ export
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Название файла*</FormLabel>
-                <FormControl>
-                  <Input className="h-7" placeholder="Об утверждении стандарта..." {...field} />
-                </FormControl>
+                  <FormControl>
+                    <Input className="h-7" placeholder="Об утверждении стандарта..." {...field} />
+                  </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -81,16 +80,27 @@ export
             control={formFiles.control}
             name="category"
             render={({ field }) => (
-              <FormItem>
+              <FormItem >
                 <FormLabel>Категория файла*</FormLabel>
-                <FormControl>
-                  <Input  className="h-7" placeholder="Лекарственная безопасность" {...field}/>
-                </FormControl>
+                <Select onValueChange={field.onChange}>
+                    <FormControl>
+                      <SelectTrigger className="h-7">
+                        <SelectValue placeholder="..."/>
+                      </SelectTrigger>
+                    </FormControl>
+                  <SelectContent>
+                   {categories.map((category) => {
+                      return <SelectItem value={category.name} key={category.id}>
+                        {category.name}
+                      </SelectItem>
+                    })} 
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Input lang="ru" type="file" name="file" ref={fileInput}/>
+          <Input className="mt-12" lang="ru" type="file" name="file" ref={fileInput}/>
                 {
                 /* <FormField
                           control={formFiles.control}

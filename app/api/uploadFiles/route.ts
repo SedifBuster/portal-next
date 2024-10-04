@@ -1,7 +1,49 @@
-import prisma from "@/lib/prismadb"
 import { NextResponse } from "next/server"
+import fs from "node:fs/promises";
+import { revalidatePath } from "next/cache";
 
-export
+export async function POST(req: Request) {
+  try {
+    const formData = await req.formData();
+
+    const file = formData.get("file") as File;
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = new Uint8Array(arrayBuffer);
+    console.log(file.name)
+    await fs.writeFile(`./public/uploads/${file.name}`, buffer);
+
+    revalidatePath("/");
+
+    return NextResponse.json(file.name);
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ status: "fail", error: e });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*export
   async function GET(
     request: Request
 ) {
@@ -49,7 +91,7 @@ export
   }
 }
 
-/*export async function POST(req: Request) {
+export async function POST(req: Request) {
     try {
       const formData = await req.formData();
   

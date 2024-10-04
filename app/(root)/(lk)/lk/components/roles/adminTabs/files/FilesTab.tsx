@@ -11,7 +11,6 @@ export
   function FilesTab(
 
 ) {
-
   const [filesCategories, setFilesCategories] = useState<FileCategory[]>()
 
   let onGetFilesCategory = async () => {
@@ -22,6 +21,7 @@ export
       console.log('error', error)
     }
   }
+
   let onGetFiles/*in progress */ = async () => {
     try {
       //let result = await axios.get('/api/users')
@@ -33,10 +33,9 @@ export
 
   useEffect(() => {onGetFiles(); onGetFilesCategory()}, [])
 
-  return <>
-    <FileUpload />
-    <FilesCategory  onGetFilesCategory={onGetFilesCategory}/>
-   
+  return filesCategories?<>
+    <FileUpload  categories={filesCategories} onGetFilesCategory={onGetFilesCategory}/>
+    <FilesCategory onGetFilesCategory={onGetFilesCategory}/>
     {
     filesCategories
     ?
@@ -44,5 +43,6 @@ export
     :
     ''
     }
-  </>
+  </> :
+  ''
 }
