@@ -10,7 +10,8 @@ export async function POST(req: Request) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = new Uint8Array(arrayBuffer);
     console.log(file.name)
-    await fs.writeFile(`./public/uploads/${file.name}`, buffer);
+    console.log(file.type)
+    await fs.writeFile(`./public/uploads/${file.name}.${file.type.split('/')[1]}`, buffer);
 
     revalidatePath("/");
 

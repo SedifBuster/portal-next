@@ -13,8 +13,8 @@ import { FileCategory } from "@prisma/client"
 import axios from "axios"
 
 const formFilesSchema = z.object({
-    fileName: z.string(),
-    category: z.string(),
+    fileName: z.string().min(3),
+    category: z.string().min(3),
 })
 
 export
@@ -50,6 +50,7 @@ export
         else {
       console.log(uploadFile.data)
           toast.success(`файл успешно загружен: ${uploadFile.data}`)
+          formFiles.reset()
         }
     } catch (error) {
       toast.error("Ошибка при загрузке файла")

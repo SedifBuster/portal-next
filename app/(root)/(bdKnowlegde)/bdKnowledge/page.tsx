@@ -1,28 +1,54 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { HiDocument } from "react-icons/hi2";
-import { HiFolder } from "react-icons/hi2";
-import fs from "node:fs/promises";
 
+import fs from "node:fs/promises";
+import { FilesContainer } from "./components/FilesContainer";
 
 export default async function BdKnowledge() {
-  const files = await fs.readdir("./public/uploads");
-  const images = files
-    //.filter((file) => file.endsWith(".jpg"))
-    .map((file) => `/uploads/${file}`);
+  const files = await fs.readdir("./public/uploads")
 
-  return (
+  return <FilesContainer files={files}/>
+}
+/*(
     <main>
+      <div>
+        <Link href={'/'}>
+          <Button variant={'secondary'} className="m-2" >на главную</Button>
+        </Link>
+      </div>
       <div className="flex flex-wrap">
-        {images.map((image) => (
+        {files.map((image) => (
           <div key={image} className="px-2 h-auto w-1/2">
-           <a href={image}>{image}</a> 
+           <a href={`/uploads/${image}`} target="_blank">{image}</a> 
           </div>
         ))}
       </div>
+      <FilesContainer  files={files}/>
     </main>
-  );
-}
+  );*/
+
+ //console.log(files)
+  //const images = files
+    //.filter((file) => file.endsWith(".jpg"))
+   // .map((file) => `/uploads/${file}`);
+    //console.log(files)
+    //filter razbiv na object
+    //filter po objectam
+    //done
+    /*const inObjectFileNames = (files: string[]) => {
+      let splitFileNames: any = []
+      for(let i = 0; i < splitFileNames.length; i++) {
+        console.log(files[i], "tut")
+        splitFileNames.push(files[i].split('_'))
+        console.log(files[i], "tut")
+      }
+      
+      //console.log(inObjectFileNames(files))
+      
+      return splitFileNames
+    }
+
+    console.log(inObjectFileNames(files))
+
+    console.log(files[0].split('_'))*/
 
 /* 
 export
