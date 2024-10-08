@@ -227,7 +227,7 @@ export
                   </FormControl>
                   <SelectContent>
                     {roles.map(role => {
-                      return <SelectItem value={role.value}>
+                      return <SelectItem key={role.value} value={role.value}>
                         {role.text}
                       </SelectItem>
                     })}
@@ -254,7 +254,7 @@ export
                   </FormControl>
                   <SelectContent>
                     {positions.map(position => {
-                      return <SelectItem value={position.value}>
+                      return <SelectItem key={position.value} value={position.value}>
                         {position.text}
                       </SelectItem>
                     })}
