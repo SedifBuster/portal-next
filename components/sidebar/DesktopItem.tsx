@@ -41,7 +41,7 @@ export default function DesktopItem({
                     hover:text-black
                     hover:bg-gray-100
                 `,
-                    active && 'bg-gray-100'
+                    active && ''
                 )}
              >
                 <Icon className="h-6 w-6 shrink-0" />

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { HiOutlineDocument } from "react-icons/hi2";
 
 export
-  async function FilesContainer(
+  async function FilesTable(
   {
     files,
   }: {

@@ -22,7 +22,24 @@ export async function POST(req: Request) {
   }
 }
 
+export async function DELETE(req: Request) {
+  try {
+    const body = await req.json()
+    console.log(body)
+    const {path} = body
 
+    if( !path ) return new NextResponse( 'Missing info', { status: 400 } )
+
+    await fs.unlink(path)
+
+
+    return NextResponse.json(path)
+
+  } catch (error) {
+    console.log( error, 'FILE_DELETE_ERROR' )
+    return new NextResponse( 'Internal Error', { status: 500 } )
+  }
+}
 
 
 

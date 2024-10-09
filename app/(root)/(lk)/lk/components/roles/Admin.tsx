@@ -39,7 +39,7 @@ export
     {
       value: "files",
       title: "Файлы",
-      description: "Change your password here. After saving, you'll be logged out.",
+      description: "Управление файлами базы знаний",
       tabContent: <FilesTab />
     },
     {

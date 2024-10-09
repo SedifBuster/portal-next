@@ -50,7 +50,7 @@ export
   }
 
   return <>
-    <h6 className="text-lg font-bold mt-12 pt-6">Создать категорию</h6>
+    <h6 className="text-lg font-bold">Создать категорию</h6>
       <Form {...formFilesCategory}>
         <form onSubmit={formFilesCategory.handleSubmit(onSubmitFileCategory)} className="space-y-2">
           <FormField
