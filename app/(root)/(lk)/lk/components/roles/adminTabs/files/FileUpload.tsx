@@ -19,10 +19,10 @@ const formFilesSchema = z.object({
 
 export
   function FileUpload({
-    onGetFilesCategory,
+    onGetFiles,
     categories
   }: {
-    onGetFilesCategory: () => Promise<void>
+    onGetFiles: () => Promise<void>
     categories: FileCategory[]
   }
 
@@ -42,23 +42,39 @@ export
     try {
       const formData = new FormData()
       console.log(values)
+      formData.append("file", fileInput?.current?.files?.[0]!)
 
-      formData.append("file", fileInput?.current?.files?.[0]!,`${values.category}_${values.fileName}`)
+      const postFileName = {
+        name: values.fileName,
+        category: values.category,
+        //@ts-ignore
+        filePath: formData.get('file').name
+      }
 
-      const uploadFile = await axios.post('/api/uploadFiles', formData)
+      const uploadFileName = await axios.post('/api/uploadFiles', postFileName)
+
+      if(!uploadFileName) {toast.error('Ошибка на стороне сервера'); throw new Error}
+
+      const uploadFile = await axios.post('http://192.168.0.148:5000/knowledgeBd', formData)
+
       if(uploadFile.statusText !== 'OK') return toast.error("Ошибка при загрузке файла")
-        else {
-      console.log(uploadFile.data)
-          toast.success(`файл успешно загружен: ${uploadFile.data}`)
-          formFiles.reset()
-        }
+
+      toast.success(`файл успешно загружен`)
+      formFiles.reset()
+      onGetFiles()
+
+      //const uploadFile = await axios.post('/api/uploadFiles', formData)
+     // if(uploadFile.statusText !== 'OK') return toast.error("Ошибка при загрузке файла")
+      //  else {
+     // console.log(uploadFile.data)
+     //     toast.success(`файл успешно загружен: ${uploadFile.data}`)
+     //     formFiles.reset()
+     //   }
     } catch (error) {
       toast.error("Ошибка при загрузке файла")
       console.log("Ошибка при загрузке файла: ", error)
     }
   }
-
-
 
   return <>
   <h6 className="text-lg font-bold mt-6">Загрузить файл</h6>

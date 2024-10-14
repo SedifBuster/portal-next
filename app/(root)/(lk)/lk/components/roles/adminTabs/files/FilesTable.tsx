@@ -1,6 +1,67 @@
+import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+import { FileBd } from "@prisma/client"
+import Link from "next/link"
+import { HiOutlineDocument } from "react-icons/hi2"
+
+export
+  function FilesTable({
+    files,
+    onDeleteFile
+  } : {
+    files: FileBd[]
+    onDeleteFile: (id: number) => void
+  }
+  ) {
+    return (
+      <section>
+      <header>
+        <div className="flex ">
+          <Label className="text-xl block subpixel-antialiased tracking-wide p-4">Файлы базы знаний</Label>
+        </div>
+      </header>
+      <div className="flex flex-wrap gap-2">
+      <ul className="flex flex-col justify-center p-2 gap-2">
+        {
+          files
+            .map((fileDb) => {
+              return <li key={fileDb.id} className="flex gap-2">
+              <Link href={`http://192.168.0.148:5000/knowledgeBd/${fileDb.filePath}`} target="_blank" className="flex gap-2 items-center">
+                <HiOutlineDocument />
+                <p className="text-sm text-blue-700">{fileDb.category} {fileDb.name}</p>
+              </Link>
+              <Button variant={'destructive'} onClick={() => onDeleteFile(fileDb.id)}>удалить</Button>
+            </li>
+            })}
+       </ul>
+
+      </div>
+      </section>
+    )
+  }
 
 
-import { Button } from "@/components/ui/button";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { HiOutlineDocument } from "react-icons/hi2";
@@ -78,4 +139,4 @@ export
         }
       </div>
     </main>
-}
+}*/

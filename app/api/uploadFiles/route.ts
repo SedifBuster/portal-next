@@ -1,8 +1,83 @@
 import { NextResponse } from "next/server"
-import fs from "node:fs/promises";
-import { revalidatePath } from "next/cache";
+import prisma from "@/lib/prismadb"
+//import fs from "node:fs/promises";
+//import { revalidatePath } from "next/cache";
 
-export async function POST(req: Request) {
+
+export
+  async function GET(
+) {
+  try {
+    const filesBd = await prisma.fileBd.findMany()
+
+    return NextResponse.json(filesBd)
+  } catch ( error ) {
+    console.log( error, 'FILESBD_GET_ERROR' )
+    return new NextResponse( 'Internal Error', { status: 500 } )
+  }
+}
+
+export
+  async function POST(
+    request: Request
+) {
+  try {
+    const body = await request.json()
+    console.log(body) 
+    const {
+        name,
+        category,
+        filePath,
+    } = body
+
+    if ( !name || !category || !filePath ) {
+      return new NextResponse( 'Missing info', { status: 400 } )
+    }
+    const fileBd = await prisma.fileBd.create({
+      data: {
+        name,
+        category,
+        filePath,
+      }
+    })
+
+    return NextResponse.json(fileBd.id)
+  } catch ( error ) {
+    console.log( error, 'FILEBD_CREATE_ERROR' )
+    return new NextResponse( 'Internal Error', { status: 500 } )
+  }
+}
+
+export
+  async function DELETE(
+    request: Request
+) {
+  try {
+    const body = await request.json()
+    const {
+      id
+    } = body
+    const fileBd = await prisma.fileBd.delete({
+      where: {
+        id: id
+      }
+    })
+    if ( !id || !fileBd ) {
+      return new NextResponse( 'Missing info', { status: 400 } )
+    }
+
+    return NextResponse.json(fileBd.id)
+  } catch ( error ) {
+    console.log( error, 'WARD_DELETE_ERROR' )
+    return new NextResponse( 'Internal Error', { status: 500 } )
+  }
+}
+
+
+
+
+
+/*export async function POST(req: Request) {
   try {
     const formData = await req.formData();
 
@@ -39,7 +114,7 @@ export async function DELETE(req: Request) {
     console.log( error, 'FILE_DELETE_ERROR' )
     return new NextResponse( 'Internal Error', { status: 500 } )
   }
-}
+}*/
 
 
 

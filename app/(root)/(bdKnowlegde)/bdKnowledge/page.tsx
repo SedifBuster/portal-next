@@ -1,11 +1,13 @@
 
-import fs from "node:fs/promises";
 import { FilesContainer } from "./components/FilesContainer";
 
-export default async function BdKnowledge() {
-  const files = await fs.readdir("./public/uploads")
 
-  return <FilesContainer files={files}/>
+export default async function BdKnowledge() {
+
+
+
+
+  return <FilesContainer/>
 }
 /*(
     <main>
