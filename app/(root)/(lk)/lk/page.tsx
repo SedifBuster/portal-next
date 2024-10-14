@@ -16,7 +16,6 @@ export default function Lk() {
             flex-row
             flex-wrap
             justify-center
-            bg-emerald-100
             h-full
         "
       >

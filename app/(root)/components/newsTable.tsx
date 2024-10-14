@@ -33,7 +33,7 @@ export function NewsTable() {
 
     return (
         <div className="basis-2/5 h-[80vh] rounded-md p-4 border-green-100 border-2 shadow-sm overflow-auto flex flex-col gap-4">
-
+          <h2 className="flex justify-center font-bold text-xl">Новости</h2>
         {
         isNews && isNews.length > 0
         ?
@@ -45,6 +45,7 @@ export function NewsTable() {
             <p className="text-sm border-b w-full mb-2">{format(new Date(news.dateNews), "PPP", {locale: ru})}</p>
             <p className="mb-4">{news.news}
             </p>
+            <p>от {news.liable}</p>
           </div>
         })
         :
@@ -54,6 +55,7 @@ export function NewsTable() {
             <p className="text-sm border-b w-full mb-2">{format(new Date(news.dateNews), "PPP", {locale: ru})}</p>
             <p className="mb-4">{news.news}
             </p>
+            <p>от {news.liable}</p>
           </div>
         })
         :
