@@ -1,8 +1,5 @@
 import { Department } from "./components/Department";
-import { Indicators } from "./components/Indicators";
-import { InfoPanel } from "./components/InfoPanel";
-import { TaskTable } from "./components/TaskTable";
-import { UserInfo } from "./components/UserInfo";
+
 
 export default function Lk() {
     return (
