@@ -44,6 +44,8 @@ export
       console.log(values)
       formData.append("file", fileInput?.current?.files?.[0]!)
 
+      if(fileInput?.current?.files?.[0]!.size && fileInput?.current?.files?.[0]!.size > 15728640/*1,5e+7*/) return toast.error('файл слишком большой!')
+
       const postFileName = {
         name: values.fileName,
         category: values.category,

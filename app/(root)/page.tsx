@@ -3,6 +3,7 @@ import Image from "next/image";
 import logoImage from "../logoVKB.png"
 import Link from "next/link";
 import { NewsTable } from "./components/newsTable";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
 
@@ -74,10 +75,15 @@ export default function Home() {
 
         </div>
 
-
+      <div className="basis-2/5">
+        <div className="h-[7vh] p-2 flex gap-6">
+          <Link href={'/newComers'}><Button variant={'secondary'}>Новым сотрудникам</Button></Link>
+          <Link href={'/bdNumbers'}><Button variant={'secondary'}>База номеров</Button></Link>
+        </div>
 
 
         <NewsTable />
+        </div>
       </div>
 
       </section>

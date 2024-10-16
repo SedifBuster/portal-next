@@ -32,7 +32,7 @@ export function NewsTable() {
 
 
     return (
-        <div className="basis-2/5 h-[80vh] rounded-md p-4 border-green-100 border-2 shadow-sm overflow-auto flex flex-col gap-4">
+        <div className=" h-[72vh] rounded-md p-4 border-green-100 border-2 shadow-sm overflow-auto flex flex-col gap-4">
           <h2 className="flex justify-center font-bold text-xl">Новости</h2>
         {
         isNews && isNews.length > 0
