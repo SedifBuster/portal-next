@@ -67,3 +67,36 @@ export
     return new NextResponse( 'Internal Error', { status: 500 } )
   }
 }
+
+export
+  async function PATCH(
+    request: Request
+) {
+  try {
+    const body = await request.json()
+
+    const {
+      id,
+      name,
+    } = body
+    console.log(body)
+
+    if ( !id || !name ) {
+      return new NextResponse('Missing info', { status: 400 })
+    }
+
+    const category = await prisma.fileCategory.update({
+      where: {
+        id
+      },
+      data: {
+        name,
+      }
+    })
+
+    return NextResponse.json(category.id)
+  } catch ( error ) {
+    console.log( error, 'CATEGORY_UPDATE_ERROR' )
+    return new NextResponse( 'Internal Error', { status: 500 } )
+  }
+}

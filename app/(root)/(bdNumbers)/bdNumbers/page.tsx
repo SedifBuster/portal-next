@@ -36,7 +36,8 @@ export
           <Label className="text-5xl block subpixel-antialiased tracking-wide p-4">База номеров</Label>
         </div>
       </header>
-      <div className="p-4">
+      <div className=" flex">
+      <div className="p-4 basis-1/2">
       <Table className="">
         <TableHeader>
           <TableRow>
@@ -59,6 +60,7 @@ export
           </TableRow>
         </TableFooter>
       </Table>
+      </div>
       </div>
     </section>
   }

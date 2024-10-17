@@ -26,8 +26,19 @@ import { Button } from "@/components/ui/button"
 import { FileCategory } from "@prisma/client"
 import { HiPencil, HiTrash } from "react-icons/hi2"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
 import toast from "react-hot-toast"
 import axios from "axios"
+import FilesCategoryEdit from "./FilesCategoryEdit"
 
 export
   function FilesCategoryTable(
@@ -39,6 +50,7 @@ export
       onGetFilesCategory: () => Promise<void>
     }
 ) {
+  
 
   const columns: ColumnDef<FileCategory>[] = [
     {
@@ -80,18 +92,14 @@ export
       id: "actionsChange",
       enableHiding: false,
       cell: ({ row }) => {
-        const payment = row.original
 
-        return (
-          <Button variant={'outline'} onClick={onChangeCategory}><HiPencil /></Button>
-        )
+        return <FilesCategoryEdit id={row.getValue('id')} name={row.getValue('name')} onGetFilesCategory={onGetFilesCategory}/>
       },
     },
     {
       id: "actionsDelete",
       enableHiding: false,
       cell: ({ row }) => {
-        const payment = row.original
 
         return (
           <Popover>
@@ -122,10 +130,7 @@ export
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
 
-  let onChangeCategory = async () => {
-    onGetFilesCategory()
-    toast.error('еще не реализовано')
-  }
+
 
   let onDeleteCategory = async (categoryId: number) => {
     const postData = { id: categoryId }
@@ -138,6 +143,7 @@ export
       toast.error('Ошибка при удалении категории')
     }
   }
+  console.log(categories)
 
   const table = useReactTable({
     data: categories,

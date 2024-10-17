@@ -6,9 +6,13 @@ html,
 body,
 :root {
   height: 100%;
+  font-family: 'PF Beau Sans Pro Regular';
 }
  
 @layer base {
+  html {
+    font-family: 'PF Beau Sans Pro Regular';
+  }
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;

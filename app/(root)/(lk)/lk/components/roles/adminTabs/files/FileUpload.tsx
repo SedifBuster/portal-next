@@ -81,7 +81,7 @@ export
   return <>
   <h6 className="text-lg font-bold mt-6">Загрузить файл</h6>
       <Form {...formFiles}>
-        <form onSubmit={formFiles.handleSubmit(onSubmitFile)} className="space-y-2">
+        <form onSubmit={formFiles.handleSubmit(onSubmitFile)} className="space-y-4">
           <FormField
             control={formFiles.control}
             name="fileName"
