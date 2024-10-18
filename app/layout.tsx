@@ -1,10 +1,22 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import localFont from 'next/font/local'
 import ToasterContext from './context/ToasterContext'
 import AuthContext from './context/AuthContext'
 
 const inter = Inter({ subsets: ['latin'] })
+
+const pfBeauSans = localFont({
+  src: [
+    {
+      path: '../public/fonts/PFBeauSansPro-Regular.woff',
+      weight: '500',
+      style: 'normal'
+    }
+  ],
+  variable: '--font-pfBeauSans'
+})
 
 export const metadata: Metadata = {
   title: 'портал',
@@ -18,7 +30,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ru">
-      <body className={inter.className}>
+      <body className={pfBeauSans.className}>
         <AuthContext>
         <ToasterContext />
         {children}

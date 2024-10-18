@@ -59,7 +59,7 @@ export
 
       const uploadFile = await axios.post('http://192.168.0.148:5000/knowledgeBd', formData)
 
-      if(uploadFile.statusText !== 'OK') return toast.error("Ошибка при загрузке файла")
+      if(uploadFile.statusText !== 'OK') throw new Error
 
       toast.success(`файл успешно загружен`)
       formFiles.reset()
