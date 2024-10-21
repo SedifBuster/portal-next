@@ -1,4 +1,3 @@
-
 import prisma from "@/lib/prismadb"
 import { NextResponse } from "next/server"
 
@@ -21,10 +20,8 @@ export
 ) {
   try {
     const body = await request.json()
-    console.log(body)
-    const {
-        name,
-    } = body
+    console.log('Категория файла', body)
+    const { name } = body
 
     if ( !name ) {
       return new NextResponse( 'Missing info', { status: 400 } )
@@ -48,15 +45,15 @@ export
 ) {
   try {
     const body = await request.json()
-    console.log(body)
-    const {
-      id
-    } = body
+    console.log('Удаление категории', body)
+    const { id } = body
+
     const category = await prisma.fileCategory.delete({
       where: {
         id
       }
     })
+
     if ( !id || !category ) {
       return new NextResponse( 'Missing info', { status: 400 } )
     }
@@ -79,7 +76,7 @@ export
       id,
       name,
     } = body
-    console.log(body)
+    console.log('Изменение категории', body)
 
     if ( !id || !name ) {
       return new NextResponse('Missing info', { status: 400 })

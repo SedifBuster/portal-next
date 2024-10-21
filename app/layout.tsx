@@ -1,11 +1,8 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import localFont from 'next/font/local'
 import ToasterContext from './context/ToasterContext'
 import AuthContext from './context/AuthContext'
-
-const inter = Inter({ subsets: ['latin'] })
 
 const pfBeauSans = localFont({
   src: [
@@ -17,7 +14,6 @@ const pfBeauSans = localFont({
   ],
   variable: '--font-pfBeauSans'
 })
-
 export const metadata: Metadata = {
   title: 'портал',
   description: 'все в одном месте',
