@@ -1,32 +1,50 @@
-import { Label } from "@/components/ui/label";
-import Image from "next/image";
-import logoImage from "../../public/logoVKB.png"
 import Link from "next/link";
 import { NewsTable } from "./components/newsTable";
 import { Button } from "@/components/ui/button";
+import LinkMain from "./components/linkMain";
+import MainHeader from "@/components/ui/headers/mainHeader";
+import AsideMain from "./components/asideMain";
 
+export type mainPageLinktype = {
+  href: string
+  target: 'blank' | '_self'
+  text: string
+}
+
+const mainPageLinks: mainPageLinktype[] = [
+  {
+    href: "http://192.168.0.148:3000/table",
+    target: "blank",
+    text: "Журнал нежелательных случаев"
+  },
+  {
+    href: "http://192.168.0.148:5006/",
+    target: "blank",
+    text: "Система учета заявок"
+  },
+  {
+    href: "http://192.168.0.148:5010/",
+    target: "blank",
+    text: "Журнал БРНС"
+  },
+  {
+    href: "/priemnoe",
+    target: "blank",
+    text: "Панель мониторинга приемного отделения"
+  },
+  {
+    href: "/bdKnowledge",
+    target: "_self",
+    text: "База знаний"
+  },
+]
+//news table change
 export
   default function Home(
 ) {
   return (
     <>
-      <header>
-        <div className="flex p-6 gap-6">
-          <Image src={logoImage} alt="logo image" width={283}/>
-          <Label
-            className="
-              text-6xl
-              block
-              subpixel-antialiased
-              tracking-wide
-              p-4
-            "
-          >
-            корпоративный портал
-          </Label>
-        </div>
-      </header>
-
+      <MainHeader />
       <div className="flex flex-row p-4 gap-2 ">
         <div
           className="
@@ -40,73 +58,14 @@ export
             h-[40vh]
           "
         >
-          <Link href={'http://192.168.0.148:3000/table'} target="blank"
-            className="
-              border
-              h-[15vh]
-              rounded-md
-              p-4
-              flex
-              justify-center
-              content-center
-              shadow-md
-              hover:bg-green-100 
-            "
-          >
-            <p className="p-2 text-lg font-semibold">Журнал нежелательных случаев</p>
-          </Link>
-
-          <Link href={'http://192.168.0.148:5006/'} target="blank"
-            className="
-              border
-              h-[15vh]
-              rounded-md
-              p-4
-              flex
-              justify-center
-              content-center
-              shadow-md
-              hover:bg-green-100
-            "
-          >
-            <p className="p-2 text-lg font-semibold">Система учета заявок</p>
-          </Link>
-          <Link href={'http://192.168.0.148:5010/'} target="blank" className="
-          border h-[15vh] rounded-md p-4 flex justify-center content-center
-          shadow-md hover:bg-green-100 
-          "
-          >
-            <p className="p-2 text-lg font-semibold">Журнал БРНС</p>
-          </Link>
-          <Link href={'/priemnoe'} target="blank" className="
-          border h-[15vh] rounded-md p-4 flex justify-center content-center
-          shadow-md hover:bg-green-100
-          "
-          >
-            <p className="p-2 text-lg font-semibold">Панель мониторинга приемного отделения</p>
-          </Link>
-
-          <Link href={"/bdKnowledge"} className="
-          border h-[15vh] rounded-md p-4 flex justify-center content-center
-          shadow-md hover:bg-green-100
-          "
-          >{/*\\192.168.0.5\база знаний*/}
-            <p className="p-2 text-lg font-semibold">База знаний</p>
-          </Link>
-
+          {
+            mainPageLinks.map((link) => {
+              return <LinkMain href={link.href} target={link.target} text={link.text}/>
+            })
+          }
         </div>
-
-      <div className="basis-2/5">
-        <div className="h-[7vh] p-2 flex gap-6">
-          <Link href={'/newComers'}><Button variant={'secondary'}>Новым сотрудникам</Button></Link>
-          <Link href={'/bdNumbers'}><Button variant={'secondary'}>База номеров</Button></Link>
-        </div>
-
-
-        <NewsTable />
-        </div>
+        <AsideMain />
       </div>
-
     </>
   )
 }

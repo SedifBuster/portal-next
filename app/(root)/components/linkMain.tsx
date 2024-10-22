@@ -1,6 +1,7 @@
-'use client'
-import Link from "next/link";
+"use client"
 
+import Link from "next/link";
+import { mainPageLinktype } from "../page";
 
 export
   default function LinkMain(
@@ -8,11 +9,7 @@ export
       href,
       target,
       text
-    }: {
-      href: string
-      target: 'blank' | 'self'
-      text: string
-    }
+    }: mainPageLinktype
 ) {
   return <Link href={href} target={target}
     className="
