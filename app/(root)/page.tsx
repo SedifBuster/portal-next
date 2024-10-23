@@ -68,3 +68,24 @@ export
     </>
   )
 }//format(new Date(news.dateNews), "PPP", {locale: ru})
+
+/**
+ *     <div
+      className="
+        flex
+        justify-end
+        p-4
+      "
+    >
+      <Button onClick={async() => {
+        await signOut({
+          redirect: false,
+          callbackUrl: `/`
+        })
+        router.push('/')
+        localStorage.clear()
+      }}>
+        выйти
+      </Button>
+    </div>
+ */

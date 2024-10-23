@@ -1,8 +1,5 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { signOut } from "next-auth/react"
-import { useRouter } from "next/navigation"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AdminTab } from "./adminTabs/AdminTab"
 import { AccountTab } from "./adminTabs/account/AccountTab"
@@ -12,10 +9,7 @@ import { DepartmentsTab } from "./adminTabs/departments/DepartmentsTab"
 
 export
   function Admin(
-
 ) {
-
-  const router = useRouter()
 
   const tabs = [
     {
@@ -53,27 +47,9 @@ export
   return <section
     className="
       bg-white
-      p-8
+      p-2
     "
   >
-    <div
-      className="
-        flex
-        justify-end
-        p-4
-      "
-    >
-      <Button onClick={async() => {
-        await signOut({
-          redirect: false,
-          callbackUrl: `/`
-        })
-        router.push('/')
-        localStorage.clear()
-      }}>
-        выйти
-      </Button>
-    </div>
     <Tabs defaultValue="accounts" className="w-full">
       <TabsList className="grid w-full grid-cols-5">
         {
