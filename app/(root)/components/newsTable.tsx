@@ -4,42 +4,40 @@ import { Label } from "@/components/ui/label";
 import { New } from "@prisma/client";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { addDays, eachDayOfInterval, format, isEqual } from "date-fns"
+import { format } from "date-fns"
 import ru from "date-fns/locale/ru";
 
+export
+  function NewsTable(
+) {
+  const [isNews, setNews] = useState<New[]>()
 
-export function NewsTable() {
-    const [isNews, setNews] = useState<New[]>()
+  let getNews = async () => {
+    try {
+      let result = await axios.get('/api/news')
+      if (result.statusText !== 'OK') throw new Error()
 
-    let getNews = async () => {
-      try {
-          let result = await axios.get('/api/news')
-          if (result.status === 200) {
-              setNews(result.data)
-              console.log(result.data)
-          }
-      } catch {
-          console.log('error')
-      }
+      setNews(result.data.reverse())
+    } catch (error){
+      console.log('error', error)
+    }
   }
-  
 
   useEffect(() => {
     getNews()
   }, [])
-  
-  console.log(isNews)
 
-
-    return (
-        <div className=" h-[72vh] rounded-md p-4 border-green-100 border-2 shadow-sm overflow-auto flex flex-col gap-4">
-          <h2 className="flex justify-center font-bold text-xl">Новости</h2>
+  return (
+    <div className=" h-[73vh] rounded-md p-2 border-green-100 border-2 shadow-sm overflow-auto flex flex-col gap-4">
+      <h2 className="flex justify-center font-bold  text-xl">Новости</h2>
+      <div className="h-[71vh] overflow-auto gap-4  flex-col flex p-2">
         {
-        isNews && isNews.length > 0
-        ?
+          isNews && isNews.length > 0
+          ?
+
           isNews.length > 10
           ?
-          isNews.reverse().slice(0,10).map((news) => {
+          isNews.slice(0,10).map((news) => {
             return <div key={news.id} className="w-full border-2 border-gray-200 flex p-4 flex-col shadow-md">
             <Label className="text-xl border-b w-full">{news.nameNews}</Label>
             <p className="text-sm border-b w-full mb-2">{format(new Date(news.dateNews), "PPP", {locale: ru})}</p>
@@ -47,9 +45,9 @@ export function NewsTable() {
             </p>
             <p>от {news.liable}</p>
           </div>
-        })
-        :
-        isNews.reverse().map((news) => {
+          })
+          :
+          isNews.map((news) => {
             return <div key={news.id} className="w-full border-2 border-gray-200 flex p-4 flex-col shadow-md">
             <Label className="text-xl border-b w-full">{news.nameNews}</Label>
             <p className="text-sm border-b w-full mb-2">{format(new Date(news.dateNews), "PPP", {locale: ru})}</p>
@@ -57,25 +55,12 @@ export function NewsTable() {
             </p>
             <p>от {news.liable}</p>
           </div>
-        })
-        :
-        <p className="text-gray-400">новостей не найдено</p>
+          })
+
+          :
+          <p className="text-gray-400">новостей не найдено</p>
         }
-
-
-
-        </div>
-    )
+      </div>
+    </div>
+  )
 }
-
-
-/**
- *           <div className="w-full border-2 border-gray-200 flex p-4 flex-col shadow-md">
-            <Label className="text-xl border-b w-full">Заголовок новости</Label>
-            <p className="text-sm border-b w-full mb-2">Дата новости</p>
-            <p className="mb-4">Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости
-            Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости
-            Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости Текст новости
-            </p>
-          </div>
- */

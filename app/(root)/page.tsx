@@ -38,7 +38,6 @@ const mainPageLinks: mainPageLinktype[] = [
     text: "База знаний"
   },
 ]
-//news table change
 export
   default function Home(
 ) {
@@ -68,4 +67,4 @@ export
       </div>
     </>
   )
-}
+}//format(new Date(news.dateNews), "PPP", {locale: ru})
