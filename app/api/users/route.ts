@@ -47,6 +47,16 @@ export
 ) {
     try {
 
+     // id        Int      @id @default(autoincrement())
+    //  login     String   @unique
+    ///  name      String
+    //  password  String
+    //  role      Role     @default(USER)
+    //  profile   Profile?
+    //  token     String
+     // createdAt DateTime @default(now())
+    //  updatedAt DateTime @updatedAt
+
     } catch (error) {
         console.log(error, 'USER_UPDATE_ERROR')
         return new NextResponse('Internal Error', { status: 500 })

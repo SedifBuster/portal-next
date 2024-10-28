@@ -11,17 +11,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-
-import { Checkbox } from "@/components/ui/checkbox"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import {
   Table,
@@ -37,10 +26,9 @@ import { HiPencil, HiTrash } from "react-icons/hi2"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import toast from "react-hot-toast"
 import axios from "axios"
-
-
-
-
+import { format } from "date-fns"
+import ru from "date-fns/locale/ru";
+import AccountChangePopover from "./accountComponents/AccountChangePopover"
 
 export
   function UsersTable(
@@ -53,115 +41,104 @@ export
     }
 ) {
 
-   const columns: ColumnDef<User>[] = [
-        {
-          accessorKey: "id",
-          header: "id",
-          cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("id")}</div>
-          ),
-        },
-        {
-          accessorKey: "name",
-          header: ({ column }) => {
-            return (
-              <Button
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-              >
-                ФИО
-              </Button>
-            )
-          },
-          cell: ({ row }) => <div>{row.getValue("name")}</div>,
-        },
-        {
-          accessorKey: "role",
-          header: () => <div className="text-right">Роль</div>,
-          cell: ({ row }) => {
-            const amount = parseFloat(row.getValue("role"))
-      
-            // Format the amount as a dollar amount
-            const formatted = new Intl.NumberFormat("en-US", {
-              style: "currency",
-              currency: "USD",
-            }).format(amount)
-      
-            return <div className="text-right font-medium">{/*formatted*/row.getValue("role")}</div>
-          },
-        },
-        {
-          accessorKey: "login",
-          header: "Логин",
-          cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("login")}</div>
-          ),
-        },
-        {
-          accessorKey: "createdAt",
-          header: "Дата создания",
-          cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("createdAt")}</div>
-          ),
-        },
-        {
-          accessorKey: "updatedAt",
-          header: "Дата посл. изменения",
-          cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("updatedAt")}</div>
-          ),
-        },
-        {
-          id: "actionsChange",
-          enableHiding: false,
-          cell: ({ row }) => {
-            const payment = row.original
-      
-            return (
-              <Button variant={'outline'} onClick={onChangeUser}><HiPencil /></Button>
-            )
-          },
-        },
-        {
-          id: "actionsDelete",
-          enableHiding: false,
-          cell: ({ row }) => {
-            const payment = row.original
-      
-            return (
-              <Popover>
-                      <PopoverTrigger>
-                        <Button variant={'destructive'}><HiTrash /></Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-80">
-                        <div className="grid gap-4">
-                          <div className="space-y-2">
-                            <h4 className="font-medium leading-none">Удаление</h4>
-                            <p className="text-sm text-muted-foreground">
-                              Вы действительно хотите удалить пользователя?
-                            </p>
-                          </div>
-                          <div className="grid gap-2">
-                            <Button variant={'destructive'} onClick={() => onDeleteUser(row.getValue('id'))}>удалить</Button>
-                          </div>
-                        </div>
-                      </PopoverContent>
-            </Popover>
-            )
-          },
-        },
-      ]
+  const columns: ColumnDef<User>[] = [
+    {
+      accessorKey: "id",
+      header: "id",
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("id")}</div>
+      ),
+    },
+    {
+      accessorKey: "name",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            ФИО
+          </Button>
+        )
+      },
+      cell: ({ row }) => <div>{row.getValue("name")}</div>,
+    },
+    {
+      accessorKey: "role",
+      header: () => <div className="text-right">Роль</div>,
+      cell: ({ row }) => {
+        return <div className="text-right font-medium">{row.getValue("role")}</div>
+      },
+    },
+    {
+      accessorKey: "login",
+      header: "Логин",
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("login")}</div>
+      ),
+    },
+    {
+      accessorKey: "createdAt",
+      header: "Дата создания",
+      cell: ({ row }) => (
+        <div className="capitalize">{format(new Date(row.getValue("createdAt")), "PPP", {locale: ru})}</div>
+      ),
+    },
+    {
+      accessorKey: "updatedAt",
+      header: "Дата посл. изменения",
+      //format the date
+      cell: ({ row }) => (
+        <div className="capitalize">{format(new Date(row.getValue("updatedAt")), "PPP", {locale: ru})}</div>
+      ),
+    },
+    {
+      id: "actionsChange",
+      enableHiding: false,
+      cell: ({ row }) => {
+        return <AccountChangePopover row={row}/>//(
+         // <Button variant={'outline'} onClick={() => onChangeUser(row.getValue('id'))}><HiPencil /></Button>
+        //)
+      },
+    },
+    {
+      id: "actionsDelete",
+      enableHiding: false,
+      cell: ({ row }) => {
+        return (
+          <Popover>
+            <PopoverTrigger>
+              <Button variant={'destructive'}><HiTrash /></Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80">
+              <div className="grid gap-4">
+                <div className="space-y-2">
+                  <h4 className="font-medium leading-none">Удаление</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Вы действительно хотите удалить пользователя?
+                  </p>
+                </div>
+                <div className="grid gap-2">
+                  <Button variant={'destructive'} onClick={() => onDeleteUser(row.getValue('id'))}>удалить</Button>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+        )
+      },
+    },
+  ]
+
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
 
-  let onChangeUser = async () => {
+  let onChangeUser = async (id: number) => {
+    console.log(id)
     toast.error('еще не реализовано')
   }
+
   let onDeleteUser = async (userId: number) => {
     const postData = { id: userId }
 
@@ -173,8 +150,6 @@ export
       toast.error('Ошибка при удалении пользователя')
     }
   }
-
-
 
   const table = useReactTable({
     data: users,
@@ -250,7 +225,7 @@ export
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  Нет результатов.
                 </TableCell>
               </TableRow>
             )}
@@ -266,7 +241,7 @@ export
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Previous
+            Предыдущая
           </Button>
           <Button
             variant="outline"
@@ -274,7 +249,7 @@ export
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Next
+            Следующая
           </Button>
         </div>
       </div>
