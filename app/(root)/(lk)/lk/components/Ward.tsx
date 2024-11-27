@@ -3,7 +3,7 @@ import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Department, Gender, Status, Ward } from "@prisma/client"
 import { TableCell, TableRow } from "@/components/ui/table"
-import { HiMiniArrowDownOnSquareStack, HiMiniArrowSmallUp, HiPencil, HiTrash, HiUserMinus, HiUserPlus } from "react-icons/hi2"
+import { HiMiniArrowDownOnSquareStack, HiMiniArrowSmallUp, HiPencil, HiTrash } from "react-icons/hi2"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -14,13 +14,14 @@ import { HiSquaresPlus } from "react-icons/hi2";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import clsx from "clsx"
 import { Checkbox } from "@/components/ui/checkbox"
+import { useEffect, useState } from "react"
 
 export
   type DepId = {
-  man: 'man',
-  woman: 'woman',
-  mutual: 'mutual'
-  };
+    man: 'man',
+    woman: 'woman',
+    mutual: 'mutual'
+}
 
 export
   type Indicator = 'given' | 'taken' | ''
@@ -40,104 +41,124 @@ export
       taken?: boolean
       grade: string | undefined
     }
-  ) {
-    const [isVisibleDelete, setVisibleDelete] = React.useState<boolean>(false)
-    const [isVisibleChange, setVisibleChange] = React.useState<boolean>(false)
-    const [isVisibleReturn, setVisibleReturn] = React.useState<boolean>(false)
+) {
+  const [isVisibleDelete, setVisibleDelete] = useState<boolean>(false)
+  const [isVisibleChange, setVisibleChange] = useState<boolean>(false)
+  const [isVisibleReturn, setVisibleReturn] = useState<boolean>(false)
 
-    const [isDepartments, setIsDepartmens] = React.useState<Department[]>([])
+  const [isDepartments, setIsDepartmens] = useState<Department[]>([])
 
-    let getDepartments = async () => {
+  let getDepartments = async () => {
+    try {
+      let result = await axios.get( '/api/department' )
+      if ( result.status === 200 ) {
+        setIsDepartmens(result.data)
+      }
+    } catch {
+      console.log('error')
+    }
+  }
+
+  useEffect(() => {
+    getDepartments()
+  }, [])
+
+  let onDeleteWard = async (id: number) => {
+    const postData = { id: id }
+
+    const result = await axios.delete( '/api/ward', { data: postData } )
+    if ( result.statusText === "OK" ) {
+      toast.success('палата удалена')
+      setVisibleDelete(false)
+      getWards(depId)
+    } else {
+      toast.error('Ошибка при удалении палаты')
+    }
+    if ( result.statusText === "OK" ) {
+      const dashWardData = {
+        dashDepId: ward.depId,
+        number: Number(isNumber),
+        numberOfSeats: Number(isNumberOfSeats),
+        engaged: Number(isEngaged),
+        free: Number(isFree),
+        gender: isGender,
+        reserve: isReserve,
+        status: "deleted"
+      }
       try {
-        let result = await axios.get( '/api/department' )
-        if ( result.status === 200 ) {
-          setIsDepartmens(result.data)
-        }
-      } catch {
-        console.log('error')
-      }
-    }
-
-    React.useEffect(() => {
-      getDepartments()
-    }, [])
-
-    let onDeleteWard = async (id: number) => {
-      const postData = { id: id }
-
-      const result = await axios.delete( '/api/ward', { data: postData } )
-      if ( result.statusText === "OK" ) {
-        toast.success('палата удалена')
-        setVisibleDelete(false)
-        getWards(depId)
-      } else {
-        toast.error('Ошибка при удалении палаты')
-      }
-      if ( result.statusText === "OK" ) {
-        const dashWardData = {
-          dashDepId: ward.depId,
-          number: Number(isNumber),
-          numberOfSeats: Number(isNumberOfSeats),
-          engaged: Number(isEngaged),
-          free: Number(isFree),
-          gender: isGender,
-          reserve: isReserve,
-          status: "deleted"
-        }
-        try {
-          if(
-            new Date(ward.updatedAt).getDay() === new Date().getDay()
-            &&
-            new Date(ward.updatedAt).getMonth() === new Date().getMonth()
-            &&
-            new Date(ward.updatedAt).getFullYear() === new Date().getFullYear()
-            &&
-            result.data === ward.number
-          ) {
-            console.log('tot zhe den')
-            let dashWardUpdate = await axios.patch( '/api/dash/ward', {...dashWardData, id: id})//id ne tot kotory nuzhen
-            if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
-            else if( dashWardUpdate.statusText === "OK") {
-              const dashWardNumber: number = await dashWardUpdate.data
-              console.log('dash ward' + ' ', dashWardNumber)
-            }
-          } else{
-            console.log('drugoi den')
-            let dashWardUpdate = await axios.post( '/api/dash/ward', dashWardData)
-            if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
-            else if( dashWardUpdate.statusText === "OK") {
-              const dashWardNumber: number = await dashWardUpdate.data
-              console.log('dash ward' + ' ', dashWardNumber)
-            }
+        if(
+          new Date(ward.updatedAt).getDay() === new Date().getDay()
+          &&
+          new Date(ward.updatedAt).getMonth() === new Date().getMonth()
+          &&
+          new Date(ward.updatedAt).getFullYear() === new Date().getFullYear()
+          &&
+          result.data === ward.number
+        ) {
+          console.log('tot zhe den')
+          let dashWardUpdate = await axios.patch( '/api/dash/ward', {...dashWardData, id: id})//id ne tot kotory nuzhen
+          if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
+          else if( dashWardUpdate.statusText === "OK") {
+            const dashWardNumber: number = await dashWardUpdate.data
+            console.log('dash ward' + ' ', dashWardNumber)
           }
-        } catch ( error ) {
-          toast.error( "Ошибка при удалении палаты" )
-          console.log( "Ошибка при удалении палаты", error )
+        } else{
+          console.log('drugoi den')
+          let dashWardUpdate = await axios.post( '/api/dash/ward', dashWardData)
+          if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
+          else if( dashWardUpdate.statusText === "OK") {
+            const dashWardNumber: number = await dashWardUpdate.data
+            console.log('dash ward' + ' ', dashWardNumber)
+          }
         }
-        setVisibleChange(false)
-        getWards(depId)
-        setVisibleReturn(false)
-      } else {
-        toast.error('Ошибка при удалении палаты')
+      } catch ( error ) {
+        toast.error( "Ошибка при удалении палаты" )
+        console.log( "Ошибка при удалении палаты", error )
+      }
+      setVisibleChange(false)
+      getWards(depId)
+      setVisibleReturn(false)
+    } else {
+      toast.error('Ошибка при удалении палаты')
+    }
+  }
+
+  //Изменение палаты
+  const [isNumber] = useState<number>(ward.number)
+  const [isNumberOfSeats, setNumberOfSeats] = useState<number>(ward.numberOfSeats)
+  const [isEngaged, setEngaged] = useState<number>(ward.engaged)
+  const [isFree] = useState<number>(ward.free)
+  const [isGender, setGender] = useState<Gender>(ward.gender)
+  const [isReserve, setReserve] = useState<string | null>(ward.reserve)
+  const [isDepReserved, setDepReserved] = useState<boolean>(false)
+
+  const [isVisibleReserve, setVisibleReserve] = useState<boolean>(false)
+
+  let onChangeWard = async (id: number) => {
+    const postData = {
+      id: id,
+      depId: ward.depId,
+      number: Number(isNumber),
+      numberOfSeats: Number(isNumberOfSeats),
+      engaged: Number(isEngaged),
+      free: Number(isFree),
+      gender: isGender,
+      reserve: isReserve
+    }
+    let checkupArray = Object.values(postData)
+    if( postData.numberOfSeats < postData.engaged ) return toast.error( 'кол-во мест не должно быть меньше занятых' )
+    for(let i = 0; i < 6; i++) {
+      if(Number(checkupArray[i]) < 0) {
+        return toast.error( 'Числа не должны быть отрицательными' )
       }
     }
+    const result = await axios.patch( '/api/ward', postData )
 
-    //Изменение палаты
-    const [isNumber, setNumber] = React.useState<number>(ward.number)
-    const [isNumberOfSeats, setNumberOfSeats] = React.useState<number>(ward.numberOfSeats)
-    const [isEngaged, setEngaged] = React.useState<number>(ward.engaged)
-    const [isFree, setFree] = React.useState<number>(ward.free)
-    const [isGender, setGender] = React.useState<Gender>(ward.gender)
-    const [isReserve, setReserve] = React.useState<string | null>(ward.reserve)
-    const [isDepReserved, setDepReserved] = React.useState<boolean>(false)
-    const [isDisabled, setDisabled] = React.useState<boolean>(false)
-
-    const [isVisibleReserve, setVisibleReserve] = React.useState<boolean>(false)
-
-    let onChangeWard = async (id: number) => {
-      const postData = {
-        id: id,
-        depId: ward.depId,
+    if ( result.statusText === "OK" ) {
+      toast.success(`палата с номером ${result.data}  изменена`)
+      //cюда нам надо вставить даш палаты
+      const dashWardData = {
+        dashDepId: ward.depId,
         number: Number(isNumber),
         numberOfSeats: Number(isNumberOfSeats),
         engaged: Number(isEngaged),
@@ -145,412 +166,404 @@ export
         gender: isGender,
         reserve: isReserve
       }
-      let checkupArray = Object.values(postData)
-      if( postData.numberOfSeats < postData.engaged ) return toast.error( 'кол-во мест не должно быть меньше занятых' )
-      for(let i = 0; i < 6; i++) {
-        if(Number(checkupArray[i]) < 0) {
-          return toast.error( 'Числа не должны быть отрицательными' )
-        }
-      }
-      const result = await axios.patch( '/api/ward', postData )
-
-      if ( result.statusText === "OK" ) {
-        toast.success(`палата с номером ${result.data}  изменена`)
-        //cюда нам надо вставить даш палаты
-        const dashWardData = {
-          dashDepId: ward.depId,
-          number: Number(isNumber),
-          numberOfSeats: Number(isNumberOfSeats),
-          engaged: Number(isEngaged),
-          free: Number(isFree),
-          gender: isGender,
-          reserve: isReserve
-        }
-        try {
-          if( //сравнивать намбер палаты result.number === ward.number
-            new Date(ward.updatedAt).getDay() === new Date().getDay()
-            &&
-            new Date(ward.updatedAt).getMonth() === new Date().getMonth()
-            &&
-            new Date(ward.updatedAt).getFullYear() === new Date().getFullYear()
-            &&
-            result.data === ward.number
-          ) {
-            console.log('tot zhe den')
-            let dashWardUpdate = await axios.patch( '/api/dash/ward', {...dashWardData, id: id})//id ne tot kotory nuzhen
-            if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
-            else if( dashWardUpdate.statusText === "OK") {
-              const dashWardNumber: number = await dashWardUpdate.data
-              console.log('dash ward' + ' ', dashWardNumber)
-            }
-          } else{
-            console.log('drugoi den')
-            //post body
-            let dashWardUpdate = await axios.post( '/api/dash/ward', dashWardData)
-            if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
-            else if( dashWardUpdate.statusText === "OK") {
-              const dashWardNumber: number = await dashWardUpdate.data
-              console.log('dash ward' + ' ', dashWardNumber)
-            }
+      try {
+        if( //сравнивать намбер палаты result.number === ward.number
+          new Date(ward.updatedAt).getDay() === new Date().getDay()
+          &&
+          new Date(ward.updatedAt).getMonth() === new Date().getMonth()
+          &&
+          new Date(ward.updatedAt).getFullYear() === new Date().getFullYear()
+          &&
+          result.data === ward.number
+        ) {
+          console.log('tot zhe den')
+          let dashWardUpdate = await axios.patch( '/api/dash/ward', {...dashWardData, id: id})//id ne tot kotory nuzhen
+          if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
+          else if( dashWardUpdate.statusText === "OK") {
+            const dashWardNumber: number = await dashWardUpdate.data
+            console.log('dash ward' + ' ', dashWardNumber)
           }
-        } catch ( error ) {
-          toast.error( "Ошибка при создании палаты для дашборда" )
-          console.log( "Ошибка при создании палаты для дашборда", error )
+        } else{
+          console.log('drugoi den')
+          //post body
+          let dashWardUpdate = await axios.post( '/api/dash/ward', dashWardData)
+          if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
+          else if( dashWardUpdate.statusText === "OK") {
+            const dashWardNumber: number = await dashWardUpdate.data
+            console.log('dash ward' + ' ', dashWardNumber)
+          }
         }
-        setVisibleChange(false)
-        getWards(depId)
-        setVisibleReturn(false)
+      } catch ( error ) {
+        toast.error( "Ошибка при создании палаты для дашборда" )
+        console.log( "Ошибка при создании палаты для дашборда", error )
+      }
+      setVisibleChange(false)
+      getWards(depId)
+      setVisibleReturn(false)
+    } else {
+      toast.error('Ошибка при изменении палаты')
+    }
+  }
 
+  let isTranslaredGender = (gender: string) => {
+    switch ( gender ) {
+      case "man": 
+        return "М"
+      case "woman":
+        return "Ж"
+      case "mutual": 
+        return "М/Ж"
+      default:
+        return gender
+    }
+  }
+
+  let isReserveDep = (reserveString: string | null) => {
+    if( reserveString === null ) return null
+    if( Number.isNaN(Number(reserveString)) === false ) {
+      let result =  isDepartments.filter((dep) => {
+        return dep.id === Number(reserveString)
+      }).map((dep) => {
+        return dep.name
+      })[0]
+      return result
+    } else return reserveString
+  }
+
+  const [isIndicator, setIndicator] = React.useState<Indicator>('')
+
+  let givenIndicator = (reserveString: string | null) => {
+    //если число в резерве, проверка на департмент и ставим гивен
+    if( Number.isNaN(Number(reserveString)) === false ) {
+      let result =  isDepartments.filter((dep) => {
+        return dep.id === Number(reserveString)
+      }).map((dep) => {
+        return dep.name
+      })
+      if( result[0] )  {
+        setIndicator('given')
+        setDepReserved(true)
+        return
       } else {
-        toast.error('Ошибка при изменении палаты')
+        setIndicator('')
+        setDepReserved(false)
+        return
       }
     }
+  }
 
-    let isTranslaredGender = (gender: string) => {
-      switch ( gender ) {
-        case "man": 
-          return "М"
-        case "woman":
-          return "Ж"
-        case "mutual": 
-          return "М/Ж"
-        default:
-          return gender
-      }
+  let onReturnWard = async (id: number) => {
+    const postData = {
+      id: id,
+      depId: ward.depId,
+      number: Number(isNumber),
+      numberOfSeats: Number(isNumberOfSeats),
+      engaged: Number(isEngaged),
+      free: Number(isFree),
+      gender: isGender,
+      reserve: ''
     }
+    const result = await axios.patch( '/api/ward', postData )
 
-    let isReserveDep = (reserveString: string | null) => {
-      if( reserveString === null ) return null
-      if( Number.isNaN(Number(reserveString)) === false ) {
-        let result =  isDepartments.filter((dep) => {
-          return dep.id === Number(reserveString)
-        }).map((dep) => {
-          return dep.name
-        })[0]
-        return result
-      } else return reserveString
-    }
+    //TUT DOBAVIT STORY
 
-    const [isIndicator, setIndicator] = React.useState<Indicator>('')
-
-    let givenIndicator = (reserveString: string | null) => {
-      //если число в резерве, проверка на департмент и ставим гивен
-      if( Number.isNaN(Number(reserveString)) === false ) {
-        let result =  isDepartments.filter((dep) => {
-          return dep.id === Number(reserveString)
-        }).map((dep) => {
-          return dep.name
-        })
-        if( result[0] )  {
-          setIndicator('given')
-          setDepReserved(true)
-          return
-        } else {
-          setIndicator('')
-          setDepReserved(false)
-          return
-        }
-      }
-    }
-
-    let onReturnWard = async (id: number) => {
-      const postData = {
-        id: id,
-        depId: ward.depId,
+    if ( result.statusText === "OK" ) {
+      const dashWardData = {
+        dashDepId: ward.depId,
         number: Number(isNumber),
         numberOfSeats: Number(isNumberOfSeats),
         engaged: Number(isEngaged),
         free: Number(isFree),
         gender: isGender,
-        reserve: ''
+        reserve: isReserve
       }
-      const result = await axios.patch( '/api/ward', postData )
-
-      //TUT DOBAVIT STORY
-
-      if ( result.statusText === "OK" ) {
-        const dashWardData = {
-          dashDepId: ward.depId,
-          number: Number(isNumber),
-          numberOfSeats: Number(isNumberOfSeats),
-          engaged: Number(isEngaged),
-          free: Number(isFree),
-          gender: isGender,
-          reserve: isReserve
-        }
-        try {
-          if( //сравнивать намбер палаты result.number === ward.number
-            new Date(ward.updatedAt).getDay() === new Date().getDay()
-            &&
-            new Date(ward.updatedAt).getMonth() === new Date().getMonth()
-            &&
-            new Date(ward.updatedAt).getFullYear() === new Date().getFullYear()
-            &&
-            result.data === ward.number
-          ) {
-            console.log('tot zhe den')
-            let dashWardUpdate = await axios.patch( '/api/dash/ward', {...dashWardData, id: id})//id ne tot kotory nuzhen
-            if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
-            else if( dashWardUpdate.statusText === "OK") {
-              const dashWardNumber: number = await dashWardUpdate.data
-              console.log('dash ward' + ' ', dashWardNumber)
-            }
-          } else{
-            console.log('drugoi den')
-            //post body
-            let dashWardUpdate = await axios.post( '/api/dash/ward', dashWardData)
-            if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
-            else if( dashWardUpdate.statusText === "OK") {
-              const dashWardNumber: number = await dashWardUpdate.data
-              console.log('dash ward' + ' ', dashWardNumber)
-            }
+      try {
+        if( //сравнивать намбер палаты result.number === ward.number
+          new Date(ward.updatedAt).getDay() === new Date().getDay()
+          &&
+          new Date(ward.updatedAt).getMonth() === new Date().getMonth()
+          &&
+          new Date(ward.updatedAt).getFullYear() === new Date().getFullYear()
+          &&
+          result.data === ward.number
+        ) {
+          console.log('tot zhe den')
+          let dashWardUpdate = await axios.patch( '/api/dash/ward', {...dashWardData, id: id})//id ne tot kotory nuzhen
+          if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
+          else if( dashWardUpdate.statusText === "OK") {
+            const dashWardNumber: number = await dashWardUpdate.data
+            console.log('dash ward' + ' ', dashWardNumber)
           }
-        } catch ( error ) {
-          toast.error( "Ошибка при создании палаты для дашборда" )
-          console.log( "Ошибка при создании палаты для дашборда", error )
+        } else{
+          console.log('drugoi den')
+          //post body
+          let dashWardUpdate = await axios.post( '/api/dash/ward', dashWardData)
+          if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
+          else if( dashWardUpdate.statusText === "OK") {
+            const dashWardNumber: number = await dashWardUpdate.data
+            console.log('dash ward' + ' ', dashWardNumber)
+          }
         }
+      } catch ( error ) {
+        toast.error( "Ошибка при создании палаты для дашборда" )
+        console.log( "Ошибка при создании палаты для дашборда", error )
+      }
 
-        toast.success( `палата с номером ${result.data}  возвращена` )
-        setVisibleChange(false)
-        getWards(depId)
-        setReserve('')
-        setVisibleReturn(false)
-      } else {
-        toast.error( 'Ошибка при возвращении палаты' )
+      toast.success( `палата с номером ${result.data}  возвращена` )
+      setVisibleChange(false)
+      getWards(depId)
+      setReserve('')
+      setVisibleReturn(false)
+    } else {
+      toast.error( 'Ошибка при возвращении палаты' )
+    }
+  }
+
+  let onBlockWard = async (id: number, status: Status) => {
+    const postData = {
+      id: id,
+      depId: ward.depId,
+      number: Number(isNumber),
+      numberOfSeats: Number(isNumberOfSeats),
+      engaged: Number(isEngaged),
+      free: Number(isFree),
+      gender: isGender,
+      reserve: isReserve,
+      status: status
+    }
+    let checkupArray = Object.values(postData)
+    if( postData.numberOfSeats < postData.engaged ) return toast.error( 'кол-во мест не должно быть меньше занятых' )
+    for(let i = 0; i < 6; i++) {
+      if(Number(checkupArray[i]) < 0) {
+        return toast.error( 'Числа не должны быть отрицательными' )
       }
     }
+    const result = await axios.patch( '/api/ward', postData )
 
-    let onBlockWard = async (id: number, status: Status) => {
-        const postData = {
-          id: id,
-          depId: ward.depId,
-          number: Number(isNumber),
-          numberOfSeats: Number(isNumberOfSeats),
-          engaged: Number(isEngaged),
-          free: Number(isFree),
-          gender: isGender,
-          reserve: isReserve,
-          status: status
-        }
-        let checkupArray = Object.values(postData)
-        if( postData.numberOfSeats < postData.engaged ) return toast.error( 'кол-во мест не должно быть меньше занятых' )
-        for(let i = 0; i < 6; i++) {
-          if(Number(checkupArray[i]) < 0) {
-            return toast.error( 'Числа не должны быть отрицательными' )
-          }
-        }
-        const result = await axios.patch( '/api/ward', postData )
-  
-        if ( result.statusText === "OK" ) {
-          toast.success(`палата с номером ${result.data}  изменена`)
-          //cюда нам надо вставить даш палаты
-          const dashWardData = {
-            dashDepId: ward.depId,
-            number: Number(isNumber),
-            numberOfSeats: Number(isNumberOfSeats),
-            engaged: Number(isEngaged),
-            free: Number(isFree),
-            gender: isGender,
-            reserve: isReserve,
-            status: status
-          }
-          try {
-            if( //сравнивать намбер палаты result.number === ward.number
-              new Date(ward.updatedAt).getDay() === new Date().getDay()
-              &&
-              new Date(ward.updatedAt).getMonth() === new Date().getMonth()
-              &&
-              new Date(ward.updatedAt).getFullYear() === new Date().getFullYear()
-              &&
-              result.data === ward.number
-            ) {
-              console.log('tot zhe den')
-              let dashWardUpdate = await axios.patch( '/api/dash/ward', {...dashWardData, id: id})//id ne tot kotory nuzhen
-              if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
-              else if( dashWardUpdate.statusText === "OK") {
-                const dashWardNumber: number = await dashWardUpdate.data
-                console.log('dash ward' + ' ', dashWardNumber)
-              }
-            } else{
-              console.log('drugoi den')
-              //post body
-              let dashWardUpdate = await axios.post( '/api/dash/ward', dashWardData)
-              if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
-              else if( dashWardUpdate.statusText === "OK") {
-                const dashWardNumber: number = await dashWardUpdate.data
-                console.log('dash ward' + ' ', dashWardNumber)
-              }
-            }
-          } catch ( error ) {
-            toast.error( "Ошибка при создании палаты для дашборда" )
-            console.log( "Ошибка при создании палаты для дашборда", error )
-          }
-          setVisibleChange(false)
-          getWards(depId)
-          setVisibleReturn(false)
-        } else {
-          toast.error('Ошибка при изменении палаты')
-        }
-    }
-
-    React.useEffect(() => {
-      if( ward )
-        givenIndicator(ward.reserve)
-    },[isReserveDep])
-
-return (
-  <TableRow key={ward.id} className={clsx(`
-    `,
-    isIndicator === 'given' && 'bg-orange-100',
-    taken && 'bg-lime-100',
-    ward.status === "disabled" && 'bg-gray-200'
-    )
-  }>
-    <TableCell className="font-bold">{ward.number}</TableCell>
-    <TableCell>{ward.numberOfSeats}</TableCell>
-    <TableCell>{ward.engaged}</TableCell>
-    <TableCell>{ward.free}</TableCell>
-    <TableCell >{isTranslaredGender(ward.gender)}</TableCell>
-    {/**проблема со строкой */}
-    <TableCell className="text-wrap">
-      {
-        taken
-        ?
-        " палата от " + isDepartments.filter((dep) => {return dep.id === ward.depId})[0]?.name
-        :
-        isReserveDep(ward.reserve)
+    if ( result.statusText === "OK" ) {
+      toast.success(`палата с номером ${result.data}  изменена`)
+      //cюда нам надо вставить даш палаты
+      const dashWardData = {
+        dashDepId: ward.depId,
+        number: Number(isNumber),
+        numberOfSeats: Number(isNumberOfSeats),
+        engaged: Number(isEngaged),
+        free: Number(isFree),
+        gender: isGender,
+        reserve: isReserve,
+        status: status
       }
-    </TableCell>
-    {!isDepReserved || taken?
-      <TableCell className="flex gap-1">
+      try {
+        if( //сравнивать намбер палаты result.number === ward.number
+          new Date(ward.updatedAt).getDay() === new Date().getDay()
+          &&
+          new Date(ward.updatedAt).getMonth() === new Date().getMonth()
+          &&
+          new Date(ward.updatedAt).getFullYear() === new Date().getFullYear()
+          &&
+          result.data === ward.number
+        ) {
+          console.log('tot zhe den')
+          let dashWardUpdate = await axios.patch( '/api/dash/ward', {...dashWardData, id: id})//id ne tot kotory nuzhen
+          if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
+          else if( dashWardUpdate.statusText === "OK") {
+            const dashWardNumber: number = await dashWardUpdate.data
+            console.log('dash ward' + ' ', dashWardNumber)
+          }
+        } else{
+          console.log('drugoi den')
+          //post body
+          let dashWardUpdate = await axios.post( '/api/dash/ward', dashWardData)
+          if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
+          else if( dashWardUpdate.statusText === "OK") {
+            const dashWardNumber: number = await dashWardUpdate.data
+            console.log('dash ward' + ' ', dashWardNumber)
+          }
+        }
+      } catch ( error ) {
+        toast.error( "Ошибка при создании палаты для дашборда" )
+        console.log( "Ошибка при создании палаты для дашборда", error )
+      }
+      setVisibleChange(false)
+      getWards(depId)
+      setVisibleReturn(false)
+    } else {
+      toast.error('Ошибка при изменении палаты')
+    }
+  }
+
+  useEffect(() => {
+    if( ward )
+      givenIndicator(ward.reserve)
+  },[isReserveDep])
+
+  return (
+    <TableRow key={ward.id}
+      className={clsx(`
+        `,
+        isIndicator === 'given' && 'bg-orange-100',
+        taken && 'bg-lime-100',
+        ward.status === "disabled" && 'bg-gray-200'
+      )}
+    >
+      <TableCell className="font-bold">{ward.number}</TableCell>
+      <TableCell>{ward.numberOfSeats}</TableCell>
+      <TableCell>{ward.engaged}</TableCell>
+      <TableCell>{ward.free}</TableCell>
+      <TableCell >{isTranslaredGender(ward.gender)}</TableCell>
+      {/**проблема со строкой */}
+      <TableCell className="text-wrap">
+        {
+          taken
+          ?
+          " палата от " + isDepartments.filter((dep) => {return dep.id === ward.depId})[0]?.name
+          :
+          isReserveDep(ward.reserve)
+        }
+      </TableCell>
+      {!isDepReserved || taken?
+        <TableCell className="flex gap-1">
         {/** 
         <Button variant={'outline'} onClick={(e) => setVisibleReserve(!isVisibleReserve)}><HiUserPlus /></Button>
         <Button variant={'outline'} onClick={(e) => setVisibleReserve(!isVisibleReserve)}><HiUserMinus /></Button>
         */}
-        <Dialog open={isVisibleChange} onOpenChange={() => setVisibleChange(!isVisibleChange)}>
-          <DialogTrigger asChild>
-            <Button variant={'outline'} onClick={() => setVisibleChange(true)}><HiPencil /></Button>
-          </DialogTrigger>
-
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Изменение палаты</DialogTitle>
-              <DialogDescription>
-                Измените палату здесь. Нажмите сохранить когда закончите.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              {grade === 'HEADNURSE' || grade === 'DEPNURSTAFF' || grade === 'CHIEFNURSE' || grade === 'TECHNICICAN'?
-                <>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="number" className="text-right">
-                      номер палаты
-                    </Label>
-                    <p className="pl-4">{isNumber}</p>
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="numberOfSeats" className="text-right">
-                      кол-во мест
-                    </Label>
-                    <Input
-                      value={isNumberOfSeats}
-                      type="number"
-                      //@ts-ignore
-                      onChange={(e) => setNumberOfSeats(e.target.value)}
-                      className="col-span-3"
-                    />
-                    
-                  </div>
-                </>
-              :
-                <>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="number" className="text-right">
-                      номер палаты
-                    </Label>
-                    <p> {isNumber} </p>
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="numberOfSeats" className="text-right">
-                      кол-во мест
-                    </Label>
-                    <p>{isNumberOfSeats}</p> 
-                  </div>
-                </>
-              }
-
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="engaged" className="text-right">
-                  занято
-                </Label>
-                <Input
-                  value={isEngaged}
-                  type="number"
-                  //@ts-ignore
-                  onChange={(e) => setEngaged(e.target.value)}
-                  className="col-span-3"
-                />
-              </div>
-
-              {grade === 'HEADNURSE' || grade === 'DEPNURSTAFF' || grade === 'CHIEFNURSE' || grade === 'TECHNICICAN'
-              ?
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="gender" className="text-right">
-                  пол
-                </Label>
-                {/*
-                //@ts-ignore*/}
-                <Select value={isGender} onValueChange={(e)=> setGender(e)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="..."   className="col-span-3"/> 
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="man">
-                      М
-                    </SelectItem>
-                    <SelectItem value="woman">
-                      Ж
-                    </SelectItem>
-                    <SelectItem value="mutual">
-                      М/Ж
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              :
-              ''
-              }
-              {/**gender */}
-              {grade === 'DEPNURSTAFF' || grade === 'CHIEFNURSE' || grade === 'TECHNICICAN' ?
-                !taken
-                ?
+          <Dialog open={isVisibleChange} onOpenChange={() => setVisibleChange(!isVisibleChange)}>
+            <DialogTrigger asChild>
+              <Button variant={'outline'} onClick={() => setVisibleChange(true)}><HiPencil /></Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Изменение палаты</DialogTitle>
+                <DialogDescription>
+                  Измените палату здесь. Нажмите сохранить когда закончите.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                {
+                  grade === 'HEADNURSE' ||
+                  grade === 'DEPNURSTAFF' ||
+                  grade === 'CHIEFNURSE' ||
+                  grade === 'TECHNICICAN'
+                  ?
+                  <>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="number" className="text-right">
+                        номер палаты
+                      </Label>
+                      <p className="pl-4">{isNumber}</p>
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="numberOfSeats" className="text-right">
+                        кол-во мест
+                      </Label>
+                      <Input
+                        value={isNumberOfSeats}
+                        type="number"
+                        //@ts-ignore
+                        onChange={(e) => setNumberOfSeats(e.target.value)}
+                        className="col-span-3"
+                      />
+                    </div>
+                  </>
+                  :
+                  <>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="number" className="text-right">
+                        номер палаты
+                      </Label>
+                      <p> {isNumber} </p>
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="numberOfSeats" className="text-right">
+                        кол-во мест
+                      </Label>
+                      <p>{isNumberOfSeats}</p> 
+                    </div>
+                  </>
+                }
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="reserve" className="text-right">
-                    резерв
+                  <Label htmlFor="engaged" className="text-right">
+                    занято
                   </Label>
-                  {
-                    !isVisibleReserve
-                    ?
+                  <Input
+                    value={isEngaged}
+                    type="number"
                     //@ts-ignore
-                    <Select  value={isReserve} onValueChange={(e) => setReserve(e)}>
+                    onChange={(e) => setEngaged(e.target.value)}
+                    className="col-span-3"
+                  />
+                </div>
+                {
+                  grade === 'HEADNURSE' ||
+                  grade === 'DEPNURSTAFF' ||
+                  grade === 'CHIEFNURSE' ||
+                  grade === 'TECHNICICAN'
+                  ?
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="gender" className="text-right">
+                      пол
+                    </Label>
+                    {/*
+                    //@ts-ignore*/}
+                    <Select value={isGender} onValueChange={(e)=> setGender(e)}>
                       <SelectTrigger>
-                        <SelectValue placeholder="..." />
+                        <SelectValue placeholder="..."   className="col-span-3"/> 
                       </SelectTrigger>
-                      <SelectContent className="col-span-3">
-                        {isDepartments?isDepartments.filter((dep) => {return dep.id !== depId && dep.name.toLowerCase() !== 'IT'.toLowerCase() && dep.name.toLowerCase() !== 'Chief'.toLowerCase() && dep.name.toLowerCase() !== 'ИТ'.toLowerCase()}).map((dep) => {
-                          //filter
-                          return <SelectItem value={dep.id.toString()} key={dep.id}>
-                            {dep.name}
-                          </SelectItem>
-                        }): ''}
+                      <SelectContent>
+                        <SelectItem value="man">
+                          М
+                        </SelectItem>
+                        <SelectItem value="woman">
+                          Ж
+                        </SelectItem>
+                        <SelectItem value="mutual">
+                          М/Ж
+                        </SelectItem>
                       </SelectContent>
                     </Select>
-                    :
-                    <Input
-                      value={isReserve?isReserve: ''}
-                      onChange={(e) => setReserve(e.target.value)}
-                      className="col-span-2"
-                    />
+                  </div>
+                  :
+                  ''
+                }
+                {/**gender */}
+                {
+                  grade === 'DEPNURSTAFF' ||
+                  grade === 'CHIEFNURSE' ||
+                  grade === 'TECHNICICAN'
+                  ?
+                  !taken
+                  ?
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="reserve" className="text-right">
+                      резерв
+                    </Label>
+                    {
+                      !isVisibleReserve
+                      ?
+                      //@ts-ignore
+                      <Select  value={isReserve} onValueChange={(e) => setReserve(e)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="..." />
+                        </SelectTrigger>
+                        <SelectContent className="col-span-3">
+                          {
+                            isDepartments?isDepartments.filter((dep) => {return dep.id !== depId &&
+                              dep.name.toLowerCase() !== 'IT'.toLowerCase() &&
+                              dep.name.toLowerCase() !== 'Chief'.toLowerCase() &&
+                              dep.name.toLowerCase() !== 'ИТ'.toLowerCase()}).map((dep) => {
+                              //filter
+                                return <SelectItem value={dep.id.toString()} key={dep.id}>
+                                  {dep.name}
+                                </SelectItem>
+                          }): ''}
+                        </SelectContent>
+                      </Select>
+                      :
+                      <Input
+                        value={isReserve?isReserve: ''}
+                        onChange={(e) => setReserve(e.target.value)}
+                        className="col-span-2"
+                      />
                     }
                     <HoverCard>
                       <HoverCardTrigger asChild>
@@ -612,7 +625,11 @@ return (
             </DialogContent>
           </Dialog>
           {/*удаление палаты */}
-          {grade === 'DEPNURSTAFF' || grade === 'CHIEFNURSE' || grade === 'TECHNICICAN' ?
+          {
+            grade === 'DEPNURSTAFF' ||
+            grade === 'CHIEFNURSE' ||
+            grade === 'TECHNICICAN'
+            ?
             <Dialog open={isVisibleDelete} onOpenChange={() => setVisibleDelete(!isVisibleDelete)}>
               <DialogTrigger asChild>
                 <Button variant={'destructive'} onClick={() => setVisibleDelete(true)}><HiTrash /></Button>
@@ -644,10 +661,14 @@ return (
                 </DialogFooter>
               </DialogContent>
             </Dialog>
-          : ''}
+          : ''
+          }
         </TableCell>
         ://возвращение палаты себе
-        grade === 'DEPNURSTAFF' || grade === 'CHIEFNURSE' || grade === 'TECHNICICAN' ?
+        grade === 'DEPNURSTAFF' ||
+        grade === 'CHIEFNURSE' ||
+        grade === 'TECHNICICAN'
+        ?
         <TableCell className="flex gap-1">
           <Dialog open={isVisibleReturn} onOpenChange={() => setVisibleReturn(!isVisibleReturn)}>
             <DialogTrigger asChild>

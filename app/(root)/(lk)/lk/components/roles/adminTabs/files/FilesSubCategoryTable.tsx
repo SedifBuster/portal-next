@@ -32,7 +32,7 @@ import FilesCategoryEdit from "./FilesCategoryEdit"
 import { useState } from "react"
 //maybe cool
 export
-  function FilesCategoryTable(
+  function FilesSubCategoryTable(
     {
       categories,
       onGetFilesCategory

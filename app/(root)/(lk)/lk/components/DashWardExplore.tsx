@@ -3,7 +3,7 @@ import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Department, Gender, Status, Ward } from "@prisma/client"
 import { TableCell, TableRow } from "@/components/ui/table"
-import { HiMiniArrowDownOnSquareStack, HiMiniArrowSmallUp, HiPencil, HiTrash, HiUserMinus, HiUserPlus } from "react-icons/hi2"
+import { HiMiniArrowDownOnSquareStack, HiMiniArrowSmallUp, HiTrash} from "react-icons/hi2"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -14,17 +14,18 @@ import { HiSquaresPlus } from "react-icons/hi2";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import clsx from "clsx"
 import { Checkbox } from "@/components/ui/checkbox"
+import { useEffect, useState } from "react"
 
 export
   type DepId = {
   man: 'man',
   woman: 'woman',
   mutual: 'mutual'
-  };
+}
 
 export
   type Indicator = 'given' | 'taken' | ''
-
+//wtf its copy
 export
   function DashWardExplore(
     {
@@ -40,87 +41,86 @@ export
       taken?: boolean
       grade: string | undefined
     }
-  ) {
-    const [isVisibleDelete, setVisibleDelete] = React.useState<boolean>(false)
-    const [isVisibleChange, setVisibleChange] = React.useState<boolean>(false)
-    const [isVisibleReturn, setVisibleReturn] = React.useState<boolean>(false)
+) {
+  const [isVisibleDelete, setVisibleDelete] = useState<boolean>(false)
+  const [isVisibleChange, setVisibleChange] = useState<boolean>(false)
+  const [isVisibleReturn, setVisibleReturn] = useState<boolean>(false)
+  const [isDepartments, setIsDepartmens] = useState<Department[]>([])
 
-    const [isDepartments, setIsDepartmens] = React.useState<Department[]>([])
+  let getDepartments = async () => {
+    try {
+      let result = await axios.get( '/api/department' )
+      if ( result.status === 200 ) {
+        setIsDepartmens(result.data)
+      }
+    } catch {
+      console.log('error')
+    }
+  }
 
-    let getDepartments = async () => {
+  useEffect(() => {
+    getDepartments()
+  }, [])
+
+  let onDeleteWard = async (id: number) => {
+    const postData = { id: id }
+
+    const result = await axios.delete( '/api/ward', { data: postData } )
+    if ( result.statusText === "OK" ) {
+      toast.success('палата удалена')
+      setVisibleDelete(false)
+      getWards(depId)
+    } else {
+      toast.error('Ошибка при удалении палаты')
+    }
+    if ( result.statusText === "OK" ) {
+      const dashWardData = {
+        dashDepId: ward.depId,
+        number: Number(isNumber),
+        numberOfSeats: Number(isNumberOfSeats),
+        engaged: Number(isEngaged),
+        free: Number(isFree),
+        gender: isGender,
+        reserve: isReserve,
+        status: "deleted"
+      }
       try {
-        let result = await axios.get( '/api/department' )
-        if ( result.status === 200 ) {
-          setIsDepartmens(result.data)
-        }
-      } catch {
-        console.log('error')
-      }
-    }
-
-    React.useEffect(() => {
-      getDepartments()
-    }, [])
-
-    let onDeleteWard = async (id: number) => {
-      const postData = { id: id }
-
-      const result = await axios.delete( '/api/ward', { data: postData } )
-      if ( result.statusText === "OK" ) {
-        toast.success('палата удалена')
-        setVisibleDelete(false)
-        getWards(depId)
-      } else {
-        toast.error('Ошибка при удалении палаты')
-      }
-      if ( result.statusText === "OK" ) {
-        const dashWardData = {
-          dashDepId: ward.depId,
-          number: Number(isNumber),
-          numberOfSeats: Number(isNumberOfSeats),
-          engaged: Number(isEngaged),
-          free: Number(isFree),
-          gender: isGender,
-          reserve: isReserve,
-          status: "deleted"
-        }
-        try {
-          if(
-            new Date(ward.updatedAt).getDay() === new Date().getDay()
-            &&
-            new Date(ward.updatedAt).getMonth() === new Date().getMonth()
-            &&
-            new Date(ward.updatedAt).getFullYear() === new Date().getFullYear()
-            &&
-            result.data === ward.number
-          ) {
-            console.log('tot zhe den')
-            let dashWardUpdate = await axios.patch( '/api/dash/ward', {...dashWardData, id: id})//id ne tot kotory nuzhen
-            if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
-            else if( dashWardUpdate.statusText === "OK") {
-              const dashWardNumber: number = await dashWardUpdate.data
-              console.log('dash ward' + ' ', dashWardNumber)
-            }
-          } else{
-            console.log('drugoi den')
-            let dashWardUpdate = await axios.post( '/api/dash/ward', dashWardData)
-            if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
-            else if( dashWardUpdate.statusText === "OK") {
-              const dashWardNumber: number = await dashWardUpdate.data
-              console.log('dash ward' + ' ', dashWardNumber)
-            }
+        if(
+          new Date(ward.updatedAt).getDay() === new Date().getDay()
+          &&
+          new Date(ward.updatedAt).getMonth() === new Date().getMonth()
+          &&
+          new Date(ward.updatedAt).getFullYear() === new Date().getFullYear()
+          &&
+          result.data === ward.number
+        ) {
+          console.log('tot zhe den')
+          let dashWardUpdate = await axios.patch( '/api/dash/ward', {...dashWardData, id: id})//id ne tot kotory nuzhen
+          if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
+          else if( dashWardUpdate.statusText === "OK") {
+            const dashWardNumber: number = await dashWardUpdate.data
+            console.log('dash ward' + ' ', dashWardNumber)
           }
-        } catch ( error ) {
-          toast.error( "Ошибка при удалении палаты" )
-          console.log( "Ошибка при удалении палаты", error )
+        } else{
+          console.log('drugoi den')
+          let dashWardUpdate = await axios.post( '/api/dash/ward', dashWardData)
+          if( dashWardUpdate.statusText !== "OK" ) return toast.error( "Ошибочный статус запроса")
+          else if( dashWardUpdate.statusText === "OK") {
+            const dashWardNumber: number = await dashWardUpdate.data
+            console.log('dash ward' + ' ', dashWardNumber)
+          }
         }
-        setVisibleChange(false)
-        getWards(depId)
-        setVisibleReturn(false)
-      } else {
-        toast.error('Ошибка при удалении палаты')
+      } catch ( error ) {
+        toast.error( "Ошибка при удалении палаты" )
+        console.log( "Ошибка при удалении палаты", error )
       }
+      setVisibleChange(false)
+      getWards(depId)
+      setVisibleReturn(false)
+    } else {
+      toast.error('Ошибка при удалении палаты')
     }
+  }
 
     //Изменение палаты
     const [isNumber, setNumber] = React.useState<number>(ward.number)

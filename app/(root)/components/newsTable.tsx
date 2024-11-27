@@ -56,7 +56,6 @@ export
             <p>от {news.liable}</p>
           </div>
           })
-
           :
           <p className="text-gray-400">новостей не найдено</p>
         }

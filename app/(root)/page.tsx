@@ -1,6 +1,3 @@
-import Link from "next/link";
-import { NewsTable } from "./components/newsTable";
-import { Button } from "@/components/ui/button";
 import LinkMain from "./components/linkMain";
 import MainHeader from "@/components/ui/headers/mainHeader";
 import AsideMain from "./components/asideMain";
@@ -39,7 +36,7 @@ const mainPageLinks: mainPageLinktype[] = [
   },
 ]
 export
-  default function Home(
+  default function Home(//format(new Date(news.dateNews), "PPP", {locale: ru})
 ) {
   return (
     <>
@@ -67,25 +64,4 @@ export
       </div>
     </>
   )
-}//format(new Date(news.dateNews), "PPP", {locale: ru})
-
-/**
- *     <div
-      className="
-        flex
-        justify-end
-        p-4
-      "
-    >
-      <Button onClick={async() => {
-        await signOut({
-          redirect: false,
-          callbackUrl: `/`
-        })
-        router.push('/')
-        localStorage.clear()
-      }}>
-        выйти
-      </Button>
-    </div>
- */
+}

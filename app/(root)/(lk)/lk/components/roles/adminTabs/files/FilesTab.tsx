@@ -10,14 +10,9 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
   Tabs,
   TabsContent,
@@ -26,12 +21,12 @@ import {
 } from "@/components/ui/tabs"
 import { FilesTable } from "./FilesTable"
 import toast from "react-hot-toast"
-//const files = await fs.readdir("./public/uploads")
+import { FilesSubCategory } from "./FilesSubCategory"
+//maybe cool
 export
   function FilesTab(
 
 ) {
-  
   const [filesCategories, setFilesCategories] = useState<FileCategory[]>()
   const [fileNames, setFileNames] = useState<FileBd[]>()
 
@@ -53,13 +48,11 @@ export
     }
   }
 
-
   let onDeleteFile = async (id: number) => {
     try {
       const postData = { id: id }
 
       let result = await axios.delete('/api/uploadFiles',{data: postData} )
-
       if (result.statusText === "OK") {
         toast.success('файл удален')
         onGetFiles()
@@ -70,15 +63,10 @@ export
       console.log('error: ', error)
     }
   }
-  
-
-
- 
 
   useEffect(() => {onGetFiles(); onGetFilesCategory()}, [])
 
   return filesCategories?<>
-
     <Tabs defaultValue="files" className="w-full">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="files">файлы</TabsTrigger>
@@ -95,7 +83,6 @@ export
           <CardContent className="space-y-2">
             <FileUpload  categories={filesCategories} onGetFiles={onGetFiles}/>
             {fileNames? <FilesTable files={fileNames} onDeleteFile={onDeleteFile}/>: 'файлов не обнаружено'}
-           
           </CardContent>
         </Card>
       </TabsContent>
@@ -108,7 +95,11 @@ export
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
-          <FilesCategory onGetFilesCategory={onGetFilesCategory}/>
+            <div className="flex gap-2">
+            <FilesCategory onGetFilesCategory={onGetFilesCategory}/>
+            <FilesSubCategory onGetFilesCategory={onGetFilesCategory} filesCategories={filesCategories}/>
+            </div>
+       
            {
              filesCategories
              ?

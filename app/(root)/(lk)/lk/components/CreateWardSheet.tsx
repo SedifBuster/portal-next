@@ -15,8 +15,7 @@ import React from "react"
 export
   function CreateWardSheet(
     { depId, getWards }: { depId: number, getWards: (id: number) => void }
-  ) {
-
+) {
   const formSchema = z.object({
     number: z.string().min(1, {
       message: "Обязательное поле",

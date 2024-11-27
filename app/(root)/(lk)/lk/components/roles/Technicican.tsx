@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
-
+//delete?
 export function Technicican() {
 
     const session = useSession()
@@ -26,27 +26,27 @@ export function Technicican() {
         switch(role) {
             case 'admin':
                 setIsPanel(
-                    'Вы имеете возможность польностью контролировать приложение. Пользуйтесь этим.'
+                    '.'
                 )
                 break
             case 'technicican':
                 setIsPanel(
-                    'Принимайте и выполняйте заявки. Еще можете их искать.'
+                    ''
                 )
                 break
             case 'sysadmin':
                 setIsPanel(
-                    'Направляйте техников волевой рукой. Организация процессов на ваших плечах.'
+                    ''
                 )
                 break
             case 'user':
                 setIsPanel(
-                    'Вы самый обычный юзер. Живите с этим.'
+                    ''
                 )
                 break
             default:
                 setIsPanel(
-                    'Счастливчик. Вас не определила система.'
+                    ''
                 )
                 break
         }

@@ -3,13 +3,11 @@
 import * as React from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { FileCategory } from "@prisma/client"
 import { HiPencil} from "react-icons/hi2"
 import { Label } from "@/components/ui/label"
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
@@ -17,7 +15,7 @@ import {
   } from "@/components/ui/dialog"
 import toast from "react-hot-toast"
 import axios from "axios"
-
+//cool
 export
   default function FilesCategoryEdit(
     {
@@ -29,37 +27,33 @@ export
       name: string
       onGetFilesCategory: () => Promise<void>
     }
-  ) {
+) {
+  const [isName, setName] = React.useState<string>(name)
 
-    const [isName, setName] = React.useState<string>(name)
-
-    let onChangeCategory = async (id: number, name: string) => {
-        try {
-          const postData = {
-            id: id,
-            name,
-          }
-          const result = await axios.patch( '/api/uploadFiles/filesCategory', postData )
-          if ( result.statusText === "OK" ) {
-            toast.success(`категория с номером ${result.data}  изменена`)
-            onGetFilesCategory()
-          }
-        } catch ( error ) {
-          console.log( "Ошибка при изменении категории", error )
-          toast.error('Ошибка при изменении категории')
-        }
+  let onChangeCategory = async (id: number, name: string) => {
+    try {
+      const postData = {
+        id: id,
+        name,
       }
+      const result = await axios.patch( '/api/uploadFiles/filesCategory', postData )
+      if ( result.statusText === "OK" ) {
+        toast.success(`категория с номером ${result.data}  изменена`)
+        onGetFilesCategory()
+      }
+    } catch ( error ) {
+      console.log( "Ошибка при изменении категории", error )
+      toast.error('Ошибка при изменении категории')
+    }
+  }
 
-
-    return <Dialog>
+  return <Dialog>
     <DialogTrigger asChild>
-    <Button variant={'outline'}><HiPencil /></Button>
+      <Button variant={'outline'}><HiPencil /></Button>
     </DialogTrigger>
     <DialogContent className="sm:max-w-[425px]">
       <DialogHeader>
         <DialogTitle>Изменить категорию</DialogTitle>
-        <DialogDescription>
-        </DialogDescription>
       </DialogHeader>
       <div className="grid gap-4 py-4">
         <div className="grid grid-cols-4 items-center gap-4">
@@ -74,4 +68,4 @@ export
       </DialogFooter>
     </DialogContent>
   </Dialog>
-  }
+}

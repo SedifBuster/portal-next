@@ -13,10 +13,10 @@ import { FileCategory } from "@prisma/client"
 import axios from "axios"
 
 const formFilesSchema = z.object({
-    fileName: z.string().min(3),
-    category: z.string().min(3),
+  fileName: z.string().min(3),
+  category: z.string().min(3),
 })
-
+//cool
 export
   function FileUpload({
     onGetFiles,
@@ -25,9 +25,7 @@ export
     onGetFiles: () => Promise<void>
     categories: FileCategory[]
   }
-
 ) {
-
   const fileInput = useRef<HTMLInputElement>(null)
 
   const formFiles = useForm<z.infer<typeof formFilesSchema>>({
@@ -65,13 +63,6 @@ export
       formFiles.reset()
       onGetFiles()
 
-      //const uploadFile = await axios.post('/api/uploadFiles', formData)
-     // if(uploadFile.statusText !== 'OK') return toast.error("Ошибка при загрузке файла")
-      //  else {
-     // console.log(uploadFile.data)
-     //     toast.success(`файл успешно загружен: ${uploadFile.data}`)
-     //     formFiles.reset()
-     //   }
     } catch (error) {
       toast.error("Ошибка при загрузке файла")
       console.log("Ошибка при загрузке файла: ", error)
@@ -79,7 +70,7 @@ export
   }
 
   return <>
-  <h6 className="text-lg font-bold mt-6">Загрузить файл</h6>
+    <h6 className="text-lg font-bold mt-6">Загрузить файл</h6>
       <Form {...formFiles}>
         <form onSubmit={formFiles.handleSubmit(onSubmitFile)} className="space-y-4">
           <FormField
@@ -120,21 +111,6 @@ export
             )}
           />
           <Input className="mt-12" lang="ru" type="file" name="file" ref={fileInput}/>
-                {
-                /* <FormField
-                          control={formFiles.control}
-                          name="file"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Файл*</FormLabel>
-                              <FormControl>
-                                <Input type="file" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />*/
-                }
           <Button type="submit">Загрузить файл</Button>
         </form>
       </Form>

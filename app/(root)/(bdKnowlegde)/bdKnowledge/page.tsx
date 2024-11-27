@@ -2,13 +2,15 @@
 import { FilesContainer } from "./components/FilesContainer";
 
 
-export default async function BdKnowledge() {
+export
+  default async function BdKnowledge(
 
-
-
+) {
 
   return <FilesContainer/>
 }
+
+
 /*(
     <main>
       <div>

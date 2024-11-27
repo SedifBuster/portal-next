@@ -6,7 +6,7 @@ import { AccountTab } from "./adminTabs/account/AccountTab"
 import { NewsTab } from "./adminTabs/news/NewsTab"
 import { FilesTab } from "./adminTabs/files/FilesTab"
 import { DepartmentsTab } from "./adminTabs/departments/DepartmentsTab"
-
+//cool
 export
   function Admin(
 ) {

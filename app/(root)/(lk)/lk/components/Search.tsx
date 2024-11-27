@@ -1,40 +1,41 @@
 "use client"
 
-import { Task } from "@prisma/client"
 import axios from "axios"
-import { useEffect, useState } from "react"
+import { useEffect} from "react"
 
-export function Search() {
+export
+  function Search(
 
-    const [isTasks, setIsTasks] = useState<Task[]>([])
+) {
+  //const [isTasks, setIsTasks] = useState<Task[]>([])
 
-    let getTasks = async () => {
-      try {
-        let result = await axios.get('/api/task')
-        if(result.status === 200) {
-            setIsTasks(result.data)
-        }
-      } catch {
-        console.log('error')
+  let getTasks = async () => {
+    try {
+      let result = await axios.get('/api/task')
+      if(result.status === 200) {
+        //setIsTasks(result.data)
       }
+    } catch {
+      console.log('error')
     }
-    useEffect(() => {
-        getTasks()
-    }, [])
-    
+  }
 
-    return (
-        <div 
-            className="
-                sm:mx-auto
-                sm:w-full
-                sm:h-20
-                border-2
-                border-gray-900
-                bg-white
-            "
-        >
-            search
-        </div>
-    )
+  useEffect(() => {
+    getTasks()
+  }, [])
+
+  return (
+    <div 
+      className="
+        sm:mx-auto
+        sm:w-full
+        sm:h-20
+        border-2
+        border-gray-900
+        bg-white
+      "
+    >
+      search
+    </div>
+  )
 }

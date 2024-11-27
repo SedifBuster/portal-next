@@ -12,7 +12,7 @@ import axios from "axios"
 const formFilesCategorySchema = z.object({
   name: z.string().min(5),
 })
-
+//cool
 export
   function FilesCategory({
     onGetFilesCategory
@@ -38,8 +38,7 @@ export
       const categoryResult = await axios.post('/api/uploadFiles/filesCategory', categoryData)
       if(categoryResult.statusText !== "OK") return toast.error("Ошибка при создании категории")
 
-      //const categoryName: string = categoryResult.data.id
-      toast.success(`категория создана `)//с названием: ${categoryName}
+      toast.success(`категория создана `)
       onGetFilesCategory()
       formFilesCategory.reset()
 
@@ -49,7 +48,7 @@ export
     }
   }
 
-  return <>
+  return <div className=" w-[50%]">
     <h6 className="text-lg font-bold">Создать категорию</h6>
       <Form {...formFilesCategory}>
         <form onSubmit={formFilesCategory.handleSubmit(onSubmitFileCategory)} className="space-y-2">
@@ -60,7 +59,7 @@ export
               <FormItem>
                 <FormLabel>Название категории*</FormLabel>
                 <FormControl>
-                  <Input className="h-7" placeholder="..." {...field} />
+                  <Input className="h-7 w-96" placeholder="..." {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -69,5 +68,5 @@ export
           <Button type="submit">Создать</Button>
         </form>
       </Form>
-  </>
+  </div>
 }

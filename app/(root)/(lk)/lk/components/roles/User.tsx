@@ -19,7 +19,7 @@ import { Department, Profile, Ward } from "@prisma/client"
 import { UserCard } from "../Card"
 import { CreateWardSheet } from "../CreateWardSheet"
 import { UserWard } from "../Ward"
-
+//pizdec
 export function User() {
     const session = useSession()
 
