@@ -11,6 +11,8 @@ import axios from "axios"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
+import { FilesCategoryTable } from "./FilesCategoryTable"
+import { FilesSubCategoryTable } from "./FilesSubCategoryTable"
 
 const formFilesCategorySchema = z.object({
   name: z.string().min(5),
@@ -62,17 +64,17 @@ export
     }
   }
 
-  return <div className="w-[50%]">
+  return <div className="">
     <Dialog>
       <DialogTrigger asChild>
         <Button>Создать подкатегорию</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[90vw]">
+      <DialogContent className="sm:max-w-[55vw]">
         <DialogHeader>
           <DialogTitle>Создание подкатегории</DialogTitle>
         </DialogHeader>
         <Form {...formFilesCategory}>
-          <form onSubmit={formFilesCategory.handleSubmit(onSubmitFileCategory)} className="space-y-2 flex gap-6 flex-wrap items-start">
+          <form onSubmit={formFilesCategory.handleSubmit(onSubmitFileCategory)} className="space-y-2 flex flex-col gap-2 flex-wrap items-start">
             <FormField
               control={formFilesCategory.control}
               name="name"
@@ -90,20 +92,23 @@ export
             control={formFilesCategory.control}
             name="category"
             render={({ field }) => (
-              <FormItem className="w-96">
+              <FormItem>
                 <FormLabel>Выберите категорию к которой относится подкатегория*</FormLabel>
                 <FormControl>
-
+                    <div className="h-[70vh] overflow-auto w-full ">
+                    <FilesSubCategoryTable categories={filesCategories} onGetFilesCategory={onGetFilesCategory}/>
+                    </div>
+                    
                 </FormControl>
               </FormItem>
             )}
           />
-
-        </form>
-      </Form>
         <DialogFooter>
           <Button type="submit">Создать подкатегорию</Button>
         </DialogFooter>
+        </form>
+      </Form>
+
       </DialogContent>
     </Dialog>
   </div>

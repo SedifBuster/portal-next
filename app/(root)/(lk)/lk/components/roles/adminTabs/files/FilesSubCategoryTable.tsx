@@ -30,6 +30,9 @@ import toast from "react-hot-toast"
 import axios from "axios"
 import FilesCategoryEdit from "./FilesCategoryEdit"
 import { useState } from "react"
+import { Checkbox } from "@/components/ui/checkbox"
+import { format } from "date-fns"
+import { ru } from "date-fns/locale"
 //maybe cool
 export
   function FilesSubCategoryTable(
@@ -68,69 +71,35 @@ export
       accessorKey: "createdAt",
       header: "Дата создания",
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("createdAt")}</div>
+        <div className="capitalize">{format(new Date(row.getValue("createdAt")), "PPP", {locale: ru})}</div>
       ),
     },
     {
       accessorKey: "updatedAt",
       header: "Дата посл. изменения",
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("updatedAt")}</div>
+        <div className="capitalize">{format(new Date(row.getValue("updatedAt")), "PPP", {locale: ru})}</div>
       ),
     },
     {
-      id: "actionsChange",
-      enableHiding: false,
-      cell: ({ row }) => {
-
-        return <FilesCategoryEdit id={row.getValue('id')} name={row.getValue('name')} onGetFilesCategory={onGetFilesCategory}/>
+        id: "select",
+        header: "выбрать",
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"//тут выбрать только одну, апи проверить сделать, добавить в таблицу категорий, добавить в базу знаний
+          />
+        ),//<FilesCategoryEdit id={row.getValue('id')} name={row.getValue('name')} onGetFilesCategory={onGetFilesCategory}/>
+        enableSorting: false,
+        enableHiding: false,
       },
-    },
-    {
-      id: "actionsDelete",
-      enableHiding: false,
-      cell: ({ row }) => {
-
-        return (
-          <Popover>
-            <PopoverTrigger>
-              <Button variant={'destructive'}><HiTrash /></Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-80">
-              <div className="grid gap-4">
-                <div className="space-y-2">
-                  <h4 className="font-medium leading-none">Удаление</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Вы действительно хотите удалить категорию?
-                  </p>
-                </div>
-                <div className="grid gap-2">
-                  <Button variant={'destructive'} onClick={() => onDeleteCategory(row.getValue('id'))}>удалить</Button>
-                </div>
-              </div>
-            </PopoverContent>
-          </Popover>
-        )
-      },
-    },
   ]
 
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = useState({})
-
-  let onDeleteCategory = async (categoryId: number) => {
-    const postData = { id: categoryId }
-
-    const result = await axios.delete('/api/uploadFiles/filesCategory', { data: postData })
-    if (result.statusText === "OK") {
-      toast.success('категория удалена')
-      onGetFilesCategory()
-    } else {
-      toast.error('Ошибка при удалении категории')
-    }
-  }
 
   const table = useReactTable({
     data: categories,
@@ -152,10 +121,10 @@ export
   })
 
   return (
-    <div className="w-full">
-      <div className="flex items-center py-4">
+    <div className="w-[50vw]">
+      <div className="flex items-center py-4 px-1">
         <Input
-          placeholder="Filter names..."
+          placeholder="Фильтр названий..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
@@ -183,6 +152,7 @@ export
               </TableRow>
             ))}
           </TableHeader>
+
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
@@ -211,6 +181,7 @@ export
               </TableRow>
             )}
           </TableBody>
+
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
