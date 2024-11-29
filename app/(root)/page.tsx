@@ -56,7 +56,7 @@ export
         >
           {
             mainPageLinks.map((link) => {
-              return <LinkMain href={link.href} target={link.target} text={link.text}/>
+              return <LinkMain href={link.href} key={link.href} target={link.target} text={link.text}/>
             })
           }
         </div>

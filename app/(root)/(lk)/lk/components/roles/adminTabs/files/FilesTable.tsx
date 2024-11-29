@@ -28,7 +28,7 @@ export
                 return <li key={fileDb.id} className="flex gap-2">
                 <Link href={`http://192.168.0.148:5000/knowledgeBd/${fileDb.filePath}`} target="_blank" className="flex gap-2 items-center">
                   <HiOutlineDocument />
-                  <p className="text-sm text-blue-700">{fileDb.category} {fileDb.name}</p>
+                  <p className="text-sm text-blue-700 flex"><div className="text-black pr-2"> К: </div>{fileDb.category} {fileDb.subCategory? <div className="text-black pl-2 pr-2"> ПодК: </div> : ''}{fileDb.subCategory} <div className="text-black pl-2 pr-2"> Имя: </div> {fileDb.name}</p>
                 </Link>
                 <Button variant={'destructive'} onClick={() => onDeleteFile(fileDb.id)}>удалить</Button>
                 </li>

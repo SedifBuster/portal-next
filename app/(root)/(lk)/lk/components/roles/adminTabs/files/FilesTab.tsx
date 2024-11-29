@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { FilesCategory } from "./FilesCategory"
 import { FileUpload } from "./FileUpload"
 import axios from "axios"
-import { FileBd, FileCategory } from "@prisma/client"
+import { FileBd, FileCategory, SubFileCategory } from "@prisma/client"
 import { FilesCategoryTable } from "./FilesCategoryTable"
 import {
   Card,
@@ -29,6 +29,7 @@ export
 ) {
   const [filesCategories, setFilesCategories] = useState<FileCategory[]>()
   const [fileNames, setFileNames] = useState<FileBd[]>()
+  const [subcategories, setSubcategories] = useState<SubFileCategory[]>()
 
   let onGetFilesCategory = async () => {
     try {
@@ -36,6 +37,15 @@ export
       if(result.status === 200) setFilesCategories(result.data)
     } catch(error) {
       console.log('error', error)
+    }
+  }
+
+  let onGetSubCategories = async () => {
+    try {
+      let result = await axios.get('/api/uploadFiles/subFilesCategory')
+      if (result.status === 200) setSubcategories(result.data)
+    } catch(error) {
+      console.log('error: ', error)
     }
   }
 
@@ -64,9 +74,9 @@ export
     }
   }
 
-  useEffect(() => {onGetFiles(); onGetFilesCategory()}, [])
+  useEffect(() => {onGetFiles(); onGetFilesCategory();onGetSubCategories()}, [])
 
-  return filesCategories?<>
+  return filesCategories && subcategories?<>
     <Tabs defaultValue="files" className="w-full">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="files">файлы</TabsTrigger>
@@ -81,7 +91,7 @@ export
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
-            <FileUpload  categories={filesCategories} onGetFiles={onGetFiles}/>
+            <FileUpload  categories={filesCategories} onGetFiles={onGetFiles}  subcategories={subcategories} />
             {fileNames? <FilesTable files={fileNames} onDeleteFile={onDeleteFile}/>: 'файлов не обнаружено'}
           </CardContent>
         </Card>
@@ -96,14 +106,14 @@ export
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex gap-2">
-            <FilesCategory onGetFilesCategory={onGetFilesCategory}/>
-            <FilesSubCategory onGetFilesCategory={onGetFilesCategory} filesCategories={filesCategories}/>
+            <FilesCategory onGetFilesCategory={onGetFilesCategory} subcategories={subcategories} onGetSubCategories={onGetSubCategories}/>
+            <FilesSubCategory onGetFilesCategory={onGetFilesCategory} filesCategories={filesCategories} onGetSubCategories={onGetSubCategories}/>
             </div>
        
            {
              filesCategories
              ?
-             <FilesCategoryTable categories={filesCategories} onGetFilesCategory={onGetFilesCategory}/>
+             <FilesCategoryTable categories={filesCategories} onGetFilesCategory={onGetFilesCategory} subcategories={subcategories} onGetSubCategories={onGetSubCategories}/>
             :
             ''
            }

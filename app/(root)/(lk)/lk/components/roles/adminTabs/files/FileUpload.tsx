@@ -1,7 +1,7 @@
 "use client"
 
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from "@/components/ui/form"
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import toast from "react-hot-toast"
@@ -9,21 +9,24 @@ import { z } from "zod"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { FileCategory } from "@prisma/client"
+import { FileCategory, SubFileCategory } from "@prisma/client"
 import axios from "axios"
 
 const formFilesSchema = z.object({
   fileName: z.string().min(3),
   category: z.string().min(3),
+  subCategory: z.string().optional()
 })
 //cool
 export
   function FileUpload({
     onGetFiles,
-    categories
+    categories,
+    subcategories,
   }: {
     onGetFiles: () => Promise<void>
     categories: FileCategory[]
+    subcategories: SubFileCategory[]
   }
 ) {
   const fileInput = useRef<HTMLInputElement>(null)
@@ -32,9 +35,11 @@ export
     resolver: zodResolver(formFilesSchema),
       defaultValues: {
         fileName: '',
-        category: ''
+        category: '',
       }
   })
+
+  const [categorySelected, setCategorySelected] = useState<FileCategory>()
 
   async function onSubmitFile(values: z.infer<typeof formFilesSchema>) {
     try {
@@ -47,6 +52,7 @@ export
       const postFileName = {
         name: values.fileName,
         category: values.category,
+        subCategory: values.subCategory,
         //@ts-ignore
         filePath: formData.get('file').name
       }
@@ -68,6 +74,18 @@ export
       console.log("Ошибка при загрузке файла: ", error)
     }
   }
+
+  useEffect(() => {
+    if(formFiles.getValues().category) {
+      let mediumCat = categories.filter((cat) => {
+        return cat.name === formFiles.getValues().category
+      })
+      if(mediumCat[0]) {
+        setCategorySelected(mediumCat[0])
+      }
+    }
+
+  }, [formFiles.getValues().category ])
 
   return <>
     <h6 className="text-lg font-bold mt-6">Загрузить файл</h6>
@@ -110,6 +128,40 @@ export
               </FormItem>
             )}
           />
+          {
+            categorySelected 
+            ?
+            <FormField
+            control={formFiles.control}
+            name="subCategory"
+            render={({ field }) => (
+              <FormItem >
+                <FormLabel>Подкатегория (необязательно)</FormLabel>
+                <Select onValueChange={field.onChange}>
+                    <FormControl>
+                      <SelectTrigger className="h-7">
+                        <SelectValue placeholder="..."/>
+                      </SelectTrigger>
+                    </FormControl>
+                  <SelectContent>
+                    {
+                      subcategories.filter((cat) => {
+                        return cat.fileCategoryId === categorySelected.id
+                      }).map((cat) => {
+                        return <SelectItem value={cat.name} key={cat.id}>
+                          {cat.name}
+                        </SelectItem>
+                      })
+                    }
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+            :
+            null
+          }
           <Input className="mt-12" lang="ru" type="file" name="file" ref={fileInput}/>
           <Button type="submit">Загрузить файл</Button>
         </form>

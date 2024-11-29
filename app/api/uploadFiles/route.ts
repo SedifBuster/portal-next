@@ -24,6 +24,7 @@ export
     const {
         name,
         category,
+        subCategory,
         filePath,
     } = body
 
@@ -35,6 +36,7 @@ export
         name,
         category,
         filePath,
+        subCategory
       }
     })
 

@@ -8,21 +8,20 @@ import { z } from "zod"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import axios from "axios"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { FilesCategoryTable } from "./FilesCategoryTable"
 import { FilesSubCategoryTable } from "./FilesSubCategoryTable"
+
 
 const formFilesCategorySchema = z.object({
   name: z.string().min(5),
-  category: z.string()
+  category: z.any()
 })
 //cool
 export
   function FilesSubCategory({
     onGetFilesCategory,
-    filesCategories
+    filesCategories,
+    onGetSubCategories
   }: {
     onGetFilesCategory: () => Promise<void>
     filesCategories:  {
@@ -31,6 +30,7 @@ export
         createdAt: Date;
         updatedAt: Date;
     }[]
+    onGetSubCategories: () => Promise<void>
   }
 ) {
 
@@ -38,25 +38,26 @@ export
     resolver: zodResolver(formFilesCategorySchema),
       defaultValues: {
         name: '',
-        category: '',
       }
   })
 
   async function onSubmitFileCategory(values: z.infer<typeof formFilesCategorySchema>) {
     try {
-      /*const categoryData = {
-        name: values.name
+      const subCategoryData = {
+        name: values.name,
+        fileCategoryId: values.category.id,
       }
-      console.log(categoryData)
+      console.log(subCategoryData)
 
-      const categoryResult = await axios.post('/api/uploadFiles/filesCategory', categoryData)
-      if(categoryResult.statusText !== "OK") return toast.error("Ошибка при создании категории")
+      const subCategoryResult = await axios.post('/api/uploadFiles/subFilesCategory', subCategoryData)
+      if(subCategoryResult.statusText !== "OK") return toast.error("Ошибка при создании категории")
 
       toast.success(`подкатегория создана `)
       onGetFilesCategory()
+      onGetSubCategories()
       formFilesCategory.reset()
-*/
-    console.log(values.name)
+
+    console.log(values)
 
     } catch (error) {
       toast.error("Ошибка при создании категории")
@@ -93,10 +94,10 @@ export
             name="category"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Выберите категорию к которой относится подкатегория*</FormLabel>
+                <FormLabel>Выберите категорию к которой относится подкатегория*, выберите только одну!</FormLabel>
                 <FormControl>
                     <div className="h-[70vh] overflow-auto w-full ">
-                    <FilesSubCategoryTable categories={filesCategories} onGetFilesCategory={onGetFilesCategory}/>
+                    <FilesSubCategoryTable categories={filesCategories} field={field}/>
                     </div>
                     
                 </FormControl>

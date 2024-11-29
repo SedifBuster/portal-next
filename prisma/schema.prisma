@@ -171,6 +171,7 @@ model FileBd {
   id Int @id @default(autoincrement())
   name String
   category String
+  subCategory String?
   filePath String
 }
 

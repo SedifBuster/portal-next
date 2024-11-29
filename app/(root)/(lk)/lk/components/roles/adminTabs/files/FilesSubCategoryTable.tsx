@@ -24,26 +24,26 @@ import {
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { FileCategory } from "@prisma/client"
-import { HiTrash } from "react-icons/hi2"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import toast from "react-hot-toast"
-import axios from "axios"
-import FilesCategoryEdit from "./FilesCategoryEdit"
 import { useState } from "react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { format } from "date-fns"
 import { ru } from "date-fns/locale"
+import { ControllerRenderProps } from "react-hook-form"
 //maybe cool
 export
   function FilesSubCategoryTable(
     {
       categories,
-      onGetFilesCategory
+      field
     }: {
       categories: FileCategory[]
-      onGetFilesCategory: () => Promise<void>
+      field: ControllerRenderProps<{
+        name: string;
+        category: any;
+    }, "category">
     }
 ) {
+
 
   const columns: ColumnDef<FileCategory>[] = [
     {
@@ -87,7 +87,7 @@ export
         cell: ({ row }) => (
           <Checkbox
             checked={row.getIsSelected()}
-            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            onCheckedChange={(value) => {row.toggleSelected(!!value); console.log(row.original, field); field.onChange(row.original)}}
             aria-label="Select row"//тут выбрать только одну, апи проверить сделать, добавить в таблицу категорий, добавить в базу знаний
           />
         ),//<FilesCategoryEdit id={row.getValue('id')} name={row.getValue('name')} onGetFilesCategory={onGetFilesCategory}/>

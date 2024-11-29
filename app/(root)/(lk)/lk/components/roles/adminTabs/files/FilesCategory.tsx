@@ -8,6 +8,7 @@ import { z } from "zod"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import axios from "axios"
+import { SubFileCategory } from "@prisma/client"
 
 const formFilesCategorySchema = z.object({
   name: z.string().min(5),
@@ -15,9 +16,13 @@ const formFilesCategorySchema = z.object({
 //cool
 export
   function FilesCategory({
-    onGetFilesCategory
+    onGetFilesCategory,
+    subcategories,
+    onGetSubCategories
   }: {
     onGetFilesCategory: () => Promise<void>
+    subcategories: SubFileCategory[]
+    onGetSubCategories: () => Promise<void>
   }
 ) {
 
@@ -47,6 +52,7 @@ export
       console.log("Ошибка при создании категории: ", error)
     }
   }
+  console.log(subcategories)
 
   return <div className=" w-[50%]">
     <h6 className="text-lg font-bold">Создать категорию</h6>

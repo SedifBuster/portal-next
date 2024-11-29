@@ -23,22 +23,28 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import { FileCategory } from "@prisma/client"
+import { FileCategory, SubFileCategory } from "@prisma/client"
 import { HiTrash } from "react-icons/hi2"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import toast from "react-hot-toast"
 import axios from "axios"
 import FilesCategoryEdit from "./FilesCategoryEdit"
 import { useState } from "react"
+import { format } from "date-fns"
+import { ru } from "date-fns/locale"
 //maybe cool
 export
   function FilesCategoryTable(
     {
       categories,
-      onGetFilesCategory
+      onGetFilesCategory,
+      subcategories,
+      onGetSubCategories
     }: {
       categories: FileCategory[]
       onGetFilesCategory: () => Promise<void>
+      subcategories: SubFileCategory[]
+      onGetSubCategories: () => Promise<void>
     }
 ) {
 
@@ -65,17 +71,49 @@ export
       cell: ({ row }) => <div>{row.getValue("name")}</div>,
     },
     {
+      accessorKey: "subcategories",
+      header: "Подкатегории",
+      cell: ({ row }) => 
+        {
+          let subCat = subcategories.filter((cat) => {
+             return row.getValue('id') === cat.fileCategoryId
+          }).map((cat) => {
+            return <div key={cat.id} className="flex items-center gap-1">{cat.name}
+              <Popover>
+                <PopoverTrigger>
+                  <Button className="w-6 h-6" size={'sm'} variant={'destructive'}>X</Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80">
+                  <div className="grid gap-4">
+                    <div className="space-y-2">
+                      <h4 className="font-medium leading-none">Удаление</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Вы действительно хотите удалить подкатегорию?
+                      </p>
+                    </div>
+                    <div className="grid gap-2">
+                      <Button variant={'destructive'} onClick={() => onDeleteSubCategory(cat.id)}>удалить</Button>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+          })
+          return subCat.length > 0 ? subCat : "нет подкатегорий"
+        },
+    },
+    {
       accessorKey: "createdAt",
       header: "Дата создания",
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("createdAt")}</div>
+        <div className="capitalize">{format(new Date(row.getValue("createdAt")), "PPP", {locale: ru})}</div>
       ),
     },
     {
       accessorKey: "updatedAt",
       header: "Дата посл. изменения",
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("updatedAt")}</div>
+        <div className="capitalize">{format(new Date(row.getValue("updatedAt")), "PPP", {locale: ru})}</div>
       ),
     },
     {
@@ -115,10 +153,26 @@ export
     },
   ]
 
+  /**
+   * {
+        let subCat = subcategories.filter((subcategory) => {
+          return row.getValue('id') === subcategory.fileCategoryId
+        });
+        subCat.length > 0 
+        ?
+        <ul>
+          <li></li>
+        </ul>
+        :
+        'нет подкатегорий'
+        }
+   */
+
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = useState({})
+
 
   let onDeleteCategory = async (categoryId: number) => {
     const postData = { id: categoryId }
@@ -127,10 +181,26 @@ export
     if (result.statusText === "OK") {
       toast.success('категория удалена')
       onGetFilesCategory()
+      onGetSubCategories()
     } else {
       toast.error('Ошибка при удалении категории')
     }
   }
+
+  let onDeleteSubCategory = async (subCategoryId: number) => {
+    const postData = { id: subCategoryId }
+
+    const result = await axios.delete('/api/uploadFiles/subFilesCategory', { data: postData })
+    if (result.statusText === "OK") {
+      toast.success('подкатегория удалена')
+      onGetFilesCategory()
+      onGetSubCategories()
+    } else {
+      toast.error('Ошибка при удалении подкатегории')
+    }
+  }
+
+ 
 
   const table = useReactTable({
     data: categories,
