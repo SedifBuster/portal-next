@@ -1,7 +1,7 @@
 "use client"
 
 import { Label } from "@/components/ui/label"
-import { FileBd } from "@prisma/client"
+import { FileBd, SubFileCategory } from "@prisma/client"
 import axios from "axios"
 import Link from "next/link"
 import { useEffect, useState } from "react"
@@ -13,6 +13,7 @@ export
   }
 ) {
   const [fileNames, setFileNames] = useState<FileBd[]>([])
+  const [subCategories, setSubCategories] = useState<SubFileCategory[]>()
 
   let onGetFiles = async () => {
     try {
@@ -29,6 +30,16 @@ export
       return accumulator;
     },
   {});
+
+  let onGetSubCategories = async () => {
+    try {
+      let result = await axios.get('/api/uploadFiles/subFilesCategory')
+      if (result.status === 200) setSubCategories(result.data)
+    } catch(error) {
+      console.log('error: ', error)
+    }
+  }
+
 
   let finalArray: FileBd[] = groupBy(fileNames, 'category')
 
@@ -48,20 +59,52 @@ export
                 {
                   //@ts-ignore
                 <h6 className="text-lg">{key} ({finalArray[key].length})</h6>
+                
                 }
                 <ul className="flex flex-col justify-center p-2 gap-2">
+
+
                 {//@ts-ignore
-                  finalArray[key]
-                    .map((key: FileBd) => {
-                      return <li key={key.id}>
-                        <Link href={`http://192.168.0.148:5000/knowledgeBd/${key.filePath}`} target="_blank" className="flex gap-2 items-center">
-                          <HiOutlineDocument />
-                          <p className="text-sm text-blue-700">{key.name}</p>
-                        </Link>
-                      </li>
-                    }
-                  )
+                     Object.keys(groupBy(finalArray[key], "subCategory"))
+                       .map((keysub: string) => 
+                        
+                          <div key={keysub} className="px-2">
+                            { //@ts-ignore
+                              keysub !== "null" ? <h6>{keysub}</h6>
+                              :
+                              null
+                            }
+                      <ul className="flex flex-col justify-center p-2 gap-2">
+                        {//@ts-ignore
+                        
+                          groupBy(finalArray[key], "subCategory")[keysub].map((key: FileBd) => {
+                            return <li key={key.id}>
+                              <Link href={`http://192.168.0.148:5000/knowledgeBd/${key.filePath}`} target="_blank" className="flex gap-2 items-center">
+                                <HiOutlineDocument />
+                                <p className="text-sm text-blue-700">{key.subCategory} {key.name}</p>
+                              </Link>
+                            </li>
+                          })
+                        }
+                      </ul>
+                          </div>
+                     )
                 }
+
+                {//@ts-ignore
+                /*
+                  finalArray[key]
+                  .map((key: FileBd) => {
+                    return <li key={key.id}>
+                      <Link href={`http://192.168.0.148:5000/knowledgeBd/${key.filePath}`} target="_blank" className="flex gap-2 items-center">
+                        <HiOutlineDocument />
+                        <p className="text-sm text-blue-700">{key.subCategory} {key.name}</p>
+                      </Link>
+                    </li>
+                  }
+                )
+                  */
+              }
                 </ul>
               </div>
             )
@@ -70,3 +113,22 @@ export
     </section>
   ): "Файлов не найдено"
 }
+
+/**
+ * {//@ts-ignore
+                  finalArray[key]
+                    .map((key: FileBd) => {
+                      return <li key={key.id}>
+                        <Link href={`http://192.168.0.148:5000/knowledgeBd/${key.filePath}`} target="_blank" className="flex gap-2 items-center">
+                          <HiOutlineDocument />
+                          <p className="text-sm text-blue-700">{key.subCategory} {key.name}</p>
+                        </Link>
+                      </li>
+                    }
+                  )
+                }
+
+                  <h6>
+                                {key !== "null" ? key {finalArray[key].length} : 'sad'}
+                              </h6>
+ */
