@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import ToasterContext from './context/ToasterContext'
 import AuthContext from './context/AuthContext'
+import { Toaster } from "@/components/ui/sonner";
 
 const pfBeauSans = localFont({
   src: [
@@ -31,6 +32,7 @@ export default function RootLayout({
         <AuthContext>
         <ToasterContext />
         {children}
+        <Toaster theme="light"/>
         </AuthContext>
       </body>
     </html>
