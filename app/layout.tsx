@@ -14,6 +14,7 @@ const pfBeauSans = localFont({
   ],
   variable: '--font-pfBeauSans'
 })
+
 export const metadata: Metadata = {
   title: 'портал',
   description: 'все в одном месте',

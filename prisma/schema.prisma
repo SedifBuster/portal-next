@@ -175,6 +175,51 @@ model FileBd {
   filePath String
 }
 
+model Log {
+  department  DepartmentLog
+  name        String
+  date        DateTime
+  place       String
+  event       Problem
+  circs       String
+  gauge       String?
+  note        String
+  liable      String
+  cause       String?
+  comment     String?
+  id          Int       @id @default(autoincrement())
+}
+
+enum DepartmentLog {
+  Policlinic      //Поликлиника
+  Reception       //Приемное
+  Pulmonology     //Пульмонология
+  Rehabilitation  //Реабилитация
+  Reanimation     //Реанимация
+  Laboratory      //Лаборатория
+  Neurology       //Неврология
+  Opp             //ОПП
+  Pao             //ПАО
+  Ceo             //СЭО
+  Therapeutic     //Терапия
+  Surgical        //Хирургия
+  Xray            //Рентгенология
+  Administration  //Администрация
+  Aho             //АХО
+}
+
+enum Problem {
+  IdentificationOfThePatientsIdentity       //Идентификация личности пациента
+  Collapse                                  //Падение
+  PressureSores                             //Пролежни
+  AnEventRelatedToAMedicalDeviceOrProduct   //Событие, связаное с медицинским оборудованием или изделием
+  ADrugRelatedEvent                         //Событие, связанное с лекарственным средством
+  InfectiousOrParasiticDisease              //Инфекционное или паразитарное заболевание
+  ISMP                                      //ИСМП (инфекции, связанные с медицинской помощью)
+  SurgicalComplications                     //Хирургические осложнения
+  AnotherUndesirableEvent                   //Другое нежелательное событие
+}
+
 enum Role {
   ADMIN
   TECHNICICAN

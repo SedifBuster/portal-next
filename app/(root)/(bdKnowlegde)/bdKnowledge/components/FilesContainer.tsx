@@ -82,7 +82,7 @@ export
                 {//@ts-ignore
                      Object.keys(groupBy(finalArray[key], "subCategory"))
                        .map((keysub: string) => 
-                        
+                         
                           <div key={keysub} className="px-2">
                             { //@ts-ignore
                               keysub !== "null" ? 
