@@ -1,18 +1,7 @@
 'use client'
 
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableRow,
-} from "@/components/ui/table"
 import { IZhus } from "../page"
-import ZhusTableHead from "./zhusTableHead"
-import ZhusTableRow from "./zhusTableRow"
 import { TableTest } from "./tableTest"
-import { useEffect, useState } from "react"
 
 export
   function ZhusTable({
@@ -27,14 +16,13 @@ export
   ///filter by department name
   const onFilterDataByDep = (data: IZhus[], dep: string) => {
 
-    console.log("dep", dep)
-    console.log("data", data)
+   // console.log("dep", dep)
+    //console.log("data", data)
     //TODO НАПИСАТЬ ФУНКЦИЮ ФИЛЬТРА ПО ОТДЕЛЕНИЮ
 
-    return {department: dep, logs: [...data.filter(log => log.department === dep)]}
+  return {department: dep, logs: [...data.filter(log => log.department === dep)]}
   }
 
- 
   //...
   const onSetDepsNames = (data: IZhus[]) => {
     const namesSet = new Set<string>()

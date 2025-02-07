@@ -35,7 +35,7 @@ export
     ?
     logs.map((log) => {
       return <TableRow className="bg-green-50" key={log.id}>
-      <TableCell className="font-medium ">{format(log.date, "PPP HH:mm", {locale: ru})}</TableCell>
+      <TableCell className="font-medium ">{format(new Date(log.date), "PPP HH:mm", {locale: ru})}</TableCell>
       <TableCell>{log.name} </TableCell>{/**и дата рождения */}
       <TableCell className="w-2">{log.place}</TableCell>
 

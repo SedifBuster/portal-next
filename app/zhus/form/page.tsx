@@ -1,12 +1,10 @@
 
-import { Department, Problem } from "@prisma/client";
+import { DepartmentLog, Problem } from "@prisma/client";
 import FormRecord from "./components/formRecord";
 import QrTooltip from "./components/qrTooltip";
 
-
-
-  type UnitDep = {
-  value: Department,
+type UnitDep = {
+  value: DepartmentLog,
   text: string,
 }
 
@@ -16,7 +14,7 @@ export
   text: string,
 }
 
- const departments = [
+ const departments: UnitDep[] = [
   {
     value: "Policlinic",
     text: "Поликлиника",
@@ -83,8 +81,6 @@ export
   default function Form(
 ) {
 
-
-
   const problems: UnitIssue[] = [
     {
       value: "IdentificationOfThePatientsIdentity",
@@ -124,8 +120,6 @@ export
     },
   ]
 
-  const postURL = "http://localhost:5020/api/logs"//http://localhost:5025/api/logs/all
-
   async function onPostData(url: string, postData: BodyInit): Promise<number> {
     "use server"
     try {
@@ -149,7 +143,7 @@ export
   }
 
   return <section className="flex flex-col justify-between p-2 container">
-    <FormRecord departments={departments} problems={problems} postLog={onPostData} postURL={postURL}/>
+    <FormRecord departments={departments} problems={problems} postLog={onPostData}/>
     {/** qr and tooltip*/}
     <QrTooltip />
   </section>

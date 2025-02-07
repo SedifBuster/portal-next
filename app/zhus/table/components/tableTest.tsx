@@ -503,6 +503,8 @@ export function TableTest(
     getRowCanExpand: () => true,
   })
 
+  console.log(isFinal)
+
   return (
     <div className="w-full ">
       <div className="rounded-md border mt-6">
@@ -610,7 +612,9 @@ export function TableTest(
 
           <TableCell className="text-center">
             {/**neeed refactor */}
-            {isFinal.length}
+            {/*isFinal.reduce((dep, 0) => {
+
+            })*/}
           </TableCell>
         </TableRow>
       </TableFooter>

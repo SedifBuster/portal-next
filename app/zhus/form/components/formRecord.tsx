@@ -24,7 +24,6 @@ import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { toast } from "sonner"
 import { UnitIssue } from "../page"
-import { Department } from "@prisma/client"
 import DateTimePicker from "../../components/dateTime/dateTimePicker"
 
   type UnitDep = {
@@ -65,7 +64,6 @@ export
       problems,
       departments,
       postLog,
-      postURL
     }: {
       problems: UnitIssue[]
       departments: {
@@ -73,7 +71,6 @@ export
         text: string;
     }[]
       postLog: (url: string, postData: any) => Promise<number>
-      postURL: string
     }
 ) {
 
@@ -94,7 +91,7 @@ export
   })
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await postLog(postURL, values)
+    await postLog("http://localhost:5020/api/logs", values)
       .catch(error => {
         toast.error("Произошла ошибка при отправке в ЖУС", {
           description: <p className="text-black">{`${error}`}</p>
@@ -119,9 +116,9 @@ export
               <FormItem>
                 <FormLabel>Выберите свое отделение*</FormLabel>
                 <FormControl>
-                <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
+                <Select onValueChange={field.onChange}  value={field.value} defaultValue={field.value}>
                   <SelectTrigger className="w-[320px]">
-                    <SelectValue placeholder={"не выбрано"} />
+                    <SelectValue placeholder="не выбрано" />
                     </SelectTrigger>
                     <SelectContent>
                       {

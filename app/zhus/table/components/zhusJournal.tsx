@@ -16,14 +16,8 @@ import DateTimePicker from "../../components/dateTime/dateTimePicker";
 export function ZhusJournal(
   {
     onFetchData,
-    getUrl,
-    onFetchOldData,
-    oldUrl
   }: {
     onFetchData: (url: string) => Promise<IZhus[]>
-    onFetchOldData: (url: string) => Promise<IZhus[]>
-    getUrl: string
-    oldUrl: string
   }
 ) {
 
@@ -36,22 +30,16 @@ export function ZhusJournal(
 
   useEffect(() => {
     async function onGetData() {
-      let resultOld = await onFetchOldData(oldUrl)
-      let result = await onFetchData(getUrl)
-      console.log(result)
+      let resultOld = await onFetchData("http://192.168.0.148:5100/log")
+      let result = await onFetchData("http://localhost:5020/api/logs")
+     // console.log('new database', result)
+     // console.log('old database', resultOld)
 
-     
       if(result && resultOld)
         setFetchedData([...resultOld, ...result])
     }
     onGetData()
-  }, [getUrl, onFetchData])
-
-  //TODO
-  //1. взять из прошлого сервака данные и добавить в стейт даты COMPLETE
-  //2. сделать выборку с датой COMPLETE
-  //3. победить саброу COMPLETE
-  //3.1 3.2  ссл и pnpm и nginx
+  }, [ onFetchData])
 
   useEffect(() => {
     if(fetchedData)
@@ -62,10 +50,10 @@ export function ZhusJournal(
           return item.date.getTime() > prevDate.getTime() && item.date.getTime() < nowDate.getTime()
         }
     }))
-
   }, [nowDate, prevDate, fetchedData])
 
 
+  console.log('on Fetched data', fetchedData)
 
   return <div className="container mx-auto flex flex-col items-center">
     <h1 className="font-bold text-lg">КГБУЗ «ВЛАДИВОСТОКСКАЯ КЛИНИЧЕСКАЯ БОЛЬНИЦА № 4»</h1>

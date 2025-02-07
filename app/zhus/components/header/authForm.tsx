@@ -1,6 +1,5 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -9,57 +8,80 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-  } from "@/components/ui/form"
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+
 import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { signIn, useSession } from "next-auth/react"
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 import { format } from "date-fns"
 import { ru } from "date-fns/locale"
-import { Input } from "@/components/ui/input"
+
 
 const formSchema = z.object({
-    userName: z.string().min(3, {
-        message: "Логин должно быть больше трех символов.",
-    }),
-    userPassword: z.string().min(3, {
-        message: "Пароль должнен быть больше трех символов.",
-    }),
-  })
+  login: z.string().min(4, {
+    message: "Имя пользователя должно состоять как минимум из 4 символов.",
+  }),
+  password: z.string().min(5, {
+    message: "Пароль должен состоять как минимум из 5 символов."
+  }),
+})
 
 export
   default function AuthForm ({
-    postAuth
   }: {
-    postAuth: ( postData: any) => any
-  }) {
+  }
+) {
+
+  const session = useSession()
+  const router = useRouter()
+
+  useEffect(() => {
+    if(session?.status === 'authenticated') {
+      //router.push('/lk')
+    }
+  }, [session?.status, router])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      userName: '',
-      userPassword: ''
-    },
+      defaultValues: {
+        login: "",
+        password: "",
+      },
   })
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    await postAuth(values)
-      .catch(error => {
-        //toast.error("Произошла ошибка при отправке в ЖУС", {
-         // description: <p className="text-black">{`${error}`}</p>
-        ///})
-      })
-      .then(() => {
-        //toast.success(`Случай успешно добавлен в ЖУС`, {
-         // description: format(new Date(), "PPP HH:mm", {locale: ru}),
-       // })
-        form.reset()
-      })
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    // ✅ This will be type-safe and validated.
+    signIn('credentials',
+      {
+        login: values.login,
+        password: values.password,
+        redirect: false
+      }
+    ).then((callback) => {
+      if(callback?.error) {
+        toast.error("Неправильный логин или пароль", {
+           description: <p className="text-black">{`${format(new Date(), "PPP HH:mm", {locale: ru})}`}</p>
+         })
+      }
+      if(callback?.ok && !callback?.error) {
+        toast.success(`Успешный вход`, {
+          description: format(new Date(), "PPP HH:mm", {locale: ru}),
+        })
+        //router.push('/lk')
+      }
+    })
   }
 
 
@@ -75,7 +97,7 @@ export
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
           <FormField
             control={form.control}
-            name="userName"
+            name="login"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Логин</FormLabel>
@@ -88,7 +110,7 @@ export
           />
           <FormField
             control={form.control}
-            name="userPassword"
+            name="password"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Пароль</FormLabel>
