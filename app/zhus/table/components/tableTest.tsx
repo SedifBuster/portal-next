@@ -117,6 +117,8 @@ export function TableTest(
             return 'Неврология'
           case 'Rehabilitation':
             return 'Реабилитация'
+          case 'Reabilitation':
+            return 'Реабилитация'
           case 'Laboratory':
             return 'Лаборатория'
           case 'Xray':
@@ -503,7 +505,7 @@ export function TableTest(
     getRowCanExpand: () => true,
   })
 
-  console.log(isFinal)
+  //console.log(isFinal)
 
   return (
     <div className="w-full ">
@@ -551,7 +553,7 @@ export function TableTest(
                     <td colSpan={row.getVisibleCells().length}>
                       {subRow && subRow?.length > 0
                       ?
-                      renderSubComponent({ row: subRow })
+                      renderSubComponent({ row: subRow , onSetupDepNameToRu})
                       :
                       null
                     }
@@ -571,8 +573,8 @@ export function TableTest(
               </TableRow>
             )}
           </TableBody>
-          <TableFooter>
-        <TableRow className="bg-gray-200">
+          <TableFooter className="hover:text-black text-base">
+        <TableRow>
           <TableCell>Итого</TableCell>
           <TableCell className="text-center">
             {isFinal.reduce((accum, curr) => accum + curr.collapse.length, 0)}
@@ -626,10 +628,10 @@ export function TableTest(
   )
 }
 
-const renderSubComponent = ({ row }: { row: IZhus[]/*Row<IFinal>*/; arrName?: string }) => {
+const renderSubComponent = ({ row, onSetupDepNameToRu }: { row: IZhus[]/*Row<IFinal>*/; arrName?: string, onSetupDepNameToRu: (depName: string) => string }) => {
   return (
     <div style={{ fontSize: '10px' }}>
-      <DepartmentTable logs={row} />
+      <DepartmentTable logs={row} onSetupDepNameToRu={onSetupDepNameToRu}/>
     </div>
   )
 }

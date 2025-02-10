@@ -36,7 +36,7 @@ export function ZhusJournal(
      // console.log('old database', resultOld)
 
       if(result && resultOld)
-        setFetchedData([...resultOld, ...result])
+        setFetchedData([/*...resultOld,*/ ...result])
     }
     onGetData()
   }, [ onFetchData])
@@ -53,7 +53,7 @@ export function ZhusJournal(
   }, [nowDate, prevDate, fetchedData])
 
 
-  console.log('on Fetched data', fetchedData)
+  //console.log('on Fetched data', fetchedData)
 
   return <div className="container mx-auto flex flex-col items-center">
     <h1 className="font-bold text-lg">КГБУЗ «ВЛАДИВОСТОКСКАЯ КЛИНИЧЕСКАЯ БОЛЬНИЦА № 4»</h1>

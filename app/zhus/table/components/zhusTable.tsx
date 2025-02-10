@@ -1,6 +1,6 @@
 'use client'
 
-import { IZhus } from "../page"
+import { IFArray, IZhus } from "../page"
 import { TableTest } from "./tableTest"
 
 export
@@ -16,11 +16,11 @@ export
   ///filter by department name
   const onFilterDataByDep = (data: IZhus[], dep: string) => {
 
-   // console.log("dep", dep)
-    //console.log("data", data)
-    //TODO НАПИСАТЬ ФУНКЦИЮ ФИЛЬТРА ПО ОТДЕЛЕНИЮ
+  return {department: dep, logs: [...data.filter(log => {
 
-  return {department: dep, logs: [...data.filter(log => log.department === dep)]}
+    return log.department === dep
+  } )]
+  }
   }
 
   //...
@@ -44,7 +44,58 @@ export
   }
   let finalArr = onSetDeps()
 
- // console.log(finalArr)
+
+
+
+
+
+  console.log(finalArr)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+  const array1 = [
+    { "user_id": 1, "page_views": 7, "clicks": 5 },
+    { "user_id": 5, "page_views": 6, "clicks": 3 },
+    { "user_id": 9, "page_views": 4, "clicks": 7 },
+    { "user_id": 1, "page_views": 3, "clicks": 5 },
+    ];
+    const array2 = [
+    {"id":9,"first_name":"Barnabas"},
+    {"id":1,"first_name":"Emlyn"},
+    {"id":5,"first_name":"Ervin"},
+    ];
+    const result = array2.map(item2 => {
+      // отфильтровали массив 1 на наличие элементов с соответствующим id
+      const withCurrentId = array1.filter(item1 => item1['user_id'] === item2['id']);
+      
+      // склеили новый объект с суммами свойств
+      const item1 = withCurrentId.reduce((acc, curr) => {
+        // если в аккумуляторе нет свойства page_views, то 0, потом суммируем
+        acc['page_views'] = (acc['page_views'] || 0) + curr['page_views'];
+        // если в аккумуляторе нет свойства clicks, то 0, потом суммируем
+        acc['clicks'] = (acc['clicks'] || 0) + curr['clicks'];
+    
+        return acc;
+      }, {});
+    
+      return { ...item2, ...item1 };
+    });
+    console.log(result);
+*/
 
   return (
       <TableTest finalArr={finalArr}/>
@@ -469,3 +520,20 @@ export
     )
   }
    */
+
+
+        //Policlinic      //Поликлиника
+    //Reception       //Приемное
+    //Pulmonology     //Пульмонология
+    //Rehabilitation  //Реабилитация
+   // Reanimation     //Реанимация
+    //Laboratory      //Лаборатория
+    //Neurology       //Неврология
+   // Opp             //ОПП
+    //Pao             //ПАО
+    //Ceo             //СЭО
+    //Therapeutic     //Терапия
+    //Surgical        //Хирургия
+    //Xray            //Рентгенология
+    //Administration  //Администрация
+    //Aho             //АХО
