@@ -26,10 +26,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 
 
 export
@@ -42,6 +42,14 @@ export
   onSetupDepNameToRu: (depName: string) => string
   }
 ) {
+
+  const session = useSession()
+
+  const onChangeComment = (id: number, comment: string) => {
+
+    
+
+  }
 
   //console.log(logs)
 
@@ -65,7 +73,9 @@ export
     ?
     logs.map((log) => {
 
-      const [isComment, setComment] = useState(log.comment)
+      const [isComment, setComment] = useState(log.comment?log.comment : '')
+
+
 
       return <TableRow className="bg-green-50" key={log.id}>
       <TableCell className="font-medium ">{format(new Date(log.date), "PPP HH:mm", {locale: ru})}</TableCell>
@@ -77,7 +87,9 @@ export
       <TableCell className="w-2">{log.note}</TableCell>
       <TableCell>{log.liable}</TableCell>
       <TableCell>
-      <Dialog>
+        {session.status === "authenticated" && typeof session.data.user !== 'undefined' && session.data.user.role === 'ADMIN'
+          ?
+<Dialog>
       <DialogTrigger asChild>
        <div className="w-20 h-20">{log.comment}</div> 
       </DialogTrigger>
@@ -90,17 +102,17 @@ export
         </DialogHeader>
         <div className="grid gap-4 py-4 h-[80vh] overflow-auto ">
           <div className=" flex flex-col gap-4 mr-4">
-            <p>Отделение: <p className="font-semibold">{onSetupDepNameToRu(log.department)}</p></p>
-            <p>Дата: <p className="font-semibold">{format(new Date(log.date), "PPP HH:mm", {locale: ru})}</p></p>
-            <p>Имя пациента: <p className="font-semibold">{log.name}</p></p>
-            <p>Место нежелательного события: <p className="font-semibold">{log.place}</p></p>
-            <p>Причина возникновения неж события: <p className="font-semibold">{log.cause}</p></p>
-            <p>Описание обстоятельств: <p className="font-semibold">{log.circs}</p></p>
-            <p>Принятые меры: <p className="font-semibold">{log.gauge}</p></p>
-            <p>Примечание: <p className="font-semibold">{log.note}</p></p>
-            <p>Ответственный: <p className="font-semibold">{log.liable}</p></p>
-            <p>Комментарий: </p>
-            <Textarea value={isComment} onChange={(e) => setComment(e)}/>
+            <p className="font-semibold">Отделение: <p className="font-normal">{onSetupDepNameToRu(log.department)}</p></p>
+            <p className="font-semibold">Дата: <p  className="font-normal">{format(new Date(log.date), "PPP HH:mm", {locale: ru})}</p></p>
+            <p className="font-semibold">Имя пациента: <p className="font-normal">{log.name}</p></p>
+            <p className="font-semibold">Место нежелательного события: <p  className="font-normal">{log.place}</p></p>
+            <p className="font-semibold">Причина возникновения неж события: <p  className="font-normal">{log.cause}</p></p>
+            <p className="font-semibold">Описание обстоятельств: <p  className="font-normal">{log.circs}</p></p>
+            <p className="font-semibold">Принятые меры: <p  className="font-normal">{log.gauge}</p></p>
+            <p className="font-semibold">Примечание: <p  className="font-normal">{log.note}</p></p>
+            <p className="font-semibold">Ответственный: <p  className="font-normal">{log.liable}</p></p>
+            <p className="font-semibold">Комментарий: </p>
+            <Textarea value={isComment} onChange={(e) => setComment(e.target.value)}/>
 
           </div>
         </div>
@@ -109,6 +121,11 @@ export
         </DialogFooter>
       </DialogContent>
     </Dialog>
+          :
+          <div className="w-20 h-20">{log.comment}</div> 
+
+        }
+      
       </TableCell>
     </TableRow>
     })

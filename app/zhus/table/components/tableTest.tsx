@@ -505,7 +505,7 @@ export function TableTest(
     getRowCanExpand: () => true,
   })
 
-  //console.log(isFinal)
+  console.log(isFinal)
 
   return (
     <div className="w-full ">
@@ -573,7 +573,7 @@ export function TableTest(
               </TableRow>
             )}
           </TableBody>
-          <TableFooter className="hover:text-black text-base">
+          <TableFooter className=" text-base bg-primary">
         <TableRow>
           <TableCell>Итого</TableCell>
           <TableCell className="text-center">

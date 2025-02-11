@@ -62,3 +62,36 @@ export
     return new NextResponse( 'Internal Error', { status: 500 } )
   }
 }
+
+export
+  async function PATCH(
+    request: Request
+) {
+  try {
+    const body = await request.json()
+
+    const {
+      id,
+      comment,
+    } = body
+    console.log(body)
+
+    if ( !id || !comment ) {
+      return new NextResponse('Missing info', { status: 400 })
+    }
+
+    const log = await prisma.log.update({
+      where: {
+        id
+      },
+      data: {
+        comment,
+      }
+    })
+
+    return NextResponse.json(log.id)
+  } catch ( error ) {
+    console.log( error, 'LOG_UPDATE_ERROR' )
+    return new NextResponse( 'Internal Error', { status: 500 } )
+  }
+}
