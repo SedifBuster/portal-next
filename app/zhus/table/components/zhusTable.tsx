@@ -23,7 +23,7 @@ export
   }
   }
 
-  //...
+  //...ИЛИ ВОТ ТУТ
   const onSetDepsNames = (data: IZhus[]) => {
     const namesSet = new Set<string>()
     for(let i = 0; i < data.length; i++) {
