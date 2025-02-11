@@ -31,13 +31,13 @@ export
     }
    return depsNamesArr = Array.from(namesSet)
   }
-  //
+  //ВОТ ТУТ
   onSetDepsNames(onFetchData)
-  //so final array...
+  //so final array...ВОТ ТУТ
   const onSetDeps = () => {
     let arr = []
     for(let i = 0; i < depsNamesArr.length; i++) {
-      //console.log(onFilterDataByDep(onFetchData, depsNamesArr[i]))
+      //console.log(onFilterDataByDep(onFetchData, depsNamesArr[i]))ВОТ ТУТ
       arr.push(onFilterDataByDep(onFetchData, depsNamesArr[i])) 
     }
     return arr
