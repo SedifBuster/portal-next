@@ -43,10 +43,39 @@ export
 
   const session = useSession()
 
-  const onChangeComment = (id: number, comment: string) => {
+  const onChangeComment = async (id: number, comment: string) => {
 
-    
+    try {
+      const response = await fetch('url', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
+      if (!response.ok) {
+
+          const responseOld = await fetch('urlOLD', {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (!responseOld.ok) throw new Error(`HTTP error! status: ${response.status}`)
+
+          throw new Error(`HTTP error! status: ${response.status}`)
+
+        } 
+
+        const data = await response.json()
+      
+
+      return data;
+    } catch (error) {
+      console.error('Error fetching data:', error)
+      throw error;
+    }
   }
 
   //console.log(logs)

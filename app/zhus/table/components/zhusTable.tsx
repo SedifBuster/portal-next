@@ -81,8 +81,8 @@ const onChangedDepsNames = onFetchData.map((log) => {
   const onSetDeps = () => {
     let arr = []
     for(let i = 0; i < depsNamesArr.length; i++) {
-      console.log(onFilterDataByDep(onChangedDepsNames, depsNamesArr[i]))//ВОТ ТУТ
-      console.log(depsNamesArr)
+      ///console.log(onFilterDataByDep(onChangedDepsNames, depsNamesArr[i]))//ВОТ ТУТ
+      //console.log(depsNamesArr)
       arr.push(onFilterDataByDep(onChangedDepsNames, depsNamesArr[i])) 
     }
     return arr
