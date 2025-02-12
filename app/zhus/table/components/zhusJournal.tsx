@@ -36,7 +36,7 @@ export function ZhusJournal(
      // console.log('old database', resultOld)
 
       if(result && resultOld)
-        setFetchedData([/*...resultOld,*/ ...result])
+        setFetchedData([...resultOld, ...result])
     }
     onGetData()
   }, [ onFetchData])

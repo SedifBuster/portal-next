@@ -35,11 +35,9 @@ import { useSession } from "next-auth/react";
 export
   function DepartmentTable(
   {
-    logs,
-    onSetupDepNameToRu
+    logs
   } : {
-  logs: IZhus[],
-  onSetupDepNameToRu: (depName: string) => string
+  logs: IZhus[]
   }
 ) {
 
@@ -102,7 +100,7 @@ export
         </DialogHeader>
         <div className="grid gap-4 py-4 h-[80vh] overflow-auto ">
           <div className=" flex flex-col gap-4 mr-4">
-            <p className="font-semibold">Отделение: <p className="font-normal">{onSetupDepNameToRu(log.department)}</p></p>
+            <p className="font-semibold">Отделение: <p className="font-normal">{log.department}</p></p>
             <p className="font-semibold">Дата: <p  className="font-normal">{format(new Date(log.date), "PPP HH:mm", {locale: ru})}</p></p>
             <p className="font-semibold">Имя пациента: <p className="font-normal">{log.name}</p></p>
             <p className="font-semibold">Место нежелательного события: <p  className="font-normal">{log.place}</p></p>

@@ -166,14 +166,14 @@ export function TableTest(
             >
               {row.getCanExpand()? 
                 <>
-                {onSetupDepNameToRu(row.getValue('department'))}
+                {row.getValue('department')}
                 </>
                 : 
                 ''
               }
             </button>
             :
-            onSetupDepNameToRu(row.getValue('department'))
+            row.getValue('department')
             }
 {/*            <button
               onClick={row.getToggleExpandedHandler()}
@@ -508,8 +508,8 @@ export function TableTest(
   console.log(isFinal)
 
   return (
-    <div className="w-full ">
-      <div className="rounded-md border mt-6">
+    <div className="">
+      <div className="rounded-md border mt-6 ">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -628,10 +628,10 @@ export function TableTest(
   )
 }
 
-const renderSubComponent = ({ row, onSetupDepNameToRu }: { row: IZhus[]/*Row<IFinal>*/; arrName?: string, onSetupDepNameToRu: (depName: string) => string }) => {
+const renderSubComponent = ({ row }: { row: IZhus[]/*Row<IFinal>*/; arrName?: string, onSetupDepNameToRu: (depName: string) => string }) => {
   return (
     <div style={{ fontSize: '10px' }}>
-      <DepartmentTable logs={row} onSetupDepNameToRu={onSetupDepNameToRu}/>
+      <DepartmentTable logs={row} />
     </div>
   )
 }

@@ -23,79 +23,75 @@ export
   }
   }
 
-  //...ИЛИ ВОТ ТУТ
+  const onSetupDepNameToRu = (depName: string) => {
+    switch (depName) {
+      case 'Surgical':
+        return 'Хирургия'
+      case 'Pulmonology':
+        return 'Пульмонология'
+      case 'Policlinic':
+        return 'Поликлиника'
+      case 'Therapeutic':
+        return 'Терапия'
+      case 'Reception':
+        return 'Приемное'
+      case 'Neurology':
+        return 'Неврология'
+      case 'Rehabilitation':
+        return 'Реабилитация'
+      case 'Reabilitation':
+        return 'Реабилитация'
+      case 'Laboratory':
+        return 'Лаборатория'
+      case 'Xray':
+        return 'Рентгенология'
+      case 'Reanimation':
+        return 'Реанимация'
+      case 'Administration':
+        return 'Администрация'
+      case 'Opp':
+        return 'ОПП'
+      case 'Pao':
+        return 'ПАО'
+      case 'Ceo':
+        return 'СЭО'
+      case 'Aho':
+        return 'АХО' 
+      default:
+        return depName
+    }
+}
+
+const onChangedDepsNames = onFetchData.map((log) => {
+  return {...log, department: onSetupDepNameToRu(log.department)}
+})
+//console.log(onChangedDepsNames)
+  //
   const onSetDepsNames = (data: IZhus[]) => {
+
     const namesSet = new Set<string>()
     for(let i = 0; i < data.length; i++) {
       namesSet.add(data[i].department)
     }
    return depsNamesArr = Array.from(namesSet)
   }
-  //ВОТ ТУТ
-  onSetDepsNames(onFetchData)
+  //
+  onSetDepsNames(onChangedDepsNames)
   //so final array...ВОТ ТУТ
   const onSetDeps = () => {
     let arr = []
     for(let i = 0; i < depsNamesArr.length; i++) {
-      //console.log(onFilterDataByDep(onFetchData, depsNamesArr[i]))ВОТ ТУТ
-      arr.push(onFilterDataByDep(onFetchData, depsNamesArr[i])) 
+      console.log(onFilterDataByDep(onChangedDepsNames, depsNamesArr[i]))//ВОТ ТУТ
+      console.log(depsNamesArr)
+      arr.push(onFilterDataByDep(onChangedDepsNames, depsNamesArr[i])) 
     }
     return arr
   }
   let finalArr = onSetDeps()
 
 
-
-
-
-
   console.log(finalArr)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-  const array1 = [
-    { "user_id": 1, "page_views": 7, "clicks": 5 },
-    { "user_id": 5, "page_views": 6, "clicks": 3 },
-    { "user_id": 9, "page_views": 4, "clicks": 7 },
-    { "user_id": 1, "page_views": 3, "clicks": 5 },
-    ];
-    const array2 = [
-    {"id":9,"first_name":"Barnabas"},
-    {"id":1,"first_name":"Emlyn"},
-    {"id":5,"first_name":"Ervin"},
-    ];
-    const result = array2.map(item2 => {
-      // отфильтровали массив 1 на наличие элементов с соответствующим id
-      const withCurrentId = array1.filter(item1 => item1['user_id'] === item2['id']);
-      
-      // склеили новый объект с суммами свойств
-      const item1 = withCurrentId.reduce((acc, curr) => {
-        // если в аккумуляторе нет свойства page_views, то 0, потом суммируем
-        acc['page_views'] = (acc['page_views'] || 0) + curr['page_views'];
-        // если в аккумуляторе нет свойства clicks, то 0, потом суммируем
-        acc['clicks'] = (acc['clicks'] || 0) + curr['clicks'];
-    
-        return acc;
-      }, {});
-    
-      return { ...item2, ...item1 };
-    });
-    console.log(result);
-*/
 
   return (
       <TableTest finalArr={finalArr}/>
