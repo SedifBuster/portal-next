@@ -44,41 +44,41 @@ export
   const session = useSession()
 
   const onChangeComment = async (id: number, comment: string) => {
-
     try {
-      const response = await fetch('url', {
+      const data = {
+        id,
+        comment
+      }
+
+      const response = await fetch('http://localhost:5020/api/logs', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify(data)
       });
 
-      if (!response.ok) {
+      if (response.ok) return await response.json()
+      else {
+        const responseOld = await fetch('http://localhost:5100/log', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            body: JSON.stringify(data)
+          },
+        });
 
-          const responseOld = await fetch('urlOLD', {
-            method: 'PATCH',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
+        if (!responseOld.ok) throw new Error(`HTTP error! status: ${responseOld.status}`)
 
-          if (!responseOld.ok) throw new Error(`HTTP error! status: ${response.status}`)
+          return await response.json()
+       }
 
-          throw new Error(`HTTP error! status: ${response.status}`)
-
-        } 
-
-        const data = await response.json()
-      
-
-      return data;
     } catch (error) {
       console.error('Error fetching data:', error)
       throw error;
     }
   }
 
-  //console.log(logs)
 
   return <Table className="w-full">
     <TableHeader  className="bg-green-100 w-full">
@@ -144,7 +144,7 @@ export
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit">Save changes</Button>
+          <Button type="submit" onClick={() => onChangeComment(log.id, isComment)}>Save changes</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

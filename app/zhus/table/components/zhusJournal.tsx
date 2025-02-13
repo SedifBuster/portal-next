@@ -32,8 +32,6 @@ export function ZhusJournal(
     async function onGetData() {
       let resultOld = await onFetchData("http://192.168.0.148:5100/log")
       let result = await onFetchData("http://localhost:5020/api/logs")
-     // console.log('new database', result)
-     // console.log('old database', resultOld)
 
       if(result && resultOld)
         setFetchedData([...resultOld, ...result])
