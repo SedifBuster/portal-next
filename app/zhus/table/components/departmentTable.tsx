@@ -2,19 +2,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { IZhus } from "../page";
 import { ru } from "date-fns/locale"
 import { format } from "date-fns"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuShortcut,
-  ContextMenuTrigger,
-} from "@/components/ui/context-menu"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -28,8 +15,9 @@ import {
 } from "@/components/ui/dialog"
 
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+
 
 
 export
@@ -42,6 +30,7 @@ export
 ) {
 
   const session = useSession()
+  //const [isProfile, setProfile] = useState()
 
   const onChangeComment = async (id: number, comment: string) => {
     try {
@@ -79,6 +68,16 @@ export
     }
   }
 
+ // let getProfile = async (id: number) => {
+ //   let result = await axios.get(`/api/users/profile/${id}`)
+//    setProfile(result.data)
+//}
+
+/*useEffect(() => {
+  if(session.data)
+  getProfile(Number(session.data.user.id))
+},[session.data ])
+console.log(isProfile)*/
 
   return <Table className="w-full">
     <TableHeader  className="bg-green-100 w-full">
@@ -100,7 +99,7 @@ export
     ?
     logs.map((log) => {
 
-      const [isComment, setComment] = useState(log.comment?log.comment : '')
+      //const [isComment, setComment] = useState(log.comment?log.comment : '')
 
 
 
@@ -114,10 +113,16 @@ export
       <TableCell className="w-2">{log.note}</TableCell>
       <TableCell>{log.liable}</TableCell>
       <TableCell>
-        {session.status === "authenticated" && typeof session.data.user !== 'undefined' && session.data.user.role === 'ADMIN'
+        {
+          session.status === "authenticated"
+          && typeof session.data.user !== 'undefined'
+          && (session.data.user.role === 'ADMIN' || session.data.user.role === 'USER')
           ?
-<Dialog>
+            //isProfile && (isProfile === 'CMO' || isProfile === 'TECHNICICAN')
+            //?
+    <Dialog>
       <DialogTrigger asChild>
+        
        <div className="w-20 h-20">{log.comment}</div> 
       </DialogTrigger>
       <DialogContent className="sm:max-w-[470px]">
@@ -148,8 +153,10 @@ export
         </DialogFooter>
       </DialogContent>
     </Dialog>
-          :
-          <div className="w-20 h-20">{log.comment}</div> 
+    :
+    <div className="w-20 h-20">{log.comment}</div> 
+          //:
+          //<div className="w-20 h-20">{log.comment}</div> 
 
         }
       
