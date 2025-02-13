@@ -2,9 +2,6 @@
 
 import {
   ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -12,7 +9,6 @@ import {
   useReactTable,
   ExpandedState,
   getExpandedRowModel,
-  Row,
 } from "@tanstack/react-table"
 import {
   Table,
@@ -45,8 +41,10 @@ interface IFinal {
 export function TableTest(
   {
     finalArr,
+    onChangeComment
   } : {
     finalArr: IFArray[]
+    onChangeComment: (id: number, comment: string) => Promise<string | number>
   }
 ) {
 
@@ -461,11 +459,6 @@ export function TableTest(
   )
   const [expanded, setExpanded] = useState<ExpandedState>({})
 
-
-  const onChangeComment = (id: number, text: string) => {
-    //api logic
-  }
-
   const table = useReactTable({
     data: isFinal,
     columns,
@@ -529,7 +522,7 @@ export function TableTest(
                     <td colSpan={row.getVisibleCells().length}>
                       {subRow && subRow?.length > 0
                       ?
-                      renderSubComponent({ row: subRow , onSetupDepNameToRu})
+                      renderSubComponent({ row: subRow , onSetupDepNameToRu, onChangeComment})
                       :
                       null
                     }
@@ -604,10 +597,10 @@ export function TableTest(
   )
 }
 
-const renderSubComponent = ({ row }: { row: IZhus[]/*Row<IFinal>*/; arrName?: string, onSetupDepNameToRu: (depName: string) => string }) => {
+const renderSubComponent = ({ row, onChangeComment }: { row: IZhus[]/*Row<IFinal>*/; onChangeComment: (id: number, comment: string) => Promise<string | number>, onSetupDepNameToRu: (depName: string) => string }) => {
   return (
     <div style={{ fontSize: '10px' }}>
-      <DepartmentTable logs={row} />
+      <DepartmentTable logs={row} onChangeComment={onChangeComment}/>
     </div>
   )
 }

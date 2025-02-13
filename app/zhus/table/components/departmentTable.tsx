@@ -15,58 +15,28 @@ import {
 } from "@/components/ui/dialog"
 
 import { Textarea } from "@/components/ui/textarea";
-import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { useState } from "react";
+import { DepartmentRow } from "./departmentRow";
 
 
 
 export
   function DepartmentTable(
   {
-    logs
+    logs,
+    onChangeComment
   } : {
   logs: IZhus[]
+  onChangeComment: (id: number, comment: string) => Promise<string | number>
   }
 ) {
 
   const session = useSession()
+
+
   //const [isProfile, setProfile] = useState()
 
-  const onChangeComment = async (id: number, comment: string) => {
-    try {
-      const data = {
-        id,
-        comment
-      }
-
-      const response = await fetch('http://localhost:5020/api/logs', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-      });
-
-      if (response.ok) return await response.json()
-      else {
-        const responseOld = await fetch('http://localhost:5100/log', {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            body: JSON.stringify(data)
-          },
-        });
-
-        if (!responseOld.ok) throw new Error(`HTTP error! status: ${responseOld.status}`)
-
-          return await response.json()
-       }
-
-    } catch (error) {
-      console.error('Error fetching data:', error)
-      throw error;
-    }
-  }
 
  // let getProfile = async (id: number) => {
  //   let result = await axios.get(`/api/users/profile/${id}`)
@@ -98,79 +68,22 @@ console.log(isProfile)*/
     logs
     ?
     logs.map((log) => {
-
-      //const [isComment, setComment] = useState(log.comment?log.comment : '')
-
-
-
-      return <TableRow className="bg-green-50" key={log.id}>
-      <TableCell className="font-medium ">{format(new Date(log.date), "PPP HH:mm", {locale: ru})}</TableCell>
-      <TableCell>{log.name} </TableCell>{/**и дата рождения */}
-      <TableCell className="w-2">{log.place}</TableCell>
-      <TableCell>{log.cause}</TableCell>
-      <TableCell>{log.circs}</TableCell>
-      <TableCell>{log.gauge}</TableCell>
-      <TableCell className="w-2">{log.note}</TableCell>
-      <TableCell>{log.liable}</TableCell>
-      <TableCell>
-        {
-          session.status === "authenticated"
-          && typeof session.data.user !== 'undefined'
-          && (session.data.user.role === 'ADMIN' || session.data.user.role === 'USER')
-          ?
-            //isProfile && (isProfile === 'CMO' || isProfile === 'TECHNICICAN')
-            //?
-    <Dialog>
-      <DialogTrigger asChild>
-        
-       <div className="w-20 h-20">{log.comment}</div> 
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[470px]">
-        <DialogHeader>
-          <DialogTitle>Комментарий</DialogTitle>
-          <DialogDescription>
-            Оставить или изменить комментарий
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4 h-[80vh] overflow-auto ">
-          <div className=" flex flex-col gap-4 mr-4">
-            <p className="font-semibold">Отделение: <p className="font-normal">{log.department}</p></p>
-            <p className="font-semibold">Дата: <p  className="font-normal">{format(new Date(log.date), "PPP HH:mm", {locale: ru})}</p></p>
-            <p className="font-semibold">Имя пациента: <p className="font-normal">{log.name}</p></p>
-            <p className="font-semibold">Место нежелательного события: <p  className="font-normal">{log.place}</p></p>
-            <p className="font-semibold">Причина возникновения неж события: <p  className="font-normal">{log.cause}</p></p>
-            <p className="font-semibold">Описание обстоятельств: <p  className="font-normal">{log.circs}</p></p>
-            <p className="font-semibold">Принятые меры: <p  className="font-normal">{log.gauge}</p></p>
-            <p className="font-semibold">Примечание: <p  className="font-normal">{log.note}</p></p>
-            <p className="font-semibold">Ответственный: <p  className="font-normal">{log.liable}</p></p>
-            <p className="font-semibold">Комментарий: </p>
-            <Textarea value={isComment} onChange={(e) => setComment(e.target.value)}/>
-
-          </div>
-        </div>
-        <DialogFooter>
-          <Button type="submit" onClick={() => onChangeComment(log.id, isComment)}>Save changes</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-    :
-    <div className="w-20 h-20">{log.comment}</div> 
-          //:
-          //<div className="w-20 h-20">{log.comment}</div> 
-
-        }
-      
-      </TableCell>
-    </TableRow>
+      return <DepartmentRow key={log.id} log={log} onChangeComment={onChangeComment}/>
     })
-
     :
     'событий не обнаружено'
   }
-</TableBody>
+    </TableBody>
   </Table>
-
 }
+
+
+
+
+
+
+
+
 //<TableHead>вид нежелательного события</TableHead>
 //<TableCell>{log.event}</TableCell>
 //<TableCell>{log.comment}</TableCell>
@@ -237,4 +150,67 @@ export
 //<TableCell>{log.event}</TableCell>
 //<TableCell>{log.comment}</TableCell>
 //<TableHead>комментарий</TableHead>
+ */
+
+
+/**
+ * return <TableRow className="bg-green-50" key={log.id}>
+      <TableCell className="font-medium ">{format(new Date(log.date), "PPP HH:mm", {locale: ru})}</TableCell>
+      <TableCell>{log.name} </TableCell>{/**и дата рождения }
+      <TableCell className="w-2">{log.place}</TableCell>
+      <TableCell>{log.cause}</TableCell>
+      <TableCell>{log.circs}</TableCell>
+      <TableCell>{log.gauge}</TableCell>
+      <TableCell className="w-2">{log.note}</TableCell>
+      <TableCell>{log.liable}</TableCell>
+      <TableCell>
+        {
+          session.status === "authenticated"
+          && typeof session.data.user !== 'undefined'
+          && (session.data.user.role === 'ADMIN' || session.data.user.role === 'USER')
+          ?
+            //isProfile && (isProfile === 'CMO' || isProfile === 'TECHNICICAN')
+            //?
+    <Dialog>
+      <DialogTrigger asChild>
+        
+       <div className="w-20 h-20">{log.comment}</div> 
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[470px]">
+        <DialogHeader>
+          <DialogTitle>Комментарий</DialogTitle>
+          <DialogDescription>
+            Оставить или изменить комментарий
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4 h-[80vh] overflow-auto ">
+          <div className=" flex flex-col gap-4 mr-4">
+            <p className="font-semibold">Отделение: <p className="font-normal">{log.department}</p></p>
+            <p className="font-semibold">Дата: <p  className="font-normal">{format(new Date(log.date), "PPP HH:mm", {locale: ru})}</p></p>
+            <p className="font-semibold">Имя пациента: <p className="font-normal">{log.name}</p></p>
+            <p className="font-semibold">Место нежелательного события: <p  className="font-normal">{log.place}</p></p>
+            <p className="font-semibold">Причина возникновения неж события: <p  className="font-normal">{log.cause}</p></p>
+            <p className="font-semibold">Описание обстоятельств: <p  className="font-normal">{log.circs}</p></p>
+            <p className="font-semibold">Принятые меры: <p  className="font-normal">{log.gauge}</p></p>
+            <p className="font-semibold">Примечание: <p  className="font-normal">{log.note}</p></p>
+            <p className="font-semibold">Ответственный: <p  className="font-normal">{log.liable}</p></p>
+            <p className="font-semibold">Комментарий: </p>
+            <Textarea value={isComment} onChange={(e) => setComment(e.target.value)}/>
+
+          </div>
+        </div>
+        <DialogFooter>
+          <Button type="submit" onClick={() => onChangeComment(log.id, isComment)}>Save changes</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+    :
+    <div className="w-20 h-20">{log.comment}</div> 
+          //:
+          //<div className="w-20 h-20">{log.comment}</div> 
+
+        }
+      
+      </TableCell>
+    </TableRow>
  */

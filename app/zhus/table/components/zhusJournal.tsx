@@ -2,7 +2,7 @@
 
 import { ZhusTable } from "./zhusTable";
 import { IZhus } from "../page";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ru } from "date-fns/locale"
 import { cn } from "@/lib/utils"
@@ -11,13 +11,16 @@ import { format } from "date-fns"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import DateTimePicker from "../../components/dateTime/dateTimePicker";
+import { toast } from "sonner"
 
 
 export function ZhusJournal(
   {
     onFetchData,
+    onPatchComment,
   }: {
     onFetchData: (url: string) => Promise<IZhus[]>
+    onPatchComment: (url: string, commentWithId: {id: number, comment: string} ) => Promise<any>
   }
 ) {
 
@@ -30,8 +33,8 @@ export function ZhusJournal(
 
   useEffect(() => {
     async function onGetData() {
-      let resultOld = await onFetchData("http://192.168.0.148:5100/log")
-      let result = await onFetchData("http://localhost:5020/api/logs")
+      const resultOld = await onFetchData("http://192.168.0.148:5100/log")
+      const result = await onFetchData("http://localhost:5020/api/logs")
 
       if(result && resultOld)
         setFetchedData([...resultOld, ...result])
@@ -50,8 +53,31 @@ export function ZhusJournal(
     }))
   }, [nowDate, prevDate, fetchedData])
 
+  async function onChangeComment(id: number, comment: string) {  //const onChangeComment = useCallback((id: number, comment: string) => {  
+    const result = await onPatchComment('http://localhost:5020/api/logs', {id: id, comment: comment})
 
-  //console.log('on Fetched data', fetchedData)
+    if(!result) {
+      const resultOld = await onPatchComment('http://localhost:5100/log', {id: id, comment: comment})
+      
+      if(!resultOld) return toast.error("Произошла ошибка при изменении коментария в ЖУС", {
+        description: <p className="text-black">{`${format(new Date(), "PPP HH:mm", {locale: ru})}`}</p>
+      })
+      else {
+        await onFetchData("http://192.168.0.148:5100/log")
+        await onFetchData("http://localhost:5020/api/logs")
+        return toast.success(`Комментарий успешно изменен в ЖУС`, {
+        description: format(new Date(), "PPP HH:mm", {locale: ru}),
+      })}
+    }
+    else {
+      await onFetchData("http://192.168.0.148:5100/log")
+      await onFetchData("http://localhost:5020/api/logs")
+      return toast.success(`Комментарий успешно изменен в ЖУС`, {
+        description: format(new Date(), "PPP HH:mm", {locale: ru}),
+      })
+
+    } 
+  }//, [onPatchComment])
 
   return <div className="container mx-auto flex flex-col items-center">
     <h1 className="font-bold text-lg">КГБУЗ «ВЛАДИВОСТОКСКАЯ КЛИНИЧЕСКАЯ БОЛЬНИЦА № 4»</h1>
@@ -114,6 +140,50 @@ export function ZhusJournal(
         </Popover>
 
       </p>
-      <ZhusTable onFetchData={settedData}/>
+      <ZhusTable settedData={settedData} onChangeComment={onChangeComment}/>
   </div>
 }
+
+/**
+ * 
+ * 
+ *   const onChangeComment2 = async (id: number, comment: string) => {
+
+    try {
+      const data = {
+        id,
+        comment
+      }
+
+      const response = await fetch('http://localhost:5020/api/logs', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) return await response.json()
+      else {
+        const responseOld = await fetch('http://localhost:5100/log', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            body: JSON.stringify(data)
+          },
+        });
+
+        if (!responseOld.ok) throw new Error(`HTTP error! status: ${responseOld.status}`)
+
+          return await response.json()
+       }
+
+    } catch (error) {
+      console.error('Error fetching data:', error)
+      throw error;
+    }
+  }
+
+
+  //console.log('on Fetched data', fetchedData)
+ */

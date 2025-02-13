@@ -5,9 +5,11 @@ import { TableTest } from "./tableTest"
 
 export
   function ZhusTable({
-    onFetchData
+    settedData,
+    onChangeComment,
   }: {
-    onFetchData: IZhus[]
+    settedData: IZhus[]
+    onChangeComment: (id: number, comment: string) => Promise<string | number>
   }
 ) {
 
@@ -62,7 +64,7 @@ export
     }
 }
 
-const onChangedDepsNames = onFetchData.map((log) => {
+const onChangedDepsNames = settedData.map((log) => {
   return {...log, department: onSetupDepNameToRu(log.department)}
 })
 //console.log(onChangedDepsNames)
@@ -94,7 +96,7 @@ const onChangedDepsNames = onFetchData.map((log) => {
 
 
   return (
-      <TableTest finalArr={finalArr}/>
+      <TableTest finalArr={finalArr} onChangeComment={onChangeComment}/>
     )
 }
 
