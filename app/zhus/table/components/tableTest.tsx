@@ -71,54 +71,12 @@ export function TableTest(
     if(onFitFinalArrToTable(finalArr))
       setFinal(onFitFinalArrToTable(finalArr))
   },[finalArr])
-
-  //console.log(isFinal)
-
-    //bad, maybe exists a better solution
-  const onSetupDepNameToRu = (depName: string) => {
-        switch (depName) {
-          case 'Surgical':
-            return 'Хирургия'
-          case 'Pulmonology':
-            return 'Пульмонология'
-          case 'Policlinic':
-            return 'Поликлиника'
-          case 'Therapeutic':
-            return 'Терапия'
-          case 'Reception':
-            return 'Приемное'
-          case 'Neurology':
-            return 'Неврология'
-          case 'Rehabilitation':
-            return 'Реабилитация'
-          case 'Reabilitation':
-            return 'Реабилитация'
-          case 'Laboratory':
-            return 'Лаборатория'
-          case 'Xray':
-            return 'Рентгенология'
-          case 'Reanimation':
-            return 'Реанимация'
-          case 'Administration':
-            return 'Администрация'
-          case 'Opp':
-            return 'ОПП'
-          case 'Pao':
-            return 'ПАО'
-          case 'Ceo':
-            return 'СЭО'
-          case 'Aho':
-            return 'АХО' 
-          default:
-            return depName
-        }
-  }
-
+  //чтобы при открытии других закрывалась та что открыта
   const columns = useMemo<ColumnDef<IFinal>[]>(
     () => [
       {
         accessorKey: 'department',
-        header: ({ table }) => (
+        header: () => (
           <>
             Отделение
           </>
@@ -149,24 +107,6 @@ export function TableTest(
             :
             row.getValue('department')
             }
-{/*            <button
-              onClick={row.getToggleExpandedHandler()}
-              {...{
-                //onClick: row.getToggleExpandedHandler(),
-                style: { cursor: 'pointer' },
-              }}
-            >
-              {row.getCanExpand()? 
-                <>
-                {onSetupDepNameToRu(row.getValue('department'))}
-                {/*console.log(row._getAllCellsByColumnId())}
-                {/*console.log(cell.getValue())/}
-                </>
-                : 
-                ''
-              </div>}
-
-            </button>*/}
             </div>
           </div>
         ),
@@ -474,8 +414,6 @@ export function TableTest(
     getRowCanExpand: () => true,
   })
 
-  console.log(isFinal)
-
   return (
     <div className="">
       <div className="rounded-md border mt-6 ">
@@ -522,7 +460,7 @@ export function TableTest(
                     <td colSpan={row.getVisibleCells().length}>
                       {subRow && subRow?.length > 0
                       ?
-                      renderSubComponent({ row: subRow , onSetupDepNameToRu, onChangeComment})
+                      renderSubComponent({ row: subRow, onChangeComment})
                       :
                       null
                     }
@@ -597,7 +535,7 @@ export function TableTest(
   )
 }
 
-const renderSubComponent = ({ row, onChangeComment }: { row: IZhus[]/*Row<IFinal>*/; onChangeComment: (id: number, comment: string) => Promise<string | number>, onSetupDepNameToRu: (depName: string) => string }) => {
+const renderSubComponent = ({ row, onChangeComment }: { row: IZhus[]/*Row<IFinal>*/; onChangeComment: (id: number, comment: string) => Promise<string | number>}) => {
   return (
     <div style={{ fontSize: '10px' }}>
       <DepartmentTable logs={row} onChangeComment={onChangeComment}/>

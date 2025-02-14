@@ -1,6 +1,6 @@
 'use client'
 
-import { IFArray, IZhus } from "../page"
+import { IZhus } from "../page"
 import { TableTest } from "./tableTest"
 
 export
@@ -12,19 +12,16 @@ export
     onChangeComment: (id: number, comment: string) => Promise<string | number>
   }
 ) {
-
   //names from deparments
   let depsNamesArr: string[] = []
   ///filter by department name
   const onFilterDataByDep = (data: IZhus[], dep: string) => {
-
-  return {department: dep, logs: [...data.filter(log => {
-
-    return log.department === dep
-  } )]
+    return {
+      department: dep,
+      logs: [...data.filter(log => {return log.department === dep})]
+    }
   }
-  }
-
+  //mb bad logic here
   const onSetupDepNameToRu = (depName: string) => {
     switch (depName) {
       case 'Surgical':
@@ -62,38 +59,31 @@ export
       default:
         return depName
     }
-}
+  }
+  //setup departments names to RU
+  const onChangedDepsNames = settedData.map((log) => {
+    return {...log, department: onSetupDepNameToRu(log.department)}
+  })
 
-const onChangedDepsNames = settedData.map((log) => {
-  return {...log, department: onSetupDepNameToRu(log.department)}
-})
-//console.log(onChangedDepsNames)
-  //
   const onSetDepsNames = (data: IZhus[]) => {
-
     const namesSet = new Set<string>()
     for(let i = 0; i < data.length; i++) {
       namesSet.add(data[i].department)
     }
-   return depsNamesArr = Array.from(namesSet)
+    return depsNamesArr = Array.from(namesSet)
   }
-  //
+
   onSetDepsNames(onChangedDepsNames)
-  //so final array...ВОТ ТУТ
+  //so final array...
   const onSetDeps = () => {
     let arr = []
     for(let i = 0; i < depsNamesArr.length; i++) {
-      ///console.log(onFilterDataByDep(onChangedDepsNames, depsNamesArr[i]))//ВОТ ТУТ
-      //console.log(depsNamesArr)
       arr.push(onFilterDataByDep(onChangedDepsNames, depsNamesArr[i])) 
     }
     return arr
   }
+
   let finalArr = onSetDeps()
-
-
-  console.log(finalArr)
-
 
   return (
       <TableTest finalArr={finalArr} onChangeComment={onChangeComment}/>
