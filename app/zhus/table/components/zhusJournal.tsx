@@ -53,9 +53,17 @@ export function ZhusJournal(
     }))
   }, [nowDate, prevDate, fetchedData])
 
+  async function onGetData() {
+    const resultOld = await onFetchData("http://192.168.0.148:5100/log")
+    const result = await onFetchData("http://localhost:5020/api/logs")
+
+    if(result && resultOld)
+      setFetchedData([...resultOld, ...result])
+  }
+
   async function onChangeComment(id: number, comment: string) {  //const onChangeComment = useCallback((id: number, comment: string) => {  
     const result = await onPatchComment('http://localhost:5020/api/logs', {id: id, comment: comment})
-
+    //onGetData()
     if(!result) {
       const resultOld = await onPatchComment('http://localhost:5100/log', {id: id, comment: comment})
       
@@ -63,21 +71,27 @@ export function ZhusJournal(
         description: <p className="text-black">{`${format(new Date(), "PPP HH:mm", {locale: ru})}`}</p>
       })
       else {
-        await onFetchData("http://192.168.0.148:5100/log")
-        await onFetchData("http://localhost:5020/api/logs")
+        //await onFetchData("http://192.168.0.148:5100/log")
+        //await onFetchData("http://localhost:5020/api/logs")
+        onGetData()
         return toast.success(`Комментарий успешно изменен в ЖУС`, {
         description: format(new Date(), "PPP HH:mm", {locale: ru}),
       })}
     }
     else {
-      await onFetchData("http://192.168.0.148:5100/log")
-      await onFetchData("http://localhost:5020/api/logs")
+      //await onFetchData("http://192.168.0.148:5100/log")
+      //await onFetchData("http://localhost:5020/api/logs")
+      onGetData()
       return toast.success(`Комментарий успешно изменен в ЖУС`, {
         description: format(new Date(), "PPP HH:mm", {locale: ru}),
       })
 
     } 
   }//, [onPatchComment])
+
+  //useEffect(() => {
+  //  onGetData()
+  //}, [onChangeComment])
 
   return <div className="container mx-auto flex flex-col items-center">
     <h1 className="font-bold text-lg">КГБУЗ «ВЛАДИВОСТОКСКАЯ КЛИНИЧЕСКАЯ БОЛЬНИЦА № 4»</h1>

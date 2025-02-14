@@ -69,5 +69,9 @@ default function Table(
     }
   }
 
+  //не обновляется коммент
+  //мб проблемы с комментом старого жуса
+  // как то подпилить . улучшить ui
+
   return <ZhusJournal onFetchData={onFetchData} onPatchComment={onPatchComment}/>
 }
