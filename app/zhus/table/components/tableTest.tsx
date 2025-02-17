@@ -66,6 +66,7 @@ export function TableTest(
     })
   }
   const [isFinal, setFinal] = useState<IFinal[]>([])
+  //перекидывать состояние в нижний стэйт
   const [subRow, setSubRow] = useState<IZhus[]>()
   useEffect(() => {
     if(onFitFinalArrToTable(finalArr))

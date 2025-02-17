@@ -32,8 +32,8 @@ export
 
   const [isComment, setComment] = useState(log.comment?log.comment : '')
   const session = useSession()
+  //тут обновление по айди
   
-
   return <TableRow className="bg-green-50" key={log.id}>
     <TableCell className="font-medium ">{format(new Date(log.date), "PPP HH:mm", {locale: ru})}</TableCell>
     <TableCell>{log.name} </TableCell>{/**и дата рождения */}
@@ -53,7 +53,6 @@ export
        //?
     <Dialog>
       <DialogTrigger asChild>
-        
        <div className="w-20 h-20">{log.comment}</div> 
       </DialogTrigger>
       <DialogContent className="sm:max-w-[470px]">
@@ -76,7 +75,6 @@ export
             <p className="font-semibold">Ответственный: <p  className="font-normal">{log.liable}</p></p>
             <p className="font-semibold">Комментарий: </p>
             <Textarea value={isComment} onChange={(e) => setComment(e.target.value)}/>
-
           </div>
         </div>
         <DialogFooter>

@@ -1,22 +1,7 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { IZhus } from "../page";
-import { ru } from "date-fns/locale"
-import { format } from "date-fns"
 
-import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-
-import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
 import { DepartmentRow } from "./departmentRow";
 
 
