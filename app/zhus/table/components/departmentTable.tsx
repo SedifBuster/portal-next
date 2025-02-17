@@ -4,8 +4,6 @@ import { IZhus } from "../page";
 import { useSession } from "next-auth/react";
 import { DepartmentRow } from "./departmentRow";
 
-
-
 export
   function DepartmentTable(
   {
@@ -18,7 +16,6 @@ export
 ) {
 
   const session = useSession()
-
 
   //const [isProfile, setProfile] = useState()
 

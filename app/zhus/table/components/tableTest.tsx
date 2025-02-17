@@ -23,7 +23,6 @@ import { Fragment, useEffect, useMemo, useState } from "react"
 import { IFArray, IZhus } from "../page"
 import { DepartmentTable } from "./departmentTable"
 
-
 interface IFinal {
   department: string,
   logs: IZhus[],
@@ -48,7 +47,7 @@ export function TableTest(
   }
 ) {
 
-//change data to table fit data
+  //change data to table fit data
   const onFitFinalArrToTable = (arr: IFArray[]) => {
     return arr.map((row) => {
       return {
