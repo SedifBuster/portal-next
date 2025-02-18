@@ -46,7 +46,6 @@ export function TableTest(
     onChangeComment: (id: number, comment: string) => Promise<string | number>
   }
 ) {
-
   //change data to table fit data
   const onFitFinalArrToTable = (arr: IFArray[]) => {
     return arr.map((row) => {
@@ -81,7 +80,7 @@ export function TableTest(
             Отделение
           </>
         ),
-        cell: ({ row}) => (
+        cell: ({ row, cell }) => (
           <div
             style={{
               paddingLeft: `${row.depth * 2}rem`,
@@ -99,6 +98,7 @@ export function TableTest(
               {row.getCanExpand()? 
                 <>
                 {row.getValue('department')}
+                {cell.id}
                 </>
                 : 
                 ''
@@ -115,7 +115,7 @@ export function TableTest(
       {
         accessorKey: 'collapse',
         header: () => 'Падение',
-        cell: ({row}) => (
+        cell: ({row, cell}) => (
              <div className="select-none" onClick={() =>  setSubRow(row.getValue('collapse'))}>
             {row.getValue<IZhus[]>('collapse').length > 0
             ?
@@ -128,6 +128,7 @@ export function TableTest(
               {row.getCanExpand()? 
                 <>
                 {row.getValue<string>('collapse').length}
+                {cell.id}
                 </>
                 : 
                 ''
@@ -398,7 +399,9 @@ export function TableTest(
     []
   )
   const [expanded, setExpanded] = useState<ExpandedState>({})
-
+  console.log(expanded)
+  //expanded give row id
+  //need find cell id?
   const table = useReactTable({
     data: isFinal,
     columns,
@@ -458,6 +461,7 @@ export function TableTest(
                     {/* 2nd row is a custom 1 cell row */}
                     {/*console.log(row._getAllCellsByColumnId())*/}
                     <td colSpan={row.getVisibleCells().length}>
+                      
                       {subRow && subRow?.length > 0
                       ?
                       renderSubComponent({ row: subRow, onChangeComment})

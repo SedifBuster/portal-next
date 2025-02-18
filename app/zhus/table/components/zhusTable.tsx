@@ -84,6 +84,7 @@ export
   }
 
   let finalArr = onSetDeps()
+  console.log(finalArr)
 
   return (
       <TableTest finalArr={finalArr} onChangeComment={onChangeComment}/>
