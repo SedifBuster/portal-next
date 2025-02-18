@@ -25,8 +25,8 @@ export
     log,
     onChangeComment
   } : {
-  log: IZhus
-  onChangeComment: (id: number, comment: string) => Promise<string | number>
+    log: IZhus
+    onChangeComment: (id: number, comment: string) => Promise<string | number>
   }
 ) {
 
