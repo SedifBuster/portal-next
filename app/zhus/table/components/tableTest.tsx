@@ -65,7 +65,7 @@ export function TableTest(
   }
   const [isFinal, setFinal] = useState<IFinal[]>([])
   //перекидывать состояние в нижний стэйт
-  const [subRow, setSubRow] = useState<IZhus[]>()
+  const [subRow, setSubRow] = useState<{id: string;logs:IZhus[]}>()
   useEffect(() => {
     if(onFitFinalArrToTable(finalArr))
       setFinal(onFitFinalArrToTable(finalArr))
@@ -86,7 +86,7 @@ export function TableTest(
               paddingLeft: `${row.depth * 2}rem`,
             }}
           >
-            <div className="text-start font-medium " onClick={() =>  setSubRow(row.getValue('logs'))}>
+            <div className="text-start font-medium " onClick={() =>  setSubRow({id: cell.id, logs: row.getValue('logs')})}>
             {row.getValue<IZhus[]>('logs').length > 0
             ?
             <button
@@ -116,7 +116,7 @@ export function TableTest(
         accessorKey: 'collapse',
         header: () => 'Падение',
         cell: ({row, cell}) => (
-             <div className="select-none" onClick={() =>  setSubRow(row.getValue('collapse'))}>
+             <div className="select-none" onClick={() =>  setSubRow({id: cell.id, logs: row.getValue('collapse')})}>
             {row.getValue<IZhus[]>('collapse').length > 0
             ?
             <button
@@ -144,8 +144,8 @@ export function TableTest(
       {
         accessorKey: 'pressureSores',
         header: () => 'Пролежни',
-        cell: ({row}) => (
-          <div onClick={() =>  setSubRow(row.getValue('pressureSores'))}>
+        cell: ({row, cell}) => (
+          <div onClick={() =>  setSubRow({id: cell.id, logs: row.getValue('pressureSores')})}>
             {row.getValue<IZhus[]>('pressureSores').length > 0
             ?
             <button
@@ -172,8 +172,8 @@ export function TableTest(
       {
         accessorKey: 'identificationOfThePatientsIdentity',
         header: () => 'Идентификация личности пациента',
-        cell: ({row}) => (
-           <div onClick={() =>  setSubRow(row.getValue('identificationOfThePatientsIdentity'))}>
+        cell: ({row, cell}) => (
+           <div onClick={() =>  setSubRow({id: cell.id, logs: row.getValue('identificationOfThePatientsIdentity')})}>
             {row.getValue<IZhus[]>('identificationOfThePatientsIdentity').length > 0
             ?
             <button
@@ -200,8 +200,8 @@ export function TableTest(
       {
         accessorKey: 'anEventRelatedToAMedicalDeviceOrProduct',
         header: () => 'Событие, связанное с медицинским оборудованием или изделием',
-        cell: ({row}) => (
-          <div  onClick={() =>  setSubRow(row.getValue('anEventRelatedToAMedicalDeviceOrProduct'))}>
+        cell: ({row, cell}) => (
+          <div  onClick={() =>  setSubRow({id: cell.id, logs: row.getValue('anEventRelatedToAMedicalDeviceOrProduct')})}>
            {row.getValue<IZhus[]>('anEventRelatedToAMedicalDeviceOrProduct').length > 0
             ?
             <button
@@ -228,8 +228,8 @@ export function TableTest(
       {
         accessorKey: 'aDrugRelatedEvent',
         header: () => 'Событие, связанное с лекарственным средством',
-        cell: ({row}) => (
-          <div onClick={() =>  setSubRow(row.getValue('aDrugRelatedEvent'))}>
+        cell: ({row, cell}) => (
+          <div onClick={() =>  setSubRow({id: cell.id, logs: row.getValue('aDrugRelatedEvent')})}>
           {row.getValue<IZhus[]>('aDrugRelatedEvent').length > 0
             ?
             <button
@@ -257,8 +257,8 @@ export function TableTest(
       {
         accessorKey: 'infectiousOrParasiticDisease',
         header: () => 'Инфекционное или паразитарное заболевание',
-        cell: ({row}) => (
-          <div onClick={() =>  setSubRow(row.getValue('infectiousOrParasiticDisease'))}>
+        cell: ({row, cell}) => (
+          <div onClick={() =>  setSubRow({id: cell.id, logs: row.getValue('infectiousOrParasiticDisease')})}>
           {row.getValue<IZhus[]>('infectiousOrParasiticDisease').length > 0
             ?
             <button
@@ -285,8 +285,8 @@ export function TableTest(
       {
         accessorKey: 'iSMP',
         header: () => 'ИСМП (инфекции, связанные с медицинской помощью)',
-        cell: ({row}) => (
-          <div onClick={() =>  setSubRow(row.getValue('iSMP'))}>
+        cell: ({row, cell}) => (
+          <div onClick={() =>  setSubRow({id: cell.id, logs: row.getValue('iSMP')})}>
           {row.getValue<IZhus[]>('iSMP').length > 0
             ?
             <button
@@ -314,8 +314,8 @@ export function TableTest(
       {
         accessorKey: 'surgicalComplications',
         header: () => 'Хирургические осложнения',
-        cell: ({row}) => (
-          <div onClick={() =>  setSubRow(row.getValue('surgicalComplications'))}>
+        cell: ({row, cell}) => (
+          <div onClick={() =>  setSubRow({id: cell.id, logs: row.getValue('surgicalComplications')})}>
            {row.getValue<IZhus[]>('surgicalComplications').length > 0
             ?
             <button
@@ -342,8 +342,8 @@ export function TableTest(
       {
         accessorKey: 'anotherUndesirableEvent',
         header: () => 'Другое',
-        cell: ({row}) => (
-          <div onClick={() =>  setSubRow(row.getValue('anotherUndesirableEvent'))}>
+        cell: ({row, cell}) => (
+          <div onClick={() =>  setSubRow({id: cell.id, logs: row.getValue('anotherUndesirableEvent')})}>
            {row.getValue<IZhus[]>('anotherUndesirableEvent').length > 0
             ?
             <button
@@ -370,8 +370,10 @@ export function TableTest(
       {
         accessorKey: 'logs',
         header: () => 'Всего',
-        cell: ({row}) => (
-          <div onClick={() =>  setSubRow(row.getValue('logs'))}>
+        cell: ({row, cell}) => (
+          <div onClick={() =>  setSubRow({id: cell.id, logs: row.getValue('logs')})}>
+            {  const [isTest, setTest] = useState()}
+            
            {row.getValue<IZhus[]>('logs').length > 0
             ?
             <button
@@ -447,7 +449,8 @@ export function TableTest(
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
-                  {row.getVisibleCells().map((cell) => (
+                  {//вот тут саб роу обработчик и отдельный компонент табл роу
+                  row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="text-center">
                       {flexRender(
                         cell.column.columnDef.cell,
@@ -462,9 +465,9 @@ export function TableTest(
                     {/*console.log(row._getAllCellsByColumnId())*/}
                     <td colSpan={row.getVisibleCells().length}>
                       
-                      {subRow && subRow?.length > 0
+                      {subRow && subRow.logs?.length > 0
                       ?
-                      renderSubComponent({ row: subRow, onChangeComment})
+                      renderSubComponent({ row: subRow.logs, onChangeComment})
                       :
                       null
                     }
