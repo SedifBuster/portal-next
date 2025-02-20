@@ -154,7 +154,7 @@ export function ZhusJournal(
         </Popover>
 
       </p>
-      <ZhusTable settedData={settedData} onChangeComment={onChangeComment}/>
+      <ZhusTable settedData={settedData} onChangeComment={onChangeComment} onFetchData={onFetchData}/>
   </div>
 }
 

@@ -7,9 +7,11 @@ export
   function ZhusTable({
     settedData,
     onChangeComment,
+    onFetchData,
   }: {
     settedData: IZhus[]
     onChangeComment: (id: number, comment: string) => Promise<string | number>
+    onFetchData: (url: string) => Promise<IZhus[]>
   }
 ) {
   //names from deparments
@@ -87,7 +89,7 @@ export
   console.log(finalArr)
 
   return (
-      <TableTest finalArr={finalArr} onChangeComment={onChangeComment}/>
+      <TableTest finalArr={finalArr} onChangeComment={onChangeComment} onFetchData={onFetchData}/>
     )
 }
 

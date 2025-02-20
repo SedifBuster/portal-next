@@ -23,15 +23,28 @@ export
   function DepartmentRow(
   {
     log,
-    onChangeComment
+    onChangeComment,
+    onFetchData
   } : {
     log: IZhus
     onChangeComment: (id: number, comment: string) => Promise<string | number>
+    onFetchData: (url: string) => Promise<IZhus[]>
   }
 ) {
 
   const [isComment, setComment] = useState(log.comment?log.comment : '')
+
   const session = useSession()
+
+  const onTestComment = async (id: number, comment: string, url: string) => {
+    onChangeComment(id, comment)
+
+    const result = await onFetchData('http://localhost:5020/api/logs/')
+    //if(result)
+
+
+  }
+
   //тут обновление по айди
   
   return <TableRow className="bg-green-50" key={log.id}>
@@ -53,7 +66,7 @@ export
        //?
     <Dialog>
       <DialogTrigger asChild>
-       <div className="w-20 h-20">{log.comment}</div> 
+       <div className="w-20 h-20">{isComment}</div> 
       </DialogTrigger>
       <DialogContent className="sm:max-w-[470px]">
         <DialogHeader>

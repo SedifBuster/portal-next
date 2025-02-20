@@ -22,6 +22,7 @@ import {
 import { Fragment, useEffect, useMemo, useState } from "react"
 import { IFArray, IZhus } from "../page"
 import { DepartmentTable } from "./departmentTable"
+import ZhusTableRowTest from "./zhusTableRowTest"
 
 interface IFinal {
   department: string,
@@ -40,10 +41,12 @@ interface IFinal {
 export function TableTest(
   {
     finalArr,
-    onChangeComment
+    onChangeComment,
+    onFetchData,
   } : {
     finalArr: IFArray[]
     onChangeComment: (id: number, comment: string) => Promise<string | number>
+    onFetchData: (url: string) => Promise<IZhus[]>
   }
 ) {
   //change data to table fit data
@@ -86,7 +89,7 @@ export function TableTest(
               paddingLeft: `${row.depth * 2}rem`,
             }}
           >
-            <div className="text-start font-medium " onClick={() =>  setSubRow({id: cell.id, logs: row.getValue('logs')})}>
+            <div className="text-start font-medium "/* onClick={() =>  setSubRow({id: cell.id, logs: row.getValue('logs')})}*/>
             {row.getValue<IZhus[]>('logs').length > 0
             ?
             <button
@@ -98,7 +101,6 @@ export function TableTest(
               {row.getCanExpand()? 
                 <>
                 {row.getValue('department')}
-                {cell.id}
                 </>
                 : 
                 ''
@@ -128,7 +130,6 @@ export function TableTest(
               {row.getCanExpand()? 
                 <>
                 {row.getValue<string>('collapse').length}
-                {cell.id}
                 </>
                 : 
                 ''
@@ -372,7 +373,6 @@ export function TableTest(
         header: () => 'Всего',
         cell: ({row, cell}) => (
           <div onClick={() =>  setSubRow({id: cell.id, logs: row.getValue('logs')})}>
-            {  const [isTest, setTest] = useState()}
             
            {row.getValue<IZhus[]>('logs').length > 0
             ?
@@ -401,7 +401,7 @@ export function TableTest(
     []
   )
   const [expanded, setExpanded] = useState<ExpandedState>({})
-  console.log(expanded)
+  console.log(subRow)
   //expanded give row id
   //need find cell id?
   const table = useReactTable({
@@ -444,6 +444,8 @@ export function TableTest(
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
+                <ZhusTableRowTest key={row.id} row={row} onChangeComment={onChangeComment} onFetchData={onFetchData}/>
+               /*
                 <Fragment key={row.id}>
                 <TableRow
                   key={row.id}
@@ -461,8 +463,7 @@ export function TableTest(
                 </TableRow>
                 {row.getIsExpanded() && (
                   <tr>
-                    {/* 2nd row is a custom 1 cell row */}
-                    {/*console.log(row._getAllCellsByColumnId())*/}
+
                     <td colSpan={row.getVisibleCells().length}>
                       
                       {subRow && subRow.logs?.length > 0
@@ -475,6 +476,7 @@ export function TableTest(
                   </tr>
                 )}
                 </Fragment>
+                 */
               ))
             ) : (
               <TableRow>
@@ -542,10 +544,10 @@ export function TableTest(
   )
 }
 
-const renderSubComponent = ({ row, onChangeComment }: { row: IZhus[]/*Row<IFinal>*/; onChangeComment: (id: number, comment: string) => Promise<string | number>}) => {
+export const renderSubComponent = ({ row, onChangeComment, onFetchData } : { row: IZhus[]; onChangeComment: (id: number, comment: string) => Promise<string | number>; onFetchData: (url: string) => Promise<IZhus[]>} ) => {
   return (
     <div style={{ fontSize: '10px' }}>
-      <DepartmentTable logs={row} onChangeComment={onChangeComment}/>
+      <DepartmentTable logs={row} onChangeComment={onChangeComment} onFetchData={onFetchData}/>
     </div>
   )
 }

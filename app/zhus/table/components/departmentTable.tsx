@@ -8,10 +8,12 @@ export
   function DepartmentTable(
   {
     logs,
-    onChangeComment
+    onChangeComment,
+    onFetchData,
   } : {
   logs: IZhus[]
   onChangeComment: (id: number, comment: string) => Promise<string | number>
+  onFetchData: (url: string) => Promise<IZhus[]>
   }
 ) {
 
@@ -50,7 +52,7 @@ console.log(isProfile)*/
     logs
     ?
     logs.map((log) => {
-      return <DepartmentRow key={log.id} log={log} onChangeComment={onChangeComment}/>
+      return <DepartmentRow key={log.id} log={log} onChangeComment={onChangeComment} onFetchData={onFetchData}/>
     })
     :
     'событий не обнаружено'
