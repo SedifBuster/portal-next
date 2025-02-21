@@ -15,8 +15,10 @@ import {
 } from "@/components/ui/dialog"
 
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import axios from "axios";
+import { Profile } from "@prisma/client";
 
 
 export
@@ -33,17 +35,31 @@ export
 ) {
 
   const [isComment, setComment] = useState(log.comment?log.comment : '')
+  const [isProfile, setProfile] = useState<Profile>()
 
   const session = useSession()
 
-  const onTestComment = async (id: number, comment: string, url: string) => {
+  let getProfile = async (id: number) => {
+    let result = await axios.get(`/api/users/profile/${id}`)
+    setProfile(result.data)
+}
+
+  useEffect(() => {
+    if (session.status === "authenticated" && typeof session.data.user !== 'undefined') {
+      getProfile(Number(session.data.user.id))
+  }}, [])
+
+  console.log(isProfile)
+
+  /*const onTestComment = async (id: number, comment: string, url: string) => {
     onChangeComment(id, comment)
 
     const result = await onFetchData('http://localhost:5020/api/logs/')
     //if(result)
 
 
-  }
+  }*/
+  //console.log(session.data)
 
   //тут обновление по айди
   
@@ -58,9 +74,10 @@ export
     <TableCell>{log.liable}</TableCell>
     <TableCell>
       {
-        session.status === "authenticated"
-        && typeof session.data.user !== 'undefined'
-        && session.data.user.role === 'ADMIN'//(session.data.user.role === 'ADMIN' || session.data.user.role === 'USER')
+        //session.status === "authenticated"
+        //&& typeof session.data.user !== 'undefined'
+        //&& session.data.user.role === 'ADMIN'//(session.data.user.role === 'ADMIN' || session.data.user.role === 'USER')
+        isProfile?.grade === 'CHIEFNURSE' || isProfile?.grade === 'TECHNICICAN'
         ?
         //isProfile && (isProfile === 'CMO' || isProfile === 'TECHNICICAN')
        //?
@@ -99,7 +116,7 @@ export
     <div className="w-20 h-20">{log.comment}</div> 
           //:
           //<div className="w-20 h-20">{log.comment}</div> 
-        }
+    }
     </TableCell>
   </TableRow>
 }
