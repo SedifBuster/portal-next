@@ -35,13 +35,20 @@ export
 ) {
 
   const [isComment, setComment] = useState(log.comment?log.comment : '')
-  const [isProfile, setProfile] = useState<Profile>()
+  const [isProfile, setProfile] = useState<string>()
 
   const session = useSession()
 
   let getProfile = async (id: number) => {
-    let result = await axios.get(`http://localhost:5020/api/users/profile/${id}`)
-    setProfile(result.data)
+    //let result = await axios.get(`http://localhost:5020/api/users/profile/${id}`)
+    let result = await onFetchData(`http://localhost:5020/api/users/profile/${id}`)
+    console.log(result)
+    if(result) {
+      //@ts-ignore
+      setProfile(result.grade)
+    }
+    
+    
 }
 
   useEffect(() => {
@@ -77,7 +84,7 @@ export
         //session.status === "authenticated"
         //&& typeof session.data.user !== 'undefined'
         //&& session.data.user.role === 'ADMIN'//(session.data.user.role === 'ADMIN' || session.data.user.role === 'USER')
-        isProfile?.grade === 'CHIEFNURSE' || isProfile?.grade === 'TECHNICICAN'
+        isProfile === 'CHIEFNURSE' || isProfile === 'TECHNICICAN'
         ?
         //isProfile && (isProfile === 'CMO' || isProfile === 'TECHNICICAN')
        //?
