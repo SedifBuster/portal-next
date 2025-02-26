@@ -40,7 +40,7 @@ export
   const session = useSession()
 
   let getProfile = async (id: number) => {
-    let result = await axios.get(`/api/users/profile/${id}`)
+    let result = await axios.get(`http://localhost:5020/api/users/profile/${id}`)
     setProfile(result.data)
 }
 
