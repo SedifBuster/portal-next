@@ -3,15 +3,17 @@
 import { ZhusTable } from "./zhusTable";
 import { IZhus } from "../page";
 import { useCallback, useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { ru } from "date-fns/locale"
 import { cn } from "@/lib/utils"
 import { CalendarIcon } from "@radix-ui/react-icons"
 import { format } from "date-fns"
-import { Calendar } from "@/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+
 import DateTimePicker from "../../components/dateTime/dateTimePicker";
 import { toast } from "sonner"
+import { Popover, PopoverContent, PopoverTrigger } from "@/src/shared/ui/popover";
+import { Button } from "@/src/shared/ui/button";
+import { Calendar } from "@/src/shared/ui/calendar";
+
 
 
 export function ZhusJournal(

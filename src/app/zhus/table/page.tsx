@@ -26,8 +26,8 @@ export
 default function Table(
 ) {
 
-  async function onFetchData(url: string): Promise<IZhus[]> {
-    'use server'
+  async function onFetchDataAction(url: string): Promise<IZhus[]> {
+
     try {
       const response = await fetch(url, {
         method: 'GET',
@@ -47,8 +47,8 @@ default function Table(
     }
   }
 
-  async function onPatchComment(url: string, commentWithId: {id: number, comment: string}) {
-    'use server'
+  async function onPatchCommentAction(url: string, commentWithId: {id: number, comment: string}) {
+
     try {
       const response = await fetch(url, {
         method: 'PATCH',
@@ -74,5 +74,5 @@ default function Table(
   //мб проблемы с комментом старого жуса
   //как то подпилить . улучшить ui
 
-  return <ZhusJournal onFetchData={onFetchData} onPatchComment={onPatchComment}/>
+  return <ZhusJournal onFetchData={onFetchDataAction} onPatchComment={onPatchCommentAction}/>
 }

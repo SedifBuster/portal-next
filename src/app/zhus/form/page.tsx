@@ -1,7 +1,7 @@
 
 import { DepartmentLog, Problem } from "@prisma/client";
-import FormRecord from "./components/formRecord";
 import QrTooltip from "./components/qrTooltip";
+import FormRecord from "./components/formRecord";
 
 type UnitDep = {
   value: DepartmentLog,
@@ -143,7 +143,7 @@ export
   }
 
   return <section className="flex flex-col justify-between p-2 container">
-    <FormRecord departments={departments} problems={problems} postLog={onPostData}/>
+  <FormRecord departments={departments} problems={problems} postLog={onPostData}/>
     {/** qr and tooltip*/}
     <QrTooltip />
   </section>

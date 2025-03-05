@@ -10,19 +10,12 @@ import {
     getExpandedRowModel,
     Row,
   } from "@tanstack/react-table"
-  import {
-    Table,
-    TableBody,
-    TableCell,
-    TableFooter,
-    TableHead,
-    TableHeader,
-    TableRow,
-  } from "@/components/ui/table"
+
   import { Fragment, useEffect, useMemo, useState } from "react"
   import { IFArray, IZhus } from "../page"
   import { DepartmentTable } from "./departmentTable"
 import { renderSubComponent } from "./tableTest"
+import { TableCell, TableRow } from "@/src/shared/ui/table"
 
   interface IFinal {
     department: string,

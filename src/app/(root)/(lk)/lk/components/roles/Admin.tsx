@@ -1,11 +1,12 @@
 "use client"
 
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
 import { AdminTab } from "./adminTabs/AdminTab"
 import { AccountTab } from "./adminTabs/account/AccountTab"
 import { NewsTab } from "./adminTabs/news/NewsTab"
 import { FilesTab } from "./adminTabs/files/FilesTab"
 import { DepartmentsTab } from "./adminTabs/departments/DepartmentsTab"
+import { Tabs, TabsList, TabsTrigger } from "@/src/shared/ui/tabs"
 //cool
 export
   function Admin(

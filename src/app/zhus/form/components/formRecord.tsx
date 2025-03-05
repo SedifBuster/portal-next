@@ -3,27 +3,25 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+
 import { ru } from "date-fns/locale"
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
 import { cn } from "@/lib/utils"
 import { CalendarIcon } from "@radix-ui/react-icons"
 import { format } from "date-fns"
-import { Calendar } from "@/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+
+
 import { toast } from "sonner"
 import { UnitIssue } from "../page"
+
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/src/shared/ui/form"
+import { Popover, PopoverContent, PopoverTrigger } from "@/src/shared/ui/popover"
+import { Calendar } from "@/src/shared/ui/calendar"
+import { Button } from "@/src/shared/ui/button"
+import { Input } from "@/src/shared/ui/input"
+import { Textarea } from "@/src/shared/ui/textarea"
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@radix-ui/react-select"
 import DateTimePicker from "../../components/dateTime/dateTimePicker"
 
   type UnitDep = {

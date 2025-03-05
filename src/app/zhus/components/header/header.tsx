@@ -5,7 +5,8 @@ import useRoutes from "../hooks/useRoutes"
 import HeaderNavItem from "./headerNavItem"
 import AuthForm from "./authForm"
 import { signOut, useSession } from "next-auth/react"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/src/shared/ui/button"
+
 
 export
   default function Header(

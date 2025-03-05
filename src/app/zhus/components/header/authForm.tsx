@@ -1,22 +1,6 @@
 "use client"
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -27,6 +11,10 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { format } from "date-fns"
 import { ru } from "date-fns/locale"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/src/shared/ui/dialog"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/src/shared/ui/form"
+import { Input } from "@/src/shared/ui/input"
+import { Button } from "@/src/shared/ui/button"
 
 
 const formSchema = z.object({

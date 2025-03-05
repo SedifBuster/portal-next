@@ -5,20 +5,12 @@ import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 import * as React from "react"
 
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableFooter,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
+
 import { Department, Profile, Ward } from "@prisma/client"
 import { UserCard } from "../Card"
 import { CreateWardSheet } from "../CreateWardSheet"
 import { UserWard } from "../Ward"
+import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/src/shared/ui/table"
 //pizdec
 export function User() {
     const session = useSession()

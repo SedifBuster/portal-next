@@ -1,10 +1,11 @@
-import { Input } from "@/components/ui/input";
+
 import { getArrowByType, getDateByType, Period, setDateByType, TimePickerType } from "@/lib/time-picker-utils";
 
 
  
 import { cn } from "@/lib/utils";
 import React from "react";
+import { Input } from "./input";
 
  
 export interface TimePickerInputProps

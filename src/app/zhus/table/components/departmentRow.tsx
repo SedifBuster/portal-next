@@ -1,24 +1,20 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+
 import { IZhus } from "../page";
 import { ru } from "date-fns/locale"
 import { format } from "date-fns"
 
-import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
 
-import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import { Profile } from "@prisma/client";
+import { TableCell, TableRow } from "@/src/shared/ui/table";
+import { DialogHeader, DialogFooter, Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/src/shared/ui/dialog";
+import { Textarea } from "@/src/shared/ui/textarea";
+import { Button } from "@/src/shared/ui/button";
+
+
+
 
 
 export

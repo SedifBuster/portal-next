@@ -11,7 +11,7 @@ export type mainPageLinktype = {
 
 const mainPageLinks: mainPageLinktype[] = [
   {
-    href: "http://192.168.0.148:3000/table",
+    href: "/zhus/table",
     target: "blank",
     text: "Журнал нежелательных случаев"
   },

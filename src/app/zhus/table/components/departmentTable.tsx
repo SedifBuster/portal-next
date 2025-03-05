@@ -1,8 +1,9 @@
-import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+
 import { IZhus } from "../page";
 
 import { useSession } from "next-auth/react";
 import { DepartmentRow } from "./departmentRow";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/src/shared/ui/table";
 
 export
   function DepartmentTable(
