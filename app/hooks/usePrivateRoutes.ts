@@ -52,8 +52,8 @@ const usePrivateRoutes = () => {
         },
         {
             label: "журнал неж. случаев",// session.status ===  "authenticated"? "войти" : 'личный кабинет',
-            href: 'http://192.168.0.148:3000/table',
-            active: pathname === 'http://192.168.0.148:3000/table',
+            href: '/zhus/table',
+            active: pathname === '/zhus/table',
             icon: HiOutlineDocumentText,
         },
         {
