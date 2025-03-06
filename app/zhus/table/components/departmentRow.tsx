@@ -17,8 +17,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import axios from "axios";
-import { Profile } from "@prisma/client";
+
 
 
 export
