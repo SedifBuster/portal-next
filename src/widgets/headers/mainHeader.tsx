@@ -10,14 +10,14 @@ export
 ) {
   return <header>
     <div className="flex p-6 gap-6">
-      <Image src={logoImage} alt="logo image" width={283}/>
+      {/*<Image src={logoImage} alt="logo image" width={283}/>*/}
       <Label
         className="
           text-6xl
           block
           subpixel-antialiased
           tracking-wide
-          p-4
+
         "
       >
         корпоративный портал

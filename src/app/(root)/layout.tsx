@@ -1,17 +1,16 @@
-import { SideBar } from "@/src/widgets/sidebar/SideBar"
-
-
+import { AppSidebar } from "./components/appSidebar"
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  return (
-    <div className="h-full">
-      <SideBar>
+  return <SidebarProvider>
+    <AppSidebar />
+    <main className="h-full">
+      <SidebarTrigger />
       {children}
-      </SideBar>
-    </div>
-  )
+    </main>
+  </SidebarProvider>
 }

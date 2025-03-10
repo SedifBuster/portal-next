@@ -24,6 +24,7 @@ import { Textarea } from "@/src/shared/ui/textarea"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@radix-ui/react-select"
 import DateTimePicker from "../../components/dateTime/dateTimePicker"
 
+
   type UnitDep = {
   value: "Surgical" | "Pulmonology" | "Policlinic" | "Therapeutic" | "Reception" | "Neurology" | "Rehabilitation" | "Laboratory" | "Xray" | "Reanimation" | "Administration" | "Opp" | "Pao" | "Ceo" | "Aho",
   text: string,
@@ -167,7 +168,7 @@ export
                          locale={ru}
                         />
                         <div className="p-2 flex justify-center border-t">
-                        <DateTimePicker date={field.value} setDate={field.onChange}/>
+                       <DateTimePicker date={field.value} setDate={field.onChange}/>
                         </div>
                         </PopoverContent>
                 </Popover>

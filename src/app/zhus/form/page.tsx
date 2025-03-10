@@ -144,7 +144,7 @@ export
 
   return <section className="flex flex-col justify-between p-2 container">
   <FormRecord departments={departments} problems={problems} postLog={onPostData}/>
-    {/** qr and tooltip*/}
-    <QrTooltip />
+    {/** qr and tooltip
+   <QrTooltip />*/}
   </section>
-}
+}//
