@@ -9,7 +9,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import Image from "next/image";
-import logoImage from "../../../../public/logo.png"
+import logoImage from "../../../public/logo.png"
 import Link from "next/link";
 
 export function AppSidebar() {

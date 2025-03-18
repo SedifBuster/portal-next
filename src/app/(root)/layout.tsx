@@ -1,5 +1,6 @@
-import { AppSidebar } from "./components/appSidebar"
+
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/src/shared/ui/appSidebar"
 
 export default function RootLayout({
   children,

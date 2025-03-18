@@ -5,7 +5,6 @@ import ToasterContext from './context/ToasterContext'
 import AuthContext from './context/AuthContext'
 import { Toaster } from 'sonner'
 
-
 const pfBeauSans = localFont({
   src: [
     {

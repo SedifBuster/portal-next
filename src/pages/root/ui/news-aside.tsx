@@ -1,6 +1,5 @@
 'use client'
 
-
 import { New } from "@prisma/client";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -9,10 +8,10 @@ import ru from "date-fns/locale/ru";
 import { Label } from "@/src/shared/ui/label";
 
 export
-  function NewsTable(
+  function NewsAside(
 ) {
   const [isNews, setNews] = useState<New[]>()
-
+  //to api segment
   let getNews = async () => {
     try {
       let result = await axios.get('/api/news')
@@ -29,9 +28,9 @@ export
   }, [])
 
   return (
-    <div className=" h-[73vh] rounded-md p-2 border-green-100 border-2 shadow-sm overflow-auto flex flex-col gap-4">
+    <div className="h-[48vh]  rounded-md p-2 border-green-100 border-2 shadow-sm overflow-auto flex flex-col gap-4">
       <h2 className="flex justify-center font-bold  text-xl">Новости</h2>
-      <div className="h-[71vh] overflow-auto gap-4  flex-col flex p-2">
+      <div className="h-[45vh] overflow-auto gap-4  flex-col flex p-2">
         {
           isNews && isNews.length > 0
           ?

@@ -1,10 +1,8 @@
-"use client"
-
 import Link from "next/link";
-import { mainPageLinktype } from "../page";
+import { mainPageLinktype } from "./main-page";
 
 export
-  default function LinkMain(
+  function LinkMain(
     {
       href,
       target,
@@ -21,7 +19,7 @@ export
       justify-center
       content-center
       shadow-md
-      hover:bg-green-100 
+      hover:bg-green-100
     "
   >
     <p className="p-2 text-lg font-semibold">{text}</p>

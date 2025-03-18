@@ -1,6 +1,6 @@
 
-import AsideMain from "@/src/app/(root)/components/asideMain";
-import LinkMain from "@/src/app/(root)/components/linkMain";
+import AsideMain from "@/src/pages/root/ui/aside-main";
+import LinkMain from "@/src/pages/root/ui/link-main";
 import MainHeader from "@/src/widgets/headers/mainHeader";
 
 export type mainPageLinktype = {
