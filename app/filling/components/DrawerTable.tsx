@@ -31,9 +31,8 @@ const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
   table: [
     {
       id: 1,
-      name: 'ТО',
+      name: 'ТО3',
       //wards DashWard[]
-      numberOfSeats: 0,
       //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
       //free: 0, //Свободных коек
       createdAt: new Date(),
@@ -55,9 +54,8 @@ const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
     },
     {
       id: 2,
-      name: 'ХО',
+      name: 'ТО4',
       //wards DashWard[]
-      numberOfSeats: 0,
       //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
       //free: 0, //Свободных коек
       createdAt: new Date(),
@@ -79,9 +77,8 @@ const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
     },
     {
       id: 3,
-      name: 'НО',
+      name: 'СМП',
       //wards DashWard[]
-      numberOfSeats: 0,
       //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
       //free: 0, //Свободных коек
       createdAt: new Date(),
@@ -103,9 +100,8 @@ const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
     },
     {
       id: 4,
-      name: 'Реаб',
+      name: 'ХО',
       //wards DashWard[]
-      numberOfSeats: 0,
       //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
       //free: 0, //Свободных коек
       createdAt: new Date(),
@@ -127,9 +123,54 @@ const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
     },
     {
       id: 5,
+      name: 'НО',
+      //wards DashWard[]
+      //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
+      //free: 0, //Свободных коек
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      //to table
+      planHuman: 0,
+      planRub: 0,
+      begAcc: 0,
+      admRec: 0,
+      disCome: 0,
+      disTax: 0,
+      patOver: 0,
+      storColed: 0,
+      transHuman: 0,
+      transRub: 0,
+      medPrice: 0,
+      dolgDead: 0,
+      dashId: 0,
+    },
+    {
+      id: 6,
+      name: 'Реаб',
+      //wards DashWard[]
+      //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
+      //free: 0, //Свободных коек
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      //to table
+      planHuman: 0,
+      planRub: 0,
+      begAcc: 0,
+      admRec: 0,
+      disCome: 0,
+      disTax: 0,
+      patOver: 0,
+      storColed: 0,
+      transHuman: 0,
+      transRub: 0,
+      medPrice: 0,
+      dolgDead: 0,
+      dashId: 0,
+    },
+    {
+      id: 7,
       name: 'Паллиатив',
       //wards DashWard[]
-      numberOfSeats: 0,
       //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
       //free: 0, //Свободных коек
       createdAt: new Date(),
@@ -237,7 +278,6 @@ export
         return {
           id: item.id,
           name: item.name,
-          numberOfSeats: item.numberOfSeats,
           planHuman: item.planHuman,
           planRub: item.planRub,
           begAcc: item.begAcc,
@@ -258,7 +298,6 @@ export
         return {
           id: item.id,
           name: item.name,
-          numberOfSeats: item.numberOfSeats,
           planHuman: item.planHuman,
           planRub: item.planRub,
           begAcc: item.begAcc,
@@ -349,7 +388,6 @@ export
         const filteredDeps = isNewDepartments.map((dep) => {
           return {
             name: dep.name,
-            numberOfSeats: dep.numberOfSeats,
             planHuman: dep.planHuman,
             planRub: dep.planRub,
             begAcc: dep.begAcc,
@@ -407,7 +445,6 @@ export
             return {
               id: table[index].id,
               name: dep.name,
-              numberOfSeats: dep.numberOfSeats,
               planHuman: dep.planHuman,
               planRub: dep.planRub,
               begAcc: dep.begAcc,
