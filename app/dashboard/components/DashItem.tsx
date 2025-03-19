@@ -47,7 +47,6 @@ interface DashWithWards extends DashDepartment {
   defaultDepsId?: number
 }
 
-
 export const columns: ColumnDef<DashWithWards>[] = [
     {
       accessorKey: "name",
@@ -978,7 +977,7 @@ export
   useEffect(() => {
     getWardsDeparment()
   }, [])
-  //console.log(isDeparmentsNow)
+
 
   return (
     <>

@@ -14,13 +14,11 @@ export
 
 export
   function TableDash({
-
   }: {
     //onGetDashs?: Promise<Dash[]>
     //onGetDeps?: Promise<DashDepartment[]>
   }
 ) {
-
 
   async function onGetDashs() {
     try {
@@ -74,7 +72,7 @@ export
 
       if(!resultDashs && !resultDeps) throw new Error()
       toast.dismiss(loadToast)
-      toast.success('Данные успешно загружены')
+      //toast.success('Данные успешно загружены')
 
       setTables(onFilterDashes(resultDashs, resultDeps).reverse())
     } catch (error) {
