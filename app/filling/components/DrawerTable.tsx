@@ -31,13 +31,12 @@ const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
   table: [
     {
       id: 1,
-      name: 'ТО3',
+      name: 'ТО4',
       //wards DashWard[]
       //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
       //free: 0, //Свободных коек
       createdAt: new Date(),
       updatedAt: new Date(),
-      //to table
       planHuman: 0,
       planRub: 0,
       begAcc: 0,
@@ -54,13 +53,9 @@ const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
     },
     {
       id: 2,
-      name: 'ТО4',
-      //wards DashWard[]
-      //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
-      //free: 0, //Свободных коек
+      name: 'ТО3',
       createdAt: new Date(),
       updatedAt: new Date(),
-      //to table
       planHuman: 0,
       planRub: 0,
       begAcc: 0,
@@ -78,12 +73,8 @@ const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
     {
       id: 3,
       name: 'СМП',
-      //wards DashWard[]
-      //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
-      //free: 0, //Свободных коек
       createdAt: new Date(),
       updatedAt: new Date(),
-      //to table
       planHuman: 0,
       planRub: 0,
       begAcc: 0,
@@ -101,12 +92,8 @@ const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
     {
       id: 4,
       name: 'ХО',
-      //wards DashWard[]
-      //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
-      //free: 0, //Свободных коек
       createdAt: new Date(),
       updatedAt: new Date(),
-      //to table
       planHuman: 0,
       planRub: 0,
       begAcc: 0,
@@ -124,12 +111,8 @@ const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
     {
       id: 5,
       name: 'НО',
-      //wards DashWard[]
-      //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
-      //free: 0, //Свободных коек
       createdAt: new Date(),
       updatedAt: new Date(),
-      //to table
       planHuman: 0,
       planRub: 0,
       begAcc: 0,
@@ -147,12 +130,8 @@ const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
     {
       id: 6,
       name: 'Реаб',
-      //wards DashWard[]
-      //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
-      //free: 0, //Свободных коек
       createdAt: new Date(),
       updatedAt: new Date(),
-      //to table
       planHuman: 0,
       planRub: 0,
       begAcc: 0,
@@ -170,12 +149,8 @@ const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
     {
       id: 7,
       name: 'Паллиатив',
-      //wards DashWard[]
-      //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
-      //free: 0, //Свободных коек
       createdAt: new Date(),
       updatedAt: new Date(),
-      //to table
       planHuman: 0,
       planRub: 0,
       begAcc: 0,
@@ -481,6 +456,8 @@ export
 
   }
 
+  console.log(isNewDepartments)
+
   return (
     <Drawer>
       {button}
@@ -509,10 +486,10 @@ export
         <div>
           <main
             className="
-              m-2
+              m-0
               text-center
               shadow-xl
-              p-2
+              p-0
             "
           >
             {
@@ -590,8 +567,7 @@ export
             </div>
             <Table
               className="
-                mb-20
-                mt-6
+                mt-2
               "
             >
               <TableCaption> таблица заполнения </TableCaption>
@@ -820,7 +796,7 @@ export
                 //если таблицы нет, ставит дефолт даш
                 defaultDash.table.map((row: DashDepartment, index) => {
                   return <TableRow key={row.id}>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.name}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -835,7 +811,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.planHuman}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -850,7 +826,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.planRub}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -865,7 +841,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.begAcc}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -880,7 +856,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.admRec}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -895,7 +871,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.disCome}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -910,7 +886,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.disTax}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -925,7 +901,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.patOver}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -940,7 +916,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.storColed}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -955,7 +931,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.transHuman}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -970,7 +946,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.transRub}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -985,7 +961,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.medPrice}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -1000,7 +976,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.dolgDead}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -1019,9 +995,9 @@ export
                 })
               }
               {
-                isNewDepartments && isNewDepartments.length > 5
+                isNewDepartments && isNewDepartments.length > 7
                 ?
-                isNewDepartments.slice(5).map((row) => { return <TableRow key={row.id}>
+                isNewDepartments.slice(7).map((row) => { return <TableRow key={row.id}>
                 <TableCell>
                   <div className="text-green-400">
                     {row.name}

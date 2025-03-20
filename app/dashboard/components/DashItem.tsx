@@ -418,7 +418,7 @@ export
     const [wards, setWards] = useState<Ward[]>([])
     const [takenWards, setTakenWards] = useState<Ward[]>([])
     const [departments, setDepartments] = useState<Department[]>()
-
+  console.log(data)
     let getDepartments =async () => {
         let result = await axios.get('/api/department')
         setDepartments(result.data)
@@ -529,8 +529,6 @@ export
     const [takenXoWards, setTakenXoWards] = useState<Ward[]>([])
     const [takenHoWards, setTakenHoWards] = useState<Ward[]>([])
     const [takenReabWards, setTakenReabWards] = useState<Ward[]>([])
-
-  
 
     let getToWards = async (id: number) => {
         let result = await axios.get('/api/ward')
@@ -781,7 +779,7 @@ export
     let dashDepsWithId: DashDepartment[] = dashDeps.map((dep: DashDepartment, index) => {
       return {...dep, defaultDepsId: deps[index].id}
     })
-
+    console.log(dashDepsWithId)
     return dashDepsWithId
   }
 
@@ -977,7 +975,7 @@ export
   useEffect(() => {
     getWardsDeparment()
   }, [])
-
+  console.log(data)
 
   return (
     <>
@@ -1019,7 +1017,7 @@ export
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className=" text-center"
                 >
                   No results.
                 </TableCell>
@@ -1027,9 +1025,9 @@ export
             )}
           </TableBody>
           {stateLpu?
-            <TableFooter>
-            <TableRow>
-              <TableCell>
+            <TableFooter className="h-2 p-0 m-0">
+            <TableRow className="h-2">
+              <TableCell  className="h-2">
                 ЛПУ
               </TableCell>
               <TableCell className="text-center">
