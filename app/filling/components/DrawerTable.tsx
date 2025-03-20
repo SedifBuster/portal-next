@@ -362,7 +362,8 @@ export
       else if (typeof resultDash === 'number' && isNewDepartments) {
         const filteredDeps = isNewDepartments.map((dep) => {
           return {
-            name: dep.name,
+            //@ts-ignore
+            name: dep.name_,
             planHuman: dep.planHuman,
             planRub: dep.planRub,
             begAcc: dep.begAcc,
@@ -456,7 +457,7 @@ export
 
   }
 
-  console.log(isNewDepartments)
+
 
   return (
     <Drawer>
