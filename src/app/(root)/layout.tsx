@@ -9,7 +9,7 @@ export default function RootLayout({
 }) {
   return <SidebarProvider>
     <AppSidebar />
-    <main className="h-full">
+    <main className="h-full w-full p-[min(1em,8%)]">
       <SidebarTrigger />
       {children}
     </main>

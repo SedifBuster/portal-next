@@ -1,7 +1,6 @@
 import { Label } from "@/src/shared/ui/label"
 import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/src/shared/ui/table"
 
-
 const numbers = [
   {
     invoice: "Первый номер",
@@ -18,8 +17,7 @@ const numbers = [
 ]
 
 export
-  default function BdNumbers(
-
+  function BdNumbers(
  ) {
   return <section>
     <header>
@@ -57,4 +55,3 @@ export
     </div>
   </section>
 }
-

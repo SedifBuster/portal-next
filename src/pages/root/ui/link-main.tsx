@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { mainPageLinktype } from "./main-page";
 
 export
   function LinkMain(
@@ -7,21 +6,25 @@ export
       href,
       target,
       text
-    }: mainPageLinktype
+    }: {
+      href: string
+      target: '_self' | 'blank'
+      text: string
+    }
 ) {
   return <Link href={href} target={target}
     className="
       border
       h-[15vh]
       rounded-md
-      p-4
       flex
+      basis-[32%]
       justify-center
       content-center
       shadow-md
       hover:bg-green-100
     "
   >
-    <p className="p-2 text-lg font-semibold">{text}</p>
+    <p className="p-2 text-[clamp(0.9rem,10vw,1.2rem)] font-semibold">{text}</p>
   </Link>
-}
+}//text-lg
