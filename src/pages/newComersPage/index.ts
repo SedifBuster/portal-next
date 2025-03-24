@@ -1,0 +1,1 @@
+export { NewComersPage } from './ui/new-comers-page'

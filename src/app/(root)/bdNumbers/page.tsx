@@ -1,9 +1,7 @@
-import { BdNumbers } from "@/src/pages/bdNumbersPage";
-
+import { BdNumbersPage } from "@/src/pages/bdNumbersPage";
 
 export
-  default function bdNumbersPage(
+  default function bdNumbers(
  ) {
-  return <BdNumbers />
+  return <BdNumbersPage />
 }
-

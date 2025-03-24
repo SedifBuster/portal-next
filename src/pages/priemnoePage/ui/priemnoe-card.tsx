@@ -2,7 +2,6 @@
 
 import * as React from "react"
 
-
 import { Department, Ward } from "@prisma/client"
 
 import clsx from "clsx"

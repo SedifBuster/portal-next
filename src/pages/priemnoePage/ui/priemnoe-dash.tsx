@@ -1,19 +1,9 @@
 "use client"
 
 import * as React from "react"
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import axios from "axios"
-import { PriemnoeCard } from "./PriemnoeCard"
 import { Department, Ward } from "@prisma/client"
+import { PriemnoeCard } from "./priemnoe-card"
 
 export function DashPriemnoe() {
 

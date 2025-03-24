@@ -17,8 +17,8 @@ const numbers = [
 ]
 
 export
-  function BdNumbers(
- ) {
+  function BdNumbersPage(
+) {
   return <section>
     <header>
       <div className="flex ">

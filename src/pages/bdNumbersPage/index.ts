@@ -1,1 +1,1 @@
-export { BdNumbers } from "./ui/bd-numbers"
+export { BdNumbersPage } from "./ui/bd-numbers-page"

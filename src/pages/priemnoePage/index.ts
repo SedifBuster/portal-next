@@ -1,0 +1,1 @@
+export { PriemnoePage } from './ui/priemnoe-page'
