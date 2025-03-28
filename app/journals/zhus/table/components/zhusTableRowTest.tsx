@@ -1,43 +1,29 @@
 
 import {
-    ColumnDef,
-    flexRender,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getSortedRowModel,
-    useReactTable,
-    ExpandedState,
-    getExpandedRowModel,
-    Row,
-  } from "@tanstack/react-table"
-  import {
-    Table,
-    TableBody,
-    TableCell,
-    TableFooter,
-    TableHead,
-    TableHeader,
-    TableRow,
-  } from "@/components/ui/table"
-  import { Fragment, useEffect, useMemo, useState } from "react"
-  import { IFArray, IZhus } from "../page"
-  import { DepartmentTable } from "./departmentTable"
+  flexRender,
+  Row,
+} from "@tanstack/react-table"
+import {
+  TableCell,
+  TableRow,
+} from "@/components/ui/table"
+import { Fragment, useState } from "react"
+import { IZhus } from "../page"
 import { renderSubComponent } from "./tableTest"
 
-  interface IFinal {
-    department: string,
-    logs: IZhus[],
-    collapse: IZhus[],
-    pressureSores: IZhus[],
-    identificationOfThePatientsIdentity: IZhus[],
-    anEventRelatedToAMedicalDeviceOrProduct: IZhus[],
-    aDrugRelatedEvent: IZhus[],
-    infectiousOrParasiticDisease: IZhus[],
-    iSMP: IZhus[],
-    surgicalComplications: IZhus[],
-    anotherUndesirableEvent: IZhus[],
-  }
-  
+interface IFinal {
+  department: string,
+  logs: IZhus[],
+  collapse: IZhus[],
+  pressureSores: IZhus[],
+  identificationOfThePatientsIdentity: IZhus[],
+  anEventRelatedToAMedicalDeviceOrProduct: IZhus[],
+  aDrugRelatedEvent: IZhus[],
+  infectiousOrParasiticDisease: IZhus[],
+  iSMP: IZhus[],
+  surgicalComplications: IZhus[],
+  anotherUndesirableEvent: IZhus[],
+}
 
 export
   default function ZhusTableRowTest(

@@ -7,12 +7,12 @@ const useRoutes = () => {
   const [onRoutes] = useState([
     {
       label: "Форма записи",
-      href: '/zhus/form',
+      href: '/journals/zhus/form',
       active: pathname === '/zhus/form',
     },
     {
       label: "Журнал учета событий",
-      href: '/zhus/table',
+      href: '/journals/zhus/table',
       active: pathname === '/zhus/table'
     }
     ])

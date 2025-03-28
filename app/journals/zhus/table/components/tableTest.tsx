@@ -19,7 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Fragment, useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { IFArray, IZhus } from "../page"
 import { DepartmentTable } from "./departmentTable"
 import ZhusTableRowTest from "./zhusTableRowTest"
@@ -78,34 +78,25 @@ export function TableTest(
     () => [
       {
         accessorKey: 'department',
-        header: () => (
-          <>
-            Отделение
-          </>
-        ),
-        cell: ({ row, cell }) => (
-          <div
-            style={{
-              paddingLeft: `${row.depth * 2}rem`,
-            }}
-          >
-            <div className="text-start font-medium "/* onClick={() =>  setSubRow({id: cell.id, logs: row.getValue('logs')})}*/>
-            {row.getValue<IZhus[]>('logs').length > 0
-            ?
-            <button
-              onClick={row.getToggleExpandedHandler()}
-              {...{
-                style: { cursor: 'pointer' },
-              }}
-            >
-              {row.getCanExpand()? 
-                <>
-                {row.getValue('department')}
-                </>
+        header: () => 'Отделение',
+        cell: ({ row }) => (
+          <div style={{paddingLeft: `${row.depth * 2}rem`}} >
+            <div className="text-start font-medium" >
+              {row.getValue<IZhus[]>('logs').length > 0
+              ?
+              <button
+                onClick={row.getToggleExpandedHandler()}
+                {...{
+                  style: { cursor: 'pointer' },
+                }}
+              >
+                {row.getCanExpand()
+                ?
+                <>{row.getValue('department')}</>
                 : 
                 ''
-              }
-            </button>
+                }
+              </button>
             :
             row.getValue('department')
             }
@@ -118,7 +109,7 @@ export function TableTest(
         accessorKey: 'collapse',
         header: () => 'Падение',
         cell: ({row, cell}) => (
-             <div className="select-none" onClick={() =>  setSubRow({id: cell.id, logs: row.getValue('collapse')})}>
+          <div className="select-none" onClick={() =>  setSubRow({id: cell.id, logs: row.getValue('collapse')})}>
             {row.getValue<IZhus[]>('collapse').length > 0
             ?
             <button
@@ -138,7 +129,7 @@ export function TableTest(
             :
             row.getValue<string>('collapse').length
             }
-              </div>
+          </div>
         ),
         footer: props => props.column.id,
       },
@@ -166,7 +157,7 @@ export function TableTest(
             :
             row.getValue<string>('pressureSores').length
             }
-            </div>
+          </div>
         ),
         footer: props => props.column.id,
       },
@@ -174,7 +165,7 @@ export function TableTest(
         accessorKey: 'identificationOfThePatientsIdentity',
         header: () => 'Идентификация личности пациента',
         cell: ({row, cell}) => (
-           <div onClick={() =>  setSubRow({id: cell.id, logs: row.getValue('identificationOfThePatientsIdentity')})}>
+          <div onClick={() =>  setSubRow({id: cell.id, logs: row.getValue('identificationOfThePatientsIdentity')})}>
             {row.getValue<IZhus[]>('identificationOfThePatientsIdentity').length > 0
             ?
             <button
@@ -194,7 +185,7 @@ export function TableTest(
             :
             row.getValue<string>('identificationOfThePatientsIdentity').length
             }
-            </div>
+          </div>
         ),
         footer: props => props.column.id,
       },
@@ -222,7 +213,7 @@ export function TableTest(
             :
             row.getValue<string>('anEventRelatedToAMedicalDeviceOrProduct').length
             }
-            </div>
+          </div>
         ),
         footer: props => props.column.id,
       },
@@ -250,8 +241,7 @@ export function TableTest(
             :
             row.getValue<string>('aDrugRelatedEvent').length
             }
-
-            </div>
+          </div>
         ),
         footer: props => props.column.id,
       },
@@ -279,7 +269,7 @@ export function TableTest(
             :
             row.getValue<string>('infectiousOrParasiticDisease').length
             }
-            </div>
+          </div>
         ),
         footer: props => props.column.id,
       },
@@ -307,8 +297,7 @@ export function TableTest(
             :
             row.getValue<string>('iSMP').length
             }
-           
-            </div>
+          </div>
         ),
         footer: props => props.column.id,
       },
@@ -336,7 +325,7 @@ export function TableTest(
             :
             row.getValue<string>('surgicalComplications').length
             }
-            </div>
+          </div>
         ),
         footer: props => props.column.id,
       },
@@ -364,7 +353,7 @@ export function TableTest(
             :
             row.getValue<string>('anotherUndesirableEvent').length
             }
-            </div>
+          </div>
         ),
         footer: props => props.column.id,
       },
@@ -373,7 +362,6 @@ export function TableTest(
         header: () => 'Всего',
         cell: ({row, cell}) => (
           <div onClick={() =>  setSubRow({id: cell.id, logs: row.getValue('logs')})}>
-            
            {row.getValue<IZhus[]>('logs').length > 0
             ?
             <button
@@ -393,17 +381,16 @@ export function TableTest(
             :
             row.getValue<string>('logs').length
             }
-            </div>
+          </div>
         ),
         footer: props => props.column.id,
       },
     ],
     []
   )
+
   const [expanded, setExpanded] = useState<ExpandedState>({})
-  console.log(subRow)
-  //expanded give row id
-  //need find cell id?
+
   const table = useReactTable({
     data: isFinal,
     columns,
@@ -445,38 +432,6 @@ export function TableTest(
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <ZhusTableRowTest key={row.id} row={row} onChangeComment={onChangeComment} onFetchData={onFetchData}/>
-               /*
-                <Fragment key={row.id}>
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {//вот тут саб роу обработчик и отдельный компонент табл роу
-                  row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="text-center">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-                {row.getIsExpanded() && (
-                  <tr>
-
-                    <td colSpan={row.getVisibleCells().length}>
-                      
-                      {subRow && subRow.logs?.length > 0
-                      ?
-                      renderSubComponent({ row: subRow.logs, onChangeComment})
-                      :
-                      null
-                    }
-                    </td>
-                  </tr>
-                )}
-                </Fragment>
-                 */
               ))
             ) : (
               <TableRow>
@@ -544,67 +499,21 @@ export function TableTest(
   )
 }
 
-export const renderSubComponent = ({ row, onChangeComment, onFetchData } : { row: IZhus[]; onChangeComment: (id: number, comment: string) => Promise<string | number>; onFetchData: (url: string) => Promise<IZhus[]>} ) => {
+export
+  const renderSubComponent = (
+    {
+      row,
+      onChangeComment,
+      onFetchData
+    } : {
+      row: IZhus[]
+      onChangeComment: (id: number, comment: string) => Promise<string | number>
+      onFetchData: (url: string) => Promise<IZhus[]>
+    }
+) => {
   return (
     <div style={{ fontSize: '10px' }}>
       <DepartmentTable logs={row} onChangeComment={onChangeComment} onFetchData={onFetchData}/>
     </div>
   )
 }
-
-//<code>{JSON.stringify(row.original, null, 2)}</code>
-//<DepartmentTable logs={row.getValue(arrName)} />
-////<code>{JSON.stringify(row.getValue('logs'), null, 2)}</code>
-/**
- 
-  function Filter({
-    column,
-    table,
-  }: {
-    column: Column<any, any>
-    table: any
-  }) {
-    const firstValue = table
-      .getPreFilteredRowModel()
-      .flatRows[0]?.getValue(column.id)
-  
-    const columnFilterValue = column.getFilterValue()
-  
-    return typeof firstValue === 'number' ? (
-      <div className="flex space-x-2">
-        <input
-          type="number"
-          value={(columnFilterValue as [number, number])?.[0] ?? ''}
-          onChange={e =>
-            column.setFilterValue((old: [number, number]) => [
-              e.target.value,
-              old?.[1],
-            ])
-          }
-          placeholder={`Min`}
-          className="w-24 border shadow rounded"
-        />
-        <input
-          type="number"
-          value={(columnFilterValue as [number, number])?.[1] ?? ''}
-          onChange={e =>
-            column.setFilterValue((old: [number, number]) => [
-              old?.[0],
-              e.target.value,
-            ])
-          }
-          placeholder={`Max`}
-          className="w-24 border shadow rounded"
-        />
-      </div>
-    ) : (
-      <input
-        type="text"
-        value={(columnFilterValue ?? '') as string}
-        onChange={e => column.setFilterValue(e.target.value)}
-        placeholder={`Search...`}
-        className="w-36 border shadow rounded"
-      />
-    )
-  }
- */

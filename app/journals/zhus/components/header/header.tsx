@@ -17,7 +17,7 @@ export
     <div className="flex border-b shadow-[0_50px_60px_-15px_rgba(0,0,0,0.07)]">
       <div className="container mx-auto flex p-2">
         <div>
-          <Link href={"/zhus"}><h1 className="text-2xl">Журнал учета нежелательных событий при осуществлении медицинской деятельности</h1></Link>
+          <Link href={"/journals/zhus"}><h1 className="text-2xl">Журнал учета нежелательных событий при осуществлении медицинской деятельности</h1></Link>
           <div
             className="
             mt-2
