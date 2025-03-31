@@ -211,13 +211,17 @@ enum DepartmentLog {
 enum Problem {
   IdentificationOfThePatientsIdentity       //Идентификация личности пациента
   Collapse                                  //Падение
-  PressureSores                             //Пролежни: наши, извне
+  PressureSores                             //Пролежни
+  PressureSoresIn                           //Пролежни: наши
+  PressureSoresOut                          //Пролежни: извне
   AnEventRelatedToAMedicalDeviceOrProduct   //Событие, связаное с медицинским оборудованием или изделием
   ADrugRelatedEvent                         //Событие, связанное с лекарственным средством/ фиксация пациента
   InfectiousOrParasiticDisease              //Инфекционное или паразитарное заболевание
   ISMP                                      //ИСМП (инфекции, связанные с медицинской помощью)
   SurgicalComplications                     //Хирургические осложнения
-  AnotherUndesirableEvent                   //Другое нежелательное событие: смерть в палате, гематомы
+  AnotherUndesirableEvent                   //Другое нежелательное событие
+  DeathInTheWard                            //Другое нежелательное событие: смерть в палате
+  Hematomas                                 //Другое нежелательное событие: гематомы
 }
 
 enum Role {

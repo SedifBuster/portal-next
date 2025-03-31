@@ -95,12 +95,20 @@ export
       text: "Пролежни",
     },
     {
+      value: "PressureSoresIn",
+      text: "Пролежни: наши",
+    },
+    {
+      value: "PressureSoresOut",
+      text: "Пролежни: извне",
+    },
+    {
       value: "AnEventRelatedToAMedicalDeviceOrProduct",
       text: "Событие, связаное с медицинским оборудованием или изделием",
     },
     {
       value: "ADrugRelatedEvent",
-      text: "Событие, связанное с лекарственным средством",
+      text: "Событие, связанное с лекарственным средством/фиксация пациента",
     },
     {
       value: "InfectiousOrParasiticDisease",
@@ -117,6 +125,14 @@ export
     {
       value: "AnotherUndesirableEvent",
       text: "Другое нежелательное событие",
+    },
+    {
+      value: "DeathInTheWard",
+      text: "Другое нежелательное событие: смерть в палате",
+    },
+    {
+      value: "Hematomas",
+      text: "Другое нежелательное событие: гематомы",
     },
   ]
 

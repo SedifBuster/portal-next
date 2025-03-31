@@ -55,14 +55,14 @@ export function TableTest(
       return {
         ...row,
         collapse: row.logs.filter((log) => log.event === 'Падение' || log.event === 'Collapse'),
-        pressureSores: row.logs.filter((log) => log.event === 'Пролежни' || log.event === 'PressureSores'),
+        pressureSores: row.logs.filter((log) => log.event === 'Пролежни' || log.event === 'PressureSores' || log.event === 'PressureSoresIn' || log.event === 'PressureSoresOut'),
         identificationOfThePatientsIdentity: row.logs.filter((log) => log.event === 'Идентификация личности пациента' || log.event === 'IdentificationOfThePatientsIdentity'),
         anEventRelatedToAMedicalDeviceOrProduct: row.logs.filter((log) => log.event === 'Событие, связаное с медицинским оборудованием или изделием' || log.event === 'AnEventRelatedToAMedicalDeviceOrProduct'),
         aDrugRelatedEvent: row.logs.filter((log) => log.event === 'Событие, связанное с лекартсвенным средством' || log.event === 'Событие, связанное с лекарственным средством' || log.event === 'ADrugRelatedEvent'),
         infectiousOrParasiticDisease: row.logs.filter((log) => log.event === 'Инфекционное или паразитарное заболевание' || log.event === 'InfectiousOrParasiticDisease'),
         iSMP: row.logs.filter((log) => log.event === 'ИСМП (инфекции, связанные с медицинской помощью)' || log.event === 'ISMP'),
         surgicalComplications: row.logs.filter((log) => log.event === 'Хирургические осложнения' || log.event === 'SurgicalComplications'),
-        anotherUndesirableEvent: row.logs.filter((log) => log.event === 'Другое нежелательное событие' || log.event === 'AnotherUndesirableEvent'),
+        anotherUndesirableEvent: row.logs.filter((log) => log.event === 'Другое нежелательное событие' || log.event === 'AnotherUndesirableEvent' || log.event === 'DeathInTheWard' || log.event === 'Hematomas'),
       }
     })
   }
@@ -219,7 +219,7 @@ export function TableTest(
       },
       {
         accessorKey: 'aDrugRelatedEvent',
-        header: () => 'Событие, связанное с лекарственным средством',
+        header: () => 'Событие, связанное с лекарственным средством/фиксация пациента',
         cell: ({row, cell}) => (
           <div onClick={() =>  setSubRow({id: cell.id, logs: row.getValue('aDrugRelatedEvent')})}>
           {row.getValue<IZhus[]>('aDrugRelatedEvent').length > 0
@@ -513,7 +513,78 @@ export
 ) => {
   return (
     <div style={{ fontSize: '10px' }}>
-      <DepartmentTable logs={row} onChangeComment={onChangeComment} onFetchData={onFetchData}/>
+      {
+       row.filter((dep) => {
+          return dep.event == 'PressureSoresIn'
+        }).length > 0
+        ?
+        <>
+          <div>
+            <p>Пролежни: наши</p>
+          </div>
+          <DepartmentTable logs={row.filter((dep) => {
+          return dep.event == 'PressureSoresIn'
+        })} onChangeComment={onChangeComment} onFetchData={onFetchData}/>
+        </>
+        :
+        null
+      }
+      {
+        row.filter((dep) => {
+          return dep.event == 'PressureSoresOut'
+        }).length > 0
+        ?
+        <>
+          <div>
+            <p>Пролежни: извне</p>
+          </div>
+          <DepartmentTable logs={row.filter((dep) => {
+          return dep.event == 'PressureSoresOut'
+        })} onChangeComment={onChangeComment} onFetchData={onFetchData}/>
+        </>
+        :
+        null
+      }
+      {
+        row.filter((dep) => {
+          return dep.event == 'DeathInTheWard'
+        }).length > 0
+        ?
+        <>
+          <div>
+            <p>Другое нежелательное событие: смерть в палате</p>
+          </div>
+          <DepartmentTable logs={row.filter((dep) => {
+          return dep.event == 'DeathInTheWard'
+        })} onChangeComment={onChangeComment} onFetchData={onFetchData}/>
+        </>
+        :
+        null
+      }
+      {
+        row.filter((dep) => {
+          return dep.event == 'Hematomas'
+        }).length > 0
+        ?
+        <>
+          <div>
+            <p>Другое нежелательное событие: гематомы</p>
+          </div>
+          <DepartmentTable logs={row.filter((dep) => {
+          return dep.event == 'Hematomas'
+        })} onChangeComment={onChangeComment} onFetchData={onFetchData}/>
+        </>
+        :
+        null
+      }
+      <DepartmentTable logs={row.filter((dep) => {
+          dep.event !== 'Hematomas' 
+          || dep.event !== 'DeathInTheWard'
+          || dep.event !== 'PressureSoresOut'
+          || dep.event !== 'PressureSoresIn'
+        })} onChangeComment={onChangeComment} onFetchData={onFetchData}/>
+
+     {/** <DepartmentTable logs={row} onChangeComment={onChangeComment} onFetchData={onFetchData}/>*/} 
     </div>
   )
 }

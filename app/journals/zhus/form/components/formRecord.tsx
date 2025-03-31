@@ -119,7 +119,7 @@ export
                 <Select onValueChange={field.onChange}  value={field.value} defaultValue={field.value}>
                   <SelectTrigger className="w-[320px]">
                     <SelectValue placeholder="не выбрано" />
-                    </SelectTrigger>
+                  </SelectTrigger>
                     <SelectContent>
                       {
                         departments.map(dep => {
