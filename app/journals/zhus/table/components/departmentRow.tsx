@@ -71,7 +71,7 @@ export
 
   //тут обновление по айди
   
-  return <TableRow className={rowColor} key={log.id}>
+  return <TableRow className={rowColor? rowColor : 'bg-green-50'} key={log.id}>
     <TableCell className="font-medium ">{format(new Date(log.date), "PPP HH:mm", {locale: ru})}</TableCell>
     <TableCell>{log.name} </TableCell>{/**и дата рождения */}
     <TableCell className="w-2">{log.place}</TableCell>
