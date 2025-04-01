@@ -23,6 +23,7 @@ import { useEffect, useMemo, useState } from "react"
 import { IFArray, IZhus } from "../page"
 import { DepartmentTable } from "./departmentTable"
 import ZhusTableRowTest from "./zhusTableRowTest"
+import { SubCategoryDepartmentTable } from "./subCategoryDepartmentTable"
 
 interface IFinal {
   department: string,
@@ -510,80 +511,93 @@ export
       onChangeComment: (id: number, comment: string) => Promise<string | number>
       onFetchData: (url: string) => Promise<IZhus[]>
     }
+
 ) => {
+  
+
+  let withoutSub = row.filter((dep) => {
+    return  dep.event !== 'Hematomas' 
+      && dep.event !== 'DeathInTheWard'
+      && dep.event !== 'PressureSoresOut'
+      && dep.event !== 'PressureSoresIn'
+    })
+
+  let pressureInSub = row.filter((dep) => {
+    return dep.event == 'PressureSoresIn'
+  })
+
+  let pressureOutSub = row.filter((dep) => {
+    return dep.event == 'PressureSoresOut'
+  })
+
+  let deathInTheWardSub = row.filter((dep) => {
+    return dep.event == 'DeathInTheWard'
+  })
+
+  let hematomasSub = row.filter((dep) => {
+    return dep.event == 'Hematomas'
+  })
+
   return (
     <div style={{ fontSize: '10px' }}>
       {
-       row.filter((dep) => {
-          return dep.event == 'PressureSoresIn'
-        }).length > 0
-        ?
-        <>
-          <div>
-            <p>Пролежни: наши</p>
-          </div>
-          <DepartmentTable logs={row.filter((dep) => {
-          return dep.event == 'PressureSoresIn'
-        })} onChangeComment={onChangeComment} onFetchData={onFetchData}/>
-        </>
-        :
-        null
+       pressureInSub && pressureInSub[0]
+       ?
+       <>
+       <p className="text-sm font-semibold p-4 bg-red-200">Пролежни: наши</p>
+       <SubCategoryDepartmentTable logs={pressureInSub}
+             onChangeComment={onChangeComment} onFetchData={onFetchData} color={'bg-red-100'} colorRow={'bg-red-50'}/>
+       </>
+       :
+       null
       }
-      {
-        row.filter((dep) => {
-          return dep.event == 'PressureSoresOut'
-        }).length > 0
-        ?
-        <>
-          <div>
-            <p>Пролежни: извне</p>
-          </div>
-          <DepartmentTable logs={row.filter((dep) => {
-          return dep.event == 'PressureSoresOut'
-        })} onChangeComment={onChangeComment} onFetchData={onFetchData}/>
-        </>
-        :
-        null
-      }
-      {
-        row.filter((dep) => {
-          return dep.event == 'DeathInTheWard'
-        }).length > 0
-        ?
-        <>
-          <div>
-            <p>Другое нежелательное событие: смерть в палате</p>
-          </div>
-          <DepartmentTable logs={row.filter((dep) => {
-          return dep.event == 'DeathInTheWard'
-        })} onChangeComment={onChangeComment} onFetchData={onFetchData}/>
-        </>
-        :
-        null
-      }
-      {
-        row.filter((dep) => {
-          return dep.event == 'Hematomas'
-        }).length > 0
-        ?
-        <>
-          <div>
-            <p>Другое нежелательное событие: гематомы</p>
-          </div>
-          <DepartmentTable logs={row.filter((dep) => {
-          return dep.event == 'Hematomas'
-        })} onChangeComment={onChangeComment} onFetchData={onFetchData}/>
-        </>
-        :
-        null
-      }
-      <DepartmentTable logs={row.filter((dep) => {
-          dep.event !== 'Hematomas' 
-          || dep.event !== 'DeathInTheWard'
-          || dep.event !== 'PressureSoresOut'
-          || dep.event !== 'PressureSoresIn'
-        })} onChangeComment={onChangeComment} onFetchData={onFetchData}/>
 
+      {
+       pressureOutSub && pressureOutSub[0]
+       ?
+       <>
+       <p className="text-sm font-semibold p-4 bg-blue-200">Пролежни: извне</p>
+       <SubCategoryDepartmentTable logs={pressureOutSub}
+              onChangeComment={onChangeComment} onFetchData={onFetchData} color={'bg-blue-100'} colorRow={'bg-blue-50'}/>
+       </>
+       :
+       null
+      }
+
+      {
+       deathInTheWardSub && deathInTheWardSub[0]
+       ?
+       <>
+       <p className="text-sm font-semibold p-4 bg-yellow-200">Другое нежелательное событие: смерть в палате</p>
+       <SubCategoryDepartmentTable logs={deathInTheWardSub}
+              onChangeComment={onChangeComment} onFetchData={onFetchData} color={'bg-yellow-100'} colorRow={'bg-yellow-50'}/>
+       </>
+       :
+       null
+      }
+
+      {
+       hematomasSub && hematomasSub[0]
+       ?
+       <>
+       <p className="text-sm font-semibold p-4 bg-gray-200">Другое нежелательное событие: гематомы</p>
+       <SubCategoryDepartmentTable logs={hematomasSub}
+            onChangeComment={onChangeComment} onFetchData={onFetchData}  color={'bg-gray-100'} colorRow={'bg-gray-50'}/>
+       </>
+       :
+       null
+      }
+
+      {
+       withoutSub && withoutSub[0]
+       ?
+       <>
+       <p className="text-sm font-semibold p-4 bg-green-200">{row[0].event}</p>
+       <DepartmentTable logs={withoutSub} onChangeComment={onChangeComment} onFetchData={onFetchData}/>
+       </>
+       :
+       null
+      }
      {/** <DepartmentTable logs={row} onChangeComment={onChangeComment} onFetchData={onFetchData}/>*/} 
     </div>
   )
