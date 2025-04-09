@@ -1,6 +1,6 @@
 "use client"
 
-import useRoutes from "@/src/app/hooks/useRoutes"
+import useRoutes from "@/src/shared/hooks/useRoutes"
 import { AsideMain } from "./aside-main"
 import { LinkMain } from "./link-main"
 

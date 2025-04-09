@@ -13,7 +13,7 @@ export
 }
 
 export
-  function Owerview(
+  function FillingOwerview(
 ) {
   const [isTables, setTables] = useState<DashInit[]>()
 

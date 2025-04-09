@@ -6,8 +6,8 @@ import { useEffect, useState } from "react"
 import DesktopItem from "./DesktopItem"
 import { useSession } from "next-auth/react"
 
-import useRoutes from "@/src/app/hooks/useRoutes"
-import usePrivateRoutes from "@/src/app/hooks/usePrivateRoutes"
+import useRoutes from "@/src/shared/hooks/useRoutes"
+import usePrivateRoutes from "@/src/shared/hooks/usePrivateRoutes"
 
 export default function DesktopSidebar() {
     const routes = useRoutes()

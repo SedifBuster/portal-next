@@ -11,6 +11,7 @@ export default function RootLayout({
     <AppSidebar />
     <main className="h-full w-full p-[min(1em,8%)]">
       <SidebarTrigger />
+       переписать апи на прямое с сервером
       {children}
     </main>
   </SidebarProvider>

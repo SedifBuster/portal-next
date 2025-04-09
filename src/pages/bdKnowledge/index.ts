@@ -1,0 +1,1 @@
+export { BdKnowledgePage } from "./ui/bd-knowledge-page"

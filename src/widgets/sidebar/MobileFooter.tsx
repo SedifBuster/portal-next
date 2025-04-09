@@ -6,9 +6,9 @@ import MobileItem from "./MobileItem"
 
 import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
-import useRoutes from "@/src/app/hooks/useRoutes"
-import useConversation from "@/src/app/hooks/useConversation"
-import usePrivateRoutes from "@/src/app/hooks/usePrivateRoutes"
+import useRoutes from "@/src/shared/hooks/useRoutes"
+import useConversation from "@/src/shared/hooks/useConversation"
+import usePrivateRoutes from "@/src/shared/hooks/usePrivateRoutes"
 
 export default function MobileFooter() {
     const routes = useRoutes()

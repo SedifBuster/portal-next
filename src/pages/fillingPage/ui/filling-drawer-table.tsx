@@ -1,6 +1,5 @@
 "use client"
 
-
 import { DashDepartment } from "@prisma/client"
 import { ReactNode, useState } from "react"
 import { saveAs } from "file-saver"
@@ -11,7 +10,6 @@ import toast from "react-hot-toast"
 import { CustomLoading } from "./filling-drawer-table-custom-loading"
 import { DashDate } from "./filling-table-dash-date"
 import clsx from "clsx"
-
 
 import { HiMiniCloudArrowDown, HiMiniCloudArrowUp } from "react-icons/hi2";
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "@/src/shared/ui/drawer"
@@ -28,14 +26,12 @@ const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
   table: [
     {
       id: 1,
-      name: 'ТО',
+      name: 'ТО4',
       //wards DashWard[]
-      numberOfSeats: 0,
       //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
       //free: 0, //Свободных коек
       createdAt: new Date(),
       updatedAt: new Date(),
-      //to table
       planHuman: 0,
       planRub: 0,
       begAcc: 0,
@@ -52,14 +48,9 @@ const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
     },
     {
       id: 2,
-      name: 'ХО',
-      //wards DashWard[]
-      numberOfSeats: 0,
-      //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
-      //free: 0, //Свободных коек
+      name: 'ТО3',
       createdAt: new Date(),
       updatedAt: new Date(),
-      //to table
       planHuman: 0,
       planRub: 0,
       begAcc: 0,
@@ -76,14 +67,9 @@ const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
     },
     {
       id: 3,
-      name: 'НО',
-      //wards DashWard[]
-      numberOfSeats: 0,
-      //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
-      //free: 0, //Свободных коек
+      name: 'СМП',
       createdAt: new Date(),
       updatedAt: new Date(),
-      //to table
       planHuman: 0,
       planRub: 0,
       begAcc: 0,
@@ -100,14 +86,9 @@ const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
     },
     {
       id: 4,
-      name: 'Реаб',
-      //wards DashWard[]
-      numberOfSeats: 0,
-      //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
-      //free: 0, //Свободных коек
+      name: 'ХО',
       createdAt: new Date(),
       updatedAt: new Date(),
-      //to table
       planHuman: 0,
       planRub: 0,
       begAcc: 0,
@@ -124,14 +105,47 @@ const defaultDash: {id: number, date: Date, table: DashDepartment[]} = {
     },
     {
       id: 5,
-      name: 'Паллиатив',
-      //wards DashWard[]
-      numberOfSeats: 0,
-      //engaged: 0, //Всего находиться в стационаре, накопительным (чел.) 
-      //free: 0, //Свободных коек
+      name: 'НО',
       createdAt: new Date(),
       updatedAt: new Date(),
-      //to table
+      planHuman: 0,
+      planRub: 0,
+      begAcc: 0,
+      admRec: 0,
+      disCome: 0,
+      disTax: 0,
+      patOver: 0,
+      storColed: 0,
+      transHuman: 0,
+      transRub: 0,
+      medPrice: 0,
+      dolgDead: 0,
+      dashId: 0,
+    },
+    {
+      id: 6,
+      name: 'Реаб',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      planHuman: 0,
+      planRub: 0,
+      begAcc: 0,
+      admRec: 0,
+      disCome: 0,
+      disTax: 0,
+      patOver: 0,
+      storColed: 0,
+      transHuman: 0,
+      transRub: 0,
+      medPrice: 0,
+      dolgDead: 0,
+      dashId: 0,
+    },
+    {
+      id: 7,
+      name: 'Паллиатив',
+      createdAt: new Date(),
+      updatedAt: new Date(),
       planHuman: 0,
       planRub: 0,
       begAcc: 0,
@@ -234,7 +248,6 @@ export
         return {
           id: item.id,
           name: item.name,
-          numberOfSeats: item.numberOfSeats,
           planHuman: item.planHuman,
           planRub: item.planRub,
           begAcc: item.begAcc,
@@ -255,7 +268,6 @@ export
         return {
           id: item.id,
           name: item.name,
-          numberOfSeats: item.numberOfSeats,
           planHuman: item.planHuman,
           planRub: item.planRub,
           begAcc: item.begAcc,
@@ -345,8 +357,8 @@ export
       else if (typeof resultDash === 'number' && isNewDepartments) {
         const filteredDeps = isNewDepartments.map((dep) => {
           return {
-            name: dep.name,
-            numberOfSeats: dep.numberOfSeats,
+            //@ts-ignore
+            name: dep.name_,
             planHuman: dep.planHuman,
             planRub: dep.planRub,
             begAcc: dep.begAcc,
@@ -404,7 +416,6 @@ export
             return {
               id: table[index].id,
               name: dep.name,
-              numberOfSeats: dep.numberOfSeats,
               planHuman: dep.planHuman,
               planRub: dep.planRub,
               begAcc: dep.begAcc,
@@ -441,6 +452,8 @@ export
 
   }
 
+
+
   return (
     <Drawer>
       {button}
@@ -469,10 +482,10 @@ export
         <div>
           <main
             className="
-              m-2
+              m-0
               text-center
               shadow-xl
-              p-2
+              p-0
             "
           >
             {
@@ -550,8 +563,7 @@ export
             </div>
             <Table
               className="
-                mb-20
-                mt-6
+                mt-2
               "
             >
               <TableCaption> таблица заполнения </TableCaption>
@@ -780,7 +792,7 @@ export
                 //если таблицы нет, ставит дефолт даш
                 defaultDash.table.map((row: DashDepartment, index) => {
                   return <TableRow key={row.id}>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.name}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -795,7 +807,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.planHuman}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -810,7 +822,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.planRub}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -825,7 +837,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.begAcc}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -840,7 +852,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.admRec}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -855,7 +867,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.disCome}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -870,7 +882,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.disTax}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -885,7 +897,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.patOver}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -900,7 +912,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.storColed}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -915,7 +927,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.transHuman}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -930,7 +942,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.transRub}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -945,7 +957,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.medPrice}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -960,7 +972,7 @@ export
                         : ''
                       }
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="p-0 m-0">
                       {row.dolgDead}
                       {isNewDepartments ?
                         <div className="text-green-400">
@@ -979,9 +991,9 @@ export
                 })
               }
               {
-                isNewDepartments && isNewDepartments.length > 5
+                isNewDepartments && isNewDepartments.length > 7
                 ?
-                isNewDepartments.slice(5).map((row) => { return <TableRow key={row.id}>
+                isNewDepartments.slice(7).map((row) => { return <TableRow key={row.id}>
                 <TableCell>
                   <div className="text-green-400">
                     {row.name}

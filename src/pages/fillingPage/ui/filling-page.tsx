@@ -1,10 +1,10 @@
-import { Owerview } from "./filling-owerview";
+import { FillingOwerview } from "./filling-owerview";
 
 
-export default function FillingPage() {
+export function FillingPage() {
     return (
       <div className="flex justify-center">
-             <Owerview />
+             <FillingOwerview />
       </div>
     )
   }
