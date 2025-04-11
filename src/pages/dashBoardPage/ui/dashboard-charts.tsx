@@ -1,16 +1,10 @@
 "use client"
-
 import { Bar, BarChart, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 //@ts-ignore
 import { DefaultTooltipContent } from 'recharts/lib/component/DefaultTooltipContent';
-import { DashDepartment } from "@prisma/client";
-
-interface ChartsProps {
-  data: DashDepartment[],
-}
+import { ChartsProps } from "../model/models";
 
 const CustomTooltip = (props: any) => {
-
   if (!props.active) return null
 
   if(props.type === 'Line') {
@@ -31,17 +25,13 @@ const CustomTooltip = (props: any) => {
         color: 'rgba(144, 219, 244, 1)',
       },
     ]
-
     return <DefaultTooltipContent {...props} payload={newPayload} />;
 
   } else if(props.type === 'Chart') {
-
     const newPayload = [
       {
         name: 'План (руб.)',
-        // all your data which created the tooltip is located in the .payload property
         value: props.payload[0].value,
-        // you can also add "unit" here if you need it
         color: 'rgba(75, 192, 192, 1)',
       },
       {
@@ -57,7 +47,6 @@ const CustomTooltip = (props: any) => {
     ];
 
     return <DefaultTooltipContent {...props} payload={newPayload} />;
-
   }
 }
 
@@ -70,7 +59,7 @@ export
     <div  className="flex ml-12 mr-12">
       <>
         <ResponsiveContainer width="100%" height={350}>
-          <BarChart data={/*isChartData */data}>
+          <BarChart data={data}>
             <XAxis
               dataKey="name"
               stroke="#888888"

@@ -1,4 +1,3 @@
-import * as React from "react"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -682,42 +681,13 @@ export
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
     []
   )
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
+    useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = useState({})
   const [isData, setData] = useState<any>([])
   const table = useReactTable({
     data: isData,
@@ -737,19 +707,19 @@ export
       rowSelection,
     },
   })
-  const [chartData, setChartData] = React.useState<DashDepartment[]>()
+  const [chartData, setChartData] = useState<DashDepartment[]>()
   const [isWardsNow, setWardsNow] = useState<Ward[]>([])
   const [isDeparmentsNow, setDeparmentsNow] = useState<any[]>([])
   //const [isTaken, setTaken] = useState<any[]>([])
   //@ts-ignore
   let isChartData = data.filter((i) => i.name.toLowerCase() !== "Паллиатив".toLowerCase()).concat([stateLpu])
-  React.useEffect(() => {
+  useEffect(() => {
     if(data && stateLpu) {
       setChartData(isChartData)
     }
   }, [data, stateLpu])
 
-  React.useEffect(() => {
+  useEffect(() => {
     if(chartData) 
       setChartData(chartData)
   }, [isChartData])
@@ -1280,36 +1250,6 @@ export
 
 
                   <ScrollArea className="h-[38rem] w-full rounded-md">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
