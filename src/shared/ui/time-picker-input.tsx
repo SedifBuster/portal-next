@@ -1,9 +1,9 @@
 
-import { getArrowByType, getDateByType, Period, setDateByType, TimePickerType } from "@/lib/time-picker-utils";
+import { getArrowByType, getDateByType, Period, setDateByType, TimePickerType } from "@/src/shared/lib/time-picker-utils";
 
 
  
-import { cn } from "@/lib/utils";
+import { cn } from "@/src/shared/lib/utils";
 import React from "react";
 import { Input } from "./input";
 

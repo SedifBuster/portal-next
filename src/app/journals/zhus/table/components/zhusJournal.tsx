@@ -4,7 +4,7 @@ import { ZhusTable } from "./zhusTable";
 import { IZhus } from "../page";
 import { useCallback, useEffect, useState } from "react";
 import { ru } from "date-fns/locale"
-import { cn } from "@/lib/utils"
+import { cn } from "@/src/shared/lib/utils"
 import { CalendarIcon } from "@radix-ui/react-icons"
 import { format } from "date-fns"
 

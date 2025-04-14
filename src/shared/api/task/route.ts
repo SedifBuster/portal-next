@@ -1,5 +1,5 @@
 
-import prisma from "@/lib/prismadb"
+import prisma from "@/src/shared/lib/prismadb"
 import { NextResponse } from "next/server"
 
 export

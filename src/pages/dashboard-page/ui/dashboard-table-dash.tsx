@@ -8,9 +8,7 @@ import { DashSkeleton } from "./dashboard-dash-skeleton"
 import { DashPagination} from "./dashboard-dash-pagination"
 import {toast} from "react-hot-toast"
 import axios from "axios"
-
-export
-  interface DashInit extends Dash { table: DashDepartment[]}
+import { DashInit } from "../model/models"
 
 export
   function TableDash({
