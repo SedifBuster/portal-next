@@ -390,9 +390,9 @@ export function TableTest(
     []
   )
 
-  const [expanded, setExpanded] = useState<ExpandedState>({})
+const [expanded, setExpanded] = useState<ExpandedState>({})
 
-  const table = useReactTable({
+const table = useReactTable({
     data: isFinal,
     columns,
     state: {
@@ -405,7 +405,7 @@ export function TableTest(
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getRowCanExpand: () => true,
-  })
+})
 
   return (
     <div className="">
