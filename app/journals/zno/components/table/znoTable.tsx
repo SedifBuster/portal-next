@@ -24,6 +24,7 @@ import {
 import ZnoTableHead from "./znoTableHead"
 import { ru } from "date-fns/locale"
 import { format } from "date-fns"
+import ZnoRowCreateNew from "./znoRowCreateNew"
 
 const data: IZno[] = [
   {
@@ -343,8 +344,6 @@ const data: IZno[] = [
               },
   ]
 
-  console.log(data)
-
 export type StatusEnum = "awaitingReferralToCAOP" |//ожидает направления в ЦАОП
                   "awaitingReferralToPKOD" |//ожидает направления в ПКОД
                   "waitingForAConsultation" |//Ожидает консилиум
@@ -399,11 +398,13 @@ export interface IZno {
   statusNote: string                        //green
 }
 
+const isDate = (obj: Object) => Object.prototype.toString.call(obj) === '[object Date]';
+
 export const columns: ColumnDef<IZno>[] = [
   {
-    id: "createdAt",
+    accessorKey: "createdAt",
     cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("createdAt")/**format(row.getValue("createdAt"), "PPP HH:mm", {locale: ru})*/}</div>
+        <div className="capitalize">{isDate(row.getValue("createdAt"))? format(row.getValue("createdAt"), "PPP HH:mm", {locale: ru}) : row.getValue("createdAt")}</div>
     ),
   },
   {
@@ -414,102 +415,63 @@ export const columns: ColumnDef<IZno>[] = [
   },
   {
     accessorKey: "dateOfBirth",
-    cell: ({ row }) => <div className="lowercase">{row.getValue("dateOfBirth").toString()}</div>,
+    cell: ({ row }) => <div className="lowercase">{isDate(row.getValue("dateOfBirth"))? format(row.getValue("dateOfBirth"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfBirth")}</div>,
   },
   {
     accessorKey: "localization",
-    cell: ({ row }) => {
-        <div className="capitalize">{row.getValue("localization")}</div>
-    },
+    cell: ({ row }) => <div className="capitalize">{row.getValue("localization")}</div>
   },
   {
-    id: "phoneNumber",
-    enableHiding: false,
-    cell: ({ row }) => {
-        <div className="capitalize">{row.getValue("phoneNumber")}</div>
-    },
+    accessorKey: "phoneNumber",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("phoneNumber")}</div>
   },
   {
-    id: "numberOfHistory",
-    cell: ({ row }) => {
-        <div className="capitalize">{row.getValue("numberOfHistory")}</div>
-    },
+    accessorKey: "numberOfHistory",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("numberOfHistory")}</div>
   },
   {
-    id: "directedWher",
-    enableHiding: false,
-    cell: ({ row }) => {
-        <div className="capitalize">{row.getValue("directedWher")}</div>
-    },
+    accessorKey: "directedWher",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("directedWher")}</div>
   },
   {
-    id: "diagnosisVKB",
-    cell: ({ row }) => {
-        <div className="capitalize">{row.getValue("diagnosisVKB")}</div>
-    },
+    accessorKey: "diagnosisVKB",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("diagnosisVKB")}</div>
   },
   {
-    id: "dateOfReferralToCAOP",
-    enableHiding: false,
-    cell: ({ row }) => {
-        <div className="capitalize">{row.getValue("dateOfReferralToCAOP")}</div>
-    },
+    accessorKey: "dateOfReferralToCAOP",
+    cell: ({ row }) => <div className="capitalize">{isDate(row.getValue("dateOfReferralToCAOP"))? format(row.getValue("dateOfReferralToCAOP"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfReferralToCAOP")}</div>
   },
   {
-    id: "dateOfVisitToCAOP",
-    enableHiding: false,
-    cell: ({ row }) => {
-        <div className="capitalize">{row.getValue("dateOfVisitToCAOP")}</div>
-    },
+    accessorKey: "dateOfVisitToCAOP",
+    cell: ({ row }) => <div className="capitalize">{isDate(row.getValue("dateOfVisitToCAOP"))? format(row.getValue("dateOfVisitToCAOP"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfVisitToCAOP")}</div>
   },
   {
-    id: "diagnosisOfCAOP",
-    enableHiding: false,
-    cell: ({ row }) => {
-        <div className="capitalize">{row.getValue("diagnosisOfCAOP")}</div>
-    },
+    accessorKey: "diagnosisOfCAOP",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("diagnosisOfCAOP")}</div>
   },
   {
-    id: "dateOfVisitToPKOD",
-    enableHiding: false,
-    cell: ({ row }) => {
-        <div className="capitalize">{row.getValue("dateOfVisitToPKOD")}</div>
-    },
+    accessorKey: "dateOfVisitToPKOD",
+    cell: ({ row }) => <div className="capitalize">{isDate(row.getValue("dateOfVisitToPKOD"))? format(row.getValue("dateOfVisitToPKOD"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfVisitToPKOD")}</div>
   },
   {
-    id: "diagnosisOfPKOD",
-    enableHiding: false,
-    cell: ({ row }) => {
-        <div className="capitalize">{row.getValue("diagnosisOfPKOD")}</div>
-    },
+    accessorKey: "diagnosisOfPKOD",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("diagnosisOfPKOD")}</div>
   },
   {
-    id: "dateOfTheConsultation",
-    enableHiding: false,
-    cell: ({ row }) => {
-        <div className="capitalize">{row.getValue("dateOfTheConsultation")}</div>
-    },
+    accessorKey: "dateOfTheConsultation",
+    cell: ({ row }) => <div className="capitalize">{isDate(row.getValue("dateOfTheConsultation"))? format(row.getValue("dateOfTheConsultation"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfTheConsultation")}</div>
   },
   {
-    id: "dateOfLastCallAndPersonalContact",
-    enableHiding: false,
-    cell: ({ row }) => {
-        <div className="capitalize">{row.getValue("dateOfLastCallAndPersonalContact")}</div>
-    },
+    accessorKey: "dateOfLastCallAndPersonalContact",
+    cell: ({ row }) => <div className="capitalize">{isDate(row.getValue("dateOfLastCallAndPersonalContact"))? format(row.getValue("dateOfLastCallAndPersonalContact"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfLastCallAndPersonalContact")}</div>
   },
   {
-    id: "status",
-    enableHiding: false,
-    cell: ({ row }) => {
-        <div className="capitalize">{row.getValue("status")}</div>
-    },
+    accessorKey: "status",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("status")}</div>
   },
   {
-    id: "statusNote",
-    enableHiding: false,
-    cell: ({ row }) => {
-        <div className="capitalize">{row.getValue("statusNote")}</div>
-    },
+    accessorKey: "statusNote",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("statusNote")}</div>
   },
 ]
 
@@ -541,6 +503,12 @@ const table = useReactTable({
   },
 })
 
+const [visibility, setVisibility] = React.useState<boolean>(false)
+
+const onChangeVisibility = (vis: boolean) => {
+        setVisibility(!vis)
+}
+//миша все хуйня давай по новой
   return (
     <div className="w-full p-2 pt-1">
       <div className="flex items-center py-4">
@@ -555,8 +523,11 @@ const table = useReactTable({
       </div>
       <div className="rounded-md border">
         <Table>
-          <ZnoTableHead />
+          <ZnoTableHead/>
           <TableBody>
+            <>
+            <ZnoRowCreateNew  vis={visibility} onChangeVis={onChangeVisibility}/>
+            </>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
