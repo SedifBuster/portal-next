@@ -190,6 +190,63 @@ model Log {
   id          Int       @id @default(autoincrement())
 }
 
+model ZnoLog {
+  id          Int           @id @default(autoincrement())
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt @default(now())
+  name        String        //yellow
+  dateOfBirth DateTime      //yellow
+  localization Localization //yellow
+  phoneNumber String        //yellow
+  numberOfHistory String    //yellow
+  directedWher String?                       //green
+  diagnosisVKB String?                       //green
+  dateOfReferralToCAOP DateTime?             //green
+  dateOfVisitToCAOP DateTime?                //green
+  diagnosisOfCAOP String?                    //green
+  dateOfVisitToPKOD DateTime?                //green
+  diagnosisOfPKOD String                     //green
+  dateOfTheConsultation DateTime?            //green
+  dateOfLastCallAndPersonalContact DateTime? //green
+  status StatusZno?                          //green
+  statusNote String?                         //green
+}
+
+enum Localization {
+  ZNOOfTheLipOropharynx//ЗНО ГУБЫ (МКБ-10: С00), РОТОГЛОТКИ (МКБ 10:С01, С02.4, C05.1, С05.2, C09, C10), ПОЛОСТИ РТА (МКБ 10:C02.0, C02.1, C02.2, C02.3, C02.8, C02.9, С03, С04, C05.0, С06)
+  MalignancyOfTheEsophagusCardia//ЗНО ПИЩЕВОДА, КАРДИИ (МКБ-10: С15, С16.0)
+  ZNOStomachCancer//ЗНО ЖЕЛУДКА  (МКБ-10: С16)
+  MalignancyOfTheColonRectoSigMoidJointRectumAnusAnal//ЗНО ОБОДОЧНОЙ КИШКИ, РЕКТО-СИГМОИДНОГО СОЕДИНЕНИЯ, ПРЯМОЙ КИШКИ, ЗАДНЕГО ПРОХОДА (АНУСА) И АНАЛЬНОГО КАНАЛА  (МКБ-10: С18, С19, С20, С21)
+  CancerOfTheLiverAndIntraheraticBileDucts//ЗНО ПЕЧЕНИ И ВНУТРИПЕЧЕНОЧНЫХ ЖЕЛЧНЫХ ПРОТОКОВ  (МКБ-10: С22)
+  OncologyOfTheBiliarySystem//ЗНО ЖЕЛЧЕВЫВОДЯЩЕЙ СИСТЕМЫ (МКБ-10: С22.1, С23, С24.0)
+  PancreaticCancer//ЗНО ПОДЖЕЛУДОЧНОЙ ЖЕЛЕЗЫ  (МКБ-10: С25)
+  NeuroendocrineTumor//НЕЙРОЭНДОКРИНННОЙ ОПУХОЛИ (МКБ-10: C15, C16, C17, C18, C19.9, C20.9, C21, C23, C24, C25, C26, C34, C37.9, C73.9
+  LarynxDisease//ЗНО ГОРТАНИ  (МКБ-10: С32)
+  MalignancyOfTheTracheaLungMediastinumAndPleura//ЗНО ТРАХЕИ, ЛЕГКОГО, ВИЛОЧКОВОЙ ЖЕЛЕЗЫ, СРЕДОСТЕНИЯ И ПЛЕВРЫ   (МКБ-10: С33, С34, С37, С38)
+  MelanomasAndMucousMembranes//МЕЛАНОМЫ И СЛИЗИСТЫХ ОБОЛОЧЕК  (МКБ-10: C43, C51, C60.9, C63.2, C69.0, C00–C26, C30-C32, C52, C53 C77, C78, C79 D03.0-D03.9)
+  SquamousCellSkinCarcinomaBasalCellSkinCarcinomaMerkelsCarcinoma//ПЛОСКОКЛЕТОЧНОГО РАКА КОЖИ, БАЗАЛЬНО-КЛЕТОЧНОГО РАКА КОЖИ, КАРЦИНОМЫ МЕРКЕЛЯ (МКБ-10: С44, D04)
+  SoftTissueSarcoma//ЗНО САРКОМЫ МЯГКИХ ТКАНЕЙ  (МКБ-10: С 49)
+  BreastCancer//ЗНО МОЛОЧНОЙ ЖЕЛЕЗЫ  (МКБ-10: С50)
+  MalignancyOfTheVaulvaVaginaCervix//ЗНО ВУЛЬВЫ, ВЛАГАЛИЩА, ШЕЙКИ МАТКИ,  (МКБ-10: С51, С52, С53) 
+  EndometralDisease//ЗНО ЭНДОМЕТРИЯ  (МКБ-10: С54)
+  OvarianCancerBorderlineTumorsNonepithelialTumorsOvarianCancer//ЗНО ЯИЧНИКОВ: ПОГРАНИЧНЫЕ ОПУХОЛИ, НЕЭПИТЕЛИАЛЬНЫЕ ОПУХОЛИ, РАК ЯИЧНИКОВ (РАК МАТОЧНОЙ ТРУБЫ), ПЕРВИЧНЫЙ РАК БРЮШИНЫ В ЦАОП (МКБ-10: С56, С48.0, С48.2, С57)
+  ProstateCancer//ЗНО ПРЕДСТАТЕЛЬНОЙ ЖЕЛЕЗЫ  (МКБ-10: С61)
+  TesticularCancer//ЗНО ЯИЧКА  (МКБ-10: С62)
+  MalignancyOfTheRenalPelvisGlasCase//ЗНО ПАРЕНХИМЫ ПОЧКИ, ЛОХАНКИ, ОЧЕТОЧНИКА (МКБ-10: С 64, С65, С66 )
+  BladderCancer//ЗНО МОЧЕВОГО ПУЗЫРЯ  (МКБ-10: С67)
+  PrimaryTumorsOfTheCentralNervousSystemLimphoma//ПЕРВИЧНЫХ ОПУХОЛЕЙ ЦЕНТРАЛЬНОЙ НЕРВНОЙ СИСТЕМЫ (МКБ-10: С70, С71, С72, С75, С76), ПЕРВИЧНОЙ ЛИМФОМЫ ЦЕНТРАЛЬНОЙ НЕРВНОЙ СИСТЕМЫ (МКБ 10: С81, С82, С83, С84, С85, С86, С87, С88) 
+  ThyroidCancer//ЗНО ЩИТОВИДНОЙ ЖЕЛЕЗЫ (МКБ-10: С73)
+  ZnoWithoutPrimaryLocalization//ЗНО БЕЗ ПЕРВИЧНОЙ ЛОКАЛИЗАЦИИ (МКБ-10: С80)
+  HodgkinsLymphomaInAdultsFollicularLymphomaInAdults//ЛИМФОМА ХОДЖКИНА У ВЗРОСЛЫХ (МКБ-10: С81), ФОЛЛИКУЛЯРНАЯ ЛИМФОМА У ВЗРОСЛЫХ (МКБ-10: С82), НЕХОДЖКИНСКАЯ ЛИМФОМА (МКБ-10: С83)
+}
+
+enum StatusZno {
+  awaitingReferralToCAOP//ожидает направления в ЦАОП
+  awaitingReferralToPKOD//ожидает направления в ПКОД
+  waitingForAConsultation//Ожидает консилиум
+  Completed//Завершено
+} 
+
 enum DepartmentLog {
   Policlinic      //Поликлиника
   Reception       //Приемное

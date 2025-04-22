@@ -25,6 +25,7 @@ import ZnoTableHead from "./znoTableHead"
 import { ru } from "date-fns/locale"
 import { format } from "date-fns"
 import ZnoRowCreateNew from "./znoRowCreateNew"
+import { Localization, StatusZno } from "@prisma/client"
 
 const data: IZno[] = [
   {
@@ -376,6 +377,138 @@ export type LocalizationEnum = //PIZDEC
   "ZnoWithoutPrimaryLocalization" |//ЗНО БЕЗ ПЕРВИЧНОЙ ЛОКАЛИЗАЦИИ (МКБ-10: С80)
   "HodgkinsLymphomaInAdultsFollicularLymphomaInAdults"//ЛИМФОМА ХОДЖКИНА У ВЗРОСЛЫХ (МКБ-10: С81), ФОЛЛИКУЛЯРНАЯ ЛИМФОМА У ВЗРОСЛЫХ (МКБ-10: С82), НЕХОДЖКИНСКАЯ ЛИМФОМА (МКБ-10: С83) 
 
+export interface UnitLocalization {
+    value: Localization,
+    text: string,
+} 
+
+export interface UnitStatus {
+    value: StatusZno,
+    text: string
+}
+
+const localisations: UnitLocalization[] = [
+    {
+      value: 'ZNOOfTheLipOropharynx',
+      text: "ЗНО ГУБЫ (МКБ-10: С00), РОТОГЛОТКИ (МКБ 10:С01, С02.4, C05.1, С05.2, C09, C10), ПОЛОСТИ РТА (МКБ 10:C02.0, C02.1, C02.2, C02.3, C02.8, C02.9, С03, С04, C05.0, С06)"
+    },
+    {
+      value: 'MalignancyOfTheEsophagusCardia',
+      text: "ЗНО ПИЩЕВОДА, КАРДИИ (МКБ-10: С15, С16.0)"
+    },
+    {
+      value: 'ZNOStomachCancer',
+      text: "ЗНО ЖЕЛУДКА  (МКБ-10: С16)"
+    },
+    {
+      value: 'MalignancyOfTheColonRectoSigMoidJointRectumAnusAnal',
+      text: "ЗНО ОБОДОЧНОЙ КИШКИ, РЕКТО-СИГМОИДНОГО СОЕДИНЕНИЯ, ПРЯМОЙ КИШКИ, ЗАДНЕГО ПРОХОДА (АНУСА) И АНАЛЬНОГО КАНАЛА  (МКБ-10: С18, С19, С20, С21)"
+    },
+    {
+      value: 'CancerOfTheLiverAndIntraheraticBileDucts',
+      text: "ЗНО ПЕЧЕНИ И ВНУТРИПЕЧЕНОЧНЫХ ЖЕЛЧНЫХ ПРОТОКОВ  (МКБ-10: С22)"
+    },
+    {
+      value: 'OncologyOfTheBiliarySystem',
+      text: "ЗНО ЖЕЛЧЕВЫВОДЯЩЕЙ СИСТЕМЫ (МКБ-10: С22.1, С23, С24.0)"
+    },
+    {
+      value: 'PancreaticCancer',
+      text: "ЗНО ПОДЖЕЛУДОЧНОЙ ЖЕЛЕЗЫ  (МКБ-10: С25)"
+    },
+    {
+      value: 'NeuroendocrineTumor',
+      text: "НЕЙРОЭНДОКРИНННОЙ ОПУХОЛИ (МКБ-10: C15, C16, C17, C18, C19.9, C20.9, C21, C23, C24, C25, C26, C34, C37.9, C73.9)"
+    },
+    {
+      value: 'LarynxDisease',
+      text: "ЗНО ГОРТАНИ  (МКБ-10: С32)"
+    },
+    {
+      value: 'MalignancyOfTheTracheaLungMediastinumAndPleura',
+      text: "ЗНО ТРАХЕИ, ЛЕГКОГО, ВИЛОЧКОВОЙ ЖЕЛЕЗЫ, СРЕДОСТЕНИЯ И ПЛЕВРЫ   (МКБ-10: С33, С34, С37, С38)"
+    },
+    {
+      value: 'MelanomasAndMucousMembranes',
+      text: "МЕЛАНОМЫ И СЛИЗИСТЫХ ОБОЛОЧЕК  (МКБ-10: C43, C51, C60.9, C63.2, C69.0, C00–C26, C30-C32, C52, C53 C77, C78, C79 D03.0-D03.9)"
+    },
+    {
+      value: 'SquamousCellSkinCarcinomaBasalCellSkinCarcinomaMerkelsCarcinoma',
+      text: "ПЛОСКОКЛЕТОЧНОГО РАКА КОЖИ, БАЗАЛЬНО-КЛЕТОЧНОГО РАКА КОЖИ, КАРЦИНОМЫ МЕРКЕЛЯ (МКБ-10: С44, D04)"
+    },
+    {
+      value: 'SoftTissueSarcoma',
+      text: "ЗНО САРКОМЫ МЯГКИХ ТКАНЕЙ  (МКБ-10: С 49)"
+    },
+    {
+      value: 'BreastCancer',
+      text: "ЗНО МОЛОЧНОЙ ЖЕЛЕЗЫ  (МКБ-10: С50)"
+    },
+    {
+      value: 'MalignancyOfTheVaulvaVaginaCervix',
+      text: "ЗНО ВУЛЬВЫ, ВЛАГАЛИЩА, ШЕЙКИ МАТКИ,  (МКБ-10: С51, С52, С53)"
+    },
+    {
+      value: 'EndometralDisease',
+      text: "ЗНО ЭНДОМЕТРИЯ  (МКБ-10: С54)"
+    },
+    {
+      value: 'OvarianCancerBorderlineTumorsNonepithelialTumorsOvarianCancer',
+      text: "ЗНО ЯИЧНИКОВ: ПОГРАНИЧНЫЕ ОПУХОЛИ, НЕЭПИТЕЛИАЛЬНЫЕ ОПУХОЛИ, РАК ЯИЧНИКОВ (РАК МАТОЧНОЙ ТРУБЫ), ПЕРВИЧНЫЙ РАК БРЮШИНЫ В ЦАОП (МКБ-10: С56, С48.0, С48.2, С57)"
+    },
+    {
+      value: 'ProstateCancer',
+      text: "ЗНО ПРЕДСТАТЕЛЬНОЙ ЖЕЛЕЗЫ  (МКБ-10: С61)"
+    },
+    {
+      value: 'TesticularCancer',
+      text: "ЗНО ЯИЧКА  (МКБ-10: С62)"
+    },
+    {
+      value: 'MalignancyOfTheRenalPelvisGlasCase',
+      text: "ЗНО ПАРЕНХИМЫ ПОЧКИ, ЛОХАНКИ, ОЧЕТОЧНИКА (МКБ-10: С 64, С65, С66 )"
+    },
+    {
+      value: 'BladderCancer',
+      text: "ЗНО МОЧЕВОГО ПУЗЫРЯ  (МКБ-10: С67)"
+    },
+    {
+      value: 'PrimaryTumorsOfTheCentralNervousSystemLimphoma',
+      text: "ПЕРВИЧНЫХ ОПУХОЛЕЙ ЦЕНТРАЛЬНОЙ НЕРВНОЙ СИСТЕМЫ (МКБ-10: С70, С71, С72, С75, С76), ПЕРВИЧНОЙ ЛИМФОМЫ ЦЕНТРАЛЬНОЙ НЕРВНОЙ СИСТЕМЫ (МКБ 10: С81, С82, С83, С84, С85, С86, С87, С88)"
+    },
+    {
+      value: 'ThyroidCancer',
+      text: "ЗНО ЩИТОВИДНОЙ ЖЕЛЕЗЫ (МКБ-10: С73)"
+    },
+    {
+      value: 'ZnoWithoutPrimaryLocalization',
+      text: "ЗНО БЕЗ ПЕРВИЧНОЙ ЛОКАЛИЗАЦИИ (МКБ-10: С80)"
+    },
+    {
+      value: 'HodgkinsLymphomaInAdultsFollicularLymphomaInAdults',
+      text: "ЛИМФОМА ХОДЖКИНА У ВЗРОСЛЫХ (МКБ-10: С81), ФОЛЛИКУЛЯРНАЯ ЛИМФОМА У ВЗРОСЛЫХ (МКБ-10: С82), НЕХОДЖКИНСКАЯ ЛИМФОМА (МКБ-10: С83)"
+    },
+]
+
+const statuses: UnitStatus[] = [
+  {
+    value: "awaitingReferralToCAOP",
+    text: "ожидает направления в ЦАОП"
+  },
+  {
+    value: "awaitingReferralToPKOD",
+    text: "ожидает направления в ПКОД"
+  },
+  {
+    value: "waitingForAConsultation",
+    text: "Ожидает консилиум"
+  },
+  {
+    value: "Completed",
+    text: "Завершено"
+  },
+]
+
 export interface IZno {
   id: number
   createdAt: Date
@@ -512,6 +645,7 @@ const onChangeVisibility = (vis: boolean) => {
   return (
     <div className="w-full p-2 pt-1">
       <div className="flex items-center py-4">
+      <ZnoRowCreateNew  localisations={localisations} statuses={statuses}/>
         <Input
           placeholder="Найти ФИО..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -526,7 +660,7 @@ const onChangeVisibility = (vis: boolean) => {
           <ZnoTableHead/>
           <TableBody>
             <>
-            <ZnoRowCreateNew  vis={visibility} onChangeVis={onChangeVisibility}/>
+            
             </>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
