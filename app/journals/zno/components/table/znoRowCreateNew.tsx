@@ -33,6 +33,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { toast } from "sonner"
 import DateTimePicker from "../../components/dateTime/dateTimePicker"
 import { UnitLocalization, UnitStatus } from "./znoTable"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@radix-ui/react-select"
 
 const formSchema = z.object({
     name: z.string().min(3, {
@@ -68,19 +70,13 @@ export default function ZnoRowCreateNew ({
     resolver: zodResolver(formSchema),
     defaultValues: {
         name: "",
-        dateOfBirth: new Date(),
         localization: "",
         phoneNumber: "",
         numberOfHistory: "",
         directedWher: "",
         diagnosisVKB: "",
-        dateOfReferralToCAOP: new Date(),
-        dateOfVisitToCAOP: new Date(),
         diagnosisOfCAOP: "",
-        dateOfVisitToPKOD: new Date(),
         diagnosisOfPKOD: "",
-        dateOfTheConsultation: new Date(),
-        dateOfLastCallAndPersonalContact: new Date(),
         status: "",
         statusNote: ""
     },
@@ -118,7 +114,8 @@ export default function ZnoRowCreateNew ({
         </DialogHeader>
         <div className="grid gap-4 py-4">
         <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 flex">
+                                         <div className="bg-yellow-50 p-6 rounded-md">
           <FormField
             control={form.control}
             name="name"
@@ -177,23 +174,347 @@ export default function ZnoRowCreateNew ({
                 <FormLabel>Локализация</FormLabel>
                 <FormControl>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <SelectTrigger className="w-[700px]">
+                  <SelectTrigger className="w-[400px]">
                     <SelectValue placeholder="не выбрано" />
                     </SelectTrigger>
                     <SelectContent>
-                      {
-                        localisations.map(loc => {
-                            return <SelectItem key={loc.value} value={loc.value}>{loc.text}</SelectItem>
-                        })
-                      }
-                    </SelectContent>
+                    <ScrollArea className="h-96 w-full rounded-md border">
+                        <div className="p-4">
+                                {//тут убрать длину  у селект валуе
+                                localisations.map((loc) => (
+                                    <>
+                                        <SelectItem key={loc.value} value={loc.value}>{loc.text}</SelectItem>
+                                        <Separator className="my-2" />
+                                    </>
+                                ))}
+                        </div>
+                    </ScrollArea>
+                  </SelectContent>
                 </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+          <FormField
+              control={form.control}
+              name="phoneNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Телефон</FormLabel>
+                  <FormControl>
+                    <Input className="w-[200px]" placeholder="+79999999999" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+          />
+          <FormField
+              control={form.control}
+              name="numberOfHistory"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>№ истории</FormLabel>
+                  <FormControl>
+                    <Input className="w-[200px]" placeholder="2255/56" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+          />
+          </div>
           {
+          !form.getFieldState('numberOfHistory').isDirty || !form.getFieldState('dateOfBirth').isDirty ||
+          !form.getFieldState('localization').isDirty || !form.getFieldState('phoneNumber').isDirty
+          || !form.getFieldState('name').isDirty
+          ?
+          ''
+          :
+                         <div className="bg-green-50 p-6 rounded-md flex flex-wrap">
+          <FormField
+            control={form.control}
+            name="directedWher"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Направлен(а) куда</FormLabel>
+                <FormControl>
+                  <Input className="w-[200px]"  {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="diagnosisVKB"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Диагноз ВКБ4</FormLabel>
+                <FormControl>
+                  <Input className="w-[200px]"  {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="dateOfReferralToCAOP"
+            render={({ field }) => (
+              <FormItem className="flex flex-col pt-2">
+                <FormLabel className="pb-0.5">Дата направления в ЦАОП</FormLabel>
+                <FormControl>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                        "w-[200px] justify-start text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                        )}
+                      >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {field.value ? format(field.value, "PPP", {locale: ru}) : <span>Выберите время*</span>}
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                         mode="single"
+                         selected={field.value}
+                         onSelect={field.onChange}
+                         initialFocus
+                         locale={ru}
+                        />
+                        <div className="p-2 flex justify-center border-t">
+                        <DateTimePicker date={field.value} setDate={field.onChange}/>
+                        </div>
+                        </PopoverContent>
+                </Popover>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          <FormField
+            control={form.control}
+            name="dateOfVisitToCAOP"
+            render={({ field }) => (
+              <FormItem className="flex flex-col pt-2">
+                <FormLabel className="pb-0.5">Дата посещения ЦАОПа</FormLabel>
+                <FormControl>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                        "w-[200px] justify-start text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                        )}
+                      >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {field.value ? format(field.value, "PPP", {locale: ru}) : <span>Выберите время*</span>}
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                         mode="single"
+                         selected={field.value}
+                         onSelect={field.onChange}
+                         initialFocus
+                         locale={ru}
+                        />
+                        <div className="p-2 flex justify-center border-t">
+                        <DateTimePicker date={field.value} setDate={field.onChange}/>
+                        </div>
+                        </PopoverContent>
+                </Popover>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+            control={form.control}
+            name="diagnosisOfCAOP"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Диагноз ЦАОПа</FormLabel>
+                <FormControl>
+                  <Input className="w-[200px]"  {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="dateOfVisitToPKOD"
+            render={({ field }) => (
+              <FormItem className="flex flex-col pt-2">
+                <FormLabel className="pb-0.5">Дата посещения ПКОДа</FormLabel>
+                <FormControl>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                        "w-[200px] justify-start text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                        )}
+                      >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {field.value ? format(field.value, "PPP", {locale: ru}) : <span>Выберите время*</span>}
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                         mode="single"
+                         selected={field.value}
+                         onSelect={field.onChange}
+                         initialFocus
+                         locale={ru}
+                        />
+                        <div className="p-2 flex justify-center border-t">
+                        <DateTimePicker date={field.value} setDate={field.onChange}/>
+                        </div>
+                        </PopoverContent>
+                </Popover>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+            control={form.control}
+            name="diagnosisOfPKOD"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Диагноз ПКОД</FormLabel>
+                <FormControl>
+                  <Input className="w-[200px]"  {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="dateOfTheConsultation"
+            render={({ field }) => (
+              <FormItem className="flex flex-col pt-2">
+                <FormLabel className="pb-0.5">Дата консилиума</FormLabel>
+                <FormControl>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                        "w-[200px] justify-start text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                        )}
+                      >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {field.value ? format(field.value, "PPP", {locale: ru}) : <span>Выберите время*</span>}
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                         mode="single"
+                         selected={field.value}
+                         onSelect={field.onChange}
+                         initialFocus
+                         locale={ru}
+                        />
+                        <div className="p-2 flex justify-center border-t">
+                        <DateTimePicker date={field.value} setDate={field.onChange}/>
+                        </div>
+                        </PopoverContent>
+                </Popover>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          <FormField
+            control={form.control}
+            name="dateOfLastCallAndPersonalContact"
+            render={({ field }) => (
+              <FormItem className="flex flex-col pt-2">
+                <FormLabel className="pb-0.5">Дата последнего звонка/личный контакт</FormLabel>
+                <FormControl>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                        "w-[200px] justify-start text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                        )}
+                      >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {field.value ? format(field.value, "PPP", {locale: ru}) : <span>Выберите время*</span>}
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                         mode="single"
+                         selected={field.value}
+                         onSelect={field.onChange}
+                         initialFocus
+                         locale={ru}
+                        />
+                        <div className="p-2 flex justify-center border-t">
+                        <DateTimePicker date={field.value} setDate={field.onChange}/>
+                        </div>
+                        </PopoverContent>
+                </Popover>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+           <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Текущий статус</FormLabel>
+                <FormControl>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="не выбрано" />
+                    </SelectTrigger>
+                    <SelectContent>
+                    <ScrollArea className="h-96 w-full rounded-md border">
+                        <div className="p-4">
+                                {//тут убрать длину  у селект валуе
+                                statuses.map((status) => (
+                                    <>
+                                        <SelectItem key={status.value} value={status.value}>{status.text}</SelectItem>
+                                        <Separator className="my-2" />
+                                    </>
+                                ))}
+                        </div>
+                    </ScrollArea>
+                  </SelectContent>
+                </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+            <FormField
+            control={form.control}
+            name="statusNote"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Текущий статус примечание</FormLabel>
+                <FormControl>
+                  <Textarea className="w-[200px]"  {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          </div>
+}
+          {
+          /*
            // !form.getFieldState('name').isDirty
            // ?
            // ''
@@ -280,7 +601,7 @@ export default function ZnoRowCreateNew ({
                         problems.map(problem => {
                             return <SelectItem key={problem.value} value={problem.value}>{problem.text}</SelectItem>
                         })
-                      */}
+                      }
                     </SelectContent>
                 </Select>
                 </FormControl>
@@ -356,7 +677,7 @@ export default function ZnoRowCreateNew ({
           />
           <Button className="mt-4" type="submit">Отправить</Button>
           </div>
-          }
+          */}
         </form>
       </Form>
         </div>

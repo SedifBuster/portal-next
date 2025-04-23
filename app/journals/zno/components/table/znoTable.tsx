@@ -26,6 +26,7 @@ import { ru } from "date-fns/locale"
 import { format } from "date-fns"
 import ZnoRowCreateNew from "./znoRowCreateNew"
 import { Localization, StatusZno } from "@prisma/client"
+import ZnoTableRow from "./znoTableRow"
 
 const data: IZno[] = [
   {
@@ -664,19 +665,8 @@ const onChangeVisibility = (vis: boolean) => {
             </>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
+                <ZnoTableRow row={row}/>
+
               ))
             ) : (
               <TableRow>
