@@ -2,13 +2,13 @@
 
 import { TableCell, TableRow } from "@/components/ui/table"
 import { flexRender, Row } from "@tanstack/react-table"
-import { IZno } from "./znoTable"
+import { ZnoLog } from "@prisma/client"
 
 export
   default function ZnoTableRow ({
     row
   } : {
-    row: Row<IZno>
+    row: Row<ZnoLog>
   }) {
 
   return <TableRow

@@ -6,7 +6,6 @@ import {
   ColumnFiltersState,
   SortingState,
   VisibilityState,
-  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
@@ -25,17 +24,33 @@ import ZnoTableHead from "./znoTableHead"
 import { ru } from "date-fns/locale"
 import { format } from "date-fns"
 import ZnoRowCreateNew from "./znoRowCreateNew"
-import { Localization, StatusZno } from "@prisma/client"
+import { Localization, StatusZno, ZnoLog } from "@prisma/client"
 import ZnoTableRow from "./znoTableRow"
+import { useSession } from "next-auth/react"
+import {
+    ContextMenu,
+    ContextMenuCheckboxItem,
+    ContextMenuContent,
+    ContextMenuItem,
+    ContextMenuLabel,
+    ContextMenuRadioGroup,
+    ContextMenuRadioItem,
+    ContextMenuSeparator,
+    ContextMenuShortcut,
+    ContextMenuSub,
+    ContextMenuSubContent,
+    ContextMenuSubTrigger,
+    ContextMenuTrigger,
+  } from "@/components/ui/context-menu"
 
-const data: IZno[] = [
+const data: ZnoLog[] = [
   {
     id: 1,
     createdAt: new Date(),
     updatedAt: new Date(),
     name: "Идукаева  Павла Галиновна",
     dateOfBirth: new Date(),
-    localization: "ZNOOfTheLip/Oropharynx",
+    localization: "ZNOOfTheLipOropharynx",
     phoneNumber: "8999999999",
     numberOfHistory: "2255/56",
     directedWher: "FKS hirurg",
@@ -56,7 +71,7 @@ const data: IZno[] = [
         updatedAt: new Date(),
         name: "Идукаева  Павла Галиновна",
         dateOfBirth: new Date(),
-        localization: "ZNOOfTheLip/Oropharynx",
+        localization: "ZNOOfTheLipOropharynx",
         phoneNumber: "8999999999",
         numberOfHistory: "2255/56",
         directedWher: "FKS hirurg",
@@ -77,7 +92,7 @@ const data: IZno[] = [
         updatedAt: new Date(),
         name: "Идукаева  Павла Галиновна",
         dateOfBirth: new Date(),
-        localization: "ZNOOfTheLip/Oropharynx",
+        localization: "ZNOOfTheLipOropharynx",
         phoneNumber: "8999999999",
         numberOfHistory: "2255/56",
         directedWher: "FKS hirurg",
@@ -98,7 +113,7 @@ const data: IZno[] = [
         updatedAt: new Date(),
         name: "Идукаева  Павла Галиновна",
         dateOfBirth: new Date(),
-        localization: "ZNOOfTheLip/Oropharynx",
+        localization: "ZNOOfTheLipOropharynx",
         phoneNumber: "8999999999",
         numberOfHistory: "2255/56",
         directedWher: "FKS hirurg",
@@ -119,7 +134,7 @@ const data: IZno[] = [
         updatedAt: new Date(),
         name: "Идукаева  Павла Галиновна",
         dateOfBirth: new Date(),
-        localization: "ZNOOfTheLip/Oropharynx",
+        localization: "ZNOOfTheLipOropharynx",
         phoneNumber: "8999999999",
         numberOfHistory: "2255/56",
         directedWher: "FKS hirurg",
@@ -140,7 +155,7 @@ const data: IZno[] = [
         updatedAt: new Date(),
         name: "Идукаева  Павла Галиновна",
         dateOfBirth: new Date(),
-        localization: "ZNOOfTheLip/Oropharynx",
+        localization: "ZNOOfTheLipOropharynx",
         phoneNumber: "8999999999",
         numberOfHistory: "2255/56",
         directedWher: "FKS hirurg",
@@ -161,7 +176,7 @@ const data: IZno[] = [
               updatedAt: new Date(),
               name: "Идукаева  Павла Галиновна",
               dateOfBirth: new Date(),
-              localization: "ZNOOfTheLip/Oropharynx",
+              localization: "ZNOOfTheLipOropharynx",
               phoneNumber: "8999999999",
               numberOfHistory: "2255/56",
               directedWher: "FKS hirurg",
@@ -182,7 +197,7 @@ const data: IZno[] = [
               updatedAt: new Date(),
               name: "Идукаева  Павла Галиновна",
               dateOfBirth: new Date(),
-              localization: "ZNOOfTheLip/Oropharynx",
+              localization: "ZNOOfTheLipOropharynx",
               phoneNumber: "8999999999",
               numberOfHistory: "2255/56",
               directedWher: "FKS hirurg",
@@ -203,7 +218,7 @@ const data: IZno[] = [
               updatedAt: new Date(),
               name: "Идукаева  Павла Галиновна",
               dateOfBirth: new Date(),
-              localization: "ZNOOfTheLip/Oropharynx",
+              localization: "ZNOOfTheLipOropharynx",
               phoneNumber: "8999999999",
               numberOfHistory: "2255/56",
               directedWher: "FKS hirurg",
@@ -224,7 +239,7 @@ const data: IZno[] = [
               updatedAt: new Date(),
               name: "Идукаева  Павла Галиновна",
               dateOfBirth: new Date(),
-              localization: "ZNOOfTheLip/Oropharynx",
+              localization: "ZNOOfTheLipOropharynx",
               phoneNumber: "8999999999",
               numberOfHistory: "2255/56",
               directedWher: "FKS hirurg",
@@ -245,7 +260,7 @@ const data: IZno[] = [
             updatedAt: new Date(),
             name: "Идукаева  Павла Галиновна",
             dateOfBirth: new Date(),
-            localization: "ZNOOfTheLip/Oropharynx",
+            localization: "ZNOOfTheLipOropharynx",
             phoneNumber: "8999999999",
             numberOfHistory: "2255/56",
             directedWher: "FKS hirurg",
@@ -266,7 +281,7 @@ const data: IZno[] = [
                   updatedAt: new Date(),
                   name: "Идукаева  Павла Галиновна",
                   dateOfBirth: new Date(),
-                  localization: "ZNOOfTheLip/Oropharynx",
+                  localization: "ZNOOfTheLipOropharynx",
                   phoneNumber: "8999999999",
                   numberOfHistory: "2255/56",
                   directedWher: "FKS hirurg",
@@ -287,7 +302,7 @@ const data: IZno[] = [
                   updatedAt: new Date(),
                   name: "Идукаева  Павла Галиновна",
                   dateOfBirth: new Date(),
-                  localization: "ZNOOfTheLip/Oropharynx",
+                  localization: "ZNOOfTheLipOropharynx",
                   phoneNumber: "8999999999",
                   numberOfHistory: "2255/56",
                   directedWher: "FKS hirurg",
@@ -308,7 +323,7 @@ const data: IZno[] = [
                   updatedAt: new Date(),
                   name: "Идукаева  Павла Галиновна",
                   dateOfBirth: new Date(),
-                  localization: "ZNOOfTheLip/Oropharynx",
+                  localization: "ZNOOfTheLipOropharynx",
                   phoneNumber: "8999999999",
                   numberOfHistory: "2255/56",
                   directedWher: "FKS hirurg",
@@ -329,7 +344,7 @@ const data: IZno[] = [
                   updatedAt: new Date(),
                   name: "Идукаева  Павла Галиновна",
                   dateOfBirth: new Date(),
-                  localization: "ZNOOfTheLip/Oropharynx",
+                  localization: "ZNOOfTheLipOropharynx",
                   phoneNumber: "8999999999",
                   numberOfHistory: "2255/56",
                   directedWher: "FKS hirurg",
@@ -345,38 +360,6 @@ const data: IZno[] = [
                   statusNote: "Эндоскопические признаки спаечного процесса в малом тазу. Диверитикулит сигмовидной кишки, без признаков дивертикулита. Внутренний геморрой"                        //gree
               },
   ]
-
-export type StatusEnum = "awaitingReferralToCAOP" |//ожидает направления в ЦАОП
-                  "awaitingReferralToPKOD" |//ожидает направления в ПКОД
-                  "waitingForAConsultation" |//Ожидает консилиум
-                  "Completed"//Завершено
-
-export type LocalizationEnum = //PIZDEC
-  "ZNOOfTheLip/Oropharynx" |//ЗНО ГУБЫ (МКБ-10: С00), РОТОГЛОТКИ (МКБ 10:С01, С02.4, C05.1, С05.2, C09, C10), ПОЛОСТИ РТА (МКБ 10:C02.0, C02.1, C02.2, C02.3, C02.8, C02.9, С03, С04, C05.0, С06)
-  "MalignancyOfTheEsophagus/Cardia" |//ЗНО ПИЩЕВОДА, КАРДИИ (МКБ-10: С15, С16.0)
-  "ZNOStomachCancer" |//ЗНО ЖЕЛУДКА  (МКБ-10: С16)
-  "MalignancyOfTheColonRectoSigMoidJointRectumAnusAnal" |//ЗНО ОБОДОЧНОЙ КИШКИ, РЕКТО-СИГМОИДНОГО СОЕДИНЕНИЯ, ПРЯМОЙ КИШКИ, ЗАДНЕГО ПРОХОДА (АНУСА) И АНАЛЬНОГО КАНАЛА  (МКБ-10: С18, С19, С20, С21)
-  "CancerOfTheLiverAndIntraheraticBileDucts" |//ЗНО ПЕЧЕНИ И ВНУТРИПЕЧЕНОЧНЫХ ЖЕЛЧНЫХ ПРОТОКОВ  (МКБ-10: С22)
-  "OncologyOfTheBiliarySystem" |//ЗНО ЖЕЛЧЕВЫВОДЯЩЕЙ СИСТЕМЫ (МКБ-10: С22.1, С23, С24.0)
-  "PancreaticCancer" |//ЗНО ПОДЖЕЛУДОЧНОЙ ЖЕЛЕЗЫ  (МКБ-10: С25)
-  "NeuroendocrineTumor" |//НЕЙРОЭНДОКРИНННОЙ ОПУХОЛИ (МКБ-10: C15, C16, C17, C18, C19.9, C20.9, C21, C23, C24, C25, C26, C34, C37.9, C73.9
-  "LarynxDisease" |//ЗНО ГОРТАНИ  (МКБ-10: С32)
-  "MalignancyOfTheTracheaLungMediastinumAndPleura" |//ЗНО ТРАХЕИ, ЛЕГКОГО, ВИЛОЧКОВОЙ ЖЕЛЕЗЫ, СРЕДОСТЕНИЯ И ПЛЕВРЫ   (МКБ-10: С33, С34, С37, С38)
-  "MelanomasAndMucousMembranes" |//МЕЛАНОМЫ И СЛИЗИСТЫХ ОБОЛОЧЕК  (МКБ-10: C43, C51, C60.9, C63.2, C69.0, C00–C26, C30-C32, C52, C53 C77, C78, C79 D03.0-D03.9)
-  "SquamousCellSkinCarcinomaBasalCellSkinCarcinomaMerkelsCarcinoma" |//ПЛОСКОКЛЕТОЧНОГО РАКА КОЖИ, БАЗАЛЬНО-КЛЕТОЧНОГО РАКА КОЖИ, КАРЦИНОМЫ МЕРКЕЛЯ (МКБ-10: С44, D04)
-  "SoftTissueSarcoma" |//ЗНО САРКОМЫ МЯГКИХ ТКАНЕЙ  (МКБ-10: С 49)
-  "BreastCancer" |//ЗНО МОЛОЧНОЙ ЖЕЛЕЗЫ  (МКБ-10: С50)
-  "MalignancyOfTheVaulvaVaginaCervix" |//ЗНО ВУЛЬВЫ, ВЛАГАЛИЩА, ШЕЙКИ МАТКИ,  (МКБ-10: С51, С52, С53) 
-  "EndometralDisease" |//ЗНО ЭНДОМЕТРИЯ  (МКБ-10: С54)
-  "OvarianCancerBorderlineTumorsNonepithelialTumorsOvarianCancer" |//ЗНО ЯИЧНИКОВ: ПОГРАНИЧНЫЕ ОПУХОЛИ, НЕЭПИТЕЛИАЛЬНЫЕ ОПУХОЛИ, РАК ЯИЧНИКОВ (РАК МАТОЧНОЙ ТРУБЫ), ПЕРВИЧНЫЙ РАК БРЮШИНЫ В ЦАОП (МКБ-10: С56, С48.0, С48.2, С57)
-  "ProstateCancer" |//ЗНО ПРЕДСТАТЕЛЬНОЙ ЖЕЛЕЗЫ  (МКБ-10: С61)
-  "TesticularCancer" |//ЗНО ЯИЧКА  (МКБ-10: С62)
-  "MalignancyOfTheRenalPelvisGlasCase" |//ЗНО ПАРЕНХИМЫ ПОЧКИ, ЛОХАНКИ, ОЧЕТОЧНИКА (МКБ-10: С 64, С65, С66 )
-  "BladderCancer" |//ЗНО МОЧЕВОГО ПУЗЫРЯ  (МКБ-10: С67)
-  "PrimaryTumorsOfTheCentralNervousSystemLimphomaOfTheCentralNervousSystem" |//ПЕРВИЧНЫХ ОПУХОЛЕЙ ЦЕНТРАЛЬНОЙ НЕРВНОЙ СИСТЕМЫ (МКБ-10: С70, С71, С72, С75, С76), ПЕРВИЧНОЙ ЛИМФОМЫ ЦЕНТРАЛЬНОЙ НЕРВНОЙ СИСТЕМЫ (МКБ 10: С81, С82, С83, С84, С85, С86, С87, С88) 
-  "ThyroidCancer" |//ЗНО ЩИТОВИДНОЙ ЖЕЛЕЗЫ (МКБ-10: С73)
-  "ZnoWithoutPrimaryLocalization" |//ЗНО БЕЗ ПЕРВИЧНОЙ ЛОКАЛИЗАЦИИ (МКБ-10: С80)
-  "HodgkinsLymphomaInAdultsFollicularLymphomaInAdults"//ЛИМФОМА ХОДЖКИНА У ВЗРОСЛЫХ (МКБ-10: С81), ФОЛЛИКУЛЯРНАЯ ЛИМФОМА У ВЗРОСЛЫХ (МКБ-10: С82), НЕХОДЖКИНСКАЯ ЛИМФОМА (МКБ-10: С83) 
 
 export interface UnitLocalization {
     value: Localization,
@@ -510,106 +493,129 @@ const statuses: UnitStatus[] = [
   },
 ]
 
-export interface IZno {
-  id: number
-  createdAt: Date
-  updatedAt: Date
-  name: string             //yellow
-  dateOfBirth: Date        //yellow
-  localization: LocalizationEnum     //yellow
-  phoneNumber: string      //yellow
-  numberOfHistory: string  //yellow
-  directedWher: string                      //green
-  diagnosisVKB: string                      //green
-  dateOfReferralToCAOP: Date                //green
-  dateOfVisitToCAOP: Date                   //green
-  diagnosisOfCAOP: string                   //green
-  dateOfVisitToPKOD: Date                   //green
-  diagnosisOfPKOD: string                   //green
-  dateOfTheConsultation: Date               //green
-  dateOfLastCallAndPersonalContact: Date    //green
-  status: StatusEnum                        //green
-  statusNote: string                        //green
-}
-
 const isDate = (obj: Object) => Object.prototype.toString.call(obj) === '[object Date]';
 
-export const columns: ColumnDef<IZno>[] = [
-  {
-    accessorKey: "createdAt",
-    cell: ({ row }) => (
-        <div className="capitalize">{isDate(row.getValue("createdAt"))? format(row.getValue("createdAt"), "PPP HH:mm", {locale: ru}) : row.getValue("createdAt")}</div>
-    ),
-  },
-  {
-    accessorKey: "name",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("name")}</div>
-    ),
-  },
-  {
-    accessorKey: "dateOfBirth",
-    cell: ({ row }) => <div className="lowercase">{isDate(row.getValue("dateOfBirth"))? format(row.getValue("dateOfBirth"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfBirth")}</div>,
-  },
-  {
-    accessorKey: "localization",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("localization")}</div>
-  },
-  {
-    accessorKey: "phoneNumber",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("phoneNumber")}</div>
-  },
-  {
-    accessorKey: "numberOfHistory",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("numberOfHistory")}</div>
-  },
-  {
-    accessorKey: "directedWher",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("directedWher")}</div>
-  },
-  {
-    accessorKey: "diagnosisVKB",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("diagnosisVKB")}</div>
-  },
-  {
-    accessorKey: "dateOfReferralToCAOP",
-    cell: ({ row }) => <div className="capitalize">{isDate(row.getValue("dateOfReferralToCAOP"))? format(row.getValue("dateOfReferralToCAOP"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfReferralToCAOP")}</div>
-  },
-  {
-    accessorKey: "dateOfVisitToCAOP",
-    cell: ({ row }) => <div className="capitalize">{isDate(row.getValue("dateOfVisitToCAOP"))? format(row.getValue("dateOfVisitToCAOP"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfVisitToCAOP")}</div>
-  },
-  {
-    accessorKey: "diagnosisOfCAOP",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("diagnosisOfCAOP")}</div>
-  },
-  {
-    accessorKey: "dateOfVisitToPKOD",
-    cell: ({ row }) => <div className="capitalize">{isDate(row.getValue("dateOfVisitToPKOD"))? format(row.getValue("dateOfVisitToPKOD"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfVisitToPKOD")}</div>
-  },
-  {
-    accessorKey: "diagnosisOfPKOD",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("diagnosisOfPKOD")}</div>
-  },
-  {
-    accessorKey: "dateOfTheConsultation",
-    cell: ({ row }) => <div className="capitalize">{isDate(row.getValue("dateOfTheConsultation"))? format(row.getValue("dateOfTheConsultation"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfTheConsultation")}</div>
-  },
-  {
-    accessorKey: "dateOfLastCallAndPersonalContact",
-    cell: ({ row }) => <div className="capitalize">{isDate(row.getValue("dateOfLastCallAndPersonalContact"))? format(row.getValue("dateOfLastCallAndPersonalContact"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfLastCallAndPersonalContact")}</div>
-  },
-  {
-    accessorKey: "status",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("status")}</div>
-  },
-  {
-    accessorKey: "statusNote",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("statusNote")}</div>
-  },
-]
 
-export function ZnoTable() {
+
+
+
+
+
+
+
+
+
+
+
+
+
+export function ZnoTable({
+    onFetchData
+}: {
+    onFetchData: (url: string) => Promise<ZnoLog[]>
+}
+) {
+
+  //change znologs states
+  const [isChangedYellow, setIsChangedYellow] = React.useState<boolean>(false)
+  const [isChangedGreen, setIsChangedGreen] = React.useState<boolean>(false)
+  //const [isChangedYellowAndGreen, setIsChangedYellowAndGreen] = React.useState<boolean>(false)
+
+  const columns: ColumnDef<ZnoLog>[] = [
+    {
+      accessorKey: "createdAt",
+      cell: ({ row }) => (
+        <div className="capitalize">
+          {isDate(row.getValue("createdAt"))? format(row.getValue("createdAt"), "PPP", {locale: ru}) : row.getValue("createdAt")}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "name",
+      cell: ({ row }) => (
+        <ContextMenu>
+          <ContextMenuTrigger className=" items-center justify-center rounded-md border border-dashed text-sm">
+            <div className="capitalize"> {row.getValue("name")}  </div>
+          </ContextMenuTrigger>
+          <ContextMenuContent className="w-64">
+            <ContextMenuItem inset>
+              Изменить строку
+              <ContextMenuShortcut>⌘[</ContextMenuShortcut>
+            </ContextMenuItem>
+          </ContextMenuContent>
+        </ContextMenu>
+      ),
+    },
+    {
+      accessorKey: "dateOfBirth",
+      cell: ({ row }) => <div className="lowercase">{isDate(row.getValue("dateOfBirth"))? format(row.getValue("dateOfBirth"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfBirth")}</div>,
+    },
+    {
+      accessorKey: "localization",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("localization")}</div>
+    },
+    {
+      accessorKey: "phoneNumber",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("phoneNumber")}</div>
+    },
+    {
+      accessorKey: "numberOfHistory",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("numberOfHistory")}</div>
+    },
+    {
+      accessorKey: "directedWher",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("directedWher")}</div>
+    },
+    {
+      accessorKey: "diagnosisVKB",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("diagnosisVKB")}</div>
+    },
+    {
+      accessorKey: "dateOfReferralToCAOP",
+      cell: ({ row }) => <div className="capitalize">{isDate(row.getValue("dateOfReferralToCAOP"))? format(row.getValue("dateOfReferralToCAOP"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfReferralToCAOP")}</div>
+    },
+    {
+      accessorKey: "dateOfVisitToCAOP",
+      cell: ({ row }) => <div className="capitalize">{isDate(row.getValue("dateOfVisitToCAOP"))? format(row.getValue("dateOfVisitToCAOP"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfVisitToCAOP")}</div>
+    },
+    {
+      accessorKey: "diagnosisOfCAOP",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("diagnosisOfCAOP")}</div>
+    },
+    {
+      accessorKey: "dateOfVisitToPKOD",
+      cell: ({ row }) => <div className="capitalize">{isDate(row.getValue("dateOfVisitToPKOD"))? format(row.getValue("dateOfVisitToPKOD"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfVisitToPKOD")}</div>
+    },
+    {
+      accessorKey: "diagnosisOfPKOD",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("diagnosisOfPKOD")}</div>
+    },
+    {
+      accessorKey: "dateOfTheConsultation",
+      cell: ({ row }) => <div className="capitalize">{isDate(row.getValue("dateOfTheConsultation"))? format(row.getValue("dateOfTheConsultation"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfTheConsultation")}</div>
+    },
+    {
+      accessorKey: "dateOfLastCallAndPersonalContact",
+      cell: ({ row }) => <div className="capitalize">{isDate(row.getValue("dateOfLastCallAndPersonalContact"))? format(row.getValue("dateOfLastCallAndPersonalContact"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfLastCallAndPersonalContact")}</div>
+    },
+    {
+      accessorKey: "status",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("status")}</div>
+    },
+    {
+      accessorKey: "statusNote",
+      cell: ({ row }) => <div className="capitalize">{row.getValue("statusNote")}</div>
+    },
+  ]
+
+
+
+
+
+  //[11:21, 24.04.2025] Леха: Все могут видеть все поля
+  //[11:21, 24.04.2025] Леха: Никакие поля от пользователей не скрываем
+
+
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -618,7 +624,27 @@ export function ZnoTable() {
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
 
-const table = useReactTable({
+
+    const [isProfile, setProfile] = React.useState<string>()
+  
+    const session = useSession()
+  
+    let getProfile = async (id: number) => {
+      //let result = await axios.get(`http://localhost:5020/api/users/profile/${id}`)
+      let result = await onFetchData(`http://localhost:5020/api/users/profile/${id}`)
+      console.log(result)
+      if(result) {
+        //@ts-ignore
+        setProfile(result.grade)
+      }
+  }
+  
+    React.useEffect(() => {
+      if (session.status === "authenticated" && typeof session.data.user !== 'undefined') {
+        getProfile(Number(session.data.user.id))
+    }}, [])
+
+    const table = useReactTable({
   data,
   columns,
   onSortingChange: setSorting,
@@ -635,14 +661,8 @@ const table = useReactTable({
     columnVisibility,
     rowSelection,
   },
-})
+    })
 
-const [visibility, setVisibility] = React.useState<boolean>(false)
-
-const onChangeVisibility = (vis: boolean) => {
-        setVisibility(!vis)
-}
-//миша все хуйня давай по новой
   return (
     <div className="w-full p-2 pt-1">
       <div className="flex items-center py-4">
