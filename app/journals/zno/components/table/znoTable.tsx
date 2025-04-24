@@ -29,17 +29,9 @@ import ZnoTableRow from "./znoTableRow"
 import { useSession } from "next-auth/react"
 import {
     ContextMenu,
-    ContextMenuCheckboxItem,
     ContextMenuContent,
     ContextMenuItem,
-    ContextMenuLabel,
-    ContextMenuRadioGroup,
-    ContextMenuRadioItem,
-    ContextMenuSeparator,
     ContextMenuShortcut,
-    ContextMenuSub,
-    ContextMenuSubContent,
-    ContextMenuSubTrigger,
     ContextMenuTrigger,
   } from "@/components/ui/context-menu"
 
@@ -496,19 +488,6 @@ const statuses: UnitStatus[] = [
 const isDate = (obj: Object) => Object.prototype.toString.call(obj) === '[object Date]';
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 export function ZnoTable({
     onFetchData
 }: {
@@ -534,7 +513,7 @@ export function ZnoTable({
       accessorKey: "name",
       cell: ({ row }) => (
         <ContextMenu>
-          <ContextMenuTrigger className=" items-center justify-center rounded-md border border-dashed text-sm">
+          <ContextMenuTrigger className="h-full w-full items-center justify-center rounded-md border border-dashed text-sm">
             <div className="capitalize"> {row.getValue("name")}  </div>
           </ContextMenuTrigger>
           <ContextMenuContent className="w-64">
@@ -606,14 +585,24 @@ export function ZnoTable({
       accessorKey: "statusNote",
       cell: ({ row }) => <div className="capitalize">{row.getValue("statusNote")}</div>
     },
+    {
+      accessorKey: "statusNote",
+      cell: ({ row }) => <div className="capitalize">
+        <Button>ism</Button>
+
+        <Button>otm</Button>
+        <Button>sohr</Button>
+        </div>
+    },
   ]
 
 
 
 
 
-  //[11:21, 24.04.2025] Леха: Все могут видеть все поля
-  //[11:21, 24.04.2025] Леха: Никакие поля от пользователей не скрываем
+  //[11:21, 24.04.2025] : Все могут видеть все поля
+  //[11:21, 24.04.2025]: Никакие поля от пользователей не скрываем
+  //сбоку изменить - изменять там, галочка и крестик, все менять на инпуты и тд
 
 
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -685,7 +674,7 @@ export function ZnoTable({
             </>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <ZnoTableRow row={row}/>
+                <ZnoTableRow key={row.id} row={row}/>
 
               ))
             ) : (

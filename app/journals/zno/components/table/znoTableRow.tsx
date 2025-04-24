@@ -3,6 +3,17 @@
 import { TableCell, TableRow } from "@/components/ui/table"
 import { flexRender, Row } from "@tanstack/react-table"
 import { ZnoLog } from "@prisma/client"
+import {
+  ContextMenu,
+  ContextMenuCheckboxItem,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuShortcut,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu"
 
 export
   default function ZnoTableRow ({
