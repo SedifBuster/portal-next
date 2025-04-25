@@ -27,13 +27,7 @@ import ZnoRowCreateNew from "./znoRowCreateNew"
 import { Localization, StatusZno, ZnoLog } from "@prisma/client"
 import ZnoTableRow from "./znoTableRow"
 import { useSession } from "next-auth/react"
-import {
-    ContextMenu,
-    ContextMenuContent,
-    ContextMenuItem,
-    ContextMenuShortcut,
-    ContextMenuTrigger,
-  } from "@/components/ui/context-menu"
+import { HiMiniXMark, HiOutlineCheck, HiOutlinePencil } from "react-icons/hi2";
 
 const data: ZnoLog[] = [
   {
@@ -485,6 +479,7 @@ const statuses: UnitStatus[] = [
   },
 ]
 
+
 const isDate = (obj: Object) => Object.prototype.toString.call(obj) === '[object Date]';
 
 
@@ -496,9 +491,15 @@ export function ZnoTable({
 ) {
 
   //change znologs states
-  const [isChangedYellow, setIsChangedYellow] = React.useState<boolean>(false)
+  const [isChangedYellow, setIsChangedYellow] = React.useState<boolean>(true)
   const [isChangedGreen, setIsChangedGreen] = React.useState<boolean>(false)
   //const [isChangedYellowAndGreen, setIsChangedYellowAndGreen] = React.useState<boolean>(false)
+
+  //локализация перевод и текущий статус перевод
+
+  //функция переключения состояния и спрашивания какая у профиля должность
+
+  const [isRefactoring, setIsRefactoring] = React.useState<boolean>(true)
 
   const columns: ColumnDef<ZnoLog>[] = [
     {
@@ -512,86 +513,174 @@ export function ZnoTable({
     {
       accessorKey: "name",
       cell: ({ row }) => (
-        <ContextMenu>
-          <ContextMenuTrigger className="h-full w-full items-center justify-center rounded-md border border-dashed text-sm">
-            <div className="capitalize"> {row.getValue("name")}  </div>
-          </ContextMenuTrigger>
-          <ContextMenuContent className="w-64">
-            <ContextMenuItem inset>
-              Изменить строку
-              <ContextMenuShortcut>⌘[</ContextMenuShortcut>
-            </ContextMenuItem>
-          </ContextMenuContent>
-        </ContextMenu>
+          isChangedYellow && isRefactoring
+          ?
+          <div className="capitalize"> {row.getValue("name")}zxc </div>
+          :
+          <div className="capitalize"> {row.getValue("name")}  </div>
       ),
     },
     {
       accessorKey: "dateOfBirth",
-      cell: ({ row }) => <div className="lowercase">{isDate(row.getValue("dateOfBirth"))? format(row.getValue("dateOfBirth"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfBirth")}</div>,
+      cell: ({ row }) => (
+        isChangedYellow && isRefactoring
+        ?
+        <div className="lowercase">{isDate(row.getValue("dateOfBirth"))? format(row.getValue("dateOfBirth"), "PPP", {locale: ru}) : row.getValue("dateOfBirth")}</div>
+        :
+        <div className="lowercase">{isDate(row.getValue("dateOfBirth"))? format(row.getValue("dateOfBirth"), "PPP", {locale: ru}) : row.getValue("dateOfBirth")}</div>
+      ),
     },
     {
       accessorKey: "localization",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("localization")}</div>
+      cell: ({ row }) => (
+        isChangedYellow && isRefactoring
+        ?
+        <div className="capitalize">{row.getValue("localization")}</div>
+        :
+        <div className="capitalize">{row.getValue("localization")}</div>
+      )
     },
     {
       accessorKey: "phoneNumber",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("phoneNumber")}</div>
+      cell: ({ row }) => (
+        isChangedYellow && isRefactoring
+        ?
+        <div className="capitalize">{row.getValue("phoneNumber")}</div>
+        :
+        <div className="capitalize">{row.getValue("phoneNumber")}</div>
+      )
     },
     {
       accessorKey: "numberOfHistory",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("numberOfHistory")}</div>
+      cell: ({ row }) => (
+        isChangedYellow && isRefactoring
+        ?
+        <div className="capitalize">{row.getValue("numberOfHistory")}</div>
+        :
+        <div className="capitalize">{row.getValue("numberOfHistory")}</div>
+      )
     },
     {
       accessorKey: "directedWher",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("directedWher")}</div>
+      cell: ({ row }) =>(
+        isChangedGreen && isRefactoring
+        ?
+        <div className="capitalize">{row.getValue("directedWher")}</div>
+        :
+        <div className="capitalize">{row.getValue("directedWher")}</div>
+      ) 
     },
     {
       accessorKey: "diagnosisVKB",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("diagnosisVKB")}</div>
+      cell: ({ row }) => (
+        isChangedGreen && isRefactoring
+        ?
+        <div className="capitalize">{row.getValue("diagnosisVKB")}</div>
+        :
+        <div className="capitalize">{row.getValue("diagnosisVKB")}</div>
+      )  
     },
     {
       accessorKey: "dateOfReferralToCAOP",
-      cell: ({ row }) => <div className="capitalize">{isDate(row.getValue("dateOfReferralToCAOP"))? format(row.getValue("dateOfReferralToCAOP"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfReferralToCAOP")}</div>
+      cell: ({ row }) => (
+        isChangedGreen && isRefactoring
+        ?
+        <div className="capitalize">{isDate(row.getValue("dateOfReferralToCAOP"))? format(row.getValue("dateOfReferralToCAOP"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfReferralToCAOP")}</div>
+        :
+        <div className="capitalize">{isDate(row.getValue("dateOfReferralToCAOP"))? format(row.getValue("dateOfReferralToCAOP"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfReferralToCAOP")}</div>
+      )  
     },
     {
       accessorKey: "dateOfVisitToCAOP",
-      cell: ({ row }) => <div className="capitalize">{isDate(row.getValue("dateOfVisitToCAOP"))? format(row.getValue("dateOfVisitToCAOP"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfVisitToCAOP")}</div>
+      cell: ({ row }) => (
+        isChangedGreen && isRefactoring
+        ?
+        <div className="capitalize">{isDate(row.getValue("dateOfVisitToCAOP"))? format(row.getValue("dateOfVisitToCAOP"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfVisitToCAOP")}</div>
+        :
+        <div className="capitalize">{isDate(row.getValue("dateOfVisitToCAOP"))? format(row.getValue("dateOfVisitToCAOP"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfVisitToCAOP")}</div>
+      )   
     },
     {
       accessorKey: "diagnosisOfCAOP",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("diagnosisOfCAOP")}</div>
+      cell: ({ row }) => (
+        isChangedGreen && isRefactoring
+        ?
+        <div className="capitalize">{row.getValue("diagnosisOfCAOP")}</div>
+        :
+        <div className="capitalize">{row.getValue("diagnosisOfCAOP")}</div>
+      )  
     },
     {
       accessorKey: "dateOfVisitToPKOD",
-      cell: ({ row }) => <div className="capitalize">{isDate(row.getValue("dateOfVisitToPKOD"))? format(row.getValue("dateOfVisitToPKOD"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfVisitToPKOD")}</div>
+      cell: ({ row }) => (
+        isChangedGreen && isRefactoring
+        ?
+        <div className="capitalize">{isDate(row.getValue("dateOfVisitToPKOD"))? format(row.getValue("dateOfVisitToPKOD"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfVisitToPKOD")}</div>
+        :
+        <div className="capitalize">{isDate(row.getValue("dateOfVisitToPKOD"))? format(row.getValue("dateOfVisitToPKOD"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfVisitToPKOD")}</div>
+      ) 
     },
     {
       accessorKey: "diagnosisOfPKOD",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("diagnosisOfPKOD")}</div>
+      cell: ({ row }) => (
+        isChangedGreen && isRefactoring
+        ?
+        <div className="capitalize">{row.getValue("diagnosisOfPKOD")}</div>
+        :
+        <div className="capitalize">{row.getValue("diagnosisOfPKOD")}</div>
+      )  
     },
     {
       accessorKey: "dateOfTheConsultation",
-      cell: ({ row }) => <div className="capitalize">{isDate(row.getValue("dateOfTheConsultation"))? format(row.getValue("dateOfTheConsultation"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfTheConsultation")}</div>
+      cell: ({ row }) => (
+        isChangedGreen && isRefactoring
+        ?
+        <div className="capitalize">{isDate(row.getValue("dateOfTheConsultation"))? format(row.getValue("dateOfTheConsultation"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfTheConsultation")}</div>
+        :
+        <div className="capitalize">{isDate(row.getValue("dateOfTheConsultation"))? format(row.getValue("dateOfTheConsultation"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfTheConsultation")}</div>
+      ) 
     },
     {
       accessorKey: "dateOfLastCallAndPersonalContact",
-      cell: ({ row }) => <div className="capitalize">{isDate(row.getValue("dateOfLastCallAndPersonalContact"))? format(row.getValue("dateOfLastCallAndPersonalContact"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfLastCallAndPersonalContact")}</div>
+      cell: ({ row }) => (
+        isChangedGreen && isRefactoring
+        ?
+        <div className="capitalize">{isDate(row.getValue("dateOfLastCallAndPersonalContact"))? format(row.getValue("dateOfLastCallAndPersonalContact"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfLastCallAndPersonalContact")}</div>
+        :
+        <div className="capitalize">{isDate(row.getValue("dateOfLastCallAndPersonalContact"))? format(row.getValue("dateOfLastCallAndPersonalContact"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfLastCallAndPersonalContact")}</div>
+      )
     },
     {
       accessorKey: "status",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("status")}</div>
+      cell: ({ row }) => (
+        isChangedGreen && isRefactoring
+        ?
+        <div className="capitalize">{row.getValue("status")}</div>
+        :
+        <div className="capitalize">{row.getValue("status")}</div>
+      )  
     },
     {
       accessorKey: "statusNote",
-      cell: ({ row }) => <div className="capitalize">{row.getValue("statusNote")}</div>
+      cell: ({ row }) => (
+        isChangedGreen && isRefactoring
+        ?
+        <div className="capitalize">{row.getValue("statusNote")}</div>
+        :
+        <div className="capitalize">{row.getValue("statusNote")}</div>
+      ) 
     },
     {
       accessorKey: "statusNote",
       cell: ({ row }) => <div className="capitalize">
-        <Button>ism</Button>
-
-        <Button>otm</Button>
-        <Button>sohr</Button>
+        {isChangedYellow && isChangedGreen && isRefactoring?
+          <div className="flex flex-col gap-2">
+            <Button variant={'destructive'}><HiMiniXMark /></Button>
+            <Button variant={'outline'}><HiOutlineCheck /></Button>
+          </div>
+        :
+        <Button variant={'outline'}><HiOutlinePencil/></Button>
+        }
         </div>
     },
   ]
