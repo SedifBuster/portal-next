@@ -28,6 +28,29 @@ import { Localization, StatusZno, ZnoLog } from "@prisma/client"
 import ZnoTableRow from "./znoTableRow"
 import { useSession } from "next-auth/react"
 import { HiMiniXMark, HiOutlineCheck, HiOutlinePencil } from "react-icons/hi2";
+import { Textarea } from "@/components/ui/textarea"
+import { Popover, PopoverTrigger } from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { CalendarIcon } from "@radix-ui/react-icons"
+import { Calendar } from "@/components/ui/calendar"
+import { PopoverContent,} from "@/components/ui/popover"
+import { toast } from "sonner"
+import DateTimePicker from "../../components/dateTime/dateTimePicker"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@radix-ui/react-select"
 
 const data: ZnoLog[] = [
   {
@@ -492,7 +515,7 @@ export function ZnoTable({
 
   //change znologs states
   const [isChangedYellow, setIsChangedYellow] = React.useState<boolean>(true)
-  const [isChangedGreen, setIsChangedGreen] = React.useState<boolean>(false)
+  const [isChangedGreen, setIsChangedGreen] = React.useState<boolean>(true)
   //const [isChangedYellowAndGreen, setIsChangedYellowAndGreen] = React.useState<boolean>(false)
 
   //локализация перевод и текущий статус перевод
@@ -515,7 +538,9 @@ export function ZnoTable({
       cell: ({ row }) => (
           isChangedYellow && isRefactoring
           ?
-          <div className="capitalize"> {row.getValue("name")}zxc </div>
+          <div className="capitalize"> 
+          <Textarea value={row.getValue("name")} className="w-18 h-full"/>
+          </div>
           :
           <div className="capitalize"> {row.getValue("name")}  </div>
       ),
@@ -525,7 +550,11 @@ export function ZnoTable({
       cell: ({ row }) => (
         isChangedYellow && isRefactoring
         ?
-        <div className="lowercase">{isDate(row.getValue("dateOfBirth"))? format(row.getValue("dateOfBirth"), "PPP", {locale: ru}) : row.getValue("dateOfBirth")}</div>
+        <div className="lowercase">
+
+          {isDate(row.getValue("dateOfBirth"))? format(row.getValue("dateOfBirth"), "PPP", {locale: ru}) : row.getValue("dateOfBirth")}
+
+        </div>
         :
         <div className="lowercase">{isDate(row.getValue("dateOfBirth"))? format(row.getValue("dateOfBirth"), "PPP", {locale: ru}) : row.getValue("dateOfBirth")}</div>
       ),
@@ -535,7 +564,9 @@ export function ZnoTable({
       cell: ({ row }) => (
         isChangedYellow && isRefactoring
         ?
-        <div className="capitalize">{row.getValue("localization")}</div>
+        <div className="capitalize">
+          {row.getValue("localization")}select
+          </div>
         :
         <div className="capitalize">{row.getValue("localization")}</div>
       )
@@ -555,7 +586,9 @@ export function ZnoTable({
       cell: ({ row }) => (
         isChangedYellow && isRefactoring
         ?
-        <div className="capitalize">{row.getValue("numberOfHistory")}</div>
+        <div className="capitalize">
+          <Textarea value={row.getValue("numberOfHistory")} className="w-18 h-full"/>
+          </div>
         :
         <div className="capitalize">{row.getValue("numberOfHistory")}</div>
       )
@@ -565,7 +598,9 @@ export function ZnoTable({
       cell: ({ row }) =>(
         isChangedGreen && isRefactoring
         ?
-        <div className="capitalize">{row.getValue("directedWher")}</div>
+        <div className="capitalize">
+          <Textarea value={row.getValue("directedWher")} className="w-18 h-full"/>
+          </div>
         :
         <div className="capitalize">{row.getValue("directedWher")}</div>
       ) 
@@ -575,7 +610,9 @@ export function ZnoTable({
       cell: ({ row }) => (
         isChangedGreen && isRefactoring
         ?
-        <div className="capitalize">{row.getValue("diagnosisVKB")}</div>
+        <div className="capitalize">
+          <Textarea value={row.getValue("diagnosisVKB")} className="w-18 h-full"/>
+          </div>
         :
         <div className="capitalize">{row.getValue("diagnosisVKB")}</div>
       )  
@@ -585,7 +622,35 @@ export function ZnoTable({
       cell: ({ row }) => (
         isChangedGreen && isRefactoring
         ?
-        <div className="capitalize">{isDate(row.getValue("dateOfReferralToCAOP"))? format(row.getValue("dateOfReferralToCAOP"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfReferralToCAOP")}</div>
+        <div className="capitalize">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "w-[200px] justify-start text-left font-normal",
+                   !row.getValue("dateOfReferralToCAOP") && "text-muted-foreground"
+                )}
+              >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                    {row.getValue("dateOfReferralToCAOP") ? format(row.getValue("dateOfReferralToCAOP"), "PPP", {locale: ru}) : <span>Выберите время*</span>}
+              </Button>
+             </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                 mode="single"
+                 selected={row.getValue("dateOfReferralToCAOP")}
+                 onSelect={row.getValue("dateOfReferralToCAOP")}
+                 initialFocus
+                 locale={ru}
+              />
+              <div className="p-2 flex justify-center border-t">
+               <DateTimePicker date={row.getValue("dateOfReferralToCAOP")} setDate={row.getValue("dateOfReferralToCAOP")}/>
+               </div>
+           </PopoverContent>
+          </Popover>
+          {isDate(row.getValue("dateOfReferralToCAOP"))? format(row.getValue("dateOfReferralToCAOP"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfReferralToCAOP")}
+          </div>
         :
         <div className="capitalize">{isDate(row.getValue("dateOfReferralToCAOP"))? format(row.getValue("dateOfReferralToCAOP"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfReferralToCAOP")}</div>
       )  
@@ -605,7 +670,9 @@ export function ZnoTable({
       cell: ({ row }) => (
         isChangedGreen && isRefactoring
         ?
-        <div className="capitalize">{row.getValue("diagnosisOfCAOP")}</div>
+        <div className="capitalize">
+          <Textarea value={row.getValue("diagnosisOfCAOP")} className="w-18 h-full"/>
+          </div>
         :
         <div className="capitalize">{row.getValue("diagnosisOfCAOP")}</div>
       )  
@@ -625,7 +692,9 @@ export function ZnoTable({
       cell: ({ row }) => (
         isChangedGreen && isRefactoring
         ?
-        <div className="capitalize">{row.getValue("diagnosisOfPKOD")}</div>
+        <div className="capitalize">
+          <Textarea value={row.getValue("diagnosisOfPKOD")} className="w-18 h-full"/>
+          </div>
         :
         <div className="capitalize">{row.getValue("diagnosisOfPKOD")}</div>
       )  
@@ -655,7 +724,9 @@ export function ZnoTable({
       cell: ({ row }) => (
         isChangedGreen && isRefactoring
         ?
-        <div className="capitalize">{row.getValue("status")}</div>
+        <div className="capitalize">
+          <Textarea value={row.getValue("status")} className="w-18 h-full"/>
+          </div>
         :
         <div className="capitalize">{row.getValue("status")}</div>
       )  
@@ -665,7 +736,9 @@ export function ZnoTable({
       cell: ({ row }) => (
         isChangedGreen && isRefactoring
         ?
-        <div className="capitalize">{row.getValue("statusNote")}</div>
+        <div className="capitalize">
+          <Textarea value={row.getValue("statusNote")} className="w-18 h-full"/>
+          </div>
         :
         <div className="capitalize">{row.getValue("statusNote")}</div>
       ) 
@@ -673,7 +746,7 @@ export function ZnoTable({
     {
       accessorKey: "statusNote",
       cell: ({ row }) => <div className="capitalize">
-        {isChangedYellow && isChangedGreen && isRefactoring?
+        {isChangedYellow || isChangedGreen && isRefactoring?
           <div className="flex flex-col gap-2">
             <Button variant={'destructive'}><HiMiniXMark /></Button>
             <Button variant={'outline'}><HiOutlineCheck /></Button>
