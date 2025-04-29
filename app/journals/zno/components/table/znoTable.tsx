@@ -32,26 +32,11 @@ import { HiMiniXMark, HiOutlineCheck, HiOutlinePencil } from "react-icons/hi2";
 import { Textarea } from "@/components/ui/textarea"
 import { Popover, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CalendarIcon } from "@radix-ui/react-icons"
 import { Calendar } from "@/components/ui/calendar"
 import { PopoverContent,} from "@/components/ui/popover"
-import { toast } from "sonner"
 import DateTimePicker from "../../components/dateTime/dateTimePicker"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@radix-ui/react-select"
 
 const data: ZnoLog[] = [
   {
@@ -503,9 +488,7 @@ const statuses: UnitStatus[] = [
   },
 ]
 
-
 const isDate = (obj: Object) => Object.prototype.toString.call(obj) === '[object Date]';
-
 
 export function ZnoTable({
     onFetchData
@@ -517,22 +500,32 @@ export function ZnoTable({
   //change znologs states
   const [isChangedYellow, setIsChangedYellow] = React.useState<boolean>(true)
   const [isChangedGreen, setIsChangedGreen] = React.useState<boolean>(true)
-  //const [isChangedYellowAndGreen, setIsChangedYellowAndGreen] = React.useState<boolean>(false)
 
   //локализация перевод и текущий статус перевод
-
   //функция переключения состояния и спрашивания какая у профиля должность
-  const [isName, setIsName] = React.useState<string>()
-
   const onChangeChangedState = (row: Row<ZnoLog>) => {
-
-    //тут спрашиваем кто персонаж что меняет поле
-   
-
+  //тут спрашиваем кто персонаж что меняет поле
 
   }
 
+  const [isNameConfirm, setIsNameConfirm] = React.useState<string>('')
+  const [isDateOfBirthConfirm, setIsDateOfBirthConfirm] = React.useState<Date>()
+  const [isLocalizationConfirm, setIsLocalizationConfirm] = React.useState<string>('')
+  const [isPhoneNumberConfirm, setIsPhoneNumberConfirm] = React.useState<string>('')
+  const [isNumberOfHistoryConfirm, setIsNumberOfHistoryConfirm] = React.useState<string>('')
+  const [isDirectedWherConfirm, setIsDirectedWherConfirm] = React.useState<string>('')
+  const [isDiagnosisVKBConfirm, setIsDiagnosisVKBConfirm] = React.useState<string>('')
+  const [isDateOfReferralToCAOPConfirm, setIsDateOfReferralToCAOPhConfirm] = React.useState<Date>()
+  const [isDateOfVisitToCAOPConfirm, setIsDateOfVisitToCAOPConfirm] = React.useState<Date>()
+  const [isDiagnosisOfCAOPConfirm, setIsDiagnosisOfCAOPConfirm] = React.useState<string>('')
+  const [isDateOfVisitToPKODConfirm, setIsDateOfVisitToPKODConfirm] = React.useState<Date>()
+  const [isDiagnosisOfPKODConfirm, setIsDiagnosisOfPKODConfirm] = React.useState<string>('')
+  const [isDateOfTheConsultationConfirm, setIsDateOfTheConsultationConfirm] = React.useState<Date>()
+  const [isDateOfLastCallAndPersonalContactConfirm, setIsDateOfLastCallAndPersonalContactConfirm] = React.useState<Date>()
+  const [isStatusConfirm, setIsStatusConfirm] = React.useState<string>('')
+  const [isStatusNoteConfirm, setIsStatusNoteConfirm] = React.useState<string>('')
 
+console.log(isNameConfirm)
 
 
   const onChangeRuLocalisations = (value: string) => {
@@ -620,7 +613,18 @@ export function ZnoTable({
     },
     {
       accessorKey: "name",
-      cell: ({ row }) => (
+      cell: ({row}) => {
+        const [isName, setIsName] = React.useState<string>(row.getValue("name"))
+
+
+        return isChangedYellow && isRefactoring
+        ?
+        <div className="capitalize"> 
+          <Textarea value={isName} className="w-18 h-full" onChange={(e) => setIsName(e.target.value)}/>
+        </div>
+        :
+        <div className="capitalize">{row.getValue("name")}</div>
+      }/*({ row }) => (
           isChangedYellow && isRefactoring
           ?
           <div className="capitalize"> 
@@ -628,7 +632,7 @@ export function ZnoTable({
           </div>
           :
           <div className="capitalize"> {row.getValue("name")}  </div>
-      ),
+      ),*/
     },
     {
       accessorKey: "dateOfBirth",
@@ -636,9 +640,7 @@ export function ZnoTable({
         isChangedYellow && isRefactoring
         ?
         <div className="lowercase">
-
           {isDate(row.getValue("dateOfBirth"))? format(row.getValue("dateOfBirth"), "PPP", {locale: ru}) : row.getValue("dateOfBirth")}
-
         </div>
         :
         <div className="lowercase">{isDate(row.getValue("dateOfBirth"))? format(row.getValue("dateOfBirth"), "PPP", {locale: ru}) : row.getValue("dateOfBirth")}</div>
