@@ -37,6 +37,7 @@ import { CalendarIcon } from "@radix-ui/react-icons"
 import { Calendar } from "@/components/ui/calendar"
 import { PopoverContent,} from "@/components/ui/popover"
 import DateTimePicker from "../../components/dateTime/dateTimePicker"
+import ZnoRowChange from "./znoRowChange"
 
 const data: ZnoLog[] = [
   {
@@ -600,7 +601,7 @@ console.log(isNameConfirm)
     }
   }
 
-  const [isRefactoring, setIsRefactoring] = React.useState<boolean>(true)
+  const [isRefactoring, setIsRefactoring] = React.useState<boolean>(false)
 
   const columns: ColumnDef<ZnoLog>[] = [
     {
@@ -614,13 +615,13 @@ console.log(isNameConfirm)
     {
       accessorKey: "name",
       cell: ({row}) => {
-        const [isName, setIsName] = React.useState<string>(row.getValue("name"))
+        //const [isName, setIsName] = React.useState<string>(row.getValue("name"))
 
 
         return isChangedYellow && isRefactoring
         ?
         <div className="capitalize"> 
-          <Textarea value={isName} className="w-18 h-full" onChange={(e) => setIsName(e.target.value)}/>
+          <Textarea value={row.getValue("name")} className="w-18 h-full" onChange={row.getValue("name")}/>
         </div>
         :
         <div className="capitalize">{row.getValue("name")}</div>
@@ -964,19 +965,19 @@ console.log(isNameConfirm)
     {
       accessorKey: "statusNote",
       cell: ({ row }) => <div className="capitalize">
-        {isChangedYellow || isChangedGreen && isRefactoring?
+        { isRefactoring?
           <div className="flex flex-col gap-2">
             <Button variant={'destructive'}><HiMiniXMark /></Button>
             <Button variant={'outline'}><HiOutlineCheck /></Button>
           </div>
         :
-        <Button variant={'outline'}><HiOutlinePencil/></Button>
+        <ZnoRowChange localisations={localisations}  statuses={statuses} row={row}/>
         }
         </div>
     },
   ]
 
-
+  {/**<Button variant={'outline'}><HiOutlinePencil/></Button> */}
 
 
 
