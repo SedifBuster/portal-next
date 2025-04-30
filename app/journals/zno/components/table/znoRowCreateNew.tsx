@@ -60,10 +60,12 @@ const formSchema = z.object({
 
 export default function ZnoRowCreateNew ({
     localisations,
-    statuses
+    statuses,
+    onPostData
 }: {
     localisations: UnitLocalization[]
     statuses: UnitStatus[]
+    onPostData: (url: string, postData: BodyInit) => Promise<number>
 }) {
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -83,6 +85,18 @@ export default function ZnoRowCreateNew ({
   })
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
+          await onPostData("http://localhost:5020/api/zno", values)
+            .catch(error => {
+              toast.error("Произошла ошибка при отправке в ЖУС", {
+                description: <p className="text-black">{`${error}`}</p>
+              })
+            })
+            .then(() => {
+              toast.success(`Случай успешно добавлен в ЖУС`, {
+                description: format(new Date(), "PPP HH:mm", {locale: ru}),
+              })
+              form.reset()
+            })
     /*  await postLog("http://localhost:5020/api/logs", values)
         .catch(error => {
           toast.error("Произошла ошибка при отправке в ЖУС", {
@@ -511,8 +525,10 @@ export default function ZnoRowCreateNew ({
               </FormItem>
             )}
           />
+                
           </div>
 }
+
           {
           /*
            // !form.getFieldState('name').isDirty
@@ -678,12 +694,13 @@ export default function ZnoRowCreateNew ({
           <Button className="mt-4" type="submit">Отправить</Button>
           </div>
           */}
+          <DialogFooter>
+          <Button type="submit">сохранить</Button>
+        </DialogFooter>
         </form>
       </Form>
         </div>
-        <DialogFooter>
-          <Button type="submit">сохранить</Button>
-        </DialogFooter>
+
       </DialogContent>
     </Dialog>
   </div>

@@ -64,11 +64,13 @@ const formSchema = z.object({
 export default function ZnoRowChange ({
     localisations,
     statuses,
-    row
+    row,
+    onPatchZno
 }: {
     localisations: UnitLocalization[]
     statuses: UnitStatus[]
     row: Row<ZnoLog>
+    onPatchZno: (url: string, zno: ZnoLog) => void
 }) {
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -88,6 +90,8 @@ export default function ZnoRowChange ({
   })
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
+
+      onPatchZno('http://localhost:5020/api/zno', values)
     /*  await postLog("http://localhost:5020/api/logs", values)
         .catch(error => {
           toast.error("Произошла ошибка при отправке в ЖУС", {
@@ -112,9 +116,9 @@ export default function ZnoRowChange ({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[1200px]">
         <DialogHeader>
-          <DialogTitle>Создать поле</DialogTitle>
+          <DialogTitle>Изменить поле</DialogTitle>
           <DialogDescription>
-            Создание поля для ЗНО журнала. Нажмите сохранить когда закончите.
+            Изменение поля журнала. Нажмите сохранить когда закончите.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">

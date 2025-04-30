@@ -492,15 +492,21 @@ const statuses: UnitStatus[] = [
 const isDate = (obj: Object) => Object.prototype.toString.call(obj) === '[object Date]';
 
 export function ZnoTable({
-    onFetchData
+    onFetchData,
+    onPostData,
+    onPatchZno
 }: {
     onFetchData: (url: string) => Promise<ZnoLog[]>
+    onPostData: (url: string, postData: BodyInit) => Promise<number>
+    onPatchZno: (url: string, zno: ZnoLog) => void
 }
 ) {
 
   //change znologs states
   const [isChangedYellow, setIsChangedYellow] = React.useState<boolean>(true)
   const [isChangedGreen, setIsChangedGreen] = React.useState<boolean>(true)
+
+  const [zno, setZno] = React.useState<ZnoLog[]>([])
 
   //локализация перевод и текущий статус перевод
   //функция переключения состояния и спрашивания какая у профиля должность
@@ -510,23 +516,6 @@ export function ZnoTable({
   }
 
   const [isNameConfirm, setIsNameConfirm] = React.useState<string>('')
-  const [isDateOfBirthConfirm, setIsDateOfBirthConfirm] = React.useState<Date>()
-  const [isLocalizationConfirm, setIsLocalizationConfirm] = React.useState<string>('')
-  const [isPhoneNumberConfirm, setIsPhoneNumberConfirm] = React.useState<string>('')
-  const [isNumberOfHistoryConfirm, setIsNumberOfHistoryConfirm] = React.useState<string>('')
-  const [isDirectedWherConfirm, setIsDirectedWherConfirm] = React.useState<string>('')
-  const [isDiagnosisVKBConfirm, setIsDiagnosisVKBConfirm] = React.useState<string>('')
-  const [isDateOfReferralToCAOPConfirm, setIsDateOfReferralToCAOPhConfirm] = React.useState<Date>()
-  const [isDateOfVisitToCAOPConfirm, setIsDateOfVisitToCAOPConfirm] = React.useState<Date>()
-  const [isDiagnosisOfCAOPConfirm, setIsDiagnosisOfCAOPConfirm] = React.useState<string>('')
-  const [isDateOfVisitToPKODConfirm, setIsDateOfVisitToPKODConfirm] = React.useState<Date>()
-  const [isDiagnosisOfPKODConfirm, setIsDiagnosisOfPKODConfirm] = React.useState<string>('')
-  const [isDateOfTheConsultationConfirm, setIsDateOfTheConsultationConfirm] = React.useState<Date>()
-  const [isDateOfLastCallAndPersonalContactConfirm, setIsDateOfLastCallAndPersonalContactConfirm] = React.useState<Date>()
-  const [isStatusConfirm, setIsStatusConfirm] = React.useState<string>('')
-  const [isStatusNoteConfirm, setIsStatusNoteConfirm] = React.useState<string>('')
-
-console.log(isNameConfirm)
 
 
   const onChangeRuLocalisations = (value: string) => {
@@ -971,7 +960,7 @@ console.log(isNameConfirm)
             <Button variant={'outline'}><HiOutlineCheck /></Button>
           </div>
         :
-        <ZnoRowChange localisations={localisations}  statuses={statuses} row={row}/>
+        <ZnoRowChange localisations={localisations}  statuses={statuses} row={row} onPatchZno={onPatchZno}/>
         }
         </div>
     },
@@ -1008,14 +997,25 @@ console.log(isNameConfirm)
         setProfile(result.grade)
       }
   }
+
+  let getZnoLogs = async () => {
+    //let result = await axios.get(`http://localhost:5020/api/users/profile/${id}`)
+    let result = await onFetchData(`http://localhost:5020/api/zno`)
+    if(result) {
+      //@ts-ignore
+      setZno(result)
+    }
+}
   
     React.useEffect(() => {
       if (session.status === "authenticated" && typeof session.data.user !== 'undefined') {
         getProfile(Number(session.data.user.id))
-    }}, [])
+    }
+    getZnoLogs()
+  }, [])
 
     const table = useReactTable({
-  data,
+  data: zno,
   columns,
   onSortingChange: setSorting,
   onColumnFiltersChange: setColumnFilters,
@@ -1036,7 +1036,7 @@ console.log(isNameConfirm)
   return (
     <div className="w-full p-2 pt-1">
       <div className="flex items-center py-4">
-      <ZnoRowCreateNew  localisations={localisations} statuses={statuses}/>
+      <ZnoRowCreateNew  localisations={localisations} statuses={statuses} onPostData={onPostData}/>
         <Input
           placeholder="Найти ФИО..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
