@@ -205,7 +205,7 @@ model ZnoLog {
   dateOfVisitToCAOP DateTime?                //green
   diagnosisOfCAOP String?                    //green
   dateOfVisitToPKOD DateTime?                //green
-  diagnosisOfPKOD String                     //green
+  diagnosisOfPKOD String?                    //green
   dateOfTheConsultation DateTime?            //green
   dateOfLastCallAndPersonalContact DateTime? //green
   status StatusZno?                          //green

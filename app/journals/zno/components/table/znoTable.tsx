@@ -39,324 +39,6 @@ import { PopoverContent,} from "@/components/ui/popover"
 import DateTimePicker from "../../components/dateTime/dateTimePicker"
 import ZnoRowChange from "./znoRowChange"
 
-const data: ZnoLog[] = [
-  {
-    id: 1,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    name: "Идукаева  Павла Галиновна",
-    dateOfBirth: new Date(),
-    localization: "ZNOOfTheLipOropharynx",
-    phoneNumber: "8999999999",
-    numberOfHistory: "2255/56",
-    directedWher: "FKS hirurg",
-    diagnosisVKB: "k64.0",
-    dateOfReferralToCAOP: new Date(),
-    dateOfVisitToCAOP: new Date(),
-    diagnosisOfCAOP: "C25 ",
-    dateOfVisitToPKOD: new Date(),
-    diagnosisOfPKOD: "C25 ",
-    dateOfTheConsultation: new Date(),
-    dateOfLastCallAndPersonalContact: new Date(),
-    status: "waitingForAConsultation",
-    statusNote: "Эндоскопические признаки спаечного процесса в малом тазу. Диверитикулит сигмовидной кишки, без признаков дивертикулита. Внутренний геморрой"                        //green
-  },
-  {
-        id: 2,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        name: "Идукаева  Павла Галиновна",
-        dateOfBirth: new Date(),
-        localization: "ZNOOfTheLipOropharynx",
-        phoneNumber: "8999999999",
-        numberOfHistory: "2255/56",
-        directedWher: "FKS hirurg",
-        diagnosisVKB: "k64.0",
-        dateOfReferralToCAOP: new Date(),
-        dateOfVisitToCAOP: new Date(),
-        diagnosisOfCAOP: "C25 ",
-        dateOfVisitToPKOD: new Date(),
-        diagnosisOfPKOD: "C25 ",
-        dateOfTheConsultation: new Date(),
-        dateOfLastCallAndPersonalContact: new Date(),
-        status: "waitingForAConsultation",
-        statusNote: "Эндоскопические признаки спаечного процесса в малом тазу. Диверитикулит сигмовидной кишки, без признаков дивертикулита. Внутренний геморрой"                        //gree
-    },
-    {
-        id: 3,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        name: "Идукаева  Павла Галиновна",
-        dateOfBirth: new Date(),
-        localization: "ZNOOfTheLipOropharynx",
-        phoneNumber: "8999999999",
-        numberOfHistory: "2255/56",
-        directedWher: "FKS hirurg",
-        diagnosisVKB: "k64.0",
-        dateOfReferralToCAOP: new Date(),
-        dateOfVisitToCAOP: new Date(),
-        diagnosisOfCAOP: "C25 ",
-        dateOfVisitToPKOD: new Date(),
-        diagnosisOfPKOD: "C25 ",
-        dateOfTheConsultation: new Date(),
-        dateOfLastCallAndPersonalContact: new Date(),
-        status: "waitingForAConsultation",
-        statusNote: "Эндоскопические признаки спаечного процесса в малом тазу. Диверитикулит сигмовидной кишки, без признаков дивертикулита. Внутренний геморрой"                        //gree
-    },
-    {
-        id: 4,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        name: "Идукаева  Павла Галиновна",
-        dateOfBirth: new Date(),
-        localization: "ZNOOfTheLipOropharynx",
-        phoneNumber: "8999999999",
-        numberOfHistory: "2255/56",
-        directedWher: "FKS hirurg",
-        diagnosisVKB: "k64.0",
-        dateOfReferralToCAOP: new Date(),
-        dateOfVisitToCAOP: new Date(),
-        diagnosisOfCAOP: "C25 ",
-        dateOfVisitToPKOD: new Date(),
-        diagnosisOfPKOD: "C25 ",
-        dateOfTheConsultation: new Date(),
-        dateOfLastCallAndPersonalContact: new Date(),
-        status: "waitingForAConsultation",
-        statusNote: "Эндоскопические признаки спаечного процесса в малом тазу. Диверитикулит сигмовидной кишки, без признаков дивертикулита. Внутренний геморрой"                        //gree
-    },
-    {
-        id: 5,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        name: "Идукаева  Павла Галиновна",
-        dateOfBirth: new Date(),
-        localization: "ZNOOfTheLipOropharynx",
-        phoneNumber: "8999999999",
-        numberOfHistory: "2255/56",
-        directedWher: "FKS hirurg",
-        diagnosisVKB: "k64.0",
-        dateOfReferralToCAOP: new Date(),
-        dateOfVisitToCAOP: new Date(),
-        diagnosisOfCAOP: "C25 ",
-        dateOfVisitToPKOD: new Date(),
-        diagnosisOfPKOD: "C25 ",
-        dateOfTheConsultation: new Date(),
-        dateOfLastCallAndPersonalContact: new Date(),
-        status: "waitingForAConsultation",
-        statusNote: "Эндоскопические признаки спаечного процесса в малом тазу. Диверитикулит сигмовидной кишки, без признаков дивертикулита. Внутренний геморрой"                        //gree
-    },
-    {
-        id: 6,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        name: "Идукаева  Павла Галиновна",
-        dateOfBirth: new Date(),
-        localization: "ZNOOfTheLipOropharynx",
-        phoneNumber: "8999999999",
-        numberOfHistory: "2255/56",
-        directedWher: "FKS hirurg",
-        diagnosisVKB: "k64.0",
-        dateOfReferralToCAOP: new Date(),
-        dateOfVisitToCAOP: new Date(),
-        diagnosisOfCAOP: "C25 ",
-        dateOfVisitToPKOD: new Date(),
-        diagnosisOfPKOD: "C25 ",
-        dateOfTheConsultation: new Date(),
-        dateOfLastCallAndPersonalContact: new Date(),
-        status: "waitingForAConsultation",
-        statusNote: "Эндоскопические признаки спаечного процесса в малом тазу. Диверитикулит сигмовидной кишки, без признаков дивертикулита. Внутренний геморрой"                        //green
-          },
-          {
-              id: 7,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              name: "Идукаева  Павла Галиновна",
-              dateOfBirth: new Date(),
-              localization: "ZNOOfTheLipOropharynx",
-              phoneNumber: "8999999999",
-              numberOfHistory: "2255/56",
-              directedWher: "FKS hirurg",
-              diagnosisVKB: "k64.0",
-              dateOfReferralToCAOP: new Date(),
-              dateOfVisitToCAOP: new Date(),
-              diagnosisOfCAOP: "C25 ",
-              dateOfVisitToPKOD: new Date(),
-              diagnosisOfPKOD: "C25 ",
-              dateOfTheConsultation: new Date(),
-              dateOfLastCallAndPersonalContact: new Date(),
-              status: "waitingForAConsultation",
-              statusNote: "Эндоскопические признаки спаечного процесса в малом тазу. Диверитикулит сигмовидной кишки, без признаков дивертикулита. Внутренний геморрой"                        //gree
-          },
-          {
-              id: 8,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              name: "Идукаева  Павла Галиновна",
-              dateOfBirth: new Date(),
-              localization: "ZNOOfTheLipOropharynx",
-              phoneNumber: "8999999999",
-              numberOfHistory: "2255/56",
-              directedWher: "FKS hirurg",
-              diagnosisVKB: "k64.0",
-              dateOfReferralToCAOP: new Date(),
-              dateOfVisitToCAOP: new Date(),
-              diagnosisOfCAOP: "C25 ",
-              dateOfVisitToPKOD: new Date(),
-              diagnosisOfPKOD: "C25 ",
-              dateOfTheConsultation: new Date(),
-              dateOfLastCallAndPersonalContact: new Date(),
-              status: "waitingForAConsultation",
-              statusNote: "Эндоскопические признаки спаечного процесса в малом тазу. Диверитикулит сигмовидной кишки, без признаков дивертикулита. Внутренний геморрой"                        //gree
-          },
-          {
-              id: 9,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              name: "Идукаева  Павла Галиновна",
-              dateOfBirth: new Date(),
-              localization: "ZNOOfTheLipOropharynx",
-              phoneNumber: "8999999999",
-              numberOfHistory: "2255/56",
-              directedWher: "FKS hirurg",
-              diagnosisVKB: "k64.0",
-              dateOfReferralToCAOP: new Date(),
-              dateOfVisitToCAOP: new Date(),
-              diagnosisOfCAOP: "C25 ",
-              dateOfVisitToPKOD: new Date(),
-              diagnosisOfPKOD: "C25 ",
-              dateOfTheConsultation: new Date(),
-              dateOfLastCallAndPersonalContact: new Date(),
-              status: "waitingForAConsultation",
-              statusNote: "Эндоскопические признаки спаечного процесса в малом тазу. Диверитикулит сигмовидной кишки, без признаков дивертикулита. Внутренний геморрой"                        //gree
-          },
-          {
-              id: 10,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              name: "Идукаева  Павла Галиновна",
-              dateOfBirth: new Date(),
-              localization: "ZNOOfTheLipOropharynx",
-              phoneNumber: "8999999999",
-              numberOfHistory: "2255/56",
-              directedWher: "FKS hirurg",
-              diagnosisVKB: "k64.0",
-              dateOfReferralToCAOP: new Date(),
-              dateOfVisitToCAOP: new Date(),
-              diagnosisOfCAOP: "C25 ",
-              dateOfVisitToPKOD: new Date(),
-              diagnosisOfPKOD: "C25 ",
-              dateOfTheConsultation: new Date(),
-              dateOfLastCallAndPersonalContact: new Date(),
-              status: "waitingForAConsultation",
-              statusNote: "Эндоскопические признаки спаечного процесса в малом тазу. Диверитикулит сигмовидной кишки, без признаков дивертикулита. Внутренний геморрой"                        //gree
-          },
-          {
-            id: 11,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            name: "Идукаева  Павла Галиновна",
-            dateOfBirth: new Date(),
-            localization: "ZNOOfTheLipOropharynx",
-            phoneNumber: "8999999999",
-            numberOfHistory: "2255/56",
-            directedWher: "FKS hirurg",
-            diagnosisVKB: "k64.0",
-            dateOfReferralToCAOP: new Date(),
-            dateOfVisitToCAOP: new Date(),
-            diagnosisOfCAOP: "C25 ",
-            dateOfVisitToPKOD: new Date(),
-            diagnosisOfPKOD: "C25 ",
-            dateOfTheConsultation: new Date(),
-            dateOfLastCallAndPersonalContact: new Date(),
-            status: "waitingForAConsultation",
-            statusNote: "Эндоскопические признаки спаечного процесса в малом тазу. Диверитикулит сигмовидной кишки, без признаков дивертикулита. Внутренний геморрой"                        //green
-              },
-              {
-                  id: 12,
-                  createdAt: new Date(),
-                  updatedAt: new Date(),
-                  name: "Идукаева  Павла Галиновна",
-                  dateOfBirth: new Date(),
-                  localization: "ZNOOfTheLipOropharynx",
-                  phoneNumber: "8999999999",
-                  numberOfHistory: "2255/56",
-                  directedWher: "FKS hirurg",
-                  diagnosisVKB: "k64.0",
-                  dateOfReferralToCAOP: new Date(),
-                  dateOfVisitToCAOP: new Date(),
-                  diagnosisOfCAOP: "C25 ",
-                  dateOfVisitToPKOD: new Date(),
-                  diagnosisOfPKOD: "C25 ",
-                  dateOfTheConsultation: new Date(),
-                  dateOfLastCallAndPersonalContact: new Date(),
-                  status: "waitingForAConsultation",
-                  statusNote: "Эндоскопические признаки спаечного процесса в малом тазу. Диверитикулит сигмовидной кишки, без признаков дивертикулита. Внутренний геморрой"                        //gree
-              },
-              {
-                  id: 13,
-                  createdAt: new Date(),
-                  updatedAt: new Date(),
-                  name: "Идукаева  Павла Галиновна",
-                  dateOfBirth: new Date(),
-                  localization: "ZNOOfTheLipOropharynx",
-                  phoneNumber: "8999999999",
-                  numberOfHistory: "2255/56",
-                  directedWher: "FKS hirurg",
-                  diagnosisVKB: "k64.0",
-                  dateOfReferralToCAOP: new Date(),
-                  dateOfVisitToCAOP: new Date(),
-                  diagnosisOfCAOP: "C25 ",
-                  dateOfVisitToPKOD: new Date(),
-                  diagnosisOfPKOD: "C25 ",
-                  dateOfTheConsultation: new Date(),
-                  dateOfLastCallAndPersonalContact: new Date(),
-                  status: "waitingForAConsultation",
-                  statusNote: "Эндоскопические признаки спаечного процесса в малом тазу. Диверитикулит сигмовидной кишки, без признаков дивертикулита. Внутренний геморрой"                        //gree
-              },
-              {
-                  id: 14,
-                  createdAt: new Date(),
-                  updatedAt: new Date(),
-                  name: "Идукаева  Павла Галиновна",
-                  dateOfBirth: new Date(),
-                  localization: "ZNOOfTheLipOropharynx",
-                  phoneNumber: "8999999999",
-                  numberOfHistory: "2255/56",
-                  directedWher: "FKS hirurg",
-                  diagnosisVKB: "k64.0",
-                  dateOfReferralToCAOP: new Date(),
-                  dateOfVisitToCAOP: new Date(),
-                  diagnosisOfCAOP: "C25 ",
-                  dateOfVisitToPKOD: new Date(),
-                  diagnosisOfPKOD: "C25 ",
-                  dateOfTheConsultation: new Date(),
-                  dateOfLastCallAndPersonalContact: new Date(),
-                  status: "waitingForAConsultation",
-                  statusNote: "Эндоскопические признаки спаечного процесса в малом тазу. Диверитикулит сигмовидной кишки, без признаков дивертикулита. Внутренний геморрой"                        //gree
-              },
-              {
-                  id: 15,
-                  createdAt: new Date(),
-                  updatedAt: new Date(),
-                  name: "Идукаева  Павла Галиновна",
-                  dateOfBirth: new Date(),
-                  localization: "ZNOOfTheLipOropharynx",
-                  phoneNumber: "8999999999",
-                  numberOfHistory: "2255/56",
-                  directedWher: "FKS hirurg",
-                  diagnosisVKB: "k64.0",
-                  dateOfReferralToCAOP: new Date(),
-                  dateOfVisitToCAOP: new Date(),
-                  diagnosisOfCAOP: "C25 ",
-                  dateOfVisitToPKOD: new Date(),
-                  diagnosisOfPKOD: "C25 ",
-                  dateOfTheConsultation: new Date(),
-                  dateOfLastCallAndPersonalContact: new Date(),
-                  status: "waitingForAConsultation",
-                  statusNote: "Эндоскопические признаки спаечного процесса в малом тазу. Диверитикулит сигмовидной кишки, без признаков дивертикулита. Внутренний геморрой"                        //gree
-              },
-  ]
-
 export interface UnitLocalization {
     value: Localization,
     text: string,
@@ -508,16 +190,6 @@ export function ZnoTable({
 
   const [zno, setZno] = React.useState<ZnoLog[]>([])
 
-  //локализация перевод и текущий статус перевод
-  //функция переключения состояния и спрашивания какая у профиля должность
-  const onChangeChangedState = (row: Row<ZnoLog>) => {
-  //тут спрашиваем кто персонаж что меняет поле
-
-  }
-
-  const [isNameConfirm, setIsNameConfirm] = React.useState<string>('')
-
-
   const onChangeRuLocalisations = (value: string) => {
     switch (value) {
       case 'ZNOOfTheLipOropharynx':
@@ -597,362 +269,148 @@ export function ZnoTable({
       accessorKey: "createdAt",
       cell: ({ row }) => (
         <div className="capitalize">
-          {isDate(row.getValue("createdAt"))? format(row.getValue("createdAt"), "PPP", {locale: ru}) : row.getValue("createdAt")}
+          {isDate(row.getValue("createdAt"))
+            ?
+            format(row.getValue("createdAt"), "PPP", {locale: ru})
+            :
+            format(new Date(row.getValue("createdAt")), "PPP", {locale: ru})}
         </div>
       ),
     },
     {
       accessorKey: "name",
       cell: ({row}) => {
-        //const [isName, setIsName] = React.useState<string>(row.getValue("name"))
-
-
-        return isChangedYellow && isRefactoring
-        ?
-        <div className="capitalize"> 
-          <Textarea value={row.getValue("name")} className="w-18 h-full" onChange={row.getValue("name")}/>
-        </div>
-        :
-        <div className="capitalize">{row.getValue("name")}</div>
-      }/*({ row }) => (
-          isChangedYellow && isRefactoring
-          ?
-          <div className="capitalize"> 
-          <Textarea value={isName} className="w-18 h-full" onChange={(e) => setIsName(e.target.value)}/>
-          </div>
-          :
-          <div className="capitalize"> {row.getValue("name")}  </div>
-      ),*/
+        return <div className="capitalize">{row.getValue("name")}</div>
+      }
     },
     {
       accessorKey: "dateOfBirth",
       cell: ({ row }) => (
-        isChangedYellow && isRefactoring
-        ?
         <div className="lowercase">
-          {isDate(row.getValue("dateOfBirth"))? format(row.getValue("dateOfBirth"), "PPP", {locale: ru}) : row.getValue("dateOfBirth")}
+          {isDate(row.getValue("dateOfBirth"))
+            ?
+            format(row.getValue("dateOfBirth"), "PPP", {locale: ru})
+            :
+            format(new Date(row.getValue("dateOfBirth")), "PPP", {locale: ru})}
         </div>
-        :
-        <div className="lowercase">{isDate(row.getValue("dateOfBirth"))? format(row.getValue("dateOfBirth"), "PPP", {locale: ru}) : row.getValue("dateOfBirth")}</div>
       ),
     },
     {
       accessorKey: "localization",
       cell: ({ row }) => (
-        isChangedYellow && isRefactoring
-        ?
-        <div className="capitalize">
-           <Select onValueChange={row.getValue("localization")}  value={row.getValue("localization")} defaultValue={row.getValue("localization")}>
-              <SelectTrigger className="w-[320px]">
-                <SelectValue placeholder="не выбрано" />
-              </SelectTrigger>
-           <SelectContent>
-            {
-              localisations.map(dep => {
-                return <SelectItem key={dep.value} value={dep.value}>{dep.text}</SelectItem>
-            })
-            }
-           </SelectContent>
-           </Select>
-          </div>
-        :
         <div className="capitalize">{onChangeRuLocalisations(row.getValue("localization"))}</div>
       )
     },
     {
       accessorKey: "phoneNumber",
       cell: ({ row }) => (
-        isChangedYellow && isRefactoring
-        ?
-        <div className="capitalize">
-          <Textarea value={row.getValue("phoneNumber")} className="w-18 h-full"/>
-        </div>
-        :
         <div className="capitalize">{row.getValue("phoneNumber")}</div>
       )
     },
     {
       accessorKey: "numberOfHistory",
       cell: ({ row }) => (
-        isChangedYellow && isRefactoring
-        ?
-        <div className="capitalize">
-          <Textarea value={row.getValue("numberOfHistory")} className="w-18 h-full"/>
-          </div>
-        :
         <div className="capitalize">{row.getValue("numberOfHistory")}</div>
       )
     },
     {
       accessorKey: "directedWher",
       cell: ({ row }) =>(
-        isChangedGreen && isRefactoring
-        ?
-        <div className="capitalize">
-          <Textarea value={row.getValue("directedWher")} className="w-18 h-full"/>
-          </div>
-        :
         <div className="capitalize">{row.getValue("directedWher")}</div>
       ) 
     },
     {
       accessorKey: "diagnosisVKB",
       cell: ({ row }) => (
-        isChangedGreen && isRefactoring
-        ?
-        <div className="capitalize">
-          <Textarea value={row.getValue("diagnosisVKB")} className="w-18 h-full"/>
-          </div>
-        :
         <div className="capitalize">{row.getValue("diagnosisVKB")}</div>
       )  
     },
     {
       accessorKey: "dateOfReferralToCAOP",
       cell: ({ row }) => (
-        isChangedGreen && isRefactoring
-        ?
         <div className="capitalize">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={"outline"}
-                className={cn(
-                  "w-[200px] justify-start text-left font-normal",
-                   !row.getValue("dateOfReferralToCAOP") && "text-muted-foreground"
-                )}
-              >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                    {row.getValue("dateOfReferralToCAOP") ? format(row.getValue("dateOfReferralToCAOP"), "PPP", {locale: ru}) : <span>Выберите время*</span>}
-              </Button>
-             </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                 mode="single"
-                 selected={row.getValue("dateOfReferralToCAOP")}
-                 onSelect={row.getValue("dateOfReferralToCAOP")}
-                 initialFocus
-                 locale={ru}
-              />
-              <div className="p-2 flex justify-center border-t">
-               <DateTimePicker date={row.getValue("dateOfReferralToCAOP")} setDate={row.getValue("dateOfReferralToCAOP")}/>
-               </div>
-           </PopoverContent>
-          </Popover>
-          </div>
-        :
-        <div className="capitalize">{isDate(row.getValue("dateOfReferralToCAOP"))? format(row.getValue("dateOfReferralToCAOP"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfReferralToCAOP")}</div>
-      )  
+          {row.getValue("dateOfReferralToCAOP") === null
+            ?
+            null
+            :
+            format(new Date(row.getValue("dateOfReferralToCAOP")), "PPP", {locale: ru})}
+        </div>
+      )
     },
     {
       accessorKey: "dateOfVisitToCAOP",
       cell: ({ row }) => (
-        isChangedGreen && isRefactoring
-        ?
         <div className="capitalize">
-                    <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={"outline"}
-                className={cn(
-                  "w-[200px] justify-start text-left font-normal",
-                   !row.getValue("dateOfVisitToCAOP") && "text-muted-foreground"
-                )}
-              >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                    {row.getValue("dateOfVisitToCAOP") ? format(row.getValue("dateOfVisitToCAOP"), "PPP", {locale: ru}) : <span>Выберите время*</span>}
-              </Button>
-             </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                 mode="single"
-                 selected={row.getValue("dateOfVisitToCAOP")}
-                 onSelect={row.getValue("dateOfVisitToCAOP")}
-                 initialFocus
-                 locale={ru}
-              />
-              <div className="p-2 flex justify-center border-t">
-               <DateTimePicker date={row.getValue("dateOfVisitToCAOP")} setDate={row.getValue("dateOfVisitToCAOP")}/>
-               </div>
-           </PopoverContent>
-          </Popover>
-           </div>
-        :
-        <div className="capitalize">{isDate(row.getValue("dateOfVisitToCAOP"))? format(row.getValue("dateOfVisitToCAOP"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfVisitToCAOP")}</div>
-      )   
+          {row.getValue("dateOfVisitToCAOP") === null
+            ?
+            null
+            :
+            format(new Date(row.getValue("dateOfVisitToCAOP")), "PPP", {locale: ru})}
+        </div>
+      )
     },
     {
       accessorKey: "diagnosisOfCAOP",
       cell: ({ row }) => (
-        isChangedGreen && isRefactoring
-        ?
-        <div className="capitalize">
-          <Textarea value={row.getValue("diagnosisOfCAOP")} className="w-18 h-full"/>
-          </div>
-        :
         <div className="capitalize">{row.getValue("diagnosisOfCAOP")}</div>
       )  
     },
     {
       accessorKey: "dateOfVisitToPKOD",
       cell: ({ row }) => (
-        isChangedGreen && isRefactoring
-        ?
         <div className="capitalize">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={"outline"}
-                className={cn(
-                  "w-[200px] justify-start text-left font-normal",
-                   !row.getValue("dateOfVisitToPKOD") && "text-muted-foreground"
-                )}
-              >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                    {row.getValue("dateOfVisitToPKOD") ? format(row.getValue("dateOfVisitToPKOD"), "PPP", {locale: ru}) : <span>Выберите время*</span>}
-              </Button>
-             </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                 mode="single"
-                 selected={row.getValue("dateOfVisitToPKOD")}
-                 onSelect={row.getValue("dateOfVisitToPKOD")}
-                 initialFocus
-                 locale={ru}
-              />
-              <div className="p-2 flex justify-center border-t">
-               <DateTimePicker date={row.getValue("dateOfVisitToPKOD")} setDate={row.getValue("dateOfVisitToPKOD")}/>
-               </div>
-           </PopoverContent>
-          </Popover>
-           </div>
-        :
-        <div className="capitalize">{isDate(row.getValue("dateOfVisitToPKOD"))? format(row.getValue("dateOfVisitToPKOD"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfVisitToPKOD")}</div>
+          {row.getValue("dateOfVisitToPKOD") === null
+            ?
+            null
+            :
+            format(new Date(row.getValue("dateOfVisitToPKOD")), "PPP", {locale: ru})}
+        </div>
       ) 
     },
     {
       accessorKey: "diagnosisOfPKOD",
       cell: ({ row }) => (
-        isChangedGreen && isRefactoring
-        ?
-        <div className="capitalize">
-          <Textarea value={row.getValue("diagnosisOfPKOD")} className="w-18 h-full"/>
-          </div>
-        :
         <div className="capitalize">{row.getValue("diagnosisOfPKOD")}</div>
       )  
     },
     {
       accessorKey: "dateOfTheConsultation",
       cell: ({ row }) => (
-        isChangedGreen && isRefactoring
-        ?
         <div className="capitalize">
-                    <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={"outline"}
-                className={cn(
-                  "w-[200px] justify-start text-left font-normal",
-                   !row.getValue("dateOfTheConsultation") && "text-muted-foreground"
-                )}
-              >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                    {row.getValue("dateOfTheConsultation") ? format(row.getValue("dateOfTheConsultation"), "PPP", {locale: ru}) : <span>Выберите время*</span>}
-              </Button>
-             </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                 mode="single"
-                 selected={row.getValue("dateOfTheConsultation")}
-                 onSelect={row.getValue("dateOfTheConsultation")}
-                 initialFocus
-                 locale={ru}
-              />
-              <div className="p-2 flex justify-center border-t">
-               <DateTimePicker date={row.getValue("dateOfTheConsultation")} setDate={row.getValue("dateOfTheConsultation")}/>
-               </div>
-           </PopoverContent>
-          </Popover>
-          </div>
-        :
-        <div className="capitalize">{isDate(row.getValue("dateOfTheConsultation"))? format(row.getValue("dateOfTheConsultation"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfTheConsultation")}</div>
+          {row.getValue("dateOfTheConsultation") === null
+            ?
+            null
+            :
+            format(new Date(row.getValue("dateOfTheConsultation")), "PPP", {locale: ru})}
+        </div>
       ) 
     },
     {
       accessorKey: "dateOfLastCallAndPersonalContact",
       cell: ({ row }) => (
-        isChangedGreen && isRefactoring
-        ?
         <div className="capitalize">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={"outline"}
-                className={cn(
-                  "w-[200px] justify-start text-left font-normal",
-                   !row.getValue("dateOfLastCallAndPersonalContact") && "text-muted-foreground"
-                )}
-              >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                    {row.getValue("dateOfLastCallAndPersonalContact") ? format(row.getValue("dateOfLastCallAndPersonalContact"), "PPP", {locale: ru}) : <span>Выберите время*</span>}
-              </Button>
-             </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                 mode="single"
-                 selected={row.getValue("dateOfLastCallAndPersonalContact")}
-                 onSelect={row.getValue("dateOfLastCallAndPersonalContact")}
-                 initialFocus
-                 locale={ru}
-              />
-              <div className="p-2 flex justify-center border-t">
-               <DateTimePicker date={row.getValue("dateOfLastCallAndPersonalContact")} setDate={row.getValue("dateOfLastCallAndPersonalContact")}/>
-               </div>
-           </PopoverContent>
-          </Popover>
-          </div>
-        :
-        <div className="capitalize">{isDate(row.getValue("dateOfLastCallAndPersonalContact"))? format(row.getValue("dateOfLastCallAndPersonalContact"), "PPP HH:mm", {locale: ru}) : row.getValue("dateOfLastCallAndPersonalContact")}</div>
+          {row.getValue("dateOfLastCallAndPersonalContact") === null
+            ?
+            null
+            :
+            format(new Date(row.getValue("dateOfLastCallAndPersonalContact")), "PPP", {locale: ru})}
+        </div>
       )
     },
     {
       accessorKey: "status",
       cell: ({ row }) => (
-        isChangedGreen && isRefactoring
-        ?
-        <div className="capitalize">
-          <Select onValueChange={row.getValue("status")}  value={row.getValue("status")} defaultValue={row.getValue("status")}>
-            <SelectTrigger className="w-[320px]">
-              <SelectValue placeholder="не выбрано" />
-            </SelectTrigger>
-          <SelectContent>
-            {
-              statuses.map(dep => {
-                return <SelectItem key={dep.value} value={dep.value}>{dep.text}</SelectItem>
-            })
-            }
-           </SelectContent>
-           </Select>
-          </div>
-        :
         <div className="capitalize">{onChangeRuStatus(row.getValue("status"))}</div>
       )  
     },
     {
       accessorKey: "statusNote",
       cell: ({ row }) => (
-        isChangedGreen && isRefactoring
-        ?
-        <div className="capitalize">
-          <Textarea value={row.getValue("statusNote")} className="w-18 h-full"/>
-          </div>
-        :
         <div className="capitalize">{row.getValue("statusNote")}</div>
       ) 
     },
     {
-      accessorKey: "statusNote",
+      accessorKey: "changeLog",
       cell: ({ row }) => <div className="capitalize">
         { isRefactoring?
           <div className="flex flex-col gap-2">
@@ -965,10 +423,6 @@ export function ZnoTable({
         </div>
     },
   ]
-
-  {/**<Button variant={'outline'}><HiOutlinePencil/></Button> */}
-
-
 
   //[11:21, 24.04.2025] : Все могут видеть все поля
   //[11:21, 24.04.2025]: Никакие поля от пользователей не скрываем
@@ -984,18 +438,18 @@ export function ZnoTable({
   const [rowSelection, setRowSelection] = React.useState({})
 
 
-    const [isProfile, setProfile] = React.useState<string>()
-  
-    const session = useSession()
-  
-    let getProfile = async (id: number) => {
-      //let result = await axios.get(`http://localhost:5020/api/users/profile/${id}`)
-      let result = await onFetchData(`http://localhost:5020/api/users/profile/${id}`)
-      console.log(result)
-      if(result) {
-        //@ts-ignore
-        setProfile(result.grade)
-      }
+  const [isProfile, setProfile] = React.useState<string>()
+
+  const session = useSession()
+
+  let getProfile = async (id: number) => {
+    //let result = await axios.get(`http://localhost:5020/api/users/profile/${id}`)
+    let result = await onFetchData(`http://localhost:5020/api/users/profile/${id}`)
+    console.log(result)
+    if(result) {
+      //@ts-ignore
+      setProfile(result.grade)
+    }
   }
 
   let getZnoLogs = async () => {
@@ -1006,38 +460,39 @@ export function ZnoTable({
       setZno(result)
     }
 }
-  
-    React.useEffect(() => {
-      if (session.status === "authenticated" && typeof session.data.user !== 'undefined') {
-        getProfile(Number(session.data.user.id))
-    }
-    getZnoLogs()
-  }, [])
 
-    const table = useReactTable({
-  data: zno,
-  columns,
-  onSortingChange: setSorting,
-  onColumnFiltersChange: setColumnFilters,
-  getCoreRowModel: getCoreRowModel(),
-  getPaginationRowModel: getPaginationRowModel(),
-  getSortedRowModel: getSortedRowModel(),
-  getFilteredRowModel: getFilteredRowModel(),
-  onColumnVisibilityChange: setColumnVisibility,
-  onRowSelectionChange: setRowSelection,
-  state: {
-    sorting,
-    columnFilters,
-    columnVisibility,
-    rowSelection,
-  },
-    })
+  const table = useReactTable({
+    data: zno,
+    columns,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+    },
+  })
+
+  React.useEffect(() => {
+    if (session.status === "authenticated" && typeof session.data.user !== 'undefined') {
+      getProfile(Number(session.data.user.id))
+  }
+  getZnoLogs()
+  }, [])
 
   return (
     <div className="w-full p-2 pt-1">
       <div className="flex items-center py-4">
-      <ZnoRowCreateNew  localisations={localisations} statuses={statuses} onPostData={onPostData}/>
-        <Input
+      <ZnoRowCreateNew  localisations={localisations} statuses={statuses} onPostData={onPostData} getZnoLogs={getZnoLogs}/>
+        {/**
+         * <Input
           placeholder="Найти ФИО..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
@@ -1045,6 +500,8 @@ export function ZnoTable({
           }
           className="max-w-sm h-8"
         />
+         * 
+         */}
       </div>
       <div className="rounded-md border">
         <Table>
