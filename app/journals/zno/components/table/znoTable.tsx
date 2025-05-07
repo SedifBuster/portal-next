@@ -417,8 +417,8 @@ export function ZnoTable({
             <Button variant={'destructive'}><HiMiniXMark /></Button>
             <Button variant={'outline'}><HiOutlineCheck /></Button>
           </div>
-        :
-        <ZnoRowChange profile={!isProfile? '' : isProfile } localisations={localisations}  statuses={statuses} row={row} onPatchZno={onPatchZno} getZnoLogs={getZnoLogs}/>
+        : 
+        isProfile == 'DOCTOR' || isProfile == 'OMO' || isProfile == 'SITEADMIN'|| isProfile == 'TECHNICICAN' ?<ZnoRowChange profile={!isProfile? '' : isProfile } localisations={localisations}  statuses={statuses} row={row} onPatchZno={onPatchZno} getZnoLogs={getZnoLogs}/> : ''
         }
         </div>
     },
@@ -442,7 +442,7 @@ export function ZnoTable({
 
   const session = useSession()
 
-  console.log(isProfile)
+
 
 
 
@@ -462,6 +462,7 @@ export function ZnoTable({
     if(result) {
       //@ts-ignore
       setProfile(result.grade)
+      console.log(isProfile)
     }
   }
 
@@ -493,18 +494,20 @@ export function ZnoTable({
     },
   })
 
+  console.log(session)
+
   React.useEffect(() => {
     if (session.status === "authenticated" && typeof session.data.user !== 'undefined') {
       getProfile(Number(session.data.user.id))
   }
   getZnoLogs()
-  }, [])
+  }, [session])
 
   return (
     <div className="w-full p-2 pt-1">
       <div className="flex items-center py-4">
         {
-            isProfile == 'DOCTOR' || isProfile == 'OMO' //zelen?
+            isProfile == 'DOCTOR' || isProfile == 'OMO'|| isProfile == 'TECHNICICAN'  //zelen?
             ?
             <ZnoRowCreateNew  localisations={localisations} statuses={statuses} onPostData={onPostData} getZnoLogs={getZnoLogs} profile={!isProfile ? '' : isProfile}/>
             :
