@@ -17,7 +17,7 @@ import {
 
 export
   default function ZnoTableRow ({
-    row
+    row,
   } : {
     row: Row<ZnoLog>
   }) {

@@ -41,7 +41,7 @@ const formSchema = z.object({
     name: z.string().min(3, {
       message: "Ф.И.О должно быть больше двух символов.",
     }),
-    dateOfBirth: z.date(),
+    dateOfBirth: z.date().optional(),
     localization: z.string().min(2),
     phoneNumber: z.string().min(2),
     numberOfHistory: z.string().min(2),
@@ -62,12 +62,14 @@ export default function ZnoRowCreateNew ({
     localisations,
     statuses,
     onPostData,
-    getZnoLogs
+    getZnoLogs,
+    profile
 }: {
     localisations: UnitLocalization[]
     statuses: UnitStatus[]
     onPostData: (url: string, postData: BodyInit) => Promise<number>
     getZnoLogs: () => void
+    profile: string
 }) {
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -80,33 +82,37 @@ export default function ZnoRowCreateNew ({
     },
   })
 
-  const formatDisplayDate = (dateString: any) => {
+  const formatDisplayDate = (dateString: string) => {
     if (!dateString) return "";  
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, '0');
     const month = date.toLocaleString('default', { month: 'short' });
     const year = date.getFullYear().toString();
     return `${day}-${month}-${year}`;
-  };   
+  };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    if(new Date(date) === undefined) return toast.error("Введите дату рождения", {
+      description: <p className="text-black">{``}</p>
+    })
+
     //@ts-ignore
-    await onPostData("http://localhost:5020/api/zno", values)
+    await onPostData("http://localhost:5020/api/zno", {...values, dateOfBirth: new Date(date)})
       .catch(error => {
-        toast.error("Произошла ошибка при отправке в ЖУС", {
+        toast.error("Произошла ошибка при отправке в ЗНО", {
           description: <p className="text-black">{`${error}`}</p>
         })
       })
       .then(() => {
-        toast.success(`Случай успешно добавлен в ЖУС`, {
+        toast.success(`Запись успешно добавлена в ЗНО`, {
           description: format(new Date(), "PPP HH:mm", {locale: ru}),
         })
         form.reset()
       })
       getZnoLogs()
-    }
+  }
 
-    const [date, setDate] = useState("");
+  const [date, setDate] = useState("");
 
   return <div>
     <Dialog>
@@ -146,49 +152,22 @@ export default function ZnoRowCreateNew ({
               <FormItem className="flex flex-col pt-2">
                 <FormLabel className="pb-0.5">Дата рождения</FormLabel>
                 <FormControl>
-
                 <div className="flex-1">
-        <label className="block text-sm font-medium text-gray-700">
-          Date
-        </label>
         <div className="relative">
           {date && (
-            <span className="absolute left-2 bottom-2 bg-white px-2 text-sm text-gray-600" style={{ pointerEvents: "none" }} > {formatDisplayDate(date)} </span>
+            <span
+              className="absolute left-2 bottom-2 bg-white px-2 text-sm text-gray-600"
+              style={{ pointerEvents: "none" }} >
+                {formatDisplayDate(date)}
+            </span>
           )}
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#9F5316] focus:ring-[#9F5316] p-2 bg-white" required />
+          <Input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="block w-full rounded-md shadow-sm focus:border-[#9F5316] focus:ring-[#9F5316] p-2 " required  />
         </div>
       </div>
-
-                  
-                 {/**Input type="date" {...field}/>
-                  * <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                        "w-[200px] justify-start text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                        )}
-                      >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {field.value ? format(field.value, "PPP", {locale: ru}) : <span>Выберите время*</span>}
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                         mode="single"
-                         selected={field.value}
-                         onSelect={field.onChange}
-                         initialFocus
-                         locale={ru}
-                        />
-                        <div className="p-2 flex justify-center border-t">
-                        <DateTimePicker date={field.value} setDate={field.onChange}/>
-                        </div>
-                        </PopoverContent>
-                </Popover>
-                  * 
-                  */} 
                   </FormControl>
                 </FormItem>
               )}
@@ -252,7 +231,7 @@ export default function ZnoRowCreateNew ({
           />
           </div>
           {
-          !form.getFieldState('numberOfHistory').isDirty || !form.getFieldState('dateOfBirth').isDirty ||
+          !form.getFieldState('numberOfHistory').isDirty ||
           !form.getFieldState('localization').isDirty || !form.getFieldState('phoneNumber').isDirty
           || !form.getFieldState('name').isDirty
           ?
@@ -551,3 +530,34 @@ export default function ZnoRowCreateNew ({
     </Dialog>
   </div>
 }
+
+
+{/**Input type="date" {...field}/>
+                  * <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                        "w-[200px] justify-start text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                        )}
+                      >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {field.value ? format(field.value, "PPP", {locale: ru}) : <span>Выберите время*</span>}
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                         mode="single"
+                         selected={field.value}
+                         onSelect={field.onChange}
+                         initialFocus
+                         locale={ru}
+                        />
+                        <div className="p-2 flex justify-center border-t">
+                        <DateTimePicker date={field.value} setDate={field.onChange}/>
+                        </div>
+                        </PopoverContent>
+                </Popover>
+                  * 
+                  */} 

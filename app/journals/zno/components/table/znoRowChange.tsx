@@ -38,62 +38,73 @@ import { Separator } from "@radix-ui/react-select"
 import { HiOutlinePencil } from "react-icons/hi2"
 import { Row } from "@tanstack/react-table"
 import { ZnoLog } from "@prisma/client"
+import { useState } from "react"
 
 const formSchema = z.object({
-    name: z.string().min(3, {
-        message: "Ф.И.О должно быть больше двух символов.",
-    }),
-    dateOfBirth: z.date(),
-    localization: z.string().min(2),
-    phoneNumber: z.string().min(2),
-    numberOfHistory: z.string().min(2),
-    directedWher: z.string().min(2).optional(),
+    name: z.string().optional(),
+    dateOfBirth: z.date().optional(),
+    localization: z.string().optional(),
+    phoneNumber: z.string().optional(),
+    numberOfHistory: z.string().optional(),
+    directedWher: z.string().optional(),
     diagnosisVKB: z.string().optional(),
     dateOfReferralToCAOP: z.date().optional(),
     dateOfVisitToCAOP: z.date().optional(),
-    diagnosisOfCAOP: z.string().min(2).optional(),
+    diagnosisOfCAOP: z.string().optional(),
     dateOfVisitToPKOD: z.date().optional(),
-    diagnosisOfPKOD: z.string().min(2).optional(),
+    diagnosisOfPKOD: z.string().optional(),
     dateOfTheConsultation: z.date().optional(),
     dateOfLastCallAndPersonalContact: z.date().optional(),
-    status: z.string().min(2).optional(),
-    statusNote: z.string().min(2).optional(),
+    status: z.string().optional(),
+    statusNote: z.string().optional(),
 })
-
 
 export default function ZnoRowChange ({
     localisations,
     statuses,
     row,
-    onPatchZno
+    onPatchZno,
+    getZnoLogs,
+    profile
 }: {
     localisations: UnitLocalization[]
     statuses: UnitStatus[]
     row: Row<ZnoLog>
     onPatchZno: (url: string, zno: ZnoLog) => void
+    getZnoLogs: () => void
+    profile: string
 }) {
+
+  const [date, setDate] = useState<string>(row.getValue('dateOfBirth'));
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
         name: row.getValue('name'),
-        localization: "",
-        phoneNumber: "",
-        numberOfHistory: "",
-        directedWher: "",
-        diagnosisVKB: "",
-        diagnosisOfCAOP: "",
-        diagnosisOfPKOD: "",
-        status: "",
-        statusNote: ""
+        //@ts-ignore
+        dateOfBirth: new Date(date),
+        localization: row.getValue('localization'),
+        phoneNumber: row.getValue('phoneNumber') ,
+        numberOfHistory: row.getValue('numberOfHistory'),
+        directedWher: row.getValue('directedWher') ? row.getValue('directedWher') : '',
+        diagnosisVKB: row.getValue('diagnosisVKB') ? row.getValue('diagnosisVKB') : '',
+        dateOfReferralToCAOP: row.getValue('dateOfReferralToCAOP') ? new Date(row.getValue('dateOfReferralToCAOP')) : undefined,
+        dateOfVisitToCAOP: row.getValue('dateOfVisitToCAOP') ? new Date(row.getValue('dateOfVisitToCAOP')) : undefined,
+        diagnosisOfCAOP: row.getValue('diagnosisOfCAOP') ? row.getValue('diagnosisOfCAOP') : undefined,
+        dateOfVisitToPKOD: row.getValue('dateOfVisitToPKOD') ? new Date(row.getValue('dateOfVisitToPKOD')) : undefined,
+        diagnosisOfPKOD: row.getValue('diagnosisOfPKOD') ? row.getValue('diagnosisOfPKOD') : undefined,
+        dateOfTheConsultation: row.getValue('dateOfTheConsultation') ? new Date(row.getValue('dateOfTheConsultation')) : undefined,
+        dateOfLastCallAndPersonalContact: row.getValue('dateOfLastCallAndPersonalContact') ? new Date(row.getValue('dateOfLastCallAndPersonalContact')) : undefined,
+        status: row.getValue('status') ? row.getValue('status') : undefined,
+        statusNote: row.getValue('statusNote') ? row.getValue('statusNote') : undefined
     },
   })
+  //console.log(form.formState.defaultValues) 
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-
-      onPatchZno('http://localhost:5020/api/zno', values)
-    /*  await postLog("http://localhost:5020/api/logs", values)
-        .catch(error => {
+      //@ts-ignore
+      onPatchZno('http://localhost:5020/api/zno', {...values, dateOfBirth: new Date(date), id: Number(row.id)})
+        /*.catch(error => {
           toast.error("Произошла ошибка при отправке в ЖУС", {
             description: <p className="text-black">{`${error}`}</p>
           })
@@ -104,8 +115,20 @@ export default function ZnoRowChange ({
           })
           form.reset()
         })*/
+      // console.log(values)
+      getZnoLogs()
     }
 
+
+
+  const formatDisplayDate = (dateString: string) => {
+    if (!dateString) return "";  
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = date.toLocaleString('default', { month: 'short' });
+    const year = date.getFullYear().toString();
+    return `${day}-${month}-${year}`;
+  };
 
   return <div>
     <Dialog>
@@ -123,8 +146,8 @@ export default function ZnoRowChange ({
         </DialogHeader>
         <div className="grid gap-4 py-4">
         <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 flex">
-                                         <div className="bg-yellow-50 p-6 rounded-md">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 flex flex-col">
+         <div className="bg-yellow-50 p-6 rounded-md flex flex-wrap gap-4">
           <FormField
             control={form.control}
             name="name"
@@ -132,7 +155,7 @@ export default function ZnoRowChange ({
               <FormItem>
                 <FormLabel>ФИО</FormLabel>
                 <FormControl>
-                  <Input className="w-[200px]"  {...field} />
+                  <Input className="w-[200px]"  {...field} disabled={profile === 'SITEADMIN'}/>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -145,7 +168,32 @@ export default function ZnoRowChange ({
               <FormItem className="flex flex-col pt-2">
                 <FormLabel className="pb-0.5">Дата рождения</FormLabel>
                 <FormControl>
-                  <Popover>
+                  { profile === 'SITEADMIN'?
+                      <p>{field.value ? format(new Date(field.value), "PPP", {locale: ru}) : 'нет даты'}</p>
+                      :
+                      
+                      <div className="flex-1">
+                      <div className="relative">
+                        {date && (
+                          <span
+                            className="absolute left-2 bottom-2 bg-white px-2 text-sm text-gray-600"
+                            style={{ pointerEvents: "none" }} >
+                              {formatDisplayDate(date)}
+                          </span>
+                        )}
+                        <Input
+                          type="date"
+                          value={date}
+                          onChange={(e) => setDate(e.target.value)}
+                          className="block w-full rounded-md shadow-sm focus:border-[#9F5316] focus:ring-[#9F5316] p-2 "
+                          />
+                      </div>
+                    </div>
+
+
+                  }
+                
+               {/**   <Popover>
                     <PopoverTrigger asChild>
                       <Button
                         variant={"outline"}
@@ -171,6 +219,7 @@ export default function ZnoRowChange ({
                         </div>
                         </PopoverContent>
                 </Popover>
+                */} 
                   </FormControl>
                 </FormItem>
               )}
@@ -182,8 +231,8 @@ export default function ZnoRowChange ({
               <FormItem>
                 <FormLabel>Локализация</FormLabel>
                 <FormControl>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <SelectTrigger className="w-[400px]">
+                <Select onValueChange={field.onChange} defaultValue={field.value} disabled={profile === 'SITEADMIN'}>
+                  <SelectTrigger className="w-[400px] overflow-hidden text-ellipsis whitespace-nowrap">
                     <SelectValue placeholder="не выбрано" />
                     </SelectTrigger>
                     <SelectContent>
@@ -191,10 +240,10 @@ export default function ZnoRowChange ({
                         <div className="p-4">
                                 {//тут убрать длину  у селект валуе
                                 localisations.map((loc) => (
-                                    <>
-                                        <SelectItem key={loc.value} value={loc.value}>{loc.text}</SelectItem>
+                                    <div key={loc.value}>
+                                        <SelectItem value={loc.value}>{loc.text}</SelectItem>
                                         <Separator className="my-2" />
-                                    </>
+                                    </div>
                                 ))}
                         </div>
                     </ScrollArea>
@@ -212,7 +261,7 @@ export default function ZnoRowChange ({
                 <FormItem>
                   <FormLabel>Телефон</FormLabel>
                   <FormControl>
-                    <Input className="w-[200px]" placeholder="+79999999999" {...field} />
+                    <Input className="w-[200px]" placeholder="+79999999999" {...field} disabled={profile === 'SITEADMIN'}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -225,7 +274,7 @@ export default function ZnoRowChange ({
                 <FormItem>
                   <FormLabel>№ истории</FormLabel>
                   <FormControl>
-                    <Input className="w-[200px]" placeholder="2255/56" {...field} />
+                    <Input className="w-[200px]" placeholder="2255/56" {...field} disabled={profile === 'SITEADMIN'}/>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -233,13 +282,13 @@ export default function ZnoRowChange ({
           />
           </div>
           {
-          !form.getFieldState('numberOfHistory').isDirty || !form.getFieldState('dateOfBirth').isDirty ||
-          !form.getFieldState('localization').isDirty || !form.getFieldState('phoneNumber').isDirty
-          || !form.getFieldState('name').isDirty
-          ?
-          ''
-          :
-                         <div className="bg-green-50 p-6 rounded-md flex flex-wrap">
+          //!form.getFieldState('numberOfHistory').isDirty || !form.getFieldState('dateOfBirth').isDirty ||
+          //!form.getFieldState('localization').isDirty || !form.getFieldState('phoneNumber').isDirty
+          //|| !form.getFieldState('name').isDirty
+         // ?
+          //''
+          //:
+           <div className="bg-green-50 p-6 rounded-md flex flex-wrap gap-4">
           <FormField
             control={form.control}
             name="directedWher"
@@ -283,7 +332,7 @@ export default function ZnoRowChange ({
                         )}
                       >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {field.value ? format(field.value, "PPP", {locale: ru}) : <span>Выберите время*</span>}
+                      {field.value ? format(new Date(field.value), "PPP", {locale: ru}) : <span>Выберите время*</span>}
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
@@ -295,7 +344,10 @@ export default function ZnoRowChange ({
                          locale={ru}
                         />
                         <div className="p-2 flex justify-center border-t">
-                        <DateTimePicker date={field.value} setDate={field.onChange}/>
+                          {
+                            //@ts-ignore
+                            <DateTimePicker date={new Date(field.value)} setDate={field.onChange}/>
+                          }
                         </div>
                         </PopoverContent>
                 </Popover>
@@ -320,7 +372,7 @@ export default function ZnoRowChange ({
                         )}
                       >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {field.value ? format(field.value, "PPP", {locale: ru}) : <span>Выберите время*</span>}
+                      {field.value ? format(new Date(field.value), "PPP", {locale: ru}) : <span>Выберите время*</span>}
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
@@ -332,7 +384,11 @@ export default function ZnoRowChange ({
                          locale={ru}
                         />
                         <div className="p-2 flex justify-center border-t">
-                        <DateTimePicker date={field.value} setDate={field.onChange}/>
+                          {
+                            //@ts-ignore
+                            <DateTimePicker date={new Date(field.value)} setDate={field.onChange}/>
+                          }
+                          
                         </div>
                         </PopoverContent>
                 </Popover>
@@ -370,7 +426,7 @@ export default function ZnoRowChange ({
                         )}
                       >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {field.value ? format(field.value, "PPP", {locale: ru}) : <span>Выберите время*</span>}
+                      {field.value ? format(new Date(field.value), "PPP", {locale: ru}) : <span>Выберите время*</span>}
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
@@ -382,7 +438,10 @@ export default function ZnoRowChange ({
                          locale={ru}
                         />
                         <div className="p-2 flex justify-center border-t">
-                        <DateTimePicker date={field.value} setDate={field.onChange}/>
+                          {
+                            //@ts-ignore
+                            <DateTimePicker date={new Date(field.value)} setDate={field.onChange}/>
+                          }
                         </div>
                         </PopoverContent>
                 </Popover>
@@ -420,7 +479,7 @@ export default function ZnoRowChange ({
                         )}
                       >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {field.value ? format(field.value, "PPP", {locale: ru}) : <span>Выберите время*</span>}
+                      {field.value ? format(new Date(field.value), "PPP", {locale: ru}) : <span>Выберите время*</span>}
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
@@ -432,7 +491,10 @@ export default function ZnoRowChange ({
                          locale={ru}
                         />
                         <div className="p-2 flex justify-center border-t">
-                        <DateTimePicker date={field.value} setDate={field.onChange}/>
+                          {
+                            //@ts-ignore
+                            <DateTimePicker date={new Date(field.value)} setDate={field.onChange}/>
+                          }
                         </div>
                         </PopoverContent>
                 </Popover>
@@ -457,7 +519,7 @@ export default function ZnoRowChange ({
                         )}
                       >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {field.value ? format(field.value, "PPP", {locale: ru}) : <span>Выберите время*</span>}
+                      {field.value ? format(new Date(field.value), "PPP", {locale: ru}) : <span>Выберите время*</span>}
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
@@ -469,7 +531,10 @@ export default function ZnoRowChange ({
                          locale={ru}
                         />
                         <div className="p-2 flex justify-center border-t">
-                        <DateTimePicker date={field.value} setDate={field.onChange}/>
+                          {
+                            //@ts-ignore
+                        <DateTimePicker date={new Date(field.value)} setDate={field.onChange}/>
+                        }
                         </div>
                         </PopoverContent>
                 </Popover>
@@ -493,10 +558,10 @@ export default function ZnoRowChange ({
                         <div className="p-4">
                                 {//тут убрать длину  у селект валуе
                                 statuses.map((status) => (
-                                    <>
-                                        <SelectItem key={status.value} value={status.value}>{status.text}</SelectItem>
+                                    <div key={status.value} >
+                                        <SelectItem value={status.value}>{status.text}</SelectItem>
                                         <Separator className="my-2" />
-                                    </>
+                                    </div>
                                 ))}
                         </div>
                     </ScrollArea>
@@ -522,181 +587,184 @@ export default function ZnoRowChange ({
           />
           </div>
 }
-          {
-          /*
-           // !form.getFieldState('name').isDirty
-           // ?
-           // ''
-            //: className="animate-appear"<div className="animate-appear">
-             // <div className="grid grid-cols-2 gap-2 max-lg:grid-cols-1"></div>
-            <div className="animate-appear">
-              <div className="grid grid-cols-2 gap-2 max-lg:grid-cols-1">
-                <FormField
-                  control={form.control}
-                  name="dateOfBirth"
-                  render={({ field }) => (
-                <FormItem className="flex flex-col pt-2">
-                <FormLabel className="pb-0.5">Выберите время*</FormLabel>
-                  <FormControl>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-[320px] justify-start text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                     {field.value ? format(field.value, "PPP HH:mm", {locale: ru}) : <span>Выберите время*</span>}
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                         mode="single"
-                         selected={field.value}
-                         onSelect={field.onChange}
-                         initialFocus
-                         locale={ru}
-                        />
-                        <div className="p-2 flex justify-center border-t">
-                        <DateTimePicker date={field.value} setDate={field.onChange}/>
-                        </div>
-                        </PopoverContent>
-                </Popover>
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ф.И.О. пациента*</FormLabel>
-                  <FormControl>
-                    <Input className="w-[320px]" placeholder="Иванов И.И." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-          />
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Место нежелательного события*</FormLabel>
-                <FormControl>
-                  <Input className="w-[320px]" placeholder="Неврологическое отделение, палата 1334" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Вид нежелательного события*</FormLabel>
-                <FormControl>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <SelectTrigger className="w-[320px]">
-                    <SelectValue placeholder="не выбрано" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {/*
-                        problems.map(problem => {
-                            return <SelectItem key={problem.value} value={problem.value}>{problem.text}</SelectItem>
-                        })
-                      }
-                    </SelectContent>
-                </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          </div>
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Причина возникновения нежелательного события*</FormLabel>
-                <FormControl>
-                  <Textarea placeholder="Событие возникло..." className="w-[670px] max-lg:w-[100%]" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Описание обстоятельств, при которых произошло нежелательное событие*</FormLabel>
-                <FormControl>
-                <Textarea placeholder="Событие произошло при..." className="w-[670px] max-lg:w-[100%]" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Принятые меры по устранению последствий нежелательного события*</FormLabel>
-                <FormControl>
-                <Textarea placeholder="Были предприняты..." className="w-[670px] max-lg:w-[100%]" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Примечание</FormLabel>
-                <FormControl>
-                <Textarea placeholder="В событии..." className="w-[670px] max-lg:w-[100%]" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Отвественный*</FormLabel>
-                <FormControl>
-                  <Input className="w-[320px]" placeholder="Никитов В.В." {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button className="mt-4" type="submit">Отправить</Button>
-          </div>
-          */}
+<DialogFooter>
+          <Button type="submit">сохранить</Button>
+        </DialogFooter>
         </form>
       </Form>
         </div>
-        <DialogFooter>
-          <Button type="submit">сохранить</Button>
-        </DialogFooter>
+
       </DialogContent>
     </Dialog>
   </div>
 }
+
+
+{
+  /*
+   // !form.getFieldState('name').isDirty
+   // ?
+   // ''
+    //: className="animate-appear"<div className="animate-appear">
+     // <div className="grid grid-cols-2 gap-2 max-lg:grid-cols-1"></div>
+    <div className="animate-appear">
+      <div className="grid grid-cols-2 gap-2 max-lg:grid-cols-1">
+        <FormField
+          control={form.control}
+          name="dateOfBirth"
+          render={({ field }) => (
+        <FormItem className="flex flex-col pt-2">
+        <FormLabel className="pb-0.5">Выберите время*</FormLabel>
+          <FormControl>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "w-[320px] justify-start text-left font-normal",
+                    !field.value && "text-muted-foreground"
+                  )}
+                >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+             {field.value ? format(field.value, "PPP HH:mm", {locale: ru}) : <span>Выберите время*</span>}
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                 mode="single"
+                 selected={field.value}
+                 onSelect={field.onChange}
+                 initialFocus
+                 locale={ru}
+                />
+                <div className="p-2 flex justify-center border-t">
+                <DateTimePicker date={field.value} setDate={field.onChange}/>
+                </div>
+                </PopoverContent>
+        </Popover>
+          </FormControl>
+        </FormItem>
+      )}
+    />
+    <FormField
+      control={form.control}
+      name="name"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Ф.И.О. пациента*</FormLabel>
+          <FormControl>
+            <Input className="w-[320px]" placeholder="Иванов И.И." {...field} />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+  />
+  <FormField
+    control={form.control}
+    name="name"
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>Место нежелательного события*</FormLabel>
+        <FormControl>
+          <Input className="w-[320px]" placeholder="Неврологическое отделение, палата 1334" {...field} />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+  <FormField
+    control={form.control}
+    name="name"
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>Вид нежелательного события*</FormLabel>
+        <FormControl>
+        <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <SelectTrigger className="w-[320px]">
+            <SelectValue placeholder="не выбрано" />
+            </SelectTrigger>
+            <SelectContent>
+              {/*
+                problems.map(problem => {
+                    return <SelectItem key={problem.value} value={problem.value}>{problem.text}</SelectItem>
+                })
+              }
+            </SelectContent>
+        </Select>
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+  </div>
+  <FormField
+    control={form.control}
+    name="name"
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>Причина возникновения нежелательного события*</FormLabel>
+        <FormControl>
+          <Textarea placeholder="Событие возникло..." className="w-[670px] max-lg:w-[100%]" {...field} />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+  <FormField
+    control={form.control}
+    name="name"
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>Описание обстоятельств, при которых произошло нежелательное событие*</FormLabel>
+        <FormControl>
+        <Textarea placeholder="Событие произошло при..." className="w-[670px] max-lg:w-[100%]" {...field} />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+  <FormField
+    control={form.control}
+    name="name"
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>Принятые меры по устранению последствий нежелательного события*</FormLabel>
+        <FormControl>
+        <Textarea placeholder="Были предприняты..." className="w-[670px] max-lg:w-[100%]" {...field} />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+  <FormField
+    control={form.control}
+    name="name"
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>Примечание</FormLabel>
+        <FormControl>
+        <Textarea placeholder="В событии..." className="w-[670px] max-lg:w-[100%]" {...field} />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+  <FormField
+    control={form.control}
+    name="name"
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>Отвественный*</FormLabel>
+        <FormControl>
+          <Input className="w-[320px]" placeholder="Никитов В.В." {...field} />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+  <Button className="mt-4" type="submit">Отправить</Button>
+  </div>
+  */}
 
                {/* <Select onValueChange={field.onChange}  value={field.value} defaultValue={field.value}>
                   <SelectTrigger className="w-[320px]">

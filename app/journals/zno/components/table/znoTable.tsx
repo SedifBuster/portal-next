@@ -25,7 +25,7 @@ import ZnoTableHead from "./znoTableHead"
 import { ru } from "date-fns/locale"
 import { format } from "date-fns"
 import ZnoRowCreateNew from "./znoRowCreateNew"
-import { Localization, StatusZno, ZnoLog } from "@prisma/client"
+import { Localization, Profile, StatusZno, ZnoLog } from "@prisma/client"
 import ZnoTableRow from "./znoTableRow"
 import { useSession } from "next-auth/react"
 import { HiMiniXMark, HiOutlineCheck, HiOutlinePencil } from "react-icons/hi2";
@@ -418,7 +418,7 @@ export function ZnoTable({
             <Button variant={'outline'}><HiOutlineCheck /></Button>
           </div>
         :
-        <ZnoRowChange localisations={localisations}  statuses={statuses} row={row} onPatchZno={onPatchZno}/>
+        <ZnoRowChange profile={!isProfile? '' : isProfile } localisations={localisations}  statuses={statuses} row={row} onPatchZno={onPatchZno} getZnoLogs={getZnoLogs}/>
         }
         </div>
     },
@@ -441,6 +441,19 @@ export function ZnoTable({
   const [isProfile, setProfile] = React.useState<string>()
 
   const session = useSession()
+
+  console.log(isProfile)
+
+
+
+  //DOCTOR
+  //SITEADMIN
+  //OMO
+
+
+
+  //isProfile == 'DOCTOR' || isProfile == 'OMO' //vse
+  //isProfile == 'SITEADMIN' //zelen
 
   let getProfile = async (id: number) => {
     //let result = await axios.get(`http://localhost:5020/api/users/profile/${id}`)
@@ -490,7 +503,14 @@ export function ZnoTable({
   return (
     <div className="w-full p-2 pt-1">
       <div className="flex items-center py-4">
-      <ZnoRowCreateNew  localisations={localisations} statuses={statuses} onPostData={onPostData} getZnoLogs={getZnoLogs}/>
+        {
+            isProfile == 'DOCTOR' || isProfile == 'OMO' //zelen?
+            ?
+            <ZnoRowCreateNew  localisations={localisations} statuses={statuses} onPostData={onPostData} getZnoLogs={getZnoLogs} profile={!isProfile ? '' : isProfile}/>
+            :
+            ''
+        }
+      
         {/**
          * <Input
           placeholder="Найти ФИО..."
@@ -509,7 +529,7 @@ export function ZnoTable({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <ZnoTableRow key={row.id} row={row}/>
+                <ZnoTableRow key={row.id} row={row} />
               ))
             ) : (
               <TableRow>
