@@ -11,7 +11,6 @@ export
       <TableHead className="text-center pl-1 pr-1 text-xs bg-yellow-50">Локализация</TableHead>
       <TableHead className="text-center pl-1 pr-1 text-xs bg-yellow-50">Телефон</TableHead>
       <TableHead className="text-center pl-1 pr-1 text-xs bg-yellow-50">№ истории</TableHead>
-      <TableHead className="text-center pl-1 pr-1 text-xs bg-green-50">Направлен(а) куда</TableHead>
       <TableHead className="text-center pl-1 pr-1 text-xs bg-green-50">Диагноз ВКБ4</TableHead>
       <TableHead className="text-center pl-1 pr-1 text-xs bg-green-50">Дата направления в ЦАОП</TableHead>
       <TableHead className="text-center pl-1 pr-1 text-xs bg-green-50">Дата посещения ЦАОПа</TableHead>

@@ -79,6 +79,9 @@ export default function ZnoRowCreateNew ({
       localization: "",
       phoneNumber: "",
       numberOfHistory: "",
+      diagnosisVKB: "",
+      diagnosisOfCAOP: "",
+      diagnosisOfPKOD: ""
     },
   })
 
@@ -238,7 +241,7 @@ export default function ZnoRowCreateNew ({
           ''
           :
           <div className="bg-green-50 p-6 rounded-md flex flex-wrap gap-4">
-          <FormField
+          {/*}<FormField
             control={form.control}
             name="directedWher"
             render={({ field }) => (
@@ -250,7 +253,7 @@ export default function ZnoRowCreateNew ({
                 <FormMessage />
               </FormItem>
             )}
-          />
+          />*/}
           <FormField
             control={form.control}
             name="diagnosisVKB"
@@ -258,7 +261,7 @@ export default function ZnoRowCreateNew ({
               <FormItem>
                 <FormLabel>Диагноз ВКБ4</FormLabel>
                 <FormControl>
-                  <Input className="w-[200px]"  {...field} />
+                  <Input className="w-[200px]"  {...field}/>
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -184,10 +184,6 @@ export function ZnoTable({
 }
 ) {
 
-  //change znologs states
-  const [isChangedYellow, setIsChangedYellow] = React.useState<boolean>(true)
-  const [isChangedGreen, setIsChangedGreen] = React.useState<boolean>(true)
-
   const [zno, setZno] = React.useState<ZnoLog[]>([])
 
   const onChangeRuLocalisations = (value: string) => {
@@ -262,7 +258,7 @@ export function ZnoTable({
     }
   }
 
-  const [isRefactoring, setIsRefactoring] = React.useState<boolean>(false)
+  const [isRefactoring] = React.useState<boolean>(false)
 
   const columns: ColumnDef<ZnoLog>[] = [
     {
@@ -313,12 +309,12 @@ export function ZnoTable({
         <div className="capitalize">{row.getValue("numberOfHistory")}</div>
       )
     },
-    {
+    /*{
       accessorKey: "directedWher",
       cell: ({ row }) =>(
         <div className="capitalize">{row.getValue("directedWher")}</div>
       ) 
-    },
+    },*/
     {
       accessorKey: "diagnosisVKB",
       cell: ({ row }) => (
@@ -410,7 +406,7 @@ export function ZnoTable({
       ) 
     },
     {
-      accessorKey: "changeLog",
+      accessorKey: "id",
       cell: ({ row }) => <div className="capitalize">
         { isRefactoring?
           <div className="flex flex-col gap-2">
@@ -418,7 +414,19 @@ export function ZnoTable({
             <Button variant={'outline'}><HiOutlineCheck /></Button>
           </div>
         : 
-        isProfile == 'DOCTOR' || isProfile == 'OMO' || isProfile == 'SITEADMIN'|| isProfile == 'TECHNICICAN' ?<ZnoRowChange profile={!isProfile? '' : isProfile } localisations={localisations}  statuses={statuses} row={row} onPatchZno={onPatchZno} getZnoLogs={getZnoLogs}/> : ''
+        isProfile != 'DOCTOR' || isProfile != 'OMO' || isProfile != 'SITEADMIN'|| isProfile != 'TECHNICICAN'
+         ?
+         <ZnoRowChange 
+           profile={!isProfile? '' : isProfile }
+           localisations={localisations}
+           statuses={statuses}
+           row={row}
+           onPatchZno={onPatchZno}
+           getZnoLogs={getZnoLogs}
+
+         /> 
+         : 
+         ''
         }
         </div>
     },
@@ -427,7 +435,6 @@ export function ZnoTable({
   //[11:21, 24.04.2025] : Все могут видеть все поля
   //[11:21, 24.04.2025]: Никакие поля от пользователей не скрываем
   //сбоку изменить - изменять там, галочка и крестик, все менять на инпуты и тд
-
 
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -443,14 +450,12 @@ export function ZnoTable({
   const session = useSession()
 
 
-
+  //console.log(columns)
 
 
   //DOCTOR
   //SITEADMIN
   //OMO
-
-
 
   //isProfile == 'DOCTOR' || isProfile == 'OMO' //vse
   //isProfile == 'SITEADMIN' //zelen
@@ -475,6 +480,8 @@ export function ZnoTable({
     }
 }
 
+//console.log(zno)
+
   const table = useReactTable({
     data: zno,
     columns,
@@ -494,7 +501,7 @@ export function ZnoTable({
     },
   })
 
-  console.log(session)
+ // console.log(session)
 
   React.useEffect(() => {
     if (session.status === "authenticated" && typeof session.data.user !== 'undefined') {
@@ -507,7 +514,7 @@ export function ZnoTable({
     <div className="w-full p-2 pt-1">
       <div className="flex items-center py-4">
         {
-            isProfile == 'DOCTOR' || isProfile == 'OMO'|| isProfile == 'TECHNICICAN'  //zelen?
+            isProfile != 'DOCTOR' || isProfile != 'OMO'|| isProfile != 'TECHNICICAN'  //zelen?
             ?
             <ZnoRowCreateNew  localisations={localisations} statuses={statuses} onPostData={onPostData} getZnoLogs={getZnoLogs} profile={!isProfile ? '' : isProfile}/>
             :

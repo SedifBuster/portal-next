@@ -5,8 +5,6 @@ export
   default function Zno(
 ) {
 
-
-  
       async function onFetchData(url: string): Promise<ZnoLog[]> {
         'use server'
         try {

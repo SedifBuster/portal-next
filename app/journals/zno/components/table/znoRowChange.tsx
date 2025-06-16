@@ -30,7 +30,6 @@ import { CalendarIcon } from "@radix-ui/react-icons"
 import { format } from "date-fns"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { toast } from "sonner"
 import DateTimePicker from "../../components/dateTime/dateTimePicker"
 import { UnitLocalization, UnitStatus } from "./znoTable"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -65,14 +64,14 @@ export default function ZnoRowChange ({
     row,
     onPatchZno,
     getZnoLogs,
-    profile
+    profile,
 }: {
     localisations: UnitLocalization[]
     statuses: UnitStatus[]
     row: Row<ZnoLog>
     onPatchZno: (url: string, zno: ZnoLog) => void
     getZnoLogs: () => void
-    profile: string
+    profile: string,
 }) {
 
   const [date, setDate] = useState<string>(row.getValue('dateOfBirth'));
@@ -86,7 +85,7 @@ export default function ZnoRowChange ({
         localization: row.getValue('localization'),
         phoneNumber: row.getValue('phoneNumber') ,
         numberOfHistory: row.getValue('numberOfHistory'),
-        directedWher: row.getValue('directedWher') ? row.getValue('directedWher') : '',
+       // directedWher: row.getValue('directedWher') ? row.getValue('directedWher') : '',
         diagnosisVKB: row.getValue('diagnosisVKB') ? row.getValue('diagnosisVKB') : '',
         dateOfReferralToCAOP: row.getValue('dateOfReferralToCAOP') ? new Date(row.getValue('dateOfReferralToCAOP')) : undefined,
         dateOfVisitToCAOP: row.getValue('dateOfVisitToCAOP') ? new Date(row.getValue('dateOfVisitToCAOP')) : undefined,
@@ -99,11 +98,10 @@ export default function ZnoRowChange ({
         statusNote: row.getValue('statusNote') ? row.getValue('statusNote') : undefined
     },
   })
-  //console.log(form.formState.defaultValues) 
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
       //@ts-ignore
-      onPatchZno('http://localhost:5020/api/zno', {...values, dateOfBirth: new Date(date), id: Number(row.id)})
+      onPatchZno('http://localhost:5020/api/zno', {...values, dateOfBirth: new Date(date), id: row.getValue('id')})
         /*.catch(error => {
           toast.error("Произошла ошибка при отправке в ЖУС", {
             description: <p className="text-black">{`${error}`}</p>
@@ -118,8 +116,6 @@ export default function ZnoRowChange ({
       // console.log(values)
       getZnoLogs()
     }
-
-
 
   const formatDisplayDate = (dateString: string) => {
     if (!dateString) return "";  
@@ -289,7 +285,8 @@ export default function ZnoRowChange ({
           //''
           //:
            <div className="bg-green-50 p-6 rounded-md flex flex-wrap gap-4">
-          <FormField
+          {/**
+           * <FormField
             control={form.control}
             name="directedWher"
             render={({ field }) => (
@@ -302,6 +299,7 @@ export default function ZnoRowChange ({
               </FormItem>
             )}
           />
+           */}
           <FormField
             control={form.control}
             name="diagnosisVKB"
@@ -309,7 +307,7 @@ export default function ZnoRowChange ({
               <FormItem>
                 <FormLabel>Диагноз ВКБ4</FormLabel>
                 <FormControl>
-                  <Input className="w-[200px]"  {...field} />
+                  <Input className="w-[200px]"  {...field} pattern="\d+(\.\d{2})?"/>
                 </FormControl>
                 <FormMessage />
               </FormItem>
