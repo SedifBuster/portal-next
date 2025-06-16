@@ -414,7 +414,7 @@ export function ZnoTable({
             <Button variant={'outline'}><HiOutlineCheck /></Button>
           </div>
         : 
-        isProfile != 'DOCTOR' || isProfile != 'OMO' || isProfile != 'SITEADMIN'|| isProfile != 'TECHNICICAN'
+        isProfile == 'DOCTOR' || isProfile == 'OMO' || isProfile == 'SITEADMIN'|| isProfile == 'TECHNICICAN'
          ?
          <ZnoRowChange 
            profile={!isProfile? '' : isProfile }
@@ -514,7 +514,7 @@ export function ZnoTable({
     <div className="w-full p-2 pt-1">
       <div className="flex items-center py-4">
         {
-            isProfile != 'DOCTOR' || isProfile != 'OMO'|| isProfile != 'TECHNICICAN'  //zelen?
+            isProfile == 'DOCTOR' || isProfile == 'OMO'|| isProfile == 'TECHNICICAN'  //zelen?
             ?
             <ZnoRowCreateNew  localisations={localisations} statuses={statuses} onPostData={onPostData} getZnoLogs={getZnoLogs} profile={!isProfile ? '' : isProfile}/>
             :
