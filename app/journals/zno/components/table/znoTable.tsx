@@ -4,7 +4,6 @@ import * as React from "react"
 import {
   ColumnDef,
   ColumnFiltersState,
-  Row,
   SortingState,
   VisibilityState,
   getCoreRowModel,
@@ -14,7 +13,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import {
   Table,
   TableBody,
@@ -25,18 +23,10 @@ import ZnoTableHead from "./znoTableHead"
 import { ru } from "date-fns/locale"
 import { format } from "date-fns"
 import ZnoRowCreateNew from "./znoRowCreateNew"
-import { Localization, Profile, StatusZno, ZnoLog } from "@prisma/client"
+import { Localization, StatusZno, ZnoLog } from "@prisma/client"
 import ZnoTableRow from "./znoTableRow"
 import { useSession } from "next-auth/react"
-import { HiMiniXMark, HiOutlineCheck, HiOutlinePencil } from "react-icons/hi2";
-import { Textarea } from "@/components/ui/textarea"
-import { Popover, PopoverTrigger } from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { CalendarIcon } from "@radix-ui/react-icons"
-import { Calendar } from "@/components/ui/calendar"
-import { PopoverContent,} from "@/components/ui/popover"
-import DateTimePicker from "../../components/dateTime/dateTimePicker"
+import { HiMiniXMark, HiOutlineCheck,} from "react-icons/hi2";
 import ZnoRowChange from "./znoRowChange"
 
 export interface UnitLocalization {
@@ -186,6 +176,8 @@ export function ZnoTable({
 
   const [zno, setZno] = React.useState<ZnoLog[]>([])
 
+  const priorDate = new Date(new Date().setDate(new Date().getDate() - 30))
+
   const onChangeRuLocalisations = (value: string) => {
     switch (value) {
       case 'ZNOOfTheLipOropharynx':
@@ -261,6 +253,14 @@ export function ZnoTable({
   const [isRefactoring] = React.useState<boolean>(false)
 
   const columns: ColumnDef<ZnoLog>[] = [
+    {
+      accessorKey: "id",
+      cell: ({ row }) => (
+        <div className="capitalize ">
+         <p className="text-center">{row.getValue('id')}</p>
+        </div>
+      ),
+    },
     {
       accessorKey: "createdAt",
       cell: ({ row }) => (
@@ -406,7 +406,7 @@ export function ZnoTable({
       ) 
     },
     {
-      accessorKey: "id",
+      accessorKey: "change",
       cell: ({ row }) => <div className="capitalize">
         { isRefactoring?
           <div className="flex flex-col gap-2">
@@ -514,7 +514,7 @@ export function ZnoTable({
     <div className="w-full p-2 pt-1">
       <div className="flex items-center py-4">
         {
-            isProfile == 'DOCTOR' || isProfile == 'OMO'|| isProfile == 'TECHNICICAN'  //zelen?
+            isProfile === 'DOCTOR' || isProfile === 'OMO'|| isProfile === 'TECHNICICAN'  //zelen?
             ?
             <ZnoRowCreateNew  localisations={localisations} statuses={statuses} onPostData={onPostData} getZnoLogs={getZnoLogs} profile={!isProfile ? '' : isProfile}/>
             :
@@ -539,7 +539,7 @@ export function ZnoTable({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <ZnoTableRow key={row.id} row={row} />
+                <ZnoTableRow key={row.id} row={row} priorDate={priorDate}/>
               ))
             ) : (
               <TableRow>

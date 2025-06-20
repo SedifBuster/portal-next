@@ -5,6 +5,7 @@ export
 ) {
   return <TableHeader>
     <TableRow>
+      <TableHead className=" p-4 pl-1 pr-1 text-xs bg-blue-50">Нумерация</TableHead>
       <TableHead className="w-[100px] p-4 pl-1 pr-1 text-xs bg-blue-50">Дата выявления подозрения</TableHead>
       <TableHead className="text-center pl-1 pr-1 text-xs bg-yellow-50">ФИО</TableHead>
       <TableHead className="text-center pl-1 pr-1 text-xs bg-yellow-50">Дата рождения</TableHead>

@@ -261,7 +261,12 @@ export default function ZnoRowCreateNew ({
               <FormItem>
                 <FormLabel>Диагноз ВКБ4</FormLabel>
                 <FormControl>
-                  <Input className="w-[200px]"  {...field}/>
+                  <Input
+                    className="w-[200px]"
+                    {...field}
+                    pattern="[A-Za-z]\d+(\.\d)?"
+                    title="ПРИМЕР: C16 или C16.9 (Х _ _ . _)"
+                    />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -348,7 +353,8 @@ export default function ZnoRowCreateNew ({
               <FormItem>
                 <FormLabel>Диагноз ЦАОПа</FormLabel>
                 <FormControl>
-                  <Input className="w-[200px]"  {...field} />
+                  <Input className="w-[200px]"  {...field}                     pattern="[A-Za-z]\d+(\.\d)?"
+                    title="ПРИМЕР: C16 или C16.9 (Х _ _ . _)"/>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -398,7 +404,8 @@ export default function ZnoRowCreateNew ({
               <FormItem>
                 <FormLabel>Диагноз ПКОД</FormLabel>
                 <FormControl>
-                  <Input className="w-[200px]"  {...field} />
+                  <Input className="w-[200px]"  {...field}                     pattern="[A-Za-z]\d+(\.\d)?"
+                    title="ПРИМЕР: C16 или C16.9 (Х _ _ . _)"/>
                 </FormControl>
                 <FormMessage />
               </FormItem>
