@@ -42,9 +42,15 @@ const formSchema = z.object({
       message: "Ф.И.О должно быть больше двух символов.",
     }),
     dateOfBirth: z.date().optional(),
-    localization: z.string().min(2),
-    phoneNumber: z.string().min(2),
-    numberOfHistory: z.string().min(2),
+    localization: z.string().min(2, {
+      message: "Локализация должна быть больше двух символов.",
+    }),
+    phoneNumber: z.string().min(2, {
+      message: "Номер телефона должен быть больше двух символов.",
+    }),
+    numberOfHistory: z.string().min(2, {
+      message: "№ истории должен быть больше двух символов.",
+    }),
     directedWher: z.string().optional(),
     diagnosisVKB: z.string().optional(),
     dateOfReferralToCAOP: z.date().optional(),
