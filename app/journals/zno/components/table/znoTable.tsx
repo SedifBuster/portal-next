@@ -175,6 +175,7 @@ export function ZnoTable({
 ) {
 
   const [zno, setZno] = React.useState<ZnoLog[]>([])
+  const [isVisibleChange, setVisibleChange] = React.useState<boolean>(false)
 
   const priorDate = new Date(new Date().setDate(new Date().getDate() - 30))
 
@@ -516,7 +517,15 @@ export function ZnoTable({
         {
             isProfile === 'DOCTOR' || isProfile === 'OMO'|| isProfile === 'TECHNICICAN'  //zelen?
             ?
-            <ZnoRowCreateNew  localisations={localisations} statuses={statuses} onPostData={onPostData} getZnoLogs={getZnoLogs} profile={!isProfile ? '' : isProfile}/>
+            <ZnoRowCreateNew
+              localisations={localisations}
+              statuses={statuses}
+              onPostData={onPostData}
+              getZnoLogs={getZnoLogs}
+              profile={!isProfile ? '' : isProfile}
+              isVisibleChange={isVisibleChange}
+              setVisibleChange={setVisibleChange}
+              />
             :
             ''
         }

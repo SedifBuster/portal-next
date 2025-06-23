@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -35,11 +36,13 @@ import DateTimePicker from "../../components/dateTime/dateTimePicker"
 import { UnitLocalization, UnitStatus } from "./znoTable"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@radix-ui/react-select"
-import { Fragment, useState } from "react"
+import {  useState } from "react"
 
 const formSchema = z.object({
     name: z.string().min(3, {
       message: "Ф.И.О должно быть больше двух символов.",
+    }).max(50, {
+      message: "Максимальное количество символов - 50"
     }),
     dateOfBirth: z.date().optional(),
     localization: z.string().min(2, {
@@ -47,9 +50,13 @@ const formSchema = z.object({
     }),
     phoneNumber: z.string().min(2, {
       message: "Номер телефона должен быть больше двух символов.",
+    }).max(14, {
+      message: "Максимальное количество символов - 14"
     }),
     numberOfHistory: z.string().min(2, {
       message: "№ истории должен быть больше двух символов.",
+    }).max(14, {
+      message: "Максимальное количество символов - 14"
     }),
     directedWher: z.string().optional(),
     diagnosisVKB: z.string().optional(),
@@ -69,6 +76,8 @@ export default function ZnoRowCreateNew ({
     statuses,
     onPostData,
     getZnoLogs,
+    isVisibleChange,
+    setVisibleChange,
     profile
 }: {
     localisations: UnitLocalization[]
@@ -76,7 +85,11 @@ export default function ZnoRowCreateNew ({
     onPostData: (url: string, postData: BodyInit) => Promise<number>
     getZnoLogs: () => void
     profile: string
+    isVisibleChange: boolean
+    setVisibleChange: React.Dispatch<React.SetStateAction<boolean>>
 }) {
+
+  const [date, setDate] = useState("");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -117,14 +130,16 @@ export default function ZnoRowCreateNew ({
           description: format(new Date(), "PPP HH:mm", {locale: ru}),
         })
         form.reset()
+        //@ts-ignore
+        localisations = {value: '', text: 'не выбрано'}
+        setDate("")
+        setVisibleChange(false)
       })
       getZnoLogs()
   }
 
-  const [date, setDate] = useState("");
-
   return <div>
-    <Dialog>
+    <Dialog  open={isVisibleChange} onOpenChange={() => setVisibleChange(!isVisibleChange)}>
       <DialogTrigger asChild>
         <Button variant={'outline'}>
           создать поле
@@ -174,7 +189,15 @@ export default function ZnoRowCreateNew ({
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="block w-full rounded-md shadow-sm focus:border-[#9F5316] focus:ring-[#9F5316] p-2 " required  />
+            className="
+              block
+              w-full
+              rounded-md
+              shadow-sm
+              focus:border-[#9F5316]
+              focus:ring-[#9F5316]
+              p-2
+              " required  />
         </div>
       </div>
                   </FormControl>
@@ -359,7 +382,7 @@ export default function ZnoRowCreateNew ({
               <FormItem>
                 <FormLabel>Диагноз ЦАОПа</FormLabel>
                 <FormControl>
-                  <Input className="w-[200px]"  {...field}                     pattern="[A-Za-z]\d+(\.\d)?"
+                  <Input className="w-[200px]"  {...field} pattern="[A-Za-z]\d+(\.\d)?"
                     title="ПРИМЕР: C16 или C16.9 (Х _ _ . _)"/>
                 </FormControl>
                 <FormMessage />
@@ -383,7 +406,7 @@ export default function ZnoRowCreateNew ({
                         )}
                       >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {field.value ? format(field.value, "PPP", {locale: ru}) : <span>Выберите время*</span>}
+                      {field.value ? format(field.value, "PPP", {locale: ru}) : <span>Выберите время</span>}
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
@@ -410,7 +433,7 @@ export default function ZnoRowCreateNew ({
               <FormItem>
                 <FormLabel>Диагноз ПКОД</FormLabel>
                 <FormControl>
-                  <Input className="w-[200px]"  {...field}                     pattern="[A-Za-z]\d+(\.\d)?"
+                  <Input className="w-[200px]"  {...field} pattern="[A-Za-z]\d+(\.\d)?"
                     title="ПРИМЕР: C16 или C16.9 (Х _ _ . _)"/>
                 </FormControl>
                 <FormMessage />
@@ -434,7 +457,7 @@ export default function ZnoRowCreateNew ({
                         )}
                       >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {field.value ? format(field.value, "PPP", {locale: ru}) : <span>Выберите время*</span>}
+                      {field.value ? format(field.value, "PPP", {locale: ru}) : <span>Выберите время</span>}
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
@@ -528,7 +551,7 @@ export default function ZnoRowCreateNew ({
               <FormItem>
                 <FormLabel>Текущий статус примечание</FormLabel>
                 <FormControl>
-                  <Textarea className="w-[200px]"  {...field} />
+                  <Textarea className="w-[200px]" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -537,7 +560,11 @@ export default function ZnoRowCreateNew ({
           </div>
 }
           <DialogFooter>
+          <DialogClose asChild>
+            <Button variant={'secondary'}>отменить</Button>
+          </DialogClose>
           <Button type="submit">сохранить</Button>
+
         </DialogFooter>
         </form>
       </Form>
