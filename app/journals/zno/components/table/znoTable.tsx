@@ -28,6 +28,10 @@ import ZnoTableRow from "./znoTableRow"
 import { useSession } from "next-auth/react"
 import { HiMiniXMark, HiOutlineCheck,} from "react-icons/hi2";
 import ZnoRowChange from "./znoRowChange"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@radix-ui/react-dropdown-menu"
 
 export interface UnitLocalization {
     value: Localization,
@@ -178,6 +182,64 @@ export function ZnoTable({
   const [isVisibleChange, setVisibleChange] = React.useState<boolean>(false)
 
   const priorDate = new Date(new Date().setDate(new Date().getDate() - 30))
+  const searchValues = [
+    {
+      value: "name",
+      text: "ФИО"
+    },
+    {
+      value: "localization",
+      text: "Локализация"
+    },
+    {
+      value: "phoneNumber",
+      text: "Телефон"
+    },
+    {
+      value: "numberOfHistory",
+      text: "№ истории"
+    },
+    {
+      value: "diagnosisVKB",
+      text: "Диагноз ВКБ4"
+    },
+    /*{
+      value: "dateOfReferralToCAOP",
+      text: "Дата направления в ЦАОП"
+    },
+    {
+      value: "dateOfVisitToCAOP",
+      text: "Дата посещения ЦАОПа"
+    },*/
+    {
+      value: "diagnosisOfCAOP",
+      text: "Диагноз ЦАОПа"
+    },
+    /*{
+      value: "dateOfVisitToPKOD",
+      text: "Дата посещения ПКОДа"
+    },*/
+    {
+      value: "diagnosisOfPKOD",
+      text: "Диагноз ПКОД"
+    },
+   /* {
+      value: "dateOfTheConsultation",
+      text: "Дата консилиума"
+    },
+    {
+      value: "dateOfLastCallAndPersonalContact",
+      text: "Дата последнего звонка/личный контакт"
+    },*/
+    {
+      value: "status",
+      text: "Текущий статус"
+    },
+    {
+      value: "statusNote",
+      text: "Текущий статус примечание"
+    },
+  ]
 
   const onChangeRuLocalisations = (value: string) => {
     switch (value) {
@@ -252,6 +314,7 @@ export function ZnoTable({
   }
 
   const [isRefactoring] = React.useState<boolean>(false)
+  const [isSearch, setIsSearch] = React.useState<string>(searchValues[0].value)
 
   const columns: ColumnDef<ZnoLog>[] = [
     {
@@ -472,6 +535,7 @@ export function ZnoTable({
     }
   }
 
+
   let getZnoLogs = async () => {
     //let result = await axios.get(`http://localhost:5020/api/users/profile/${id}`)
     let result = await onFetchData(`http://localhost:5020/api/zno`)
@@ -502,7 +566,7 @@ export function ZnoTable({
     },
   })
 
- // console.log(session)
+ // console.log(isSearch)
 
   React.useEffect(() => {
     if (session.status === "authenticated" && typeof session.data.user !== 'undefined') {
@@ -513,7 +577,7 @@ export function ZnoTable({
 
   return (
     <div className="w-full p-2 pt-1">
-      <div className="flex items-center py-4">
+      <div className="flex items-center py-4 gap-2">
         {
             isProfile === 'DOCTOR' || isProfile === 'OMO'|| isProfile === 'TECHNICICAN'  //zelen?
             ?
@@ -529,18 +593,36 @@ export function ZnoTable({
             :
             ''
         }
-      
-        {/**
-         * <Input
-          placeholder="Найти ФИО..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+
+        <Select onValueChange={(value) => setIsSearch(value)} defaultValue={isSearch}>
+          <SelectTrigger className="w-[200px] h-8 overflow-hidden text-ellipsis whitespace-nowrap">
+            <SelectValue placeholder="не выбрано"/>
+          </SelectTrigger>
+          <SelectContent>
+            <ScrollArea className="h-96 w-full rounded-md border">
+              <div className="p-4">
+                {
+                  searchValues.map((loc) => (
+                    <div key={loc.value}>
+                      <SelectItem  value={loc.value}>{loc.text}</SelectItem>
+                      <Separator className="my-2" />
+                    </div>
+                  ))
+                }
+              </div>
+            </ScrollArea>
+          </SelectContent>
+        </Select>
+
+         <Input
+          placeholder="Найти..."
+          value={(table.getColumn(/*"name"*/isSearch)?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+            table.getColumn(/*"name"*/isSearch)?.setFilterValue(event.target.value)
           }
           className="max-w-sm h-8"
         />
-         * 
-         */}
+        
       </div>
       <div className="rounded-md border">
         <Table>
