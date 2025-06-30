@@ -10,9 +10,14 @@ export type mainPageLinktype = {
 
 const mainPageLinks: mainPageLinktype[] = [
   {
-    href: "/zhus/table",
+    href: "/journals/zhus/table",
     target: "blank",
     text: "Журнал нежелательных случаев"
+  },
+  {
+    href: "/journals/zno",
+    target: "blank",
+    text: "Журнал ЗНО"
   },
   {
     href: "http://192.168.0.148:5006/",

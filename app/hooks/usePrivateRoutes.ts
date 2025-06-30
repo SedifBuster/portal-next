@@ -52,8 +52,14 @@ const usePrivateRoutes = () => {
         },
         {
             label: "журнал неж. случаев",// session.status ===  "authenticated"? "войти" : 'личный кабинет',
-            href: '/zhus/table',
-            active: pathname === '/zhus/table',
+            href: '/journals/zhus/table',
+            active: pathname === '/journals/zhus/table',
+            icon: HiOutlineDocumentText,
+        },
+        {
+            label: "журнал ЗНО",// session.status ===  "authenticated"? "войти" : 'личный кабинет',
+            href: '/journals/zno',
+            active: pathname === '/journals/zno',
             icon: HiOutlineDocumentText,
         },
         {

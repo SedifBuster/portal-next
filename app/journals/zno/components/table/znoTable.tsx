@@ -187,10 +187,10 @@ export function ZnoTable({
       value: "name",
       text: "ФИО"
     },
-    {
+    /*{
       value: "localization",
       text: "Локализация"
-    },
+    },*/
     {
       value: "phoneNumber",
       text: "Телефон"
@@ -231,10 +231,10 @@ export function ZnoTable({
       value: "dateOfLastCallAndPersonalContact",
       text: "Дата последнего звонка/личный контакт"
     },*/
-    {
+    /*{
       value: "status",
       text: "Текущий статус"
-    },
+    },*/
     {
       value: "statusNote",
       text: "Текущий статус примечание"
@@ -514,7 +514,7 @@ export function ZnoTable({
   const session = useSession()
 
 
-  //console.log(columns)
+  console.log(columnFilters)
 
 
   //DOCTOR
@@ -541,9 +541,125 @@ export function ZnoTable({
     let result = await onFetchData(`http://localhost:5020/api/zno`)
     if(result) {
       //@ts-ignore
-      setZno(result)
+      setZno([...uncompletedLogs(result), ...onSortZnoLogs(result)])
+      //console.log(onSortRedLogs(result))
+      ///console.log(uncompletedLogs(result))
+      //console.log(filteredLogs(result))
     }
 }
+
+  const uncompletedLogs = (logs: ZnoLog[]) => {
+    return logs.filter((log)  => log.status !== 'Completed' && new Date(log.createdAt) <= priorDate)
+  }
+
+  const filteredLogs = (logs: ZnoLog[]) => {
+    return logs.filter((log)  => log.status   || log.status === null)
+  }
+
+  const onSortRedLogs = (znoLogs: ZnoLog[]) => {
+
+
+    /*return znoLogs.sort(
+      (a: ZnoLog, b: ZnoLog) => {
+        if(a.status && a.status === 'Completed')
+          return 1
+        if(b.status && b.status !== 'Completed')
+          return -1
+
+        if(a.status === null || b.status === null)
+          return -1
+        if( b.status !== 'Completed' || a.status !== 'Completed')
+          return 1*/
+
+        //if(a.status)
+       //   if(a.status === 'Completed')
+        //    return -1
+
+       // if(b.status)
+       //   if(b.status !== 'Completed')
+       //     return 1
+          
+
+       // return 0
+     // }
+      /*(log) => log.status !== 'Completed' && new Date(log.createdAt) <= priorDate*/
+   // )
+    }
+
+  /*const statusOrder = {
+    'Completed': 3,
+    'null': 2,
+    'awaitingReferralToCAOP': 1,
+  }
+
+  let sortByStatus = (a: ZnoLog, b: ZnoLog) => {
+    const statusA = statusOrder[a.status]
+    const statusB = statusOrder[b.status]
+
+    if(statusA < statusB)
+      return -1
+
+    if(statusA > statusB)
+      return 1
+
+    return 0
+  } */
+
+   /* const statusOrder = {
+      'Completed': 3,
+      'null': 2,
+      'awaitingReferralToCAOP': 1,
+    }
+
+    const sortByStatus = (a: ZnoLog, b: ZnoLog) => {
+
+      const statusA = statusOrder[a.status]
+    const statusB = statusOrder[b.status]
+
+    if(statusA < statusB)
+      return -1
+
+    if(statusA > statusB)
+      return 1
+     /* if(a.status < b.status) return -1
+
+      if(a.status > b.status) return 1
+
+
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    }*/
+
+    const removeElementsByIds = (array: ZnoLog[], idsToRemove: number[]) => {
+      return array.filter(item => !idsToRemove.includes(item.id))
+    }
+
+  const onSortZnoLogs = (znoLogs: ZnoLog[]): ZnoLog[] => {
+
+    let filtered = uncompletedLogs(znoLogs) ? uncompletedLogs(znoLogs).map(((log: ZnoLog) => {return log.id})) : []
+
+    const newData = removeElementsByIds(znoLogs, filtered)
+
+    return newData.sort(
+      (a: ZnoLog, b: ZnoLog) => {
+        if(new Date(a.createdAt) < new Date(b.createdAt)/* || a.status !== null && a.status !== 'Completed'*/)
+          return 1
+        if(new Date(a.createdAt) > new Date(b.createdAt)/* || b.status === 'awaitingReferralToCAOP'*/)
+          return -1
+
+        //if(a.status)
+       //   if(a.status === 'Completed')
+        //    return -1
+
+       // if(b.status)
+       //   if(b.status !== 'Completed')
+       //     return 1
+          
+
+        return 0
+      }
+      /*(log) => log.status !== 'Completed' && new Date(log.createdAt) <= priorDate*/
+    )
+  }
 
 //console.log(zno)
 
@@ -594,12 +710,12 @@ export function ZnoTable({
             ''
         }
 
-        <Select onValueChange={(value) => setIsSearch(value)} defaultValue={isSearch}>
+        <Select onValueChange={(value) =>{ setIsSearch(value) ;setColumnFilters([])}} defaultValue={isSearch}>
           <SelectTrigger className="w-[200px] h-8 overflow-hidden text-ellipsis whitespace-nowrap">
             <SelectValue placeholder="не выбрано"/>
           </SelectTrigger>
           <SelectContent>
-            <ScrollArea className="h-96 w-full rounded-md border">
+            <ScrollArea className="h-64 w-full rounded-md border">
               <div className="p-4">
                 {
                   searchValues.map((loc) => (
@@ -616,9 +732,10 @@ export function ZnoTable({
 
          <Input
           placeholder="Найти..."
-          value={(table.getColumn(/*"name"*/isSearch)?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
+          value={(table.getColumn(/*"name"*/isSearch)?.getFilterValue() as string) ?? ''}
+          onChange={(event) =>{
             table.getColumn(/*"name"*/isSearch)?.setFilterValue(event.target.value)
+          }
           }
           className="max-w-sm h-8"
         />
@@ -671,3 +788,21 @@ export function ZnoTable({
     </div>
   )
 }
+
+/**
+ * 
+ * 
+ *  const onSortZnoLogs = (znoLogs: ZnoLog[]): ZnoLog[] => {
+    return znoLogs.sort(
+      (a: ZnoLog, b: ZnoLog) => {
+        if(new Date(a.createdAt) >  new Date(b.createdAt))
+          return 1
+        if(new Date(a.createdAt) <  new Date(b.createdAt))
+          return -1
+
+        return 0
+      }
+      /*(log) => log.status !== 'Completed' && new Date(log.createdAt) <= priorDate
+    )
+  }
+ */
