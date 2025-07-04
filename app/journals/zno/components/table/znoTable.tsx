@@ -691,6 +691,16 @@ export function ZnoTable({
   getZnoLogs()
   }, [session])
 
+      React.useEffect(() => {
+          let interval = setInterval(() => {
+              console.log('update')
+              getZnoLogs()
+             // }
+          }, 600000)
+  
+          return () => clearInterval(interval)
+      }, [])
+
   return (
     <div className="w-full p-2 pt-1">
       <div className="flex items-center py-4 gap-2">
