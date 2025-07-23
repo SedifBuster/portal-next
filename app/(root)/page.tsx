@@ -1,6 +1,7 @@
 import LinkMain from "./components/linkMain";
 import MainHeader from "@/components/ui/headers/mainHeader";
 import AsideMain from "./components/asideMain";
+import { Admin } from "./(lk)/lk/components/roles/Admin";
 
 export type mainPageLinktype = {
   href: string

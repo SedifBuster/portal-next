@@ -11,16 +11,46 @@ import {
 
 const numbers = [
   {
-    invoice: "Первый номер",
-    paymentStatus: "+79996666666",
+    place: "Администрация",
+    department: "отделение",
+    whereInstalled: "где установлено",
+    number: "+79996666666",
+    internalNumber: "внутр номер",
+    operator: "оператор",
+    deviceType: "тип устройства",
+    deviceModel: "модель устройства",
+    note: "примечание",
+    forwarding: "переадресация",
+    connected: "подключено",
+    status: "status"
   },
   {
-    invoice: "Второй номер",
-    paymentStatus: "+78888888888",
+    place: "Администрация",
+    department: "отделение",
+    whereInstalled: "где установлено",
+    number: "+79996666666",
+    internalNumber: "внутр номер",
+    operator: "оператор",
+    deviceType: "тип устройства",
+    deviceModel: "модель устройства",
+    note: "примечание",
+    forwarding: "132",
+    connected: "123",
+    status: "status"
   },
   {
-    invoice: "Третий номер",
-    paymentStatus: "+77777777777",
+    place: "Администрация",
+    department: "отделение",
+    whereInstalled: "где установлено",
+    number: "+79996666666",
+    internalNumber: "внутр номер",
+    operator: "оператор",
+    deviceType: "тип устройства",
+    deviceModel: "модель устройства",
+    note: "примечание",
+    forwarding: "132",
+    connected: "123",
+    status: "status"
   },
 ]
 
@@ -39,16 +69,36 @@ export
         <Table className="">
           <TableHeader>
             <TableRow>
-              <TableHead className="">Название</TableHead>
-              <TableHead>Номер</TableHead>
+              <TableHead className="">Объект</TableHead>
+              <TableHead>Отделение</TableHead>
+              <TableHead>Где установлено</TableHead>
+              <TableHead>Номер телефона</TableHead>
+              <TableHead>Внутренний номер</TableHead>
+              <TableHead>Оператор</TableHead>
+              <TableHead>Тип устройства</TableHead>
+              <TableHead>Модель устройства</TableHead>
+              <TableHead>Примечание</TableHead>
+              <TableHead>Переадресация на сотовый</TableHead>
+              <TableHead>Подключено/изменение(дата)</TableHead>
+              <TableHead>Статус</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {
               numbers.map((number) => (
-                <TableRow key={number.invoice}>
-                  <TableCell className="font-medium">{number.invoice}</TableCell>
-                  <TableCell className="font-medium tracking-wide">{number.paymentStatus}</TableCell>
+                <TableRow key={number.whereInstalled}>
+                  <TableCell className="font-medium">{number.place}</TableCell>
+                  <TableCell className="font-medium tracking-wide">{number.department}</TableCell>
+                  <TableCell className="font-medium">{number.whereInstalled}</TableCell>
+                  <TableCell className="font-medium">{number.number}</TableCell>
+                  <TableCell className="font-medium tracking-wide">{number.internalNumber}</TableCell>
+                  <TableCell className="font-medium tracking-wide">{number.operator}</TableCell>
+                  <TableCell className="font-medium tracking-wide">{number.deviceType}</TableCell>
+                  <TableCell className="font-medium tracking-wide">{number.deviceModel}</TableCell>
+                  <TableCell className="font-medium tracking-wide">{number.note}</TableCell>
+                  <TableCell className="font-medium tracking-wide">{number.forwarding}</TableCell>
+                  <TableCell className="font-medium tracking-wide">{number.connected}</TableCell>
+                  <TableCell className="font-medium tracking-wide">{number.status}</TableCell>
                 </TableRow>
               ))
             }

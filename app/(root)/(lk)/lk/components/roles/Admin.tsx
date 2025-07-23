@@ -14,7 +14,7 @@ export
   const tabs = [
     {
       value: "accounts",
-      title: "Пользователи",
+      title: "Пользователи/номера",
       description: "Список пользователей приложения. Добавляйте, изменяйте и удаляйте аккаунты здесь.",
       tabContent: <AccountTab />
     },

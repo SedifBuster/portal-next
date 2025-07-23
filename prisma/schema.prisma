@@ -212,6 +212,24 @@ model ZnoLog {
   statusNote String?                         //green
 }
 
+model ReferenceNumbers {
+  id              Int       @id @default(autoincrement())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt @default(now())
+  place           String?
+  department      String?
+  number          String?
+  internalNumber  String?
+  operator        String?
+  responsible     String?
+  deviceType      String?
+  deviceModel     String?
+  note            String?
+  forwarding      String?
+  connected       String?
+  status          String?  @default("Статус")
+}
+
 enum Localization {
   ZNOOfTheLipOropharynx//ЗНО ГУБЫ (МКБ-10: С00), РОТОГЛОТКИ (МКБ 10:С01, С02.4, C05.1, С05.2, C09, C10), ПОЛОСТИ РТА (МКБ 10:C02.0, C02.1, C02.2, C02.3, C02.8, C02.9, С03, С04, C05.0, С06)
   MalignancyOfTheEsophagusCardia//ЗНО ПИЩЕВОДА, КАРДИИ (МКБ-10: С15, С16.0)
