@@ -3,116 +3,132 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { $Enums } from "@prisma/client";
 import { Row } from "@tanstack/react-table";
-import { HiPencil } from "react-icons/hi2";
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
 import { useForm } from "react-hook-form"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 const formSchema = z.object({
-  login: z.string().min(4, {
-    message: "Имя пользователя должно состоять как минимум из 4 символов.",
-  }),
-  name: z.string().min(5, {
-    message: "ФИО должно состоять как минимум из 5 символов."
-  }),
-  role: z.string({
-    required_error: "Пожалуйста выберите роль",
-  }),
+  place: z.any().optional()
+  ,
+  department: z.any().optional()
+  ,
+  number: z.any().optional()
+  ,
+  internalNumber: z.any().optional()
+  ,
+  operator: z.any().optional()
+  ,
+  responsible: z.any().optional()
+  ,
+  deviceType: z.any().optional()
+  ,
+  deviceModel: z.any().optional()
+  ,
+  note: z.any().optional()
+  ,
+  forwarding: z.any().optional()
+  ,
+  connected: z.any().optional()
+  ,
+  status: z.any().optional()
 })
-
-const roles = [
-  {
-    value: 'USER',
-    text: 'Пользователь'
-  },
-  {
-    value: 'TECHNICICAN',
-    text: 'Техник'
-  },
-  {
-    value: 'SYSADMIN',
-    text: 'Сисадмин'
-  },
-  {
-    value: 'ADMIN',
-    text: 'Админ'
-  },
-]
-
-const positions = [
-  {
-    value: 'NURSE',
-    text: 'медсестра - изменение значений'
-  },
-  {
-    value: 'HEADNURSE',
-    text: 'старшая медсестра - назначение, проверка'
-  },
-  {
-    value: 'DEPNURSTAFF',
-    text: 'зам по сред. мед. персоналу - менеджмент коек'
-  },
-  {
-    value: 'CHIEFNURSE',
-    text: 'главная медсестра - менеджмент коек'
-  },
-  {
-    value: 'CMO',
-    text: 'нач.мед. - просмотр'
-  },
-  {
-    value: 'TECHNICICAN',
-    text: 'технический специалист'
-  },
-]
 
 export
   default function ReferenceChangePopover({
-    row
+    row,
+    onGetReferenceNumbers
   }: {
-    row: Row<any>
+    row: Row<any>,
+    onGetReferenceNumbers: () => Promise<void>
   }
 ) {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      login: row.getValue('login'),
-      name: row.getValue('name'),
-      role: row.getValue('role'),
-    },
+      defaultValues: {
+        place: row.getValue('place')
+        ,
+        department: row.getValue('department')
+        ,
+        number: row.getValue('number')
+        ,
+        internalNumber: row.getValue('internalNumber')
+        ,
+        operator: row.getValue('operator')
+        ,
+        responsible: row.getValue('responsible')
+        ,
+        deviceType: row.getValue('deviceType')
+        ,
+        deviceModel: row.getValue('deviceModel')
+        ,
+        note: row.getValue('note')
+        ,
+        forwarding: row.getValue('forwarding')
+        ,
+        connected: row.getValue('connected')
+        ,
+        status: row.getValue('status')
+        
+      },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // ✅ This will be type-safe and validated.
-    console.log(values)
-}
+
+ async function onSubmit(values: z.infer<typeof formSchema>) {
+  console.log('otr')
+    try {
+      const numberData = {
+        id: row.getValue("id"),
+        place: values.place,
+        department: values.department,
+        number: values.number,
+        internalNumber: values.internalNumber,
+        operator: values.operator,
+        responsible: values.responsible,
+        deviceType: values.deviceType,
+        deviceModel: values.deviceModel,
+        note: values.note,
+        forwarding: values.forwarding,
+        connected: values.connected,
+        status: values.status,
+      }
+      console.log(numberData)
+
+      const refNumbersResult = await axios.patch('/api/referenceNumbers', numberData)
+      if(refNumbersResult.statusText !== "OK") return toast.error("Ошибка при изменении номера")
+      else {
+        toast.success(`номер изменен`)
+        onGetReferenceNumbers()
+      }
+    } catch (error) {
+      toast.error("Ошибка при изменении номера")
+      console.log("Ошибка при изменении номера ", error)
+    }
+  }
 
   return <Dialog>
     <DialogTrigger asChild>
-      <Button variant={'outline'}><HiPencil /></Button>
+      <Button variant={'outline'} className="w-10 h-10 text-xs">изм</Button>
     </DialogTrigger>
     <DialogContent className="">
       <DialogHeader>
-        <DialogTitle>Изменить пользователя</DialogTitle>
+        <DialogTitle>Изменить номер</DialogTitle>
         <DialogDescription>
         </DialogDescription>
       </DialogHeader>
@@ -124,77 +140,171 @@ export
           sm:max-w-md
         "
       >
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>ФИО</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Иванов И.И." {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Ваше отображаемое имя в системе.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="role"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Роль</FormLabel>
-                  <FormControl>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger className="h-7">
-                        
-                      <SelectValue placeholder="..." />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {roles.map(role => {
-                      return <SelectItem key={role.value} value={role.value}>
-                        {role.text}
-                      </SelectItem>
-                    })}
-                  </SelectContent>
-                </Select>
-                    <Input placeholder="..." {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Роль в системе. Юзер являются основной ролью.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="login"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Логин</FormLabel>
-                  <FormControl>
-                    <Input placeholder="IvanovII" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Логин для входа в систему.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </form>
-        </Form>
+       <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+          <FormField
+            control={form.control}
+            name="department"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Отделение</FormLabel>
+                <FormControl>
+                  <Input  className="h-5" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+                    <FormField
+            control={form.control}
+            name="place"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Где установлено</FormLabel>
+                <FormControl>
+                  <Input className="h-5" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="number"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Номер телефона</FormLabel>
+                <FormControl>
+                  <Input  className="h-5" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="internalNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Внутренний номер</FormLabel>
+                <FormControl>
+                  <Input  className="h-5" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+                    <FormField
+            control={form.control}
+            name="operator"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Оператор</FormLabel>
+                <FormControl>
+                  <Input  className="h-5" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="responsible"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Ответственное лицо</FormLabel>
+                <FormControl>
+                  <Input  className="h-5" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+                    <FormField
+            control={form.control}
+            name="deviceType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Тип устройства</FormLabel>
+                <FormControl>
+                  <Input  className="h-5" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+                    <FormField
+            control={form.control}
+            name="deviceModel"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Модель устройства</FormLabel>
+                <FormControl>
+                  <Input  className="h-5" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+                    <FormField
+            control={form.control}
+            name="note"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Примечание</FormLabel>
+                <FormControl>
+                  <Input  className="h-5" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+                    <FormField
+            control={form.control}
+            name="forwarding"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Переадресация на сотовый</FormLabel>
+                <FormControl>
+                  <Input  className="h-5" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+                    <FormField
+            control={form.control}
+            name="connected"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Подключено/изменение(дата)</FormLabel>
+                <FormControl>
+                  <Input  className="h-5" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Статус</FormLabel>
+                <FormControl>
+                  <Input  className="h-5" {...field} />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit">отправить</Button>
+
+          
+        </form>
+      </Form>
       </div>
-      <DialogFooter>
-      <Button type="submit" onClick={form.handleSubmit(onSubmit)}>Сохранить изменения</Button>
-      </DialogFooter>
     </DialogContent>
   </Dialog>
 }

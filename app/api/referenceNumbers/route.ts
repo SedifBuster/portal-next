@@ -90,3 +90,28 @@ export
     return new NextResponse( 'Internal Error', { status: 500 } )
   }
 }
+
+export
+  async function DELETE(
+    request: Request
+) {
+  try {
+    const body = await request.json()
+    const {
+      id
+    } = body
+    const refNumber = await prisma.referenceNumbers.delete({
+      where: {
+        id: id
+      }
+    })
+    if ( !id || !refNumber ) {
+      return new NextResponse( 'Missing info', { status: 400 } )
+    }
+
+    return NextResponse.json(refNumber.id)
+  } catch ( error ) {
+    console.log( error, 'REFERENCENUMBERS_DELETE_ERROR' )
+    return new NextResponse( 'Internal Error', { status: 500 } )
+  }
+}

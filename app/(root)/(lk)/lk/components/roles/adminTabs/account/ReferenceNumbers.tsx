@@ -60,14 +60,14 @@ export
       accessorKey: "id",
       header: "id",
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("id")}</div>
+        <div className=" text-xs">{row.getValue("id")}</div>
       ),
     },
     {
       accessorKey: "department",
-      header: () => <div className="text-right">Отделение</div>,
+      header: () => <div className="text-xs">Отделение</div>,
       cell: ({ row }) => {
-        return <div className="text-right font-medium">{row.getValue("department")}</div>
+        return <div className="text-xs">{row.getValue("department")}</div>
       },
     },
     {
@@ -76,105 +76,106 @@ export
         return (
           <Button
             variant="ghost"
+            className="text-xs"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
             Где установлено
           </Button>
         )
       },
-      cell: ({ row }) => <div>{row.getValue("place")}</div>,
+      cell: ({ row }) => <div className="text-xs">{row.getValue("place")}</div>,
     },
     {
       accessorKey: "number",
-      header: "Номер телефона",
+      header: () => <div className="text-xs">Номер телефона</div>,
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("number")}</div>
+        <div className="capitalize text-xs">{row.getValue("number")}</div>
       ),
     },
     {
       accessorKey: "internalNumber",
-      header: "Внутренний номер",
+      header: () => <div className="text-xs">Внутренний номер</div>,
       cell: ({ row }) => (
-        <div className="capitalize">{format(new Date(row.getValue("internalNumber")), "PPP", {locale: ru})}</div>
+        <div className="capitalize text-xs">{row.getValue("internalNumber")}</div>
       ),
     },
     {
       accessorKey: "operator",
-      header: "Оператор",
+      header: () => <div className="text-xs">Оператор</div>,
       cell: ({ row }) => (
-        <div className="capitalize">{format(new Date(row.getValue("operator")), "PPP", {locale: ru})}</div>
+        <div className="capitalize text-xs">{/*format(new Date(row.getValue("operator")), "PPP", {locale: ru})*/row.getValue("operator")}</div>
       ),
     },
     {
       accessorKey: "responsible",
-      header: "Ответственное лицо",
+      header: () => <div className="text-xs">Ответственное лицо</div>,
       cell: ({ row }) => (
-        <div className="capitalize">{format(new Date(row.getValue("responsible")), "PPP", {locale: ru})}</div>
+        <div className="capitalize text-xs">{row.getValue("responsible")}</div>
       ),
     },
     {
       accessorKey: "deviceType",
-      header: "Тип устройства",
+      header: () => <div className="text-xs">Тип устройства</div>,
       cell: ({ row }) => (
-        <div className="capitalize">{format(new Date(row.getValue("deviceType")), "PPP", {locale: ru})}</div>
+        <div className="capitalize text-xs">{row.getValue("deviceType")}</div>
       ),
     },
       {
         accessorKey: "deviceModel",
-        header: "Модель устройства",
+        header: () => <div className="text-xs">Модель устройства</div>,
         cell: ({ row }) => (
-          <div className="capitalize">{format(new Date(row.getValue("deviceModel")), "PPP", {locale: ru})}</div>
+          <div className="capitalize text-xs">{row.getValue("deviceModel")}</div>
         ),
       },
       {
         accessorKey: "note",
-        header: "Примечание",
+        header: () => <div className="text-xs">Примечание</div>,
         cell: ({ row }) => (
-          <div className="capitalize">{format(new Date(row.getValue("note")), "PPP", {locale: ru})}</div>
+          <div className="capitalize text-xs">{row.getValue("note")}</div>
         ),
       },
       {
         accessorKey: "forwarding",
-        header: "Переадресация на сотовый",
+        header: () => <div className="text-xs">Переадресация на сотовый</div>,
         cell: ({ row }) => (
-          <div className="capitalize">{format(new Date(row.getValue("forwarding")), "PPP", {locale: ru})}</div>
+          <div className="capitalize text-xs">{row.getValue("forwarding")}</div>
         ),
       },
       {
         accessorKey: "connected",
-        header: "Подключено/изменение(дата)",
+        header: () => <div className="text-xs">Подключено/изменение(дата)</div>,
         cell: ({ row }) => (
-          <div className="capitalize">{format(new Date(row.getValue("connected")), "PPP", {locale: ru})}</div>
+          <div className="capitalize text-xs">{row.getValue("connected")}</div>
         ),
       },
       
       {
         accessorKey: "status",
-        header: "Статус",
+        header: () => <div className="text-xs">Статус</div>,
         cell: ({ row }) => (
-          <div className="capitalize">{format(new Date(row.getValue("status")), "PPP", {locale: ru})}</div>
+          <div className="capitalize text-xs">{row.getValue("status")}</div>
         ),
       },
       {
         accessorKey: "createdAt",
-        header: "Дата создания",
+        header: () => <div className="text-xs">Дата создания</div>,
         cell: ({ row }) => (
-          <div className="capitalize">{format(new Date(row.getValue("createdAt")), "PPP", {locale: ru})}</div>
+          <div className="capitalize text-xs">{format(new Date(row.getValue("createdAt")), "PPP", {locale: ru})}</div>
         ),
       },
     {
       accessorKey: "updatedAt",
-      header: "Дата посл. изменения",
+      header: () => <div className="text-xs">Дата посл. изменения</div>,
       //format the date
       cell: ({ row }) => (
-        <div className="capitalize">{format(new Date(row.getValue("updatedAt")), "PPP", {locale: ru})}</div>
+        <div className="capitalize text-xs">{format(new Date(row.getValue("updatedAt")), "PPP", {locale: ru})}</div>
       ),
     },
     {
       id: "actionsChange",
       enableHiding: false,
       cell: ({ row }) => {
-        return <ReferenceChangePopover row={row}/>//(
+        return <ReferenceChangePopover row={row} onGetReferenceNumbers={onGetReferenceNumbers}/>//(
       },
     },
     {
@@ -184,7 +185,7 @@ export
         return (
           <Popover>
             <PopoverTrigger>
-              <Button variant={'destructive'}><HiTrash /></Button>
+              <Button variant={'destructive'} className="w-10 h-10 text-xs">удал</Button>
             </PopoverTrigger>
             <PopoverContent className="w-80">
               <div className="grid gap-4">
@@ -220,7 +221,7 @@ export
 
     const result = await axios.delete('/api/referenceNumbers', { data: postData })
     if (result.statusText === "OK") {
-      toast.success('пользователь удален')
+      toast.success('номер удален')
       onGetReferenceNumbers()
     } else {
       toast.error('Ошибка при удалении номера')

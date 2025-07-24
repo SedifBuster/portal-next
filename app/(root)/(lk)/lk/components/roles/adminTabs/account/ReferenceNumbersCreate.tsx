@@ -1,28 +1,14 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage, Form } from "@/components/ui/form"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from "@/components/ui/form"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import toast from "react-hot-toast"
 import axios from "axios"
 import { Input } from "@/components/ui/input"
-
-    /*place           String?
-    department      String?
-    number          String?
-    internalNumber  String?
-    operator        String?
-    responsible     String?
-    deviceType      String?
-    deviceModel     String?
-    note            String?
-    forwarding      String?
-    connected       String?
-    status          String? */
 
 const formSchema = z.object({
   place: z.string().optional()
@@ -62,6 +48,7 @@ export
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
       defaultValues: {
+       
       },
   })
 
@@ -84,11 +71,11 @@ export
       console.log(numberData)
 
       const refNumbersResult = await axios.post('/api/referenceNumbers', numberData)
-      if(refNumbersResult.statusText !== "OK") return toast.error("Ошибка при создании пользователя")
-      else if(refNumbersResult.statusText === "OK") {
-        const numberId: number = refNumbersResult.data.id
-        toast.success(`номер создан с id: ${numberId}`)
-        }
+      if(refNumbersResult.statusText !== "OK") return toast.error("Ошибка при создании номера")
+      else {
+        toast.success(`номер создан`)
+        onGetReferenceNumbers()
+      }
     } catch (error) {
       toast.error("Ошибка при создании номера")
       console.log("Ошибка при создании номера ", error)
@@ -101,64 +88,192 @@ export
     </SheetTrigger>
     <SheetContent className="w-[400px] sm:w-[540px]">
       <SheetHeader>
-        <SheetTitle>Создать пользователя</SheetTitle>
-        <SheetDescription>
-          Помните, у каждого должна быть должность и профиль. Кликните по "создать" когда заполните все поля.
-        </SheetDescription>
+        <SheetTitle>Создать номер</SheetTitle>
       </SheetHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
           <FormField
             control={form.control}
-            name="name"
+            name="department"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Имя*</FormLabel>
+                <FormLabel>Отделение</FormLabel>
                 <FormControl>
-                  <Input className="h-7" placeholder="Иванов И.И." {...field} />
+                  <Input  className="h-5" {...field} />
                 </FormControl>
-                <FormDescription>
-                  Фамилия и инициалы.
-                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+                    <FormField
+            control={form.control}
+            name="place"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Где установлено</FormLabel>
+                <FormControl>
+                  <Input className="h-5" {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
           <FormField
             control={form.control}
-            name="login"
+            name="number"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Логин*</FormLabel>
+                <FormLabel>Номер телефона</FormLabel>
                 <FormControl>
-                  <Input  className="h-7" placeholder="Ivanov7" {...field} />
+                  <Input  className="h-5" {...field} />
                 </FormControl>
-                <FormDescription>
-                  Для авторизации.
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
           <FormField
             control={form.control}
-            name="password"
+            name="internalNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Пароль*</FormLabel>
+                <FormLabel>Внутренний номер</FormLabel>
                 <FormControl>
-                  <Input  className="h-7" placeholder="*********" type="password" {...field} />
+                  <Input  className="h-5" {...field} />
                 </FormControl>
-                <FormDescription>
-                  Для авторизации.
-                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+                    <FormField
+            control={form.control}
+            name="operator"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Оператор</FormLabel>
+                <FormControl>
+                  <Input  className="h-5" {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
           <FormField
             control={form.control}
-            name="role"
+            name="responsible"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Ответственное лицо</FormLabel>
+                <FormControl>
+                  <Input  className="h-5" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+                    <FormField
+            control={form.control}
+            name="deviceType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Тип устройства</FormLabel>
+                <FormControl>
+                  <Input  className="h-5" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+                    <FormField
+            control={form.control}
+            name="deviceModel"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Модель устройства</FormLabel>
+                <FormControl>
+                  <Input  className="h-5" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+                    <FormField
+            control={form.control}
+            name="note"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Примечание</FormLabel>
+                <FormControl>
+                  <Input  className="h-5" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+                    <FormField
+            control={form.control}
+            name="forwarding"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Переадресация на сотовый</FormLabel>
+                <FormControl>
+                  <Input  className="h-5" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+                    <FormField
+            control={form.control}
+            name="connected"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Подключено/изменение(дата)</FormLabel>
+                <FormControl>
+                  <Input  className="h-5" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Статус</FormLabel>
+                <FormControl>
+                  <Input  className="h-5" {...field} />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        <SheetClose>
+          <Button type="submit">отправить</Button>
+        </SheetClose>
+          
+        </form>
+      </Form>
+    </SheetContent>
+  </Sheet>
+}
+
+
+ /*
+    
+    
+    deviceType      String?
+    deviceModel     String?
+    note            String?
+    forwarding      String?
+    connected       String?
+    status          String? */
+
+/**
+ *           <FormField
+            control={form.control}
+            name="internalNumber"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Роль*</FormLabel>
@@ -227,7 +342,7 @@ export
                       return <SelectItem value={dep.id.toString()} key={dep.id}>
                         {dep.name}
                       </SelectItem>
-                    }): ''*/}
+                    }): ''}
                   </SelectContent>
                 </Select>
                 <FormDescription>
@@ -237,9 +352,4 @@ export
               </FormItem>
             )}
           />
-          <Button type="submit">отправить</Button>
-        </form>
-      </Form>
-    </SheetContent>
-  </Sheet>
-}
+ */
