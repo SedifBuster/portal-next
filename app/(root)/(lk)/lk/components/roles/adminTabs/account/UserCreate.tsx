@@ -162,6 +162,10 @@ export
       value: 'TECHNICICAN',
       text: 'технический специалист'
     },
+    {
+      value: 'HR',
+      text: 'отдел кадров'
+    },
   ]
 
   return <Sheet>

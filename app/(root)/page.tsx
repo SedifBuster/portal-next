@@ -39,6 +39,11 @@ const mainPageLinks: mainPageLinktype[] = [
     target: "_self",
     text: "База знаний"
   },
+  {
+    href: "/hrDepartment",
+    target: "_self",
+    text: "Отдел кадров"
+  },
 ]
 export
   default function Home(//format(new Date(news.dateNews), "PPP", {locale: ru})
@@ -56,7 +61,7 @@ export
             grid
             grid-cols-3
             gap-4
-            h-[40vh]
+            h-[52vh]
           "
         >
           {

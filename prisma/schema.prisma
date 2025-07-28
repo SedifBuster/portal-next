@@ -326,6 +326,7 @@ enum Grade {
   CHIEFNURSE
   TECHNICICAN
   CMO
+  HR
 }
 
 enum Gender {

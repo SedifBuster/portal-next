@@ -47,6 +47,12 @@ const useRoutes = () => {
             icon: HiOutlineNewspaper,
         },
         {
+            label: "отдел кадров",// session.status ===  "authenticated"? "войти" : 'личный кабинет',
+            href: '/hrDepartment',
+            active: pathname === '/hrDepartment',
+            icon: HiOutlineNewspaper,
+        },
+        {
             label: "система учета заявок",// session.status ===  "authenticated"? "войти" : 'личный кабинет',
             href: 'http://192.168.0.148:5006/',
             active: pathname === 'http://192.168.0.148:5006/',
