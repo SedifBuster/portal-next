@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { FileBd } from "@prisma/client"
+import { FileBdHr } from "@prisma/client"
 import Link from "next/link"
 import { HiOutlineDocument } from "react-icons/hi2"
 //cool
@@ -9,7 +9,7 @@ export
     files,
     onDeleteFile
   } : {
-    files: FileBd[]
+    files: FileBdHr[]
     onDeleteFile: (id: number) => void
   }
 ) {
@@ -17,7 +17,7 @@ export
     <section>
       <header>
         <div className="flex ">
-          <Label className="text-xl block subpixel-antialiased tracking-wide p-4">Файлы базы знаний</Label>
+          <Label className="text-xl block subpixel-antialiased tracking-wide p-4">Файлы отдела кадров</Label>
         </div>
       </header>
       <div className="flex flex-wrap gap-2">

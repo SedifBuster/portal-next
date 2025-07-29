@@ -1,6 +1,6 @@
 "use client"
 
-import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from "@/components/ui/form"
+import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form, FormDescription } from "@/components/ui/form"
 import { useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -57,7 +57,7 @@ export
         filePath: formData.get('file').name
       }
 
-      const uploadFileName = await axios.post('/api/uploadFiles', postFileName)
+      const uploadFileName = await axios.post('/api/uploadFiles/hrFiles', postFileName)
 
       if(!uploadFileName) {toast.error('Ошибка на стороне сервера'); throw new Error}
 
@@ -110,6 +110,7 @@ export
             render={({ field }) => (
               <FormItem >
                 <FormLabel>Категория файла*</FormLabel>
+                <FormDescription>чтобы загрузить файл нужна хотя бы одна категория</FormDescription>
                 <Select onValueChange={field.onChange}>
                     <FormControl>
                       <SelectTrigger className="h-7">

@@ -177,7 +177,7 @@ export
   let onDeleteCategory = async (categoryId: number) => {
     const postData = { id: categoryId }
 
-    const result = await axios.delete('/api/uploadFiles/filesCategory', { data: postData })
+    const result = await axios.delete('/api/uploadFiles/filesCategoryHr', { data: postData })
     if (result.statusText === "OK") {
       toast.success('категория удалена')
       onGetFilesCategory()
@@ -190,7 +190,7 @@ export
   let onDeleteSubCategory = async (subCategoryId: number) => {
     const postData = { id: subCategoryId }
 
-    const result = await axios.delete('/api/uploadFiles/subFilesCategory', { data: postData })
+    const result = await axios.delete('/api/uploadFiles/subFilesCategoryHr', { data: postData })
     if (result.statusText === "OK") {
       toast.success('подкатегория удалена')
       onGetFilesCategory()

@@ -40,7 +40,7 @@ export
       }
       console.log(categoryData)
 
-      const categoryResult = await axios.post('/api/uploadFiles/filesCategory', categoryData)
+      const categoryResult = await axios.post('/api/uploadFiles/filesCategoryHr', categoryData)
       if(categoryResult.statusText !== "OK") return toast.error("Ошибка при создании категории")
 
       toast.success(`категория создана `)

@@ -96,6 +96,7 @@ export
           </CardContent>
         </Card>
       </TabsContent>
+
       <TabsContent value="categories">
         <Card>
           <CardHeader>
