@@ -7,6 +7,7 @@ import { Admin } from "./roles/Admin"
 import { Technicican } from "./roles/Technicican"
 import { Sysadmin } from "./roles/Sysadmin"
 import LkHeader from "@/components/ui/headers/lkHeader"
+import { Hr } from "./roles/Hr"
 
 export
   function Department(
@@ -42,6 +43,9 @@ export
           break
         case 'USER':
           setIsPanel(<User />)
+          break
+        case 'HR':
+          setIsPanel(<Hr />)
           break
         default:
           setIsPanel(<User />)

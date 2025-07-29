@@ -175,6 +175,31 @@ model FileBd {
   filePath String
 }
 
+model FileCategoryHr {
+  id Int @id @default(autoincrement())
+  name String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt @default(now())
+  subCategories SubFileCategoryHr[]
+}
+
+model SubFileCategoryHr {
+  id Int @id @default(autoincrement())
+  mainCategory FileCategoryHr @relation(fields: [fileCategoryId], references: [id])
+  fileCategoryId Int 
+  name String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt @default(now())
+}
+
+model FileBdHr {
+  id Int @id @default(autoincrement())
+  name String
+  category String
+  subCategory String?
+  filePath String
+}
+
 model Log {
   department  DepartmentLog
   name        String
@@ -304,6 +329,7 @@ enum Role {
   TECHNICICAN
   SYSADMIN
   USER
+  HR
 }
 
 //NURSE//медсестры - менять значения,

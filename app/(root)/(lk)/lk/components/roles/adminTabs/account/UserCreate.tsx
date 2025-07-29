@@ -123,6 +123,10 @@ export
       value: 'ADMIN',
       text: 'Админ'
     },
+    {
+      value: 'HR',
+      text: 'отдел кадров'
+    },
   ]
 
   const positions = [
