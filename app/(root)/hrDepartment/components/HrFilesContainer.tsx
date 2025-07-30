@@ -26,7 +26,7 @@ export
 
   let onGetFiles = async () => {
     try {
-      let result = await axios.get('/api/uploadFiles')
+      let result = await axios.get('/api/uploadFiles/hrFiles')
       if (result.status === 200) setFileNames(result.data)
     } catch(error) {
       console.log('error: ', error)
@@ -42,7 +42,7 @@ export
 
   let onGetSubCategories = async () => {
     try {
-      let result = await axios.get('/api/uploadFiles/subFilesCategory')
+      let result = await axios.get('/api/uploadFiles/subFilesCategoryHr')
       if (result.status === 200) setSubCategories(result.data)
     } catch(error) {
       console.log('error: ', error)
