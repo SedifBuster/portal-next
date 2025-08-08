@@ -3,7 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["multiSchema"]
+  previewFeatures = ["prismaSchemaFolder"]
 }
 
 datasource db {
@@ -32,40 +32,6 @@ model Profile {
   grade      Grade      @default(NURSE)
 }
 
-model Task {
-  id        Int      @id @default(autoincrement())
-  condition String   @default("новые")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  number    String
-  name      String
-  cabinet   String
-  problem   String
-  priority  Priority @default(low)
-  category  Category
-  liableId  Int?
-  index     String?
-  files     String?
-  comment   String?
-}
-
-//сделать копию для дашборда?с датой
-model Ward {
-  id            Int        @id @default(autoincrement())
-  department    Department @relation(fields: [depId], references: [id])
-  depId         Int
-  number        Int        @unique
-  numberOfSeats Int
-  engaged       Int
-  free          Int
-  gender        Gender
-  reserve       String?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  status        Status @default(active)
-}
-
-//сделать копию для дашборда
 model Department {
   id            Int       @id @default(autoincrement())
   name          String
@@ -93,136 +59,19 @@ model Department {
   profile       Profile[]
 }
 
-//департмент для дашбоарда
-model DashDepartment {
-  id            Int      @id @default(autoincrement())
-  name          String
-  //wards DashWard[]
-  //numberOfSeats Int?     @default(0)
-  //engaged       Int?     @default(0) //Всего находиться в стационаре, накопительным (чел.) 
-  //free          Int?     @default(0) //Свободных коек
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  //to table
-  planHuman     Int?     @default(0)
-  planRub       Int?     @default(0)
-  begAcc        Int?     @default(0)
-  admRec        Int?     @default(0)
-  disCome       Int?     @default(0)
-  disTax        Int?     @default(0)
-  patOver       Int?     @default(0)
-  storColed     Int?     @default(0)
-  transHuman    Int?     @default(0)
-  transRub      Int?     @default(0)
-  medPrice      Int?     @default(0)
-  dolgDead      Int?     @default(0)
-  dash          Dash     @relation(fields: [dashId], references: [id])
-  dashId        Int
-}
-
-//палата для дашбоарда
-model DashWard {
-  id            Int      @id @default(autoincrement())
-  //привязка к департменту?
-  //dashDepartment DashDepartment @relation(fields: [dashDepId], references: [id])
-  dashDepId     Int
-  number        Int
+model Ward {
+  id            Int        @id @default(autoincrement())
+  department    Department @relation(fields: [depId], references: [id])
+  depId         Int
+  number        Int        @unique
   numberOfSeats Int
   engaged       Int
   free          Int
   gender        Gender
   reserve       String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
   status        Status @default(active)
-}
-
-model Dash {
-  id    Int              @id @default(autoincrement())
-  date  DateTime         @default(now())
-  table DashDepartment[]
-}
-
-model New {
-  id Int @id @default(autoincrement())
-  nameNews String
-  dateNews DateTime @default(now())
-  news String
-  liable String
-}
-
-model FileCategory {
-  id Int @id @default(autoincrement())
-  name String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt @default(now())
-  subCategories SubFileCategory[]
-}
-
-model SubFileCategory {
-  id Int @id @default(autoincrement())
-  mainCategory FileCategory @relation(fields: [fileCategoryId], references: [id])
-  fileCategoryId Int 
-  name String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt @default(now())
-}
-
-model FileBd {
-  id Int @id @default(autoincrement())
-  name String
-  category String
-  subCategory String?
-  filePath String
-}
-
-model Log {
-  department  DepartmentLog
-  name        String
-  date        DateTime
-  place       String
-  event       Problem
-  circs       String
-  gauge       String?
-  note        String
-  liable      String
-  cause       String?
-  comment     String?
-  id          Int       @id @default(autoincrement())
-}
-
-enum DepartmentLog {
-  Policlinic      //Поликлиника
-  Reception       //Приемное
-  Pulmonology     //Пульмонология
-  Rehabilitation  //Реабилитация
-  Reanimation     //Реанимация
-  Laboratory      //Лаборатория
-  Neurology       //Неврология
-  Opp             //ОПП
-  Pao             //ПАО
-  Ceo             //СЭО
-  Therapeutic     //Терапия
-  Surgical        //Хирургия
-  Xray            //Рентгенология
-  Administration  //Администрация
-  Aho             //АХО
-}
-
-enum Problem {
-  IdentificationOfThePatientsIdentity       //Идентификация личности пациента
-  Collapse                                  //Падение
-  PressureSores                             //Пролежни
-  PressureSoresIn                           //Пролежни: наши
-  PressureSoresOut                          //Пролежни: извне
-  AnEventRelatedToAMedicalDeviceOrProduct   //Событие, связаное с медицинским оборудованием или изделием
-  ADrugRelatedEvent                         //Событие, связанное с лекарственным средством/ фиксация пациента
-  InfectiousOrParasiticDisease              //Инфекционное или паразитарное заболевание
-  ISMP                                      //ИСМП (инфекции, связанные с медицинской помощью)
-  SurgicalComplications                     //Хирургические осложнения
-  AnotherUndesirableEvent                   //Другое нежелательное событие
-  DeathInTheWard                            //Другое нежелательное событие: смерть в палате
-  Hematomas                                 //Другое нежелательное событие: гематомы
 }
 
 enum Role {
@@ -232,43 +81,11 @@ enum Role {
   USER
 }
 
-//NURSE//медсестры - менять значения,
-//HEAD NURSE //старшая медсестра - назначать, проверять
-//DEPNURSTAFF //зам по среднему мед персоналу - менеджит койки/ создание/резерв по распоряжению
-//CHIEFNURSE //главная медсестра - менеджит койки/ создание/резерв по распоряжению
-//TECHNICICAN  //технический специалист
-//CMO  //начмед - просто смотреть
 enum Grade {
-  NURSE
-  HEADNURSE
-  DEPNURSTAFF
-  CHIEFNURSE
-  TECHNICICAN
-  CMO
-}
-
-enum Gender {
-  man
-  woman
-  mutual
-}
-
-enum Priority {
-  low
-  middle
-  hight
-}
-
-enum Category {
-  problemWithPC
-  problemWithOrgTechnics
-  problemWithMIS
-  newMISAccount
-  uploadNewProgramm
-}
-
-enum Status {
-  active
-  disabled
-  deleted
+  NURSE       //медсестры - менять значения,
+  HEADNURSE   //старшая медсестра - назначать, проверять
+  DEPNURSTAFF //зам по среднему мед персоналу - менеджит койки/ создание/резерв по распоряжению
+  CHIEFNURSE  //главная медсестра - менеджит койки/ создание/резерв по распоряжению
+  TECHNICICAN //технический специалист
+  CMO         //начмед - просто смотреть
 }

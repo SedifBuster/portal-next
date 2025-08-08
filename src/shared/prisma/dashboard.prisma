@@ -1,0 +1,53 @@
+
+model DashDepartment {
+  id            Int      @id @default(autoincrement())
+  name          String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  planHuman     Int?     @default(0)
+  planRub       Int?     @default(0)
+  begAcc        Int?     @default(0)
+  admRec        Int?     @default(0)
+  disCome       Int?     @default(0)
+  disTax        Int?     @default(0)
+  patOver       Int?     @default(0)
+  storColed     Int?     @default(0)
+  transHuman    Int?     @default(0)
+  transRub      Int?     @default(0)
+  medPrice      Int?     @default(0)
+  dolgDead      Int?     @default(0)
+  dash          Dash     @relation(fields: [dashId], references: [id])
+  dashId        Int
+}
+
+model DashWard {
+  id            Int      @id @default(autoincrement())
+  dashDepId     Int
+  number        Int
+  numberOfSeats Int
+  engaged       Int
+  free          Int
+  gender        Gender
+  reserve       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  status        Status @default(active)
+}
+
+model Dash {
+  id    Int              @id @default(autoincrement())
+  date  DateTime         @default(now())
+  table DashDepartment[]
+}
+
+enum Gender {
+  man
+  woman
+  mutual
+}
+
+enum Status {
+  active
+  disabled
+  deleted
+}

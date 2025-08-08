@@ -8,17 +8,9 @@ import {
     HiOutlineClipboardDocumentCheck
 } from "react-icons/hi2"
 import logoImage from "../../../public/logo.png"
-import { StaticImageData } from "next/image";
-import { IconType } from "react-icons/lib";
+import { routesType } from "../types/TRoute";
 
-type routesType = {
-  label: string,
-  group: 'main' | 'journals' | 'inner' | 'outer',
-  href: string,
-  active: boolean,
-  target: 'blank' | '_self',
-  icon: StaticImageData | IconType
-}
+
 
 const useRoutes = () => {
 
@@ -58,10 +50,26 @@ const useRoutes = () => {
       icon: HiOutlineNewspaper,
     },
     {
+      label: "отдел кадров",
+      group: 'inner',
+      href: '/hrDepartment',
+      active: pathname === '/hrDepartment',
+      target: '_self',
+      icon: HiOutlineNewspaper,
+    },
+    {
       label: "журнал неж. случаев",
       group: 'journals',
-      href: '/zhus/table',
-      active: pathname === 'http://192.168.0.148:3000/table',
+      href: '/journals/zhus/table',
+      active: pathname === '/journals/zhus/table',
+      target: '_self',
+      icon: HiOutlineDocumentText,
+    },
+    {
+      label: "журнал ЗНО",
+      group: 'journals',
+      href: '/journals/zno',
+      active: pathname === '/journals/zno',
       target: '_self',
       icon: HiOutlineDocumentText,
     },

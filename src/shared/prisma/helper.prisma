@@ -1,0 +1,31 @@
+
+model Task {
+  id        Int      @id @default(autoincrement())
+  condition String   @default("новые")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  number    String
+  name      String
+  cabinet   String
+  problem   String
+  priority  Priority @default(low)
+  category  Category
+  liableId  Int?
+  index     String?
+  files     String?
+  comment   String?
+}
+
+enum Priority {
+  low
+  middle
+  hight
+}
+
+enum Category {
+  problemWithPC
+  problemWithOrgTechnics
+  problemWithMIS
+  newMISAccount
+  uploadNewProgramm
+}

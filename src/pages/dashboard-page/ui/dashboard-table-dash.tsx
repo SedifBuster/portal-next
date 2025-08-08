@@ -7,16 +7,21 @@ import { DashItem } from "./dashboard-dash-item"
 import { DashSkeleton } from "./dashboard-dash-skeleton"
 import { DashPagination} from "./dashboard-dash-pagination"
 import {toast} from "react-hot-toast"
-import axios from "axios"
 import { DashInit } from "../model/models"
+import { onGetDashs, onGetDeps } from "../api/route"
+import { NextResponse } from "next/server"
 
 export
-  function TableDash({
+ async function TableDash({
+    dashs
   }: {
+    dashs: NextResponse<unknown>
   }
 ) {
 
-  async function onGetDashs() {
+  console.log(dashs)
+
+  /*async function onGetDashs() {
     try {
       const response = await axios.get('/api/dash')
       console.log(response.data)
@@ -38,7 +43,7 @@ export
     } catch (error) {
       console.log(error)
     }
-  }
+  }*/
 
   const [isTables, setTables] = useState<DashInit[]>()
   const [currentPage, setCurrentPage] = useState<number>(1)
@@ -258,22 +263,22 @@ export
         {
           currentItems.map((item) => {
             return <div key={item.id}>
-                      <DashPagination
-                        totalItems={isTables.length} 
-                        currentPage={currentPage}
-                        itemsPerPage={itemsPerPage}
-                        setCurrentPage={setCurrentPage}
-                        date={item.date}
-                        dashDates={isTables?.map((el) => {
-                          return {date:new Date(el.date), id: el.id }
-                        })}
-                      />
-                      <DashItem
-                        data={item.table}
-                        stateLpu={onCreateLPU(item.table)}
-                        date={item.date}
-                      />
-                    </div>
+              <DashPagination
+                totalItems={isTables.length} 
+                currentPage={currentPage}
+                itemsPerPage={itemsPerPage}
+                setCurrentPage={setCurrentPage}
+                date={item.date}
+                dashDates={isTables?.map((el) => {
+                  return {date:new Date(el.date), id: el.id }
+                })}
+              />
+              <DashItem
+                data={item.table}
+                stateLpu={onCreateLPU(item.table)}
+                date={item.date}
+              />
+            </div>
           })
         }
       </>

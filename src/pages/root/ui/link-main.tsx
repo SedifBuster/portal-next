@@ -27,4 +27,4 @@ export
   >
     <p className="p-2 text-[clamp(0.9rem,10vw,1.2rem)] font-semibold">{text}</p>
   </Link>
-}//text-lg
+}

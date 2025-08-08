@@ -1,0 +1,25 @@
+
+model FileCategory {
+  id Int @id @default(autoincrement())
+  name String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt @default(now())
+  subCategories SubFileCategory[]
+}
+
+model SubFileCategory {
+  id Int @id @default(autoincrement())
+  mainCategory FileCategory @relation(fields: [fileCategoryId], references: [id])
+  fileCategoryId Int 
+  name String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt @default(now())
+}
+
+model FileBd {
+  id Int @id @default(autoincrement())
+  name String
+  category String
+  subCategory String?
+  filePath String
+}

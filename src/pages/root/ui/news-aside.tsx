@@ -30,7 +30,7 @@ export
   return (
     <div className="rounded-md p-2 border-2 shadow-md overflow-auto flex flex-col gap-4">
       <h2 className="flex justify-center font-bold  text-xl">Новости</h2>
-      <div className="h-[60vh] overflow-auto gap-4  flex-col flex">
+      <div className="h-[45vh] overflow-auto gap-4  flex-col flex">
         {
           isNews && isNews.length > 0
           ?

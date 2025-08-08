@@ -1,0 +1,8 @@
+
+model New {
+  id Int @id @default(autoincrement())
+  nameNews String
+  dateNews DateTime @default(now())
+  news String
+  liable String
+}
