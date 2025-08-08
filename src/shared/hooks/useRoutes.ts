@@ -91,7 +91,7 @@ const useRoutes = () => {
     },
   ])
 
-  const routes = useMemo(() => onRoutes, [pathname])
+  const routes = useMemo(() => onRoutes, [pathname, onRoutes])
 
   return routes
 }

@@ -1,0 +1,124 @@
+import { format } from "date-fns"
+import ru from "date-fns/locale/ru";
+import { Label } from "@/src/shared/ui/label";
+import prisma from "@/src/shared/lib/prismadb"
+
+const getNews = async () => {
+  try {
+    return await prisma.new.findMany()
+  } catch ( error ) {
+    console.log( error, 'NEWS_GET_ERROR' )
+    throw new Error('Ошибка при получении новостей');
+  }
+}
+
+export
+  async function AsideNews(
+) {
+
+  const news = await getNews()
+
+  return (
+    <div className="rounded-md p-2 border-t-2 shadow-md overflow-auto flex flex-col gap-4">
+      <h2 className="flex justify-center font-bold  text-xl">Новости</h2>
+      <div className="h-[53.8vh] overflow-auto gap-4  flex-col flex">
+        {
+          news && news.length > 0
+          ?
+          news.length > 10
+          ?
+          news.slice(0,10).map((news) => {
+            return <div key={news.id} className="w-full border-2 border-gray-200 flex p-4 flex-col shadow-md">
+            <Label className="text-xl border-b w-full">{news.nameNews}</Label>
+            <p className="text-sm border-b w-full mb-2">{format(new Date(news.dateNews), "PPP", {locale: ru})}</p>
+            <p className="mb-4">{news.news}
+            </p>
+            <p>от {news.liable}</p>
+          </div>
+          })
+          :
+          news.map((news) => {
+            return <div key={news.id} className="w-full border-2 border-gray-200 flex p-4 flex-col shadow-md">
+            <Label className="text-xl border-b w-full">{news.nameNews}</Label>
+            <p className="text-sm border-b w-full mb-2">{format(new Date(news.dateNews), "PPP", {locale: ru})}</p>
+            <p className="mb-4">{news.news}
+            </p>
+            <p>от {news.liable}</p>
+          </div>
+          })
+          :
+          <p className="text-gray-400">новостей не найдено</p>
+        }
+      </div>
+    </div>
+  )
+}
+
+
+/**
+'use client'
+
+import { New } from "@prisma/client";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { format } from "date-fns"
+import ru from "date-fns/locale/ru";
+import { Label } from "@/src/shared/ui/label";
+
+export
+  function AsideNews(
+) {
+  const [isNews, setNews] = useState<New[]>()
+  //to api segment
+  let getNews = async () => {
+    try {
+      let result = await axios.get('/api/news')
+      if (result.statusText !== 'OK') throw new Error()
+
+      setNews(result.data.reverse())
+    } catch (error){
+      console.log('error', error)
+    }
+  }
+
+  useEffect(() => {
+    getNews()
+  }, [])
+
+  return (
+    <div className="rounded-md p-2 border-t-2 shadow-md overflow-auto flex flex-col gap-4">
+      <h2 className="flex justify-center font-bold  text-xl">Новости</h2>
+      <div className="h-[53.8vh] overflow-auto gap-4  flex-col flex">
+        {
+          isNews && isNews.length > 0
+          ?
+
+          isNews.length > 10
+          ?
+          isNews.slice(0,10).map((news) => {
+            return <div key={news.id} className="w-full border-2 border-gray-200 flex p-4 flex-col shadow-md">
+            <Label className="text-xl border-b w-full">{news.nameNews}</Label>
+            <p className="text-sm border-b w-full mb-2">{format(new Date(news.dateNews), "PPP", {locale: ru})}</p>
+            <p className="mb-4">{news.news}
+            </p>
+            <p>от {news.liable}</p>
+          </div>
+          })
+          :
+          isNews.map((news) => {
+            return <div key={news.id} className="w-full border-2 border-gray-200 flex p-4 flex-col shadow-md">
+            <Label className="text-xl border-b w-full">{news.nameNews}</Label>
+            <p className="text-sm border-b w-full mb-2">{format(new Date(news.dateNews), "PPP", {locale: ru})}</p>
+            <p className="mb-4">{news.news}
+            </p>
+            <p>от {news.liable}</p>
+          </div>
+          })
+          :
+          <p className="text-gray-400">новостей не найдено</p>
+        }
+      </div>
+    </div>
+  )
+}
+ */

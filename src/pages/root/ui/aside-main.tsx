@@ -1,9 +1,15 @@
+"use client"
+
 import Link from "next/link";
 import { Button } from "@/src/shared/ui/button";
-import { NewsAside } from "./news-aside";
 
 export
   function AsideMain(
+  {
+    children
+  }: {
+    children: React.ReactNode
+  }
 ) {
   return <aside className="mt-4">
     <div className="h-[7vh] p-2 flex gap-6 ">
@@ -18,6 +24,6 @@ export
         </Button>
       </Link>
     </div>
-    <NewsAside />
+    {children}
   </aside>
 }

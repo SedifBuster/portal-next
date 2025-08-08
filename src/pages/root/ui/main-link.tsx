@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 export
-  function LinkMain(
+  function MainLink(
     {
       href,
       target,
@@ -15,10 +15,10 @@ export
   return <Link href={href} target={target}
     className="
       border
-      h-[15vh]
+      h-[13vh]
       rounded-md
       flex
-      basis-[32%]
+      w-[33.9vh]
       justify-center
       content-center
       shadow-md
@@ -27,4 +27,4 @@ export
   >
     <p className="p-2 text-[clamp(0.9rem,10vw,1.2rem)] font-semibold">{text}</p>
   </Link>
-}
+}//basis-[25%]
